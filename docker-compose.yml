@@ -1,6 +1,6 @@
 services:
   web:
-    image: mynginx-image
+    build: .
     ports:
       - "8080:80"
     volumes:
@@ -10,7 +10,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASS}"
     volumes:
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
 volumes:
   db_data:
