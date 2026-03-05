@@ -1,5 +1,3 @@
-Aquí tienes el archivo README.md traducido al español, manteniendo el formato y la estructura original:
-```markdown
 # OPS Web App - Aplicación Dockerizada con Base de Datos
 Este proyecto es una aplicación web completamente contenerizada usando Docker, con MariaDB como base de datos backend. Proporciona un entorno consistente y aislado tanto para desarrollo como para despliegue.
 ---
@@ -70,4 +68,3 @@ git push origin feature/nombre-de-tu-funcionalidad
 ## 👥 Equipo
 - **Administrador:** Darlex5027 (Alex)
 Para cualquier pregunta o problema, por favor contacta al administrador del repositorio.
----
