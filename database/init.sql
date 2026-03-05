@@ -183,6 +183,7 @@ CREATE TABLE Alumno_Servicio (
     
     FOREIGN KEY (Id_alumno) REFERENCES Alumnos(Id_alumno) ON DELETE CASCADE,
     FOREIGN KEY (Id_servicio) REFERENCES Servicio(Id_servicio),
+    FOREIGN KEY (Id_empresa) REFERENCES Empresa(Id_empresa),
     UNIQUE KEY unique_alumno_servicio (Id_alumno, Id_servicio),
     
     -- Restricción: Fecha fin no puede ser menor a fecha inicio
