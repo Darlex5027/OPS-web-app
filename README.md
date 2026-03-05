@@ -1,108 +1,73 @@
-# OPS Web App - Dockerized Application with Database
-
-This project is a web application fully containerized using Docker, with MariaDB as the database backend. It provides a consistent and isolated environment for development and deployment.
-
+Aquí tienes el archivo README.md traducido al español, manteniendo el formato y la estructura original:
+```markdown
+# OPS Web App - Aplicación Dockerizada con Base de Datos
+Este proyecto es una aplicación web completamente contenerizada usando Docker, con MariaDB como base de datos backend. Proporciona un entorno consistente y aislado tanto para desarrollo como para despliegue.
 ---
-
-## 📋 Prerequisites
-
-- Docker installed and running on your system
-- For Windows users: It's recommended to install Docker Desktop from the [Microsoft Store](https://apps.microsoft.com/store/detail/docker-desktop/XP8CBT8D19KZB7) for better compatibility
-
+## 📋 Requisitos Previos
+- Docker instalado y funcionando en tu sistema
+- Para usuarios de Windows: Se recomienda instalar Docker Desktop desde la [Microsoft Store](https://apps.microsoft.com/store/detail/docker-desktop/XP8CBT8D19KZB7) para mejor compatibilidad
 ---
-
-## 🚀 Getting Started
-
-### 1. Clone the Repository
-
-Download the ZIP file from the `main` branch, or clone it using Git:
-
+## 🚀 Primeros Pasos
+### 1. Clonar el Repositorio
+Descarga el archivo ZIP desde la rama `main`, o clónalo usando Git:
 ```bash
 git clone git@github.com:Darlex5027/OPS-web-app.git
 cd OPS-web-app
 ```
-
-### 2. Environment Configuration
-
-1. Copy the file named `.env.example` and rename the copy to `.env`
-2. Open the newly created `.env` file and set the MariaDB password:
-
+### 2. Configuración del Entorno
+1. Copia el archivo llamado `.env.example` y renombra la copia a `.env`
+2. Abre el archivo `.env` recién creado y establece la contraseña de MariaDB:
 ```
-DB_ROOT_PASS=your_secure_password_here
+DB_ROOT_PASS=tu_contraseña_segura_aqui
 ```
-
 ---
-
-## 📦 Docker Setup
-
-The application consists of:
-- Web application container
-- MariaDB database container
-
-Make sure Docker is running before starting the application:
-
+## 📦 Configuración de Docker
+La aplicación consta de:
+- Contenedor de la aplicación web
+- Contenedor de la base de datos MariaDB
+Asegúrate de que Docker esté funcionando antes de iniciar la aplicación:
 ```bash
 docker compose up -d
 ```
-
-The application will be available at: **http://localhost:8080**
-
+La aplicación estará disponible en: **http://localhost:8080**
 ---
-
-## 🔧 Development Workflow
-
-### Branch Protection
-
-The `main` branch is protected and direct commits are blocked to ensure code quality and stability.
-
-### Making Contributions
-
-#### Option A — Using the GitHub Web Interface
-
-1. Go to https://github.com/Darlex5027/OPS-web-app/branches and click **New branch**
-2. Give it a descriptive name: `feature/your-feature-name` and make sure to select `main` as the source
-3. Access your branch at: `https://github.com/Darlex5027/OPS-web-app/tree/name_of_your_branch`
-4. Use **Add file → Upload files** to upload your changes
-5. Drop or choose your files
-6. Write a commit title and a short explanation of your changes
-7. Make sure **"Commit directly to `name_of_your_branch`"** is selected and click **Commit changes**
-8. You can keep adding commits before opening a Pull Request
-9. When ready, go to the **Pull requests** tab → **New pull request**
-10. Make sure **base** is `main` and **compare** is `name_of_your_branch`
-11. Click **Create a pull request**
-12. Give it a title and a description of your changes
-13. Click **Create a pull request**
-14. Your changes will be reviewed by at least one team member and merged by the admin
-
-#### Option B — Using Git (Command Line)
-
-1. Create a new branch for your changes:
-
+## 🔧 Flujo de Trabajo de Desarrollo
+### Protección de Ramas
+La rama `main` está protegida y los commits directos están bloqueados para garantizar la calidad y estabilidad del código.
+### Cómo Contribuir
+#### Opción A — Usando la Interfaz Web de GitHub
+1. Ve a https://github.com/Darlex5027/OPS-web-app/branches y haz clic en **New branch**
+2. Asígnale un nombre descriptivo: `feature/nombre-de-tu-funcionalidad` y asegúrate de seleccionar `main` como origen
+3. Accede a tu rama en: `https://github.com/Darlex5027/OPS-web-app/tree/nombre_de_tu_rama`
+4. Usa **Add file → Upload files** para subir tus cambios
+5. Arrastra o selecciona tus archivos
+6. Escribe un título para el commit y una breve explicación de tus cambios
+7. Asegúrate de que **"Commit directly to `nombre_de_tu_rama`"** esté seleccionado y haz clic en **Commit changes**
+8. Puedes seguir agregando commits antes de abrir un Pull Request
+9. Cuando estés listo, ve a la pestaña **Pull requests** → **New pull request**
+10. Asegúrate de que **base** sea `main` y **compare** sea `nombre_de_tu_rama`
+11. Haz clic en **Create a pull request**
+12. Ponle un título y una descripción de tus cambios
+13. Haz clic en **Create a pull request**
+14. Tus cambios serán revisados por al menos un miembro del equipo y fusionados por el administrador
+#### Opción B — Usando Git (Línea de Comandos)
+1. Crea una nueva rama para tus cambios:
 ```bash
-git checkout -b feature/your-feature-name
+git checkout -b feature/nombre-de-tu-funcionalidad
 ```
-
-2. Commit your changes to this branch:
-
+2. Haz commit de tus cambios en esta rama:
 ```bash
 git add .
-git commit -m "Description of your changes"
-git push origin feature/your-feature-name
+git commit -m "Descripción de tus cambios"
+git push origin feature/nombre-de-tu-funcionalidad
 ```
-
-3. Open a Pull Request on GitHub from your branch to `main`
-
+3. Abre un Pull Request en GitHub desde tu rama hacia `main`
 ---
-
-## 👥 Review Process
-
-- All pull requests require review by at least 1 collaborator
-- Final merge into `main` must be performed by the repository admin: **Darlex5027 (Alex)**
-
+## 👥 Proceso de Revisión
+- Todos los pull requests requieren revisión de al menos 1 colaborador
+- La fusión final en `main` debe ser realizada por el administrador del repositorio: **Darlex5027 (Alex)**
 ---
-
-## 👥 Team
-
-- **Admin:** Darlex5027 (Alex)
-
-For any questions or issues, please contact the repository admin.
+## 👥 Equipo
+- **Administrador:** Darlex5027 (Alex)
+Para cualquier pregunta o problema, por favor contacta al administrador del repositorio.
+---
