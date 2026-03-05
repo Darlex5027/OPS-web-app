@@ -62,11 +62,12 @@ body {
             }
 
             .header-logo-right {
-                grid-column: 3; /* Mueve el logo a la columna derecha */
-                justify-self: end; /* Lo alinea al borde derecho de su columna */
+                grid-column: 1; /* Mueve el logo a la columna derecha */
+                justify-self: start; /* Lo alinea al borde derecho de su columna */
             }
             .header-logo-right img {
-                height: 120px;
+                height: 110px;
                 width: auto;
-                transform: translateY(-20px);
+                transform: translateY(-115px);/* Mueve el logo de manera vertical*/
+                filter: drop-shadow(0 0 2px rgb(199, 196, 1)); /*Brillo*/
             }
