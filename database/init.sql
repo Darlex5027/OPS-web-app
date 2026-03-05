@@ -145,8 +145,27 @@ CREATE TABLE Contacto_Alumno (
 );
 
 -- =====================================================
+-- TABLA EMPRESA
+-- =====================================================
+
+CREATE TABLE Empresa (
+    Id_empresa INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(200) NOT NULL UNIQUE,
+    Descripcion TEXT,
+    Razon_social VARCHAR(200),
+    RFC VARCHAR(13),
+    Direccion TEXT,
+    Sitio_web VARCHAR(255),
+    Activo BOOLEAN DEFAULT TRUE,
+    Fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Fecha_modificacion DATETIME ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+-- =====================================================
 -- TABLA ALUMNO_SERVICIO (HISTÓRICO DE SERVICIOS DEL ALUMNO)
 -- =====================================================
+
 
 CREATE TABLE Alumno_Servicio (
     Id_alumno_servicio INT AUTO_INCREMENT PRIMARY KEY,
@@ -174,22 +193,6 @@ CREATE TABLE Alumno_Servicio (
 CREATE INDEX idx_alumno_servicio_estado ON Alumno_Servicio(Estado);
 CREATE INDEX idx_alumno_servicio_fechas ON Alumno_Servicio(Fecha_inicio, Fecha_fin);
 
--- =====================================================
--- TABLA EMPRESA
--- =====================================================
-
-CREATE TABLE Empresa (
-    Id_empresa INT AUTO_INCREMENT PRIMARY KEY,
-    Nombre VARCHAR(200) NOT NULL UNIQUE,
-    Descripcion TEXT,
-    Razon_social VARCHAR(200),
-    RFC VARCHAR(13),
-    Direccion TEXT,
-    Sitio_web VARCHAR(255),
-    Activo BOOLEAN DEFAULT TRUE,
-    Fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Fecha_modificacion DATETIME ON UPDATE CURRENT_TIMESTAMP
-);
 
 -- Índice para búsqueda de empresas
 CREATE INDEX idx_empresa_nombre ON Empresa(Nombre);
