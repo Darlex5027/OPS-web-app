@@ -173,6 +173,7 @@ CREATE TABLE Alumno_Servicio (
     Id_alumno_servicio INT AUTO_INCREMENT PRIMARY KEY,
     Id_alumno INT NOT NULL,
     Id_servicio INT NOT NULL,
+    Id_empresa INT NOT NULL,
     Estado ENUM('PENDIENTE', 'EN_CURSO', 'COMPLETADO', 'CANCELADO') NOT NULL DEFAULT 'PENDIENTE',
     Fecha_inicio DATE,
     Fecha_fin DATE,
@@ -195,10 +196,6 @@ CREATE TABLE Alumno_Servicio (
 -- Índices para consultas frecuentes
 CREATE INDEX idx_alumno_servicio_estado ON Alumno_Servicio(Estado);
 CREATE INDEX idx_alumno_servicio_fechas ON Alumno_Servicio(Fecha_inicio, Fecha_fin);
-
-
--- Índice para búsqueda de empresas
-CREATE INDEX idx_empresa_nombre ON Empresa(Nombre);
 
 -- =====================================================
 -- TABLA VACANTES (MEJORADA)
