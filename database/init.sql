@@ -7,7 +7,8 @@ USE DB_Sistema_Academico;
 -- TABLAS BASE (CATÁLOGOS)
 -- =====================================================
 
--- TABLA CARRERA
+-- TABLA CARRERA 
+-- Aquí se definen las carreras a las que puede pertenecer un alumno
 CREATE TABLE Carrera (
     Id_carrera INT AUTO_INCREMENT PRIMARY KEY,
     Nombre_carrera VARCHAR(100) NOT NULL UNIQUE,
@@ -16,6 +17,7 @@ CREATE TABLE Carrera (
 );
 
 -- TABLA SERVICIO
+-- Los servicios que puede presentar un alumno, ejemplo: Servicio Social, Practicas Profesionales.
 CREATE TABLE Servicio (
     Id_servicio INT AUTO_INCREMENT PRIMARY KEY,
     Servicio VARCHAR(100) NOT NULL UNIQUE,
@@ -28,6 +30,8 @@ CREATE TABLE Servicio (
 -- =====================================================
 
 -- TABLA PERMISO
+-- Se escribe un permiso (cómo si fuera una tarjeta de acceso) y se describe el permiso
+-- Se le da un nombre, una descripción, y un modulo al que pertenece.
 CREATE TABLE Permiso (
     Id_permiso INT AUTO_INCREMENT PRIMARY KEY,
     Nombre_permiso VARCHAR(100) NOT NULL UNIQUE,
@@ -46,6 +50,7 @@ CREATE TABLE TipoUsuario (
 );
 
 -- TABLA TIPOUSUARIO_PERMISO (RELACIÓN ROL-PERMISO)
+
 CREATE TABLE TipoUsuario_Permiso (
     Id_tipo_usuario INT,
     Id_permiso INT,
