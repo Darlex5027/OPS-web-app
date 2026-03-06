@@ -17,3 +17,4 @@ services:
       - ./database/2_dummydata.sql:/docker-entrypoint-initdb.d/2_dummydata.sql
 volumes:
   db_data:
+  
