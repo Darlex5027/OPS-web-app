@@ -78,6 +78,45 @@ CREATE TABLE Usuario (
     FOREIGN KEY (Id_tipo_usuario) REFERENCES TipoUsuario(Id_tipo_usuario)
 );
 
+);
+
+-- TABLA TIPO_USUARIO (ROLES)
+CREATE TABLE TipoUsuario (
+    Id_tipo_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre_tipo_usuario VARCHAR(50) NOT NULL UNIQUE,
+    Descripcion VARCHAR(255),
+    Activo BOOLEAN DEFAULT TRUE,
+    Fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TABLA TIPOUSUARIO_PERMISO (RELACIÓN ROL-PERMISO)
+CREATE TABLE TipoUsuario_Permiso (
+    Id_tipo_usuario INT,
+    Id_permiso INT,
+    Fecha_asignacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (Id_tipo_usuario, Id_permiso),
+    FOREIGN KEY (Id_tipo_usuario) REFERENCES TipoUsuario(Id_tipo_usuario) ON DELETE CASCADE,
+    FOREIGN KEY (Id_permiso) REFERENCES Permiso(Id_permiso) ON DELETE CASCADE
+);
+
+-- =====================================================
+-- TABLA USUARIO (BASE PARA TODOS LOS USUARIOS DEL SISTEMA)
+-- =====================================================
+
+CREATE TABLE Usuario (
+    Id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    Matricula VARCHAR(100) NOT NULL UNIQUE,
+    Contrasena VARCHAR(200) NOT NULL,
+    Id_tipo_usuario INT NOT NULL,
+    Activo BOOLEAN DEFAULT TRUE,
+    Fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Fecha_ultimo_acceso DATETIME,
+    Intentos_fallidos INT DEFAULT 0,
+    Bloqueado BOOLEAN DEFAULT FALSE,
+    
+    FOREIGN KEY (Id_tipo_usuario) REFERENCES TipoUsuario(Id_tipo_usuario)
+);
+
 -- Índices para búsquedas frecuentes
 CREATE INDEX idx_usuario_matricula ON Usuario(Matricula);
 CREATE INDEX idx_usuario_activo ON Usuario(Activo);
@@ -201,6 +240,10 @@ CREATE TABLE Alumno_Servicio (
 -- Índices para consultas frecuentes
 CREATE INDEX idx_alumno_servicio_estado ON Alumno_Servicio(Estado);
 CREATE INDEX idx_alumno_servicio_fechas ON Alumno_Servicio(Fecha_inicio, Fecha_fin);
+
+
+-- Índice para búsqueda de empresas
+CREATE INDEX idx_empresa_nombre ON Empresa(Nombre);
 
 -- =====================================================
 -- TABLA VACANTES (MEJORADA)
