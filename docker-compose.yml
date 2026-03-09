@@ -7,6 +7,8 @@ services:
       - "8080:80"
     volumes:
       - ./app:/var/www/html
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASS}"
   database:
     image: mariadb
     environment:
