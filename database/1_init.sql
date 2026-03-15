@@ -301,7 +301,7 @@ CREATE TABLE Audit_Log (
     Id_audit INT AUTO_INCREMENT PRIMARY KEY,
     Tabla_afectada VARCHAR(100) NOT NULL,
     Id_registro INT NOT NULL,
-    Accion ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
+    Accion ENUM('INSERT', 'UPDATE', 'DELETE', 'GENERATE') NOT NULL,
     Datos_anteriores JSON, -- Cambios antes de la modificación
     Datos_nuevos JSON, -- Cambios después de la modificación
     Id_usuario INT,
