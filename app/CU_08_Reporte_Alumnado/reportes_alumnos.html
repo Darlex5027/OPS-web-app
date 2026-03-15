@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"> <!-- Soporte para caracteres especiales como ñ y tildes -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adaptación a móviles -->
+        <title>Reporte de Alumnado</title>
+        <link rel="stylesheet" href="../css/prueba.css">
+	<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    </head>
+    <body>
+        <div class="sidebar">
+            <div class="profile">
+                <img src="../Imagenes/prueba.png" alt="perfil">
+                <h3>Mtra. M. Guadalupe</h3>
+            </div>
+            <div class="menu">
+                <a href="foro_vacantes.html">
+                    <button>Publicar vacantes para servicio social</button>
+                </a>
+                <a href="admin_alumnos.html">
+                    <button>Administrar alumnos</button>
+                </a>
+                <a href="reportes_alumnos.html">
+                    <button>Generar reporte de alumnos</button>
+                </a>
+                <a href="reportes_estadisticos.html">
+                    <button>Generar reporte estadistico</button>
+                </a>
+                <a href="digitalizar_evaluacones.html">
+                    <button>Llenar formularios del prestador</button>
+                </a>
+                <a href="reportes_prestadores.html">
+                    <button>Generar reporte del prestador</button>
+                </a>
+                <a href="admin_encuentas.html">
+                    <button>Editar formularios</button>
+                </a>
+                <a href="Mensajes.html">
+                    <button>Mensajes</button>
+                </a>
+                <a href="perfil.html">
+                    <button>perfil</button>
+                </a>
+            </div>
+        </div>
+        <div class="main">
+            <div class="header">
+            <div></div><h1>Reporte de Alumnado</h1>
+                <div class="header-logo-right">
+                    <img src="../Imagenes/Logo.png" alt="Logo OPS">
+                </div>
+            </div>
+         <div class="table">
+		 <form id='filtros'>
+			<h3>Carrera</h3>
+			<select id="carrera">
+				<option value="">--Todas--</option>
+			</select>
+			
+			<h3>Servicio</h3>
+			<select id="servicio">
+				<option value="">--Todas--</option>
+			</select>
+			<h3>Estado</h3>
+			<select id="estado">
+				<option value="">--Todas--</option>
+			</select>
+			
+			<h3>Fecha Inicio</h3>
+			<input type="date" id="fecha_inicio">
+			
+			<h3>Fecha Fin</h3>
+			<input type="date" id="fecha_fin">
+			<button id="btn-generar"> Generar Reporte</button>
+			<button id="btn-excel" style="display:none">Exportar a Excel</button>
+		</form>
+
+		<div id="mensaje"></div>
+		<table id="tabla-resultados" style="display:none">
+			<thead>
+				<tr>
+					<th>Matrícula</th>
+					<th>No_Expediente</th>
+					<th>Nombre</th>
+					<th>Carrera</th>
+					<th>Servicio</th>
+					<th>Estado</th>
+					<th>Fecha Inicio</th>
+					<th>Fecha Fin</th>
+					<th>Horas Totales</th>
+					<th>Horas completadas</th>
+				</tr>
+			</thead>
+			<tbody id="cuerpo-tabla">
+			</tbody >	
+		</table>
+  
+               
+            </div>
+        </div>
+	<script src="reportes_alumnos.js"></script>
+    </body>
+</html>

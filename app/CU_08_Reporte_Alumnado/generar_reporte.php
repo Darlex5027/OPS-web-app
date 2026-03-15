@@ -4,6 +4,7 @@ require_once '../php/db.php';
 try{
     $pdo = new PDO($dsn, $user, $pass, $options);
     $query = 'SELECT 
+    u.Matricula,
     a.No_Expediente,
     a.Nombre, a.Apellido_P, a.Apellido_M,
     c.Nombre_carrera,
@@ -14,6 +15,7 @@ try{
     als.Horas_totales,
     als.Horas_completadas
 FROM Alumnos a
+JOIN Usuario u ON a.Id_usuario = u.Id_usuario
 JOIN Carrera c ON a.Id_carrera = c.Id_carrera
 JOIN Alumno_Servicio als ON a.Id_alumno = als.Id_alumno
 JOIN Servicio s ON als.Id_servicio = s.Id_servicio';
