@@ -27,7 +27,10 @@ function llenarTabla(alumnos){
     const TBODY = document.getElementById("tabla");
     TBODY.innerHTML="";
 
-    alumnos.forEach(function(alumno) {
+    if(alumnos.length==0){
+        alert("No hay alumnos pendientes")
+    }else{
+        alumnos.forEach(function(alumno) {
         const FILA = document.createElement("tr"); 
 
         FILA.innerHTML=`
@@ -41,5 +44,6 @@ function llenarTabla(alumnos){
         `;
 
         TBODY.appendChild(FILA);
-    });
+    });   
+    }
 }
