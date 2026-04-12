@@ -98,7 +98,6 @@ body {
     filter: drop-shadow(0 0 5px rgb(147, 147, 144));
     margin-top: -50px;
 }
-/* CONTENEDOR FORMULARIO */
 .table {
     width: 80%;
     margin: 40px auto;
@@ -108,7 +107,6 @@ body {
     background-color: #ffffff;
 }
 
-/* FORMULARIO */
 .perfil-form {
     width: 100%;
 }

@@ -74,7 +74,6 @@ body {
     text-align: center;
     margin: 0;
 }
-
 .header-logo-right {
     grid-column: 1;
     justify-self: start;
@@ -98,17 +97,16 @@ body {
     filter: drop-shadow(0 0 5px rgb(147, 147, 144));
     margin-top: -50px;
 }
-/* CONTENEDOR FORMULARIO */
+
 .table {
     width: 80%;
     margin: 40px auto;
     padding: 25px;
-    border: 2px solid #9f1a1a; /* puedes quitarlo si no lo quieres */
+    border: 2px solid #9f1a1a;
     border-radius: 10px;
     background-color: #ffffff;
 }
 
-/* FORMULARIO */
 .perfil-form {
     width: 100%;
 }
@@ -126,13 +124,13 @@ body {
 }
 
 .form-group label {
-    font-size: 20px;
+    font-size: 16px;
     margin-bottom: 5px;
     color: #555;
 }
 
 .form-group input {
-    padding: px;
+    padding: px; 
     border-radius: 6px;
     border: 1px solid #941717;
     font-size: 14px;
@@ -144,6 +142,7 @@ body {
     border-color: #9E1B32;
     box-shadow: 0 0 5px rgba(158, 27, 50, 0.3);
 }
+
 .form-actions {
     display: flex;
     justify-content: flex-end;
