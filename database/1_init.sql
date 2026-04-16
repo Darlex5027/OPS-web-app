@@ -2,10 +2,10 @@
 -- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
--- Host: ops-web-app-database-1
--- Generation Time: Apr 14, 2026 at 09:05 AM
--- Server version: 12.2.2-MariaDB-ubu2404
--- PHP Version: 8.3.30
+-- Servidor: ops-web-app-database-1
+-- Tiempo de generación: 16-04-2026 a las 00:21:19
+-- Versión del servidor: 12.2.2-MariaDB-ubu2404
+-- Versión de PHP: 8.3.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `DB_Sistema_Academico`
+-- Base de datos: `DB_Sistema_Academico`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Actividades`
+-- Estructura de tabla para la tabla `Actividades`
 --
 
 CREATE TABLE `Actividades` (
@@ -37,7 +37,7 @@ CREATE TABLE `Actividades` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Actividades_Alumnos`
+-- Estructura de tabla para la tabla `Actividades_Alumnos`
 --
 
 CREATE TABLE `Actividades_Alumnos` (
@@ -45,6 +45,8 @@ CREATE TABLE `Actividades_Alumnos` (
   `Id_alumno` int(11) NOT NULL,
   `Id_servicio` int(11) NOT NULL,
   `Id_empresa` int(11) DEFAULT NULL,
+  `Area` varchar(300) DEFAULT NULL,
+  `Programa` varchar(300) DEFAULT NULL,
   `Estado` enum('PENDIENTE','EN_CURSO','COMPLETADO','CANCELADO') NOT NULL DEFAULT 'PENDIENTE',
   `Fecha_inicio` date DEFAULT NULL,
   `Fecha_fin` date DEFAULT NULL,
@@ -59,7 +61,7 @@ CREATE TABLE `Actividades_Alumnos` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Administradores`
+-- Estructura de tabla para la tabla `Administradores`
 --
 
 CREATE TABLE `Administradores` (
@@ -79,7 +81,7 @@ CREATE TABLE `Administradores` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Alumnos`
+-- Estructura de tabla para la tabla `Alumnos`
 --
 
 CREATE TABLE `Alumnos` (
@@ -89,6 +91,7 @@ CREATE TABLE `Alumnos` (
   `Apellido_P` varchar(100) NOT NULL,
   `Apellido_M` varchar(100) DEFAULT NULL,
   `Id_carrera` int(11) NOT NULL,
+  `Grupo` varchar(1) NOT NULL,
   `No_Expediente` varchar(50) DEFAULT NULL,
   `Area_o_programa` varchar(255) DEFAULT NULL,
   `Observaciones` text DEFAULT NULL,
@@ -100,7 +103,7 @@ CREATE TABLE `Alumnos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 --
--- Triggers `Alumnos`
+-- Disparadores `Alumnos`
 --
 DELIMITER $$
 CREATE TRIGGER `audit_alumnos_delete` BEFORE DELETE ON `Alumnos` FOR EACH ROW BEGIN
@@ -134,7 +137,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Audit_Log`
+-- Estructura de tabla para la tabla `Audit_Log`
 --
 
 CREATE TABLE `Audit_Log` (
@@ -152,7 +155,7 @@ CREATE TABLE `Audit_Log` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Carreras`
+-- Estructura de tabla para la tabla `Carreras`
 --
 
 CREATE TABLE `Carreras` (
@@ -166,7 +169,7 @@ CREATE TABLE `Carreras` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Contactos_Alumno`
+-- Estructura de tabla para la tabla `Contactos_Alumno`
 --
 
 CREATE TABLE `Contactos_Alumno` (
@@ -182,7 +185,7 @@ CREATE TABLE `Contactos_Alumno` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Empresas`
+-- Estructura de tabla para la tabla `Empresas`
 --
 
 CREATE TABLE `Empresas` (
@@ -201,7 +204,7 @@ CREATE TABLE `Empresas` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Encuestas`
+-- Estructura de tabla para la tabla `Encuestas`
 --
 
 CREATE TABLE `Encuestas` (
@@ -219,7 +222,7 @@ CREATE TABLE `Encuestas` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Facultades`
+-- Estructura de tabla para la tabla `Facultades`
 --
 
 CREATE TABLE `Facultades` (
@@ -230,7 +233,7 @@ CREATE TABLE `Facultades` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Permisos`
+-- Estructura de tabla para la tabla `Permisos`
 --
 
 CREATE TABLE `Permisos` (
@@ -244,7 +247,7 @@ CREATE TABLE `Permisos` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Preguntas`
+-- Estructura de tabla para la tabla `Preguntas`
 --
 
 CREATE TABLE `Preguntas` (
@@ -253,6 +256,7 @@ CREATE TABLE `Preguntas` (
   `Pregunta` varchar(500) NOT NULL,
   `Tipo_respuesta` enum('ESCALA_1_5','ESCALA_1_10','TEXTO','BOOLEANO') DEFAULT 'ESCALA_1_5',
   `Rango` varchar(10) DEFAULT NULL,
+  `Seccion` varchar(1) NOT NULL,
   `Orden` int(11) NOT NULL,
   `Obligatoria` tinyint(1) DEFAULT 1,
   `Activo` tinyint(1) DEFAULT 1
@@ -261,7 +265,7 @@ CREATE TABLE `Preguntas` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Respuestas`
+-- Estructura de tabla para la tabla `Respuestas`
 --
 
 CREATE TABLE `Respuestas` (
@@ -277,7 +281,7 @@ CREATE TABLE `Respuestas` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Tipos_Usuario`
+-- Estructura de tabla para la tabla `Tipos_Usuario`
 --
 
 CREATE TABLE `Tipos_Usuario` (
@@ -291,7 +295,7 @@ CREATE TABLE `Tipos_Usuario` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `TipoUsuarios_Permiso`
+-- Estructura de tabla para la tabla `TipoUsuarios_Permiso`
 --
 
 CREATE TABLE `TipoUsuarios_Permiso` (
@@ -303,7 +307,7 @@ CREATE TABLE `TipoUsuarios_Permiso` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Usuarios`
+-- Estructura de tabla para la tabla `Usuarios`
 --
 
 CREATE TABLE `Usuarios` (
@@ -321,7 +325,7 @@ CREATE TABLE `Usuarios` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Vacantes`
+-- Estructura de tabla para la tabla `Vacantes`
 --
 
 CREATE TABLE `Vacantes` (
@@ -347,8 +351,8 @@ CREATE TABLE `Vacantes` (
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `vw_alumnos_completo`
--- (See below for the actual view)
+-- Estructura Stand-in para la vista `vw_alumnos_completo`
+-- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vw_alumnos_completo` (
 );
@@ -356,8 +360,8 @@ CREATE TABLE `vw_alumnos_completo` (
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `vw_resultados_encuestas`
--- (See below for the actual view)
+-- Estructura Stand-in para la vista `vw_resultados_encuestas`
+-- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vw_resultados_encuestas` (
 );
@@ -365,25 +369,25 @@ CREATE TABLE `vw_resultados_encuestas` (
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `vw_vacantes_activas`
--- (See below for the actual view)
+-- Estructura Stand-in para la vista `vw_vacantes_activas`
+-- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vw_vacantes_activas` (
 );
 
 --
--- Indexes for dumped tables
+-- Índices para tablas volcadas
 --
 
 --
--- Indexes for table `Actividades`
+-- Indices de la tabla `Actividades`
 --
 ALTER TABLE `Actividades`
   ADD PRIMARY KEY (`Id_servicio`),
   ADD UNIQUE KEY `Servicio` (`Servicio`);
 
 --
--- Indexes for table `Actividades_Alumnos`
+-- Indices de la tabla `Actividades_Alumnos`
 --
 ALTER TABLE `Actividades_Alumnos`
   ADD PRIMARY KEY (`Id_alumno_servicio`),
@@ -394,7 +398,7 @@ ALTER TABLE `Actividades_Alumnos`
   ADD KEY `idx_alumno_servicio_fechas` (`Fecha_inicio`,`Fecha_fin`);
 
 --
--- Indexes for table `Administradores`
+-- Indices de la tabla `Administradores`
 --
 ALTER TABLE `Administradores`
   ADD PRIMARY KEY (`Id_admin`),
@@ -403,7 +407,7 @@ ALTER TABLE `Administradores`
   ADD KEY `Id_carrera` (`Id_carrera`);
 
 --
--- Indexes for table `Alumnos`
+-- Indices de la tabla `Alumnos`
 --
 ALTER TABLE `Alumnos`
   ADD PRIMARY KEY (`Id_alumno`),
@@ -415,7 +419,7 @@ ALTER TABLE `Alumnos`
   ADD KEY `idx_alumno_activo` (`Activo`);
 
 --
--- Indexes for table `Audit_Log`
+-- Indices de la tabla `Audit_Log`
 --
 ALTER TABLE `Audit_Log`
   ADD PRIMARY KEY (`Id_audit`),
@@ -424,20 +428,20 @@ ALTER TABLE `Audit_Log`
   ADD KEY `idx_audit_usuario` (`Id_usuario`);
 
 --
--- Indexes for table `Carreras`
+-- Indices de la tabla `Carreras`
 --
 ALTER TABLE `Carreras`
   ADD PRIMARY KEY (`Id_carrera`);
 
 --
--- Indexes for table `Contactos_Alumno`
+-- Indices de la tabla `Contactos_Alumno`
 --
 ALTER TABLE `Contactos_Alumno`
   ADD PRIMARY KEY (`Id_contacto`),
   ADD UNIQUE KEY `unique_contacto_alumno` (`Id_alumno`,`Tipo`,`Valor`);
 
 --
--- Indexes for table `Empresas`
+-- Indices de la tabla `Empresas`
 --
 ALTER TABLE `Empresas`
   ADD PRIMARY KEY (`Id_empresa`),
@@ -445,7 +449,7 @@ ALTER TABLE `Empresas`
   ADD KEY `idx_empresa_nombre` (`Nombre`);
 
 --
--- Indexes for table `Encuestas`
+-- Indices de la tabla `Encuestas`
 --
 ALTER TABLE `Encuestas`
   ADD PRIMARY KEY (`Id_encuesta`),
@@ -453,27 +457,27 @@ ALTER TABLE `Encuestas`
   ADD KEY `Id_servicio` (`Id_servicio`);
 
 --
--- Indexes for table `Facultades`
+-- Indices de la tabla `Facultades`
 --
 ALTER TABLE `Facultades`
   ADD PRIMARY KEY (`Id_Facultad`);
 
 --
--- Indexes for table `Permisos`
+-- Indices de la tabla `Permisos`
 --
 ALTER TABLE `Permisos`
   ADD PRIMARY KEY (`Id_permiso`),
   ADD UNIQUE KEY `Nombre_permiso` (`Nombre_permiso`);
 
 --
--- Indexes for table `Preguntas`
+-- Indices de la tabla `Preguntas`
 --
 ALTER TABLE `Preguntas`
   ADD PRIMARY KEY (`Id_pregunta`),
   ADD UNIQUE KEY `unique_pregunta_orden` (`Id_encuesta`,`Orden`);
 
 --
--- Indexes for table `Respuestas`
+-- Indices de la tabla `Respuestas`
 --
 ALTER TABLE `Respuestas`
   ADD PRIMARY KEY (`Id_respuesta`),
@@ -483,21 +487,21 @@ ALTER TABLE `Respuestas`
   ADD KEY `idx_respuestas_alumno` (`Id_alumno`);
 
 --
--- Indexes for table `Tipos_Usuario`
+-- Indices de la tabla `Tipos_Usuario`
 --
 ALTER TABLE `Tipos_Usuario`
   ADD PRIMARY KEY (`Id_tipo_usuario`),
   ADD UNIQUE KEY `Nombre_tipo_usuario` (`Nombre_tipo_usuario`);
 
 --
--- Indexes for table `TipoUsuarios_Permiso`
+-- Indices de la tabla `TipoUsuarios_Permiso`
 --
 ALTER TABLE `TipoUsuarios_Permiso`
   ADD PRIMARY KEY (`Id_tipo_usuario`,`Id_permiso`),
   ADD KEY `Id_permiso` (`Id_permiso`);
 
 --
--- Indexes for table `Usuarios`
+-- Indices de la tabla `Usuarios`
 --
 ALTER TABLE `Usuarios`
   ADD PRIMARY KEY (`Id_usuario`),
@@ -507,7 +511,7 @@ ALTER TABLE `Usuarios`
   ADD KEY `idx_usuario_activo` (`Activo`);
 
 --
--- Indexes for table `Vacantes`
+-- Indices de la tabla `Vacantes`
 --
 ALTER TABLE `Vacantes`
   ADD PRIMARY KEY (`Id_vacante`),
@@ -517,101 +521,101 @@ ALTER TABLE `Vacantes`
   ADD KEY `idx_vacantes_carrera` (`Id_carrera`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT for table `Actividades`
+-- AUTO_INCREMENT de la tabla `Actividades`
 --
 ALTER TABLE `Actividades`
   MODIFY `Id_servicio` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Actividades_Alumnos`
+-- AUTO_INCREMENT de la tabla `Actividades_Alumnos`
 --
 ALTER TABLE `Actividades_Alumnos`
   MODIFY `Id_alumno_servicio` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Administradores`
+-- AUTO_INCREMENT de la tabla `Administradores`
 --
 ALTER TABLE `Administradores`
   MODIFY `Id_admin` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Alumnos`
+-- AUTO_INCREMENT de la tabla `Alumnos`
 --
 ALTER TABLE `Alumnos`
   MODIFY `Id_alumno` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Audit_Log`
+-- AUTO_INCREMENT de la tabla `Audit_Log`
 --
 ALTER TABLE `Audit_Log`
   MODIFY `Id_audit` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Carreras`
+-- AUTO_INCREMENT de la tabla `Carreras`
 --
 ALTER TABLE `Carreras`
   MODIFY `Id_carrera` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Contactos_Alumno`
+-- AUTO_INCREMENT de la tabla `Contactos_Alumno`
 --
 ALTER TABLE `Contactos_Alumno`
   MODIFY `Id_contacto` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Empresas`
+-- AUTO_INCREMENT de la tabla `Empresas`
 --
 ALTER TABLE `Empresas`
   MODIFY `Id_empresa` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Encuestas`
+-- AUTO_INCREMENT de la tabla `Encuestas`
 --
 ALTER TABLE `Encuestas`
   MODIFY `Id_encuesta` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Facultades`
+-- AUTO_INCREMENT de la tabla `Facultades`
 --
 ALTER TABLE `Facultades`
   MODIFY `Id_Facultad` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Permisos`
+-- AUTO_INCREMENT de la tabla `Permisos`
 --
 ALTER TABLE `Permisos`
   MODIFY `Id_permiso` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Preguntas`
+-- AUTO_INCREMENT de la tabla `Preguntas`
 --
 ALTER TABLE `Preguntas`
   MODIFY `Id_pregunta` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Respuestas`
+-- AUTO_INCREMENT de la tabla `Respuestas`
 --
 ALTER TABLE `Respuestas`
   MODIFY `Id_respuesta` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Tipos_Usuario`
+-- AUTO_INCREMENT de la tabla `Tipos_Usuario`
 --
 ALTER TABLE `Tipos_Usuario`
   MODIFY `Id_tipo_usuario` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Usuarios`
+-- AUTO_INCREMENT de la tabla `Usuarios`
 --
 ALTER TABLE `Usuarios`
   MODIFY `Id_usuario` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `Vacantes`
+-- AUTO_INCREMENT de la tabla `Vacantes`
 --
 ALTER TABLE `Vacantes`
   MODIFY `Id_vacante` int(11) NOT NULL AUTO_INCREMENT;
@@ -619,7 +623,7 @@ ALTER TABLE `Vacantes`
 -- --------------------------------------------------------
 
 --
--- Structure for view `vw_alumnos_completo`
+-- Estructura para la vista `vw_alumnos_completo`
 --
 DROP TABLE IF EXISTS `vw_alumnos_completo`;
 
@@ -628,7 +632,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
--- Structure for view `vw_resultados_encuestas`
+-- Estructura para la vista `vw_resultados_encuestas`
 --
 DROP TABLE IF EXISTS `vw_resultados_encuestas`;
 
@@ -637,18 +641,18 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
--- Structure for view `vw_vacantes_activas`
+-- Estructura para la vista `vw_vacantes_activas`
 --
 DROP TABLE IF EXISTS `vw_vacantes_activas`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vw_vacantes_activas`  AS SELECT `v`.`Id_vacante` AS `Id_vacante`, `v`.`Titulo` AS `Titulo`, `v`.`Descripcion` AS `Descripcion`, `e`.`Nombre` AS `Empresa`, `c`.`Nombre_carrera` AS `Carrera_requerida`, `s`.`Servicio` AS `Tipo_servicio`, `v`.`Numero_vacantes` AS `Numero_vacantes`, `v`.`Fecha_publicacion` AS `Fecha_publicacion`, `v`.`Fecha_expiracion` AS `Fecha_expiracion`, `v`.`Contacto_nombre` AS `Contacto_nombre`, `v`.`Contacto_email` AS `Contacto_email`, `v`.`Contacto_telefono` AS `Contacto_telefono` FROM (((`Vacantes` `v` join `Empresa` `e` on(`v`.`Id_empresa` = `e`.`Id_empresa`)) left join `Carrera` `c` on(`v`.`Id_carrera` = `c`.`Id_carrera`)) join `Servicio` `s` on(`v`.`Id_servicio` = `s`.`Id_servicio`)) WHERE `v`.`Activa` = 1 AND (`v`.`Fecha_expiracion` is null OR `v`.`Fecha_expiracion` >= curdate()) ;
 
 --
--- Constraints for dumped tables
+-- Restricciones para tablas volcadas
 --
 
 --
--- Constraints for table `Actividades_Alumnos`
+-- Filtros para la tabla `Actividades_Alumnos`
 --
 ALTER TABLE `Actividades_Alumnos`
   ADD CONSTRAINT `1` FOREIGN KEY (`Id_alumno`) REFERENCES `Alumnos` (`Id_alumno`) ON DELETE CASCADE,
@@ -656,45 +660,45 @@ ALTER TABLE `Actividades_Alumnos`
   ADD CONSTRAINT `3` FOREIGN KEY (`Id_empresa`) REFERENCES `Empresas` (`Id_empresa`);
 
 --
--- Constraints for table `Administradores`
+-- Filtros para la tabla `Administradores`
 --
 ALTER TABLE `Administradores`
   ADD CONSTRAINT `1` FOREIGN KEY (`Id_usuario`) REFERENCES `Usuarios` (`Id_usuario`) ON DELETE CASCADE,
   ADD CONSTRAINT `2` FOREIGN KEY (`Id_carrera`) REFERENCES `Carreras` (`Id_carrera`) ON DELETE SET NULL;
 
 --
--- Constraints for table `Alumnos`
+-- Filtros para la tabla `Alumnos`
 --
 ALTER TABLE `Alumnos`
   ADD CONSTRAINT `1` FOREIGN KEY (`Id_usuario`) REFERENCES `Usuarios` (`Id_usuario`) ON DELETE CASCADE,
   ADD CONSTRAINT `2` FOREIGN KEY (`Id_carrera`) REFERENCES `Carreras` (`Id_carrera`);
 
 --
--- Constraints for table `Audit_Log`
+-- Filtros para la tabla `Audit_Log`
 --
 ALTER TABLE `Audit_Log`
   ADD CONSTRAINT `1` FOREIGN KEY (`Id_usuario`) REFERENCES `Usuarios` (`Id_usuario`) ON DELETE SET NULL;
 
 --
--- Constraints for table `Contactos_Alumno`
+-- Filtros para la tabla `Contactos_Alumno`
 --
 ALTER TABLE `Contactos_Alumno`
   ADD CONSTRAINT `1` FOREIGN KEY (`Id_alumno`) REFERENCES `Alumnos` (`Id_alumno`) ON DELETE CASCADE;
 
 --
--- Constraints for table `Encuestas`
+-- Filtros para la tabla `Encuestas`
 --
 ALTER TABLE `Encuestas`
   ADD CONSTRAINT `1` FOREIGN KEY (`Id_servicio`) REFERENCES `Actividades` (`Id_servicio`);
 
 --
--- Constraints for table `Preguntas`
+-- Filtros para la tabla `Preguntas`
 --
 ALTER TABLE `Preguntas`
   ADD CONSTRAINT `1` FOREIGN KEY (`Id_encuesta`) REFERENCES `Encuestas` (`Id_encuesta`) ON DELETE CASCADE;
 
 --
--- Constraints for table `Respuestas`
+-- Filtros para la tabla `Respuestas`
 --
 ALTER TABLE `Respuestas`
   ADD CONSTRAINT `1` FOREIGN KEY (`Id_pregunta`) REFERENCES `Preguntas` (`Id_pregunta`),
@@ -703,20 +707,20 @@ ALTER TABLE `Respuestas`
   ADD CONSTRAINT `4` FOREIGN KEY (`Id_servicio`) REFERENCES `Actividades` (`Id_servicio`);
 
 --
--- Constraints for table `TipoUsuarios_Permiso`
+-- Filtros para la tabla `TipoUsuarios_Permiso`
 --
 ALTER TABLE `TipoUsuarios_Permiso`
   ADD CONSTRAINT `1` FOREIGN KEY (`Id_tipo_usuario`) REFERENCES `Tipos_Usuario` (`Id_tipo_usuario`) ON DELETE CASCADE,
   ADD CONSTRAINT `2` FOREIGN KEY (`Id_permiso`) REFERENCES `Permisos` (`Id_permiso`) ON DELETE CASCADE;
 
 --
--- Constraints for table `Usuarios`
+-- Filtros para la tabla `Usuarios`
 --
 ALTER TABLE `Usuarios`
   ADD CONSTRAINT `1` FOREIGN KEY (`Id_tipo_usuario`) REFERENCES `Tipos_Usuario` (`Id_tipo_usuario`);
 
 --
--- Constraints for table `Vacantes`
+-- Filtros para la tabla `Vacantes`
 --
 ALTER TABLE `Vacantes`
   ADD CONSTRAINT `1` FOREIGN KEY (`Id_empresa`) REFERENCES `Empresas` (`Id_empresa`),
