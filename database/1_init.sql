@@ -1,464 +1,686 @@
--- 1. Crear la base de datos
+-- phpMyAdmin SQL Dump
+-- version 5.2.3
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: ops-web-app-database-1
+-- Tiempo de generación: 16-04-2026 a las 00:21:19
+-- Versión del servidor: 12.2.2-MariaDB-ubu2404
+-- Versión de PHP: 8.3.30
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 DROP DATABASE IF EXISTS DB_Sistema_Academico;
 CREATE DATABASE DB_Sistema_Academico;
 USE DB_Sistema_Academico;
+START TRANSACTION;
+SET time_zone = "+00:00";
 
--- =====================================================
--- TABLAS BASE (CATÁLOGOS)
--- =====================================================
+ 
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
--- TABLA CARRERA 
--- Aquí se definen las carreras a las que puede pertenecer un alumno
-CREATE TABLE Carrera (
-    Id_carrera INT AUTO_INCREMENT PRIMARY KEY,
-    Nombre_carrera VARCHAR(100) NOT NULL UNIQUE,
-    Activo BOOLEAN DEFAULT TRUE,
-    Fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+--
+-- Base de datos: `DB_Sistema_Academico`
+--
 
--- TABLA SERVICIO
--- Los servicios que puede presentar un alumno, ejemplo: Servicio Social, Practicas Profesionales.
-CREATE TABLE Servicio (
-    Id_servicio INT AUTO_INCREMENT PRIMARY KEY,
-    Servicio VARCHAR(100) NOT NULL UNIQUE,
-    Descripcion VARCHAR(255),
-    Activo BOOLEAN DEFAULT TRUE
-);
+-- --------------------------------------------------------
 
--- =====================================================
--- SISTEMA DE PERMISOS (RBAC)
--- =====================================================
+--
+-- Estructura de tabla para la tabla `Actividades`
+--
 
--- TABLA PERMISO
--- Se escribe un permiso (cómo si fuera una tarjeta de acceso) y se describe el permiso
--- Se le da un nombre, una descripción, y un modulo al que pertenece.
-CREATE TABLE Permiso (
-    Id_permiso INT AUTO_INCREMENT PRIMARY KEY,
-    Nombre_permiso VARCHAR(100) NOT NULL UNIQUE,
-    Descripcion VARCHAR(255),
-    Modulo VARCHAR(50), -- 'USUARIOS', 'ENCUESTAS', 'VACANTES', etc.
-    Fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+CREATE TABLE `Actividades` (
+  `Id_servicio` int(11) NOT NULL,
+  `Servicio` varchar(100) NOT NULL,
+  `Descripcion` varchar(255) DEFAULT NULL,
+  `Activo` tinyint(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
--- TABLA TIPO_USUARIO (ROLES)
-CREATE TABLE TipoUsuario (
-    Id_tipo_usuario INT AUTO_INCREMENT PRIMARY KEY,
-    Nombre_tipo_usuario VARCHAR(50) NOT NULL UNIQUE,
-    Descripcion VARCHAR(255),
-    Activo BOOLEAN DEFAULT TRUE,
-    Fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+-- --------------------------------------------------------
 
--- TABLA TIPOUSUARIO_PERMISO (RELACIÓN ROL-PERMISO)
+--
+-- Estructura de tabla para la tabla `Actividades_Alumnos`
+--
 
-CREATE TABLE TipoUsuario_Permiso (
-    Id_tipo_usuario INT,
-    Id_permiso INT,
-    Fecha_asignacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (Id_tipo_usuario, Id_permiso),
-    FOREIGN KEY (Id_tipo_usuario) REFERENCES TipoUsuario(Id_tipo_usuario) ON DELETE CASCADE,
-    FOREIGN KEY (Id_permiso) REFERENCES Permiso(Id_permiso) ON DELETE CASCADE
-);
+CREATE TABLE `Actividades_Alumnos` (
+  `Id_alumno_servicio` int(11) NOT NULL,
+  `Id_alumno` int(11) NOT NULL,
+  `Id_servicio` int(11) NOT NULL,
+  `Id_empresa` int(11) DEFAULT NULL,
+  `Area` varchar(300) DEFAULT NULL,
+  `Programa` varchar(300) DEFAULT NULL,
+  `Estado` enum('PENDIENTE','EN_CURSO','COMPLETADO','CANCELADO') NOT NULL DEFAULT 'PENDIENTE',
+  `Fecha_inicio` date DEFAULT NULL,
+  `Fecha_fin` date DEFAULT NULL,
+  `Horas_totales` int(11) DEFAULT NULL,
+  `Horas_completadas` int(11) DEFAULT 0,
+  `Documento_liberacion` varchar(255) DEFAULT NULL,
+  `Observaciones` text DEFAULT NULL,
+  `Fecha_registro` datetime DEFAULT current_timestamp(),
+  `Fecha_modificacion` datetime DEFAULT NULL ON UPDATE current_timestamp()
+) ;
 
--- =====================================================
--- TABLA USUARIO (BASE PARA TODOS LOS USUARIOS DEL SISTEMA)
--- =====================================================
+-- --------------------------------------------------------
 
-CREATE TABLE Usuario (
-    Id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-    Matricula VARCHAR(100) NOT NULL UNIQUE,
-    Contrasena VARCHAR(200) NOT NULL,
-    Id_tipo_usuario INT NOT NULL,
-    Activo BOOLEAN DEFAULT TRUE,
-    Fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Fecha_ultimo_acceso DATETIME,
-    Intentos_fallidos INT DEFAULT 0,
-    Bloqueado BOOLEAN DEFAULT FALSE,
-    
-    FOREIGN KEY (Id_tipo_usuario) REFERENCES TipoUsuario(Id_tipo_usuario)
-);
+--
+-- Estructura de tabla para la tabla `Administradores`
+--
 
--- Índices para búsquedas frecuentes
-CREATE INDEX idx_usuario_matricula ON Usuario(Matricula);
-CREATE INDEX idx_usuario_activo ON Usuario(Activo);
+CREATE TABLE `Administradores` (
+  `Id_admin` int(11) NOT NULL,
+  `Id_usuario` int(11) NOT NULL,
+  `Nombre` varchar(100) NOT NULL,
+  `Apellido_P` varchar(100) NOT NULL,
+  `Apellido_M` varchar(100) DEFAULT NULL,
+  `Id_carrera` int(11) DEFAULT NULL,
+  `Telefono` varchar(20) DEFAULT NULL,
+  `Correo` varchar(100) DEFAULT NULL,
+  `Activo` tinyint(1) DEFAULT 1,
+  `Fecha_registro` datetime DEFAULT current_timestamp(),
+  `Fecha_modificacion` datetime DEFAULT NULL ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
--- =====================================================
--- TABLA ADMIN (PERSONAL ADMINISTRATIVO/DOCENTE)
--- =====================================================
+-- --------------------------------------------------------
 
-CREATE TABLE Admin (
-    Id_admin INT AUTO_INCREMENT PRIMARY KEY,
-    Id_usuario INT NOT NULL UNIQUE, -- UNIQUE garantiza relación 1:1
-    Nombre VARCHAR(100) NOT NULL,
-    Apellido_P VARCHAR(100) NOT NULL,
-    Apellido_M VARCHAR(100),
-    Id_carrera INT, -- Departamento/área a cargo
-    Telefono VARCHAR(20),
-    Correo VARCHAR(100) UNIQUE,
-    Activo BOOLEAN DEFAULT TRUE,
-    Fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Fecha_modificacion DATETIME ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (Id_usuario) REFERENCES Usuario(Id_usuario) ON DELETE CASCADE,
-    FOREIGN KEY (Id_carrera) REFERENCES Carrera(Id_carrera) ON DELETE SET NULL
-);
+--
+-- Estructura de tabla para la tabla `Alumnos`
+--
 
--- =====================================================
--- TABLA ALUMNOS
--- =====================================================
+CREATE TABLE `Alumnos` (
+  `Id_alumno` int(11) NOT NULL,
+  `Id_usuario` int(11) NOT NULL,
+  `Nombre` varchar(100) NOT NULL,
+  `Apellido_P` varchar(100) NOT NULL,
+  `Apellido_M` varchar(100) DEFAULT NULL,
+  `Id_carrera` int(11) NOT NULL,
+  `Grupo` varchar(1) NOT NULL,
+  `No_Expediente` varchar(50) DEFAULT NULL,
+  `Area_o_programa` varchar(255) DEFAULT NULL,
+  `Observaciones` text DEFAULT NULL,
+  `Horario` varchar(200) DEFAULT NULL,
+  `Organizacion` varchar(100) DEFAULT NULL,
+  `Activo` tinyint(1) DEFAULT 1,
+  `Fecha_registro` datetime DEFAULT current_timestamp(),
+  `Fecha_modificacion` datetime DEFAULT NULL ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
-CREATE TABLE Alumnos (
-    Id_alumno INT AUTO_INCREMENT PRIMARY KEY,
-    Id_usuario INT NOT NULL UNIQUE, -- UNIQUE garantiza relación 1:1
-    Nombre VARCHAR(100) NOT NULL,
-    Apellido_P VARCHAR(100) NOT NULL,
-    Apellido_M VARCHAR(100),
-    Id_carrera INT NOT NULL,
-    No_Expediente VARCHAR(50) UNIQUE,
-    Area_o_programa VARCHAR(255),
-    Observaciones TEXT,
-    Horario VARCHAR(200),
-    Organizacion VARCHAR(100),
-    Activo BOOLEAN DEFAULT TRUE,
-    Fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Fecha_modificacion DATETIME ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (Id_usuario) REFERENCES Usuario(Id_usuario) ON DELETE CASCADE,
-    FOREIGN KEY (Id_carrera) REFERENCES Carrera(Id_carrera)
-);
-
--- Índices para Alumnos
-CREATE INDEX idx_alumno_nombre ON Alumnos(Apellido_P, Apellido_M, Nombre);
-CREATE INDEX idx_alumno_expediente ON Alumnos(No_Expediente);
-CREATE INDEX idx_alumno_activo ON Alumnos(Activo);
-
--- =====================================================
--- TABLA CONTACTO_ALUMNO (MÚLTIPLES FORMAS DE CONTACTO)
--- =====================================================
-
-CREATE TABLE Contacto_Alumno (
-    Id_contacto INT AUTO_INCREMENT PRIMARY KEY,
-    Id_alumno INT NOT NULL,
-    Tipo ENUM('EMAIL', 'TELEFONO_CASA', 'TELEFONO_CELULAR', 'TELEFONO_TRABAJO', 'OTRO') NOT NULL,
-    Valor VARCHAR(100) NOT NULL,
-    Principal BOOLEAN DEFAULT FALSE,
-    Verificado BOOLEAN DEFAULT FALSE,
-    Fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (Id_alumno) REFERENCES Alumnos(Id_alumno) ON DELETE CASCADE,
-    UNIQUE KEY unique_contacto_alumno (Id_alumno, Tipo, Valor)
-);
-
--- =====================================================
--- TABLA EMPRESA
--- =====================================================
-
-CREATE TABLE Empresa (
-    Id_empresa INT AUTO_INCREMENT PRIMARY KEY,
-    Nombre VARCHAR(200) NOT NULL UNIQUE,
-    Descripcion TEXT,
-    Razon_social VARCHAR(200),
-    RFC VARCHAR(13),
-    Direccion TEXT,
-    Sitio_web VARCHAR(255),
-    Activo BOOLEAN DEFAULT TRUE,
-    Fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Fecha_modificacion DATETIME ON UPDATE CURRENT_TIMESTAMP
-);
-
-
-CREATE INDEX idx_empresa_nombre ON Empresa(Nombre);
-
--- =====================================================
--- TABLA ALUMNO_SERVICIO (HISTÓRICO DE SERVICIOS DEL ALUMNO)
--- =====================================================
-
-
-CREATE TABLE Alumno_Servicio (
-    Id_alumno_servicio INT AUTO_INCREMENT PRIMARY KEY,
-    Id_alumno INT NOT NULL,
-    Id_servicio INT NOT NULL,
-    Id_empresa INT NOT NULL,
-    Estado ENUM('PENDIENTE', 'EN_CURSO', 'COMPLETADO', 'CANCELADO') NOT NULL DEFAULT 'PENDIENTE',
-    Fecha_inicio DATE,
-    Fecha_fin DATE,
-    Horas_totales INT, -- Horas requeridas para el servicio
-    Horas_completadas INT DEFAULT 0,
-    Documento_liberacion VARCHAR(255), -- Ruta del documento PDF
-    Observaciones TEXT,
-    Fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Fecha_modificacion DATETIME ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (Id_alumno) REFERENCES Alumnos(Id_alumno) ON DELETE CASCADE,
-    FOREIGN KEY (Id_servicio) REFERENCES Servicio(Id_servicio),
-    FOREIGN KEY (Id_empresa) REFERENCES Empresa(Id_empresa),
-    UNIQUE KEY unique_alumno_servicio (Id_alumno, Id_servicio),
-    
-    -- Restricción: Fecha fin no puede ser menor a fecha inicio
-    CONSTRAINT chk_fechas_servicio CHECK (Fecha_fin IS NULL OR Fecha_fin >= Fecha_inicio)
-);
-
--- Índices para consultas frecuentes
-CREATE INDEX idx_alumno_servicio_estado ON Alumno_Servicio(Estado);
-CREATE INDEX idx_alumno_servicio_fechas ON Alumno_Servicio(Fecha_inicio, Fecha_fin);
-
-
--- =====================================================
--- TABLA VACANTES (MEJORADA)
--- =====================================================
-
-CREATE TABLE Vacantes (
-    Id_vacante INT AUTO_INCREMENT PRIMARY KEY,
-    Id_empresa INT NOT NULL,
-    Titulo VARCHAR(200) NOT NULL,
-    Descripcion TEXT NOT NULL,
-    Requisitos TEXT,
-    Id_carrera INT, -- Carrera específica requerida (NULL = cualquier carrera)
-    Id_servicio INT NOT NULL, -- Tipo de servicio (prácticas o servicio social)
-    Numero_vacantes INT DEFAULT 1,
-    Activa BOOLEAN DEFAULT TRUE,
-    Fecha_publicacion DATE NOT NULL,
-    Fecha_expiracion DATE,
-    Contacto_nombre VARCHAR(100),
-    Contacto_email VARCHAR(100),
-    Contacto_telefono VARCHAR(20),
-    Fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Fecha_modificacion DATETIME ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (Id_empresa) REFERENCES Empresa(Id_empresa),
-    FOREIGN KEY (Id_carrera) REFERENCES Carrera(Id_carrera) ON DELETE SET NULL,
-    FOREIGN KEY (Id_servicio) REFERENCES Servicio(Id_servicio),
-    
-    -- Restricción: Fecha expiración no puede ser menor a fecha publicación
-    CONSTRAINT chk_fechas_vacante CHECK (Fecha_expiracion IS NULL OR Fecha_expiracion >= Fecha_publicacion)
-);
-
--- Índices para consultas de vacantes activas
-CREATE INDEX idx_vacantes_activas ON Vacantes(Activa, Fecha_expiracion);
-CREATE INDEX idx_vacantes_servicio ON Vacantes(Id_servicio);
-CREATE INDEX idx_vacantes_carrera ON Vacantes(Id_carrera);
-
--- =====================================================
--- TABLAS DE ENCUESTAS
--- =====================================================
-
-CREATE TABLE Encuesta (
-    Id_encuesta INT AUTO_INCREMENT PRIMARY KEY,
-    Nombre VARCHAR(100) NOT NULL UNIQUE,
-    Descripcion TEXT,
-    Id_servicio INT NOT NULL,
-    Activo BOOLEAN DEFAULT TRUE,
-    Fecha_inicio DATE,
-    Fecha_fin DATE,
-    Fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Fecha_modificacion DATETIME ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (Id_servicio) REFERENCES Servicio(Id_servicio)
-);
-
-CREATE TABLE Pregunta (
-    Id_pregunta INT AUTO_INCREMENT PRIMARY KEY,
-    Id_encuesta INT NOT NULL,
-    Pregunta VARCHAR(500) NOT NULL,
-    Tipo_respuesta ENUM('ESCALA_1_5', 'ESCALA_1_10', 'TEXTO', 'BOOLEANO') DEFAULT 'ESCALA_1_5',
-    Rango VARCHAR(10) NULL,
-    Orden INT NOT NULL,
-    Obligatoria BOOLEAN DEFAULT TRUE,
-    Activo BOOLEAN DEFAULT TRUE,
-    
-    FOREIGN KEY (Id_encuesta) REFERENCES Encuesta(Id_encuesta) ON DELETE CASCADE,
-    UNIQUE KEY unique_pregunta_orden (Id_encuesta, Orden)
-);
-
-CREATE TABLE Respuesta (
-    Id_respuesta INT AUTO_INCREMENT PRIMARY KEY,
-    Id_pregunta INT NOT NULL,
-    Id_alumno INT NOT NULL,
-    Id_encuesta INT NOT NULL, -- Desnormalizado para consultas más rápidas
-    Id_servicio INT, -- Servicio evaluado (si aplica)
-    Respuesta TEXT NOT NULL, -- TEXT para soportar cualquier tipo de respuesta
-    Fecha_respuesta DATETIME DEFAULT CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (Id_pregunta) REFERENCES Pregunta(Id_pregunta),
-    FOREIGN KEY (Id_alumno) REFERENCES Alumnos(Id_alumno),
-    FOREIGN KEY (Id_encuesta) REFERENCES Encuesta(Id_encuesta),
-    FOREIGN KEY (Id_servicio) REFERENCES Servicio(Id_servicio),
-    
-    -- Un alumno solo puede responder una vez por pregunta en una encuesta
-    UNIQUE KEY unique_respuesta_alumno (Id_pregunta, Id_alumno, Id_encuesta)
-);
-
--- Índices para análisis estadístico
-CREATE INDEX idx_respuestas_consulta ON Respuesta(Id_encuesta, Id_servicio, Fecha_respuesta);
-CREATE INDEX idx_respuestas_alumno ON Respuesta(Id_alumno);
-
--- =====================================================
--- SISTEMA DE AUDITORÍA
--- =====================================================
-
--- TABLA AUDIT_LOG (REGISTRO CENTRAL DE AUDITORÍA)
-CREATE TABLE Audit_Log (
-    Id_audit INT AUTO_INCREMENT PRIMARY KEY,
-    Tabla_afectada VARCHAR(100) NOT NULL,
-    Id_registro INT NOT NULL,
-    Accion ENUM('INSERT', 'UPDATE', 'DELETE', 'GENERATE') NOT NULL,
-    Datos_anteriores JSON, -- Cambios antes de la modificación
-    Datos_nuevos JSON, -- Cambios después de la modificación
-    Id_usuario INT,
-    Direccion_ip VARCHAR(45),
-    Fecha_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (Id_usuario) REFERENCES Usuario(Id_usuario) ON DELETE SET NULL
-);
-
--- Índices para consultas de auditoría
-CREATE INDEX idx_audit_fecha ON Audit_Log(Fecha_hora);
-CREATE INDEX idx_audit_tabla ON Audit_Log(Tabla_afectada, Id_registro);
-CREATE INDEX idx_audit_usuario ON Audit_Log(Id_usuario);
-
--- =====================================================
--- DATOS INICIALES (OPCIONAL)
--- =====================================================
-
--- Insertar permisos básicos
-INSERT INTO Permiso (Nombre_permiso, Descripcion, Modulo) VALUES
-('VER_USUARIOS', 'Puede ver la lista de usuarios', 'USUARIOS'),
-('CREAR_USUARIOS', 'Puede crear nuevos usuarios', 'USUARIOS'),
-('EDITAR_USUARIOS', 'Puede editar usuarios existentes', 'USUARIOS'),
-('ELIMINAR_USUARIOS', 'Puede eliminar usuarios', 'USUARIOS'),
-('VER_ENCUESTAS', 'Puede ver encuestas', 'ENCUESTAS'),
-('CREAR_ENCUESTAS', 'Puede crear nuevas encuestas', 'ENCUESTAS'),
-('EDITAR_ENCUESTAS', 'Puede editar encuestas', 'ENCUESTAS'),
-('ELIMINAR_ENCUESTAS', 'Puede eliminar encuestas', 'ENCUESTAS'),
-('VER_VACANTES', 'Puede ver vacantes', 'VACANTES'),
-('CREAR_VACANTES', 'Puede crear nuevas vacantes', 'VACANTES'),
-('EDITAR_VACANTES', 'Puede editar vacantes', 'VACANTES'),
-('ELIMINAR_VACANTES', 'Puede eliminar vacantes', 'VACANTES'),
-('VER_REPORTES', 'Puede ver reportes y estadísticas', 'REPORTES');
-
--- Insertar tipos de usuario
-INSERT INTO TipoUsuario (Nombre_tipo_usuario, Descripcion) VALUES
-('ADMIN', 'Administrador del sistema con acceso completo'),
-('ALUMNO', 'Alumno regular del sistema'),
-('COORDINADOR', 'Coordinador de carrera con permisos intermedios');
-
--- Asignar permisos a ADMIN (todos los permisos)
-INSERT INTO TipoUsuario_Permiso (Id_tipo_usuario, Id_permiso)
-SELECT 1, Id_permiso FROM Permiso;
-
--- Asignar permisos a ALUMNO (solo consulta)
-INSERT INTO TipoUsuario_Permiso (Id_tipo_usuario, Id_permiso)
-SELECT 2, Id_permiso FROM Permiso 
-WHERE Nombre_permiso IN ('VER_VACANTES', 'VER_ENCUESTAS');
-
--- Insertar servicios básicos
-INSERT INTO Servicio (Servicio, Descripcion) VALUES
-('SERVICIO_SOCIAL', 'Servicio Social Universitario'),
-('PRACTICAS_PROFESIONALES', 'Prácticas Profesionales');
-
--- Insertar carreras de ejemplo
-INSERT INTO Carrera (Nombre_carrera) VALUES
-('INGENIERIA_INFORMATICA'),
-('INGENIERIA_INDUSTRIAL'),
-('LICENCIATURA_ADMINISTRACION');
-
--- =====================================================
--- TRIGGERS PARA AUDITORÍA AUTOMÁTICA (EJEMPLO)
--- =====================================================
-
+--
+-- Disparadores `Alumnos`
+--
 DELIMITER $$
-
-CREATE TRIGGER audit_alumnos_insert
-AFTER INSERT ON Alumnos
-FOR EACH ROW
-BEGIN
+CREATE TRIGGER `audit_alumnos_delete` BEFORE DELETE ON `Alumnos` FOR EACH ROW BEGIN
+    INSERT INTO Audit_Log (Tabla_afectada, Id_registro, Accion, Datos_anteriores, Id_usuario)
+    VALUES ('Alumnos', OLD.Id_alumno, 'DELETE',
+            JSON_OBJECT('Id_usuario', OLD.Id_usuario, 'Nombre', OLD.Nombre, 'Apellido_P', OLD.Apellido_P),
+            @current_user_id);
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `audit_alumnos_insert` AFTER INSERT ON `Alumnos` FOR EACH ROW BEGIN
     INSERT INTO Audit_Log (Tabla_afectada, Id_registro, Accion, Datos_nuevos, Id_usuario)
     VALUES ('Alumnos', NEW.Id_alumno, 'INSERT', 
             JSON_OBJECT('Id_usuario', NEW.Id_usuario, 'Nombre', NEW.Nombre, 'Apellido_P', NEW.Apellido_P),
             @current_user_id);
-END$$
-
-CREATE TRIGGER audit_alumnos_update
-AFTER UPDATE ON Alumnos
-FOR EACH ROW
-BEGIN
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `audit_alumnos_update` AFTER UPDATE ON `Alumnos` FOR EACH ROW BEGIN
     INSERT INTO Audit_Log (Tabla_afectada, Id_registro, Accion, Datos_anteriores, Datos_nuevos, Id_usuario)
     VALUES ('Alumnos', NEW.Id_alumno, 'UPDATE',
             JSON_OBJECT('Nombre', OLD.Nombre, 'Apellido_P', OLD.Apellido_P, 'Activo', OLD.Activo),
             JSON_OBJECT('Nombre', NEW.Nombre, 'Apellido_P', NEW.Apellido_P, 'Activo', NEW.Activo),
             @current_user_id);
-END$$
-
-CREATE TRIGGER audit_alumnos_delete
-BEFORE DELETE ON Alumnos
-FOR EACH ROW
-BEGIN
-    INSERT INTO Audit_Log (Tabla_afectada, Id_registro, Accion, Datos_anteriores, Id_usuario)
-    VALUES ('Alumnos', OLD.Id_alumno, 'DELETE',
-            JSON_OBJECT('Id_usuario', OLD.Id_usuario, 'Nombre', OLD.Nombre, 'Apellido_P', OLD.Apellido_P),
-            @current_user_id);
-END$$
-
+END
+$$
 DELIMITER ;
 
--- =====================================================
--- VISTAS ÚTILES PARA CONSULTAS FRECUENTES
--- =====================================================
+-- --------------------------------------------------------
 
--- Vista de alumnos activos con su información completa
-CREATE VIEW vw_alumnos_completo AS
-SELECT 
-    a.Id_alumno,
-    u.Matricula,
-    a.Nombre,
-    a.Apellido_P,
-    a.Apellido_M,
-    c.Nombre_carrera AS Carrera,
-    a.No_Expediente,
-    a.Activo,
-    GROUP_CONCAT(DISTINCT CONCAT(ca.Tipo, ': ', ca.Valor) SEPARATOR ' | ') AS Contactos,
-    GROUP_CONCAT(DISTINCT CONCAT(s.Servicio, ' (', als.Estado, ')') SEPARATOR ' | ') AS Servicios
-FROM Alumnos a
-JOIN Usuario u ON a.Id_usuario = u.Id_usuario
-JOIN Carrera c ON a.Id_carrera = c.Id_carrera
-LEFT JOIN Contacto_Alumno ca ON a.Id_alumno = ca.Id_alumno
-LEFT JOIN Alumno_Servicio als ON a.Id_alumno = als.Id_alumno
-LEFT JOIN Servicio s ON als.Id_servicio = s.Id_servicio
-GROUP BY a.Id_alumno;
+--
+-- Estructura de tabla para la tabla `Audit_Log`
+--
 
--- Vista de vacantes activas
-CREATE VIEW vw_vacantes_activas AS
-SELECT 
-    v.Id_vacante,
-    v.Titulo,
-    v.Descripcion,
-    e.Nombre AS Empresa,
-    c.Nombre_carrera AS Carrera_requerida,
-    s.Servicio AS Tipo_servicio,
-    v.Numero_vacantes,
-    v.Fecha_publicacion,
-    v.Fecha_expiracion,
-    v.Contacto_nombre,
-    v.Contacto_email,
-    v.Contacto_telefono
-FROM Vacantes v
-JOIN Empresa e ON v.Id_empresa = e.Id_empresa
-LEFT JOIN Carrera c ON v.Id_carrera = c.Id_carrera
-JOIN Servicio s ON v.Id_servicio = s.Id_servicio
-WHERE v.Activa = TRUE 
-    AND (v.Fecha_expiracion IS NULL OR v.Fecha_expiracion >= CURDATE());
+CREATE TABLE `Audit_Log` (
+  `Id_audit` int(11) NOT NULL,
+  `Tabla_afectada` varchar(100) NOT NULL,
+  `Id_registro` int(11) NOT NULL,
+  `Accion` enum('INSERT','UPDATE','DELETE') NOT NULL,
+  `Datos_anteriores` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`Datos_anteriores`)),
+  `Datos_nuevos` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`Datos_nuevos`)),
+  `Id_usuario` int(11) DEFAULT NULL,
+  `Direccion_ip` varchar(45) DEFAULT NULL,
+  `Fecha_hora` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
--- Vista de resultados de encuestas para análisis
-CREATE VIEW vw_resultados_encuestas AS
-SELECT 
-    e.Id_encuesta,
-    e.Nombre AS Encuesta,
-    p.Pregunta,
-    r.Respuesta,
-    COUNT(*) AS Total_respuestas,
-    AVG(CAST(r.Respuesta AS DECIMAL)) AS Promedio
-FROM Respuesta r
-JOIN Encuesta e ON r.Id_encuesta = e.Id_encuesta
-JOIN Pregunta p ON r.Id_pregunta = p.Id_pregunta
-WHERE p.Tipo_respuesta IN ('ESCALA_1_5', 'ESCALA_1_10')
-GROUP BY e.Id_encuesta, p.Id_pregunta, r.Respuesta;
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `Carreras`
+--
+
+CREATE TABLE `Carreras` (
+  `Id_carrera` int(11) NOT NULL,
+  `Id_Facultad` int(11) NOT NULL,
+  `Nombre` varchar(100) NOT NULL,
+  `Activo` tinyint(1) DEFAULT 1,
+  `Fecha_registro` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `Contactos_Alumno`
+--
+
+CREATE TABLE `Contactos_Alumno` (
+  `Id_contacto` int(11) NOT NULL,
+  `Id_alumno` int(11) NOT NULL,
+  `Tipo` enum('EMAIL','TELEFONO_CASA','TELEFONO_CELULAR','TELEFONO_TRABAJO','OTRO') NOT NULL,
+  `Valor` varchar(100) NOT NULL,
+  `Principal` tinyint(1) DEFAULT 0,
+  `Verificado` tinyint(1) DEFAULT 0,
+  `Fecha_registro` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `Empresas`
+--
+
+CREATE TABLE `Empresas` (
+  `Id_empresa` int(11) NOT NULL,
+  `Nombre` varchar(200) NOT NULL,
+  `Descripcion` text DEFAULT NULL,
+  `Razon_social` varchar(200) DEFAULT NULL,
+  `RFC` varchar(13) DEFAULT NULL,
+  `Direccion` text DEFAULT NULL,
+  `Sitio_web` varchar(255) DEFAULT NULL,
+  `Activo` tinyint(1) DEFAULT 1,
+  `Fecha_registro` datetime DEFAULT current_timestamp(),
+  `Fecha_modificacion` datetime DEFAULT NULL ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `Encuestas`
+--
+
+CREATE TABLE `Encuestas` (
+  `Id_encuesta` int(11) NOT NULL,
+  `Nombre` varchar(100) NOT NULL,
+  `Descripcion` text DEFAULT NULL,
+  `Id_servicio` int(11) NOT NULL,
+  `Activo` tinyint(1) DEFAULT 1,
+  `Fecha_inicio` date DEFAULT NULL,
+  `Fecha_fin` date DEFAULT NULL,
+  `Fecha_registro` datetime DEFAULT current_timestamp(),
+  `Fecha_modificacion` datetime DEFAULT NULL ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `Facultades`
+--
+
+CREATE TABLE `Facultades` (
+  `Id_Facultad` int(11) NOT NULL,
+  `Nombre` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `Permisos`
+--
+
+CREATE TABLE `Permisos` (
+  `Id_permiso` int(11) NOT NULL,
+  `Nombre_permiso` varchar(100) NOT NULL,
+  `Descripcion` varchar(255) DEFAULT NULL,
+  `Modulo` varchar(50) DEFAULT NULL,
+  `Fecha_registro` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `Preguntas`
+--
+
+CREATE TABLE `Preguntas` (
+  `Id_pregunta` int(11) NOT NULL,
+  `Id_encuesta` int(11) NOT NULL,
+  `Pregunta` varchar(500) NOT NULL,
+  `Tipo_respuesta` enum('ESCALA_1_5','ESCALA_1_10','TEXTO','BOOLEANO') DEFAULT 'ESCALA_1_5',
+  `Rango` varchar(10) DEFAULT NULL,
+  `Seccion` varchar(1) NOT NULL,
+  `Orden` int(11) NOT NULL,
+  `Obligatoria` tinyint(1) DEFAULT 1,
+  `Activo` tinyint(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `Respuestas`
+--
+
+CREATE TABLE `Respuestas` (
+  `Id_respuesta` int(11) NOT NULL,
+  `Id_pregunta` int(11) NOT NULL,
+  `Id_alumno` int(11) NOT NULL,
+  `Id_encuesta` int(11) NOT NULL,
+  `Id_servicio` int(11) DEFAULT NULL,
+  `Respuesta` text NOT NULL,
+  `Fecha_respuesta` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `Tipos_Usuario`
+--
+
+CREATE TABLE `Tipos_Usuario` (
+  `Id_tipo_usuario` int(11) NOT NULL,
+  `Nombre_tipo_usuario` varchar(50) NOT NULL,
+  `Descripcion` varchar(255) DEFAULT NULL,
+  `Activo` tinyint(1) DEFAULT 1,
+  `Fecha_registro` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `TipoUsuarios_Permiso`
+--
+
+CREATE TABLE `TipoUsuarios_Permiso` (
+  `Id_tipo_usuario` int(11) NOT NULL,
+  `Id_permiso` int(11) NOT NULL,
+  `Fecha_asignacion` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `Usuarios`
+--
+
+CREATE TABLE `Usuarios` (
+  `Id_usuario` int(11) NOT NULL,
+  `Matricula` varchar(100) NOT NULL,
+  `Contrasena` varchar(200) NOT NULL,
+  `Id_tipo_usuario` int(11) NOT NULL,
+  `Activo` tinyint(1) DEFAULT 1,
+  `Fecha_registro` datetime DEFAULT current_timestamp(),
+  `Fecha_ultimo_acceso` datetime DEFAULT NULL,
+  `Intentos_fallidos` int(11) DEFAULT 0,
+  `Bloqueado` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `Vacantes`
+--
+
+CREATE TABLE `Vacantes` (
+  `Id_vacante` int(11) NOT NULL,
+  `Id_empresa` int(11) NOT NULL,
+  `Titulo` varchar(200) NOT NULL,
+  `Flyer_Path` varchar(100) DEFAULT NULL,
+  `Descripcion` text NOT NULL,
+  `Requisitos` text DEFAULT NULL,
+  `Id_carrera` int(11) DEFAULT NULL,
+  `Id_servicio` int(11) NOT NULL,
+  `Numero_vacantes` int(11) DEFAULT 1,
+  `Activa` tinyint(1) DEFAULT 1,
+  `Fecha_publicacion` date NOT NULL,
+  `Fecha_expiracion` date DEFAULT NULL,
+  `Contacto_nombre` varchar(100) DEFAULT NULL,
+  `Contacto_email` varchar(100) DEFAULT NULL,
+  `Contacto_telefono` varchar(20) DEFAULT NULL,
+  `Fecha_registro` datetime DEFAULT current_timestamp(),
+  `Fecha_modificacion` datetime DEFAULT NULL ON UPDATE current_timestamp()
+) ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `vw_alumnos_completo`
+-- (Véase abajo para la vista actual)
+--
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `Actividades`
+--
+ALTER TABLE `Actividades`
+  ADD PRIMARY KEY (`Id_servicio`),
+  ADD UNIQUE KEY `Servicio` (`Servicio`);
+
+--
+-- Indices de la tabla `Actividades_Alumnos`
+--
+ALTER TABLE `Actividades_Alumnos`
+  ADD PRIMARY KEY (`Id_alumno_servicio`),
+  ADD UNIQUE KEY `unique_alumno_servicio` (`Id_alumno`,`Id_servicio`),
+  ADD KEY `Id_servicio` (`Id_servicio`),
+  ADD KEY `Id_empresa` (`Id_empresa`),
+  ADD KEY `idx_alumno_servicio_estado` (`Estado`),
+  ADD KEY `idx_alumno_servicio_fechas` (`Fecha_inicio`,`Fecha_fin`);
+
+--
+-- Indices de la tabla `Administradores`
+--
+ALTER TABLE `Administradores`
+  ADD PRIMARY KEY (`Id_admin`),
+  ADD UNIQUE KEY `Id_usuario` (`Id_usuario`),
+  ADD UNIQUE KEY `Correo` (`Correo`),
+  ADD KEY `Id_carrera` (`Id_carrera`);
+
+--
+-- Indices de la tabla `Alumnos`
+--
+ALTER TABLE `Alumnos`
+  ADD PRIMARY KEY (`Id_alumno`),
+  ADD UNIQUE KEY `Id_usuario` (`Id_usuario`),
+  ADD UNIQUE KEY `No_Expediente` (`No_Expediente`),
+  ADD KEY `Id_carrera` (`Id_carrera`),
+  ADD KEY `idx_alumno_nombre` (`Apellido_P`,`Apellido_M`,`Nombre`),
+  ADD KEY `idx_alumno_expediente` (`No_Expediente`),
+  ADD KEY `idx_alumno_activo` (`Activo`);
+
+--
+-- Indices de la tabla `Audit_Log`
+--
+ALTER TABLE `Audit_Log`
+  ADD PRIMARY KEY (`Id_audit`),
+  ADD KEY `idx_audit_fecha` (`Fecha_hora`),
+  ADD KEY `idx_audit_tabla` (`Tabla_afectada`,`Id_registro`),
+  ADD KEY `idx_audit_usuario` (`Id_usuario`);
+
+--
+-- Indices de la tabla `Carreras`
+--
+ALTER TABLE `Carreras`
+  ADD PRIMARY KEY (`Id_carrera`);
+
+--
+-- Indices de la tabla `Contactos_Alumno`
+--
+ALTER TABLE `Contactos_Alumno`
+  ADD PRIMARY KEY (`Id_contacto`),
+  ADD UNIQUE KEY `unique_contacto_alumno` (`Id_alumno`,`Tipo`,`Valor`);
+
+--
+-- Indices de la tabla `Empresas`
+--
+ALTER TABLE `Empresas`
+  ADD PRIMARY KEY (`Id_empresa`),
+  ADD UNIQUE KEY `Nombre` (`Nombre`),
+  ADD KEY `idx_empresa_nombre` (`Nombre`);
+
+--
+-- Indices de la tabla `Encuestas`
+--
+ALTER TABLE `Encuestas`
+  ADD PRIMARY KEY (`Id_encuesta`),
+  ADD UNIQUE KEY `Nombre` (`Nombre`),
+  ADD KEY `Id_servicio` (`Id_servicio`);
+
+--
+-- Indices de la tabla `Facultades`
+--
+ALTER TABLE `Facultades`
+  ADD PRIMARY KEY (`Id_Facultad`);
+
+--
+-- Indices de la tabla `Permisos`
+--
+ALTER TABLE `Permisos`
+  ADD PRIMARY KEY (`Id_permiso`),
+  ADD UNIQUE KEY `Nombre_permiso` (`Nombre_permiso`);
+
+--
+-- Indices de la tabla `Preguntas`
+--
+ALTER TABLE `Preguntas`
+  ADD PRIMARY KEY (`Id_pregunta`),
+  ADD UNIQUE KEY `unique_pregunta_orden` (`Id_encuesta`,`Orden`);
+
+--
+-- Indices de la tabla `Respuestas`
+--
+ALTER TABLE `Respuestas`
+  ADD PRIMARY KEY (`Id_respuesta`),
+  ADD UNIQUE KEY `unique_respuesta_alumno` (`Id_pregunta`,`Id_alumno`,`Id_encuesta`),
+  ADD KEY `Id_servicio` (`Id_servicio`),
+  ADD KEY `idx_respuestas_consulta` (`Id_encuesta`,`Id_servicio`,`Fecha_respuesta`),
+  ADD KEY `idx_respuestas_alumno` (`Id_alumno`);
+
+--
+-- Indices de la tabla `Tipos_Usuario`
+--
+ALTER TABLE `Tipos_Usuario`
+  ADD PRIMARY KEY (`Id_tipo_usuario`),
+  ADD UNIQUE KEY `Nombre_tipo_usuario` (`Nombre_tipo_usuario`);
+
+--
+-- Indices de la tabla `TipoUsuarios_Permiso`
+--
+ALTER TABLE `TipoUsuarios_Permiso`
+  ADD PRIMARY KEY (`Id_tipo_usuario`,`Id_permiso`),
+  ADD KEY `Id_permiso` (`Id_permiso`);
+
+--
+-- Indices de la tabla `Usuarios`
+--
+ALTER TABLE `Usuarios`
+  ADD PRIMARY KEY (`Id_usuario`),
+  ADD UNIQUE KEY `Matricula` (`Matricula`),
+  ADD KEY `Id_tipo_usuario` (`Id_tipo_usuario`),
+  ADD KEY `idx_usuario_matricula` (`Matricula`),
+  ADD KEY `idx_usuario_activo` (`Activo`);
+
+--
+-- Indices de la tabla `Vacantes`
+--
+ALTER TABLE `Vacantes`
+  ADD PRIMARY KEY (`Id_vacante`),
+  ADD KEY `Id_empresa` (`Id_empresa`),
+  ADD KEY `idx_vacantes_activas` (`Activa`,`Fecha_expiracion`),
+  ADD KEY `idx_vacantes_servicio` (`Id_servicio`),
+  ADD KEY `idx_vacantes_carrera` (`Id_carrera`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `Actividades`
+--
+ALTER TABLE `Actividades`
+  MODIFY `Id_servicio` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Actividades_Alumnos`
+--
+ALTER TABLE `Actividades_Alumnos`
+  MODIFY `Id_alumno_servicio` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Administradores`
+--
+ALTER TABLE `Administradores`
+  MODIFY `Id_admin` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Alumnos`
+--
+ALTER TABLE `Alumnos`
+  MODIFY `Id_alumno` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Audit_Log`
+--
+ALTER TABLE `Audit_Log`
+  MODIFY `Id_audit` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Carreras`
+--
+ALTER TABLE `Carreras`
+  MODIFY `Id_carrera` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Contactos_Alumno`
+--
+ALTER TABLE `Contactos_Alumno`
+  MODIFY `Id_contacto` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Empresas`
+--
+ALTER TABLE `Empresas`
+  MODIFY `Id_empresa` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Encuestas`
+--
+ALTER TABLE `Encuestas`
+  MODIFY `Id_encuesta` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Facultades`
+--
+ALTER TABLE `Facultades`
+  MODIFY `Id_Facultad` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Permisos`
+--
+ALTER TABLE `Permisos`
+  MODIFY `Id_permiso` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Preguntas`
+--
+ALTER TABLE `Preguntas`
+  MODIFY `Id_pregunta` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Respuestas`
+--
+ALTER TABLE `Respuestas`
+  MODIFY `Id_respuesta` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Tipos_Usuario`
+--
+ALTER TABLE `Tipos_Usuario`
+  MODIFY `Id_tipo_usuario` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Usuarios`
+--
+ALTER TABLE `Usuarios`
+  MODIFY `Id_usuario` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `Vacantes`
+--
+ALTER TABLE `Vacantes`
+  MODIFY `Id_vacante` int(11) NOT NULL AUTO_INCREMENT;
+
+
+--
+-- Filtros para la tabla `Actividades_Alumnos`
+--
+ALTER TABLE `Actividades_Alumnos`
+  ADD CONSTRAINT `1` FOREIGN KEY (`Id_alumno`) REFERENCES `Alumnos` (`Id_alumno`) ON DELETE CASCADE,
+  ADD CONSTRAINT `2` FOREIGN KEY (`Id_servicio`) REFERENCES `Actividades` (`Id_servicio`),
+  ADD CONSTRAINT `3` FOREIGN KEY (`Id_empresa`) REFERENCES `Empresas` (`Id_empresa`);
+
+--
+-- Filtros para la tabla `Administradores`
+--
+ALTER TABLE `Administradores`
+  ADD CONSTRAINT `1` FOREIGN KEY (`Id_usuario`) REFERENCES `Usuarios` (`Id_usuario`) ON DELETE CASCADE,
+  ADD CONSTRAINT `2` FOREIGN KEY (`Id_carrera`) REFERENCES `Carreras` (`Id_carrera`) ON DELETE SET NULL;
+
+--
+-- Filtros para la tabla `Alumnos`
+--
+ALTER TABLE `Alumnos`
+  ADD CONSTRAINT `1` FOREIGN KEY (`Id_usuario`) REFERENCES `Usuarios` (`Id_usuario`) ON DELETE CASCADE,
+  ADD CONSTRAINT `2` FOREIGN KEY (`Id_carrera`) REFERENCES `Carreras` (`Id_carrera`);
+
+--
+-- Filtros para la tabla `Audit_Log`
+--
+ALTER TABLE `Audit_Log`
+  ADD CONSTRAINT `1` FOREIGN KEY (`Id_usuario`) REFERENCES `Usuarios` (`Id_usuario`) ON DELETE SET NULL;
+
+--
+-- Filtros para la tabla `Contactos_Alumno`
+--
+ALTER TABLE `Contactos_Alumno`
+  ADD CONSTRAINT `1` FOREIGN KEY (`Id_alumno`) REFERENCES `Alumnos` (`Id_alumno`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `Encuestas`
+--
+ALTER TABLE `Encuestas`
+  ADD CONSTRAINT `1` FOREIGN KEY (`Id_servicio`) REFERENCES `Actividades` (`Id_servicio`);
+
+--
+-- Filtros para la tabla `Preguntas`
+--
+ALTER TABLE `Preguntas`
+  ADD CONSTRAINT `1` FOREIGN KEY (`Id_encuesta`) REFERENCES `Encuestas` (`Id_encuesta`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `Respuestas`
+--
+ALTER TABLE `Respuestas`
+  ADD CONSTRAINT `1` FOREIGN KEY (`Id_pregunta`) REFERENCES `Preguntas` (`Id_pregunta`),
+  ADD CONSTRAINT `2` FOREIGN KEY (`Id_alumno`) REFERENCES `Alumnos` (`Id_alumno`),
+  ADD CONSTRAINT `3` FOREIGN KEY (`Id_encuesta`) REFERENCES `Encuestas` (`Id_encuesta`),
+  ADD CONSTRAINT `4` FOREIGN KEY (`Id_servicio`) REFERENCES `Actividades` (`Id_servicio`);
+
+--
+-- Filtros para la tabla `TipoUsuarios_Permiso`
+--
+ALTER TABLE `TipoUsuarios_Permiso`
+  ADD CONSTRAINT `1` FOREIGN KEY (`Id_tipo_usuario`) REFERENCES `Tipos_Usuario` (`Id_tipo_usuario`) ON DELETE CASCADE,
+  ADD CONSTRAINT `2` FOREIGN KEY (`Id_permiso`) REFERENCES `Permisos` (`Id_permiso`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `Usuarios`
+--
+ALTER TABLE `Usuarios`
+  ADD CONSTRAINT `1` FOREIGN KEY (`Id_tipo_usuario`) REFERENCES `Tipos_Usuario` (`Id_tipo_usuario`);
+
+--
+-- Filtros para la tabla `Vacantes`
+--
+ALTER TABLE `Vacantes`
+  ADD CONSTRAINT `1` FOREIGN KEY (`Id_empresa`) REFERENCES `Empresas` (`Id_empresa`),
+  ADD CONSTRAINT `2` FOREIGN KEY (`Id_carrera`) REFERENCES `Carreras` (`Id_carrera`) ON DELETE SET NULL,
+  ADD CONSTRAINT `3` FOREIGN KEY (`Id_servicio`) REFERENCES `Actividades` (`Id_servicio`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
