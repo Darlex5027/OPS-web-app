@@ -1,22 +1,16 @@
 services:
   web:
-    build: .
-    depends_on:
-      - database
+    image: mynginx-image
     ports:
       - "8080:80"
     volumes:
       - ./app:/var/www/html
-    environment:
-      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASS}"
   database:
     image: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASS}"
     volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db_data:/var/lib/mysql
-      - ./database/1_init.sql:/docker-entrypoint-initdb.d/1_init.sql
-      - ./database/2_dummydata.sql:/docker-entrypoint-initdb.d/2_dummydata.sql
 volumes:
   db_data:
-  
