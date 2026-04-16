@@ -8,6 +8,7 @@
 -- PHP Version: 8.3.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+USE DB_Sistema_Academico;
 START TRANSACTION;
 SET time_zone = "+00:00";
  
@@ -20,6 +21,252 @@ SET time_zone = "+00:00";
 --
 -- Database: `DB_Sistema_Academico`
 --
+
+--
+-- Dumping data for table `Facultades`
+--
+
+INSERT INTO `Facultades` (`Id_Facultad`, `Nombre`) VALUES
+(1, 'Facultad de\r\nAgrobiología'),
+(2, 'Facultad de\r\nCiencias de la Salud'),
+(3, 'Facultad de\r\nOdontología'),
+(4, 'Facultad de\r\nCiencias Básicas Ingeniería y Tecnología'),
+(5, 'Facultad de\r\nCiencias Económico Administrativas'),
+(6, 'Facultad de\r\nDerecho, Ciencias Políticas y Criminología'),
+(7, 'Facultad de\r\nTrabajo Social, Sociología y Psicología'),
+(8, 'Facultad de\r\nCiencias de la Educación'),
+(9, 'Facultad de\r\nFilosofía y Letras'),
+(10, 'Facultad de\r\nCiencias para el Desarrollo Humano'),
+(11, 'Facultad de\r\nDiseño, Arte y Arquitectura'),
+(12, 'Unidad Académica Multidisciplinaria campus Calpulalpan');
+
+--
+-- Dumping data for table `Carreras`
+--
+
+INSERT INTO `Carreras` (`Id_carrera`, `Id_Facultad`, `Nombre`, `Activo`, `Fecha_registro`) VALUES
+(13, 1, 'Licenciatura en Biología', 1, '2026-04-14 05:57:50'),
+(14, 1, 'Licenciatura en Ciencias Ambientales', 1, '2026-04-14 05:57:50'),
+(15, 1, 'Licenciatura en Gastronomía y Hotelería', 1, '2026-04-14 05:57:50'),
+(16, 1, 'Licenciatura en Medicina Veterinaria y Zootecnia', 1, '2026-04-14 05:57:50'),
+(17, 1, 'Licenciatura en Naturopatía', 1, '2026-04-14 05:57:50'),
+(18, 2, 'Licenciatura en Enfermería y Obstetricia', 1, '2026-04-14 05:59:37'),
+(19, 2, 'Licenciatura en Fisioterapia', 1, '2026-04-14 05:59:37'),
+(20, 2, 'Licenciatura en Médico Cirujano ', 1, '2026-04-14 05:59:37'),
+(21, 2, 'Licenciatura en Nutrición', 1, '2026-04-14 05:59:37'),
+(22, 2, 'Licenciatura en Química Clínica', 1, '2026-04-14 05:59:37'),
+(23, 3, 'Licenciatura en Cirujano Dentista', 1, '2026-04-14 06:00:33'),
+(24, 4, 'Licenciatura en Ingeniería en Computación', 1, '2026-04-14 06:02:26'),
+(25, 4, 'Licenciatura en Ingeniería en Sistemas Electrónicos', 1, '2026-04-14 06:02:26'),
+(26, 4, 'Licenciatura en Ingeniería Mecánica', 1, '2026-04-14 06:02:26'),
+(27, 4, 'Licenciatura en Ingeniería Química', 1, '2026-04-14 06:02:26'),
+(28, 4, 'Licenciatura en Inteligencia Artificial', 1, '2026-04-14 06:02:26'),
+(29, 4, 'Licenciatura en Matemáticas Aplicadas', 1, '2026-04-14 06:02:26'),
+(30, 4, 'Licenciatura en Química Industrial', 1, '2026-04-14 06:02:26'),
+(31, 5, 'Licenciatura en Administración', 1, '2026-04-14 06:03:45'),
+(32, 5, 'Licenciatura en Contaduría Pública', 1, '2026-04-14 06:03:45'),
+(33, 5, 'Licenciatura en Economía y Finanzas', 1, '2026-04-14 06:03:45'),
+(34, 5, 'Licenciatura en Negocios Internacionales', 1, '2026-04-14 06:03:45'),
+(35, 5, 'Licenciatura en Turismo Internacional', 1, '2026-04-14 06:03:45'),
+(36, 6, 'Licenciatura en Ciencias Políticas y Administración Pública', 1, '2026-04-14 06:05:24'),
+(37, 6, 'Licenciatura en Criminología', 1, '2026-04-14 06:05:24'),
+(38, 6, 'Licenciatura en Derecho ', 1, '2026-04-14 06:05:24'),
+(39, 7, 'Licenciatura en Psicología', 1, '2026-04-14 06:06:31'),
+(40, 7, 'Licenciatura en Psicoterapia', 1, '2026-04-14 06:06:31'),
+(41, 7, 'Licenciatura en Sociología', 1, '2026-04-14 06:06:31'),
+(42, 7, 'Licenciatura en Trabajo Social', 1, '2026-04-14 06:06:31'),
+(43, 8, 'Licenciatura en Ciencias de la Educación', 1, '2026-04-14 06:07:44'),
+(44, 8, 'Licenciatura en Comunicación e Innovación Educativa', 1, '2026-04-14 06:07:44'),
+(45, 8, 'Licenciatura en Educación Inicial y Gestión de Instituciones', 1, '2026-04-14 06:07:44'),
+(46, 9, 'Licenciatura en Antropología', 1, '2026-04-14 06:08:57'),
+(47, 9, 'Licenciatura en Enseñanza de Lenguas', 1, '2026-04-14 06:08:57'),
+(48, 9, 'Licenciatura en Filosofía', 1, '2026-04-14 06:08:57'),
+(49, 9, 'Licenciatura en Historia', 1, '2026-04-14 06:08:57'),
+(50, 9, 'Licenciatura en Lengua y Literatura Hispanoamericana ', 1, '2026-04-14 06:08:57'),
+(51, 10, 'Licenciatura en Ciencias de la Familia', 1, '2026-04-14 06:09:36'),
+(52, 10, 'Licenciatura en Educación Especial', 1, '2026-04-14 06:09:36'),
+(53, 10, 'Licenciatura en Gerontología Social', 1, '2026-04-14 06:09:36'),
+(54, 11, 'Licenciatura en Arquitectura', 1, '2026-04-14 06:10:38'),
+(55, 11, 'Licenciatura en Artes Visuales', 1, '2026-04-14 06:10:38'),
+(56, 11, 'Licenciatura en Diseño Automotriz', 1, '2026-04-14 06:10:38'),
+(57, 11, 'Licenciatura en Diseño Gráfico', 1, '2026-04-14 06:10:38'),
+(58, 11, 'Licenciatura en Diseño Textil', 1, '2026-04-14 06:10:38'),
+(70, 12, 'Licenciatura en Administración', 1, '2026-04-14 06:12:53'),
+(71, 12, 'Licenciatura en Ciencias de la Educación', 1, '2026-04-14 06:12:53'),
+(72, 12, 'Licenciatura en Ciencias Políticas y Administración Pública', 1, '2026-04-14 06:12:53'),
+(73, 12, 'Licenciatura en Contaduría Pública', 1, '2026-04-14 06:12:53'),
+(74, 12, 'Licenciatura en Derecho', 1, '2026-04-14 06:12:53'),
+(75, 12, 'Licenciatura en Educación Inicial y Gestión de Instituciones', 1, '2026-04-14 06:12:53'),
+(76, 12, 'Licenciatura en Enseñanza de Lenguas', 1, '2026-04-14 06:12:53'),
+(77, 12, 'Licenciatura en Ingeniería en Computación', 1, '2026-04-14 06:12:53'),
+(78, 12, 'Licenciatura en Nutrición', 1, '2026-04-14 06:12:53'),
+(79, 12, 'Licenciatura en Psicología', 1, '2026-04-14 06:12:53'),
+(80, 12, 'Licenciatura en Turismo Internacional', 1, '2026-04-14 06:12:53');
+
+--
+-- Dumping data for table `Empresas`
+--
+
+INSERT INTO `Empresas` (`Id_empresa`, `Nombre`, `Descripcion`, `Razon_social`, `RFC`, `Direccion`, `Sitio_web`, `Activo`, `Fecha_registro`, `Fecha_modificacion`) VALUES
+(1, 'Tecnológica del Norte S.A.', 'Empresa de desarrollo de software y soluciones tecnológicas para la industria.', 'Tecnológica del Norte S.A. de C.V.', 'TNO9801125AB', 'Blvd. Industrial 1450, Parque Industrial Norte, Tlaxcala, Tlax. C.P. 90000', 'https://tecnorte.com.mx', 1, '2026-03-10 03:52:22', NULL),
+(2, 'Grupo Industrial Tlaxcala', 'Manufactura y distribución de componentes metálicos para la industria automotriz.', 'Grupo Industrial Tlaxcala S.A. de C.V.', 'GIT0305098CD', 'Carretera Federal 119 Km 12, Ixtacuixtla, Tlaxcala C.P. 90250', 'https://grupointlax.mx', 1, '2026-03-10 03:52:22', NULL),
+(3, 'Gobierno del Estado de Tlaxcala', 'Dirección de Tecnologías de la Información del gobierno estatal.', 'Gobierno del Estado Libre y Soberano de Tlaxcala', 'GET540101000', 'Plaza de la Constitución S/N, Tlaxcala, Tlax. C.P. 90000', 'https://tlaxcala.gob.mx', 1, '2026-03-10 03:52:22', NULL),
+(4, 'Hospital Regional IMSS', 'Unidad médica de atención y servicios de salud del IMSS en Tlaxcala.', 'Instituto Mexicano del Seguro Social', 'IMS4310261I3', 'Av. Juárez 22, Santa Ana Chiautempan, Tlax. C.P. 90800', 'https://imss.gob.mx', 1, '2026-03-10 03:52:22', NULL),
+(5, 'Contadores & Asociados Tlax', 'Despacho contable y fiscal con más de 20 años en la región.', 'Contadores y Asociados Tlaxcala S.C.', 'CAT010612EF5', 'Av. Independencia 340 Local 5, Apizaco, Tlax. C.P. 90300', NULL, 1, '2026-03-10 03:52:22', NULL),
+(6, 'TechStartup MX', 'Startup de desarrollo de aplicaciones móviles y web. EN PAUSA.', 'TechStartup México S.A. de C.V.', 'TSM2012099GH', 'Coworking Center, Tlaxcala, Tlax.', 'https://techstartupmx.io', 0, '2026-03-10 03:52:22', NULL),
+(7, 'SoftSoluciones MX', 'Desarrollo de software a medida y consultoría IT.', 'SoftSoluciones México S.A. de C.V.', 'SME200101ABC', 'Av. Tecnológico 123, Tlaxcala, Tlax. C.P. 90100', 'https://softsoluciones.mx', 1, '2026-04-14 05:13:59', NULL),
+(8, 'Constructora Palma Real', 'Construcción de obra civil y residencial.', 'Constructora Palma Real S.A. de C.V.', 'CPR180321DEF', 'Blvd. Sur 456, Apizaco, Tlax. C.P. 90300', NULL, 1, '2026-04-14 05:13:59', NULL),
+(9, 'Farmacias Salud Total', 'Cadena de farmacias y servicios médicos.', 'Farmacias Salud Total S.A. de C.V.', 'FST220101GHI', 'Av. Juárez 789, Tlaxcala, Tlax. C.P. 90000', 'https://saludtotal.com.mx', 1, '2026-04-14 05:13:59', NULL),
+(10, 'Logística y Transportes UNO', 'Servicios logísticos y de transporte de carga.', 'Logística UNO S.A. de C.V.', 'LTU150505JKL', 'Carretera Tlaxcala-Puebla Km 5, San Pablo Apetatitlán, Tlax. C.P. 90600', NULL, 1, '2026-04-14 05:13:59', NULL),
+(11, 'Consultoría Estratégica Integral', 'Consultoría en negocios y procesos administrativos.', 'CEI Consultores S.C.', 'CEI190909MNO', 'Calle Morelos 234, Centro, Tlaxcala, Tlax. C.P. 90000', 'https://ceiconsultores.mx', 1, '2026-04-14 05:13:59', NULL),
+(12, 'Innovación Textil del Centro', 'Fabricación de textiles y prendas de vestir.', 'Innovación Textil S.A. de C.V.', 'ITC170303PQR', 'Parque Industrial Xicohténcatl, Nave 7, Tzompantepec, Tlax. C.P. 90490', NULL, 1, '2026-04-14 05:13:59', NULL),
+(13, 'Autopartes Tlaxcala', 'Fabricación de autopartes para la industria automotriz.', 'Autopartes Tlaxcala S.A. de C.V.', 'AUT200404STU', 'Av. Industrial 789, Santa Ana Chiautempan, Tlax. C.P. 90800', 'https://autopartestlax.mx', 1, '2026-04-14 05:13:59', NULL),
+(14, 'Laboratorios Químicos del Centro', 'Análisis químicos y control de calidad.', 'Laboratorios Químicos del Centro S.A. de C.V.', 'LQC160606VWX', 'Calle Ciencia 45, Texcoco, Tlax. C.P. 90500', NULL, 1, '2026-04-14 05:13:59', NULL),
+(15, 'Marketing Digital Eficaz', 'Agencia de marketing digital y publicidad online.', 'MDE Marketing S.A. de C.V.', 'MDE210707XYZ', 'Blvd. Independencia 567, Apizaco, Tlax. C.P. 90300', 'https://mdeficaz.com', 1, '2026-04-14 05:13:59', NULL),
+(16, 'Energías Limpias Tlaxcala', 'Instalación y mantenimiento de paneles solares.', 'Energías Limpias S.A. de C.V.', 'ELT180808ABC', 'Carretera a Huamantla Km 8, Huamantla, Tlax. C.P. 90500', 'https://energiaslimpias.mx', 1, '2026-04-14 05:13:59', NULL),
+(17, 'Seguridad Privada Águila', 'Servicios de seguridad y vigilancia.', 'Seguridad Águila S.A. de C.V.', 'SPA190909DEF', 'Calle 5 de Mayo 123, Tlaxcala, Tlax. C.P. 90000', NULL, 1, '2026-04-14 05:13:59', NULL),
+(18, 'Restaurantes La Hacienda', 'Cadena de restaurantes de comida mexicana.', 'Restaurantes La Hacienda S.A. de C.V.', 'RLH200101GHI', 'Blvd. Tlahuicole 890, Tlaxcala, Tlax. C.P. 90100', 'https://lahacienda.com.mx', 1, '2026-04-14 05:13:59', NULL),
+(19, 'Centro Educativo Integral', 'Institución educativa privada nivel básico y medio.', 'Centro Educativo Integral S.C.', 'CEI210202JKL', 'Av. Universidad 456, San Pablo del Monte, Tlax. C.P. 90900', NULL, 1, '2026-04-14 05:13:59', NULL),
+(20, 'Despacho Jurídico Justicia', 'Servicios legales y asesoría jurídica.', 'Despacho Justicia S.C.', 'DJJ220303MNO', 'Calle Independencia 345, Centro, Tlaxcala, Tlax. C.P. 90000', NULL, 1, '2026-04-14 05:13:59', NULL),
+(21, 'Turismo Aventura Tlaxcala', 'Agencia de viajes y turismo de aventura.', 'Turismo Aventura S.A. de C.V.', 'TAT230404PQR', 'Av. La Paz 678, Huamantla, Tlax. C.P. 90500', 'https://aventuratravel.mx', 1, '2026-04-14 05:13:59', NULL),
+(22, 'Impresiones Rápidas Digital', 'Servicios de impresión y papelería.', 'Impresiones Digital S.A. de C.V.', 'IRD240505STU', 'Calle Hidalgo 901, Apizaco, Tlax. C.P. 90300', NULL, 1, '2026-04-14 05:13:59', NULL),
+(23, 'Ferretería Construrama', 'Venta de materiales para construcción.', 'Ferretería Construrama S.A. de C.V.', 'FCS250606VWX', 'Av. Juárez 234, Tlaxco, Tlax. C.P. 90250', 'https://construrama.mx', 1, '2026-04-14 05:13:59', NULL),
+(24, 'Estética y Bienestar Spa', 'Servicios de estética, spa y bienestar.', 'Estética Bienestar S.A. de C.V.', 'EBS260707XYZ', 'Blvd. San Luis 567, Chiautempan, Tlax. C.P. 90800', NULL, 1, '2026-04-14 05:13:59', NULL),
+(25, 'Transportes Ejecutivos VIP', 'Servicio de transporte ejecutivo y turístico.', 'Transportes VIP S.A. de C.V.', 'TVP270808ABC', 'Carretera a Puebla Km 12, Zacatelco, Tlax. C.P. 90700', 'https://transportesvip.mx', 1, '2026-04-14 05:13:59', NULL),
+(26, 'Café y Repostería Delicia', 'Cadena de cafeterías y repostería fina.', 'Café Delicia S.A. de C.V.', 'CDS280909DEF', 'Plaza Central Local 12, Tlaxcala, Tlax. C.P. 90000', NULL, 1, '2026-04-14 05:13:59', NULL),
+(27, 'Servicios Contables Fiscalia', 'Despacho contable y fiscal.', 'Fiscalia Contadores S.C.', 'FCS291010GHI', 'Calle Comercio 789, Apizaco, Tlax. C.P. 90300', NULL, 1, '2026-04-14 05:13:59', NULL),
+(28, 'Mueblería Hogar Ideal', 'Venta de muebles y decoración.', 'Mueblería Hogar Ideal S.A. de C.V.', 'MHI301111JKL', 'Av. Industrial 456, Tlaxcala, Tlax. C.P. 90100', 'https://hogarideal.mx', 1, '2026-04-14 05:13:59', NULL),
+(29, 'Clínica Dental Sonrisas', 'Servicios odontológicos.', 'Clínica Dental Sonrisas S.C.', 'CDS311212MNO', 'Calle Salud 123, San Pablo del Monte, Tlax. C.P. 90900', NULL, 1, '2026-04-14 05:13:59', NULL),
+(30, 'Abarrotes Don Juan', 'Tienda de abarrotes y productos básicos.', 'Abarrotes Don Juan S.A. de C.V.', 'ADJ320101PQR', 'Calle Hidalgo 45, Huamantla, Tlax. C.P. 90500', NULL, 1, '2026-04-14 05:13:59', NULL),
+(31, 'Taller Mecánico Veloz', 'Servicio mecánico automotriz.', 'Taller Veloz S.A. de C.V.', 'TMV330202STU', 'Blvd. Norte 678, Apizaco, Tlax. C.P. 90300', NULL, 1, '2026-04-14 05:13:59', NULL),
+(32, 'Estudio Fotográfico Imagen', 'Servicios de fotografía y video.', 'Estudio Imagen S.C.', 'EIS340303VWX', 'Av. Juárez 901, Tlaxcala, Tlax. C.P. 90000', 'https://estudioimagen.mx', 1, '2026-04-14 05:13:59', NULL),
+(33, 'Gimnasio Fitness Total', 'Centro de acondicionamiento físico.', 'Gimnasio Fitness Total S.A. de C.V.', 'GFT350404XYZ', 'Blvd. Tlahuicole 234, Tlaxcala, Tlax. C.P. 90100', NULL, 1, '2026-04-14 05:13:59', NULL),
+(34, 'Librería y Papelería Saber', 'Venta de libros y artículos de papelería.', 'Librería Saber S.A. de C.V.', 'LSS360505ABC', 'Calle Morelos 567, Centro, Tlaxcala, Tlax. C.P. 90000', NULL, 1, '2026-04-14 05:13:59', NULL),
+(35, 'Veterinaria Mascotas Felices', 'Servicios veterinarios y venta de mascotas.', 'Veterinaria Mascotas S.A. de C.V.', 'VMF370606DEF', 'Av. Universidad 890, San Pablo del Monte, Tlax. C.P. 90900', 'https://mascotasfelices.mx', 1, '2026-04-14 05:13:59', NULL),
+(36, 'Agencia de Viajes Destinos', 'Agencia de viajes y turismo.', 'Agencia Destinos S.A. de C.V.', 'ADV380707GHI', 'Blvd. Independencia 123, Apizaco, Tlax. C.P. 90300', NULL, 1, '2026-04-14 05:13:59', NULL);
+
+
+--
+-- Dumping data for table `Tipos_Usuario`
+--
+
+INSERT INTO `Tipos_Usuario` (`Id_tipo_usuario`, `Nombre_tipo_usuario`, `Descripcion`, `Activo`, `Fecha_registro`) VALUES
+(1, 'ADMIN', 'Administrador del sistema con acceso completo', 1, '2026-03-10 03:52:22'),
+(2, 'ALUMNO', 'Alumno regular del sistema', 1, '2026-03-10 03:52:22'),
+(3, 'COORDINADOR', 'Coordinador de carrera con permisos intermedios', 1, '2026-03-10 03:52:22');
+
+
+--
+-- Dumping data for table `Usuarios`
+--
+
+INSERT INTO `Usuarios` (`Id_usuario`, `Matricula`, `Contrasena`, `Id_tipo_usuario`, `Activo`, `Fecha_registro`, `Fecha_ultimo_acceso`, `Intentos_fallidos`, `Bloqueado`) VALUES
+(61, '1001', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(62, '1002', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(63, '1003', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(64, '1004', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(65, '1005', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(66, '1006', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(67, '1007', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(68, '1008', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(69, '1009', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(70, '1010', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(71, '1011', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(72, '1012', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(73, '1013', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(74, '1014', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(75, '1015', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(76, '1016', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(77, '1017', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(78, '1018', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(79, '1019', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(80, '1020', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(81, '1021', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(82, '1022', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(83, '1023', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(84, '1024', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(85, '1025', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(86, '1026', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(87, '1027', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(88, '1028', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(89, '1029', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(90, '1030', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
+(91, '20240001', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 0, '2026-04-14 07:29:33', NULL, 0, 0),
+(92, '20240002', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 0, '2026-04-14 07:29:33', NULL, 0, 0),
+(93, '20240003', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 0, '2026-04-14 07:29:33', NULL, 0, 0),
+(94, '20240004', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 0, '2026-04-14 07:29:33', NULL, 0, 0),
+(95, '20240005', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 0, '2026-04-14 07:29:33', NULL, 0, 0),
+(96, '20240006', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:29:33', NULL, 0, 0),
+(97, '20240007', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:29:33', NULL, 0, 0),
+(98, '20240008', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:29:33', NULL, 0, 0),
+(99, '20240009', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:29:33', NULL, 0, 0),
+(100, '20240010', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:29:33', NULL, 0, 0),
+(101, '20250001', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:35:54', NULL, 0, 0),
+(102, '20250002', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:35:54', NULL, 0, 0),
+(103, '20250003', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:35:54', NULL, 0, 0),
+(104, '20250004', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:35:54', NULL, 0, 0),
+(105, '20250005', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:35:54', NULL, 0, 0),
+(106, '20260001', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:43:21', NULL, 0, 0),
+(107, '20260002', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:43:21', NULL, 0, 0),
+(108, '20260003', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:43:21', NULL, 0, 0),
+(109, '20260004', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:43:21', NULL, 0, 0),
+(110, '20260005', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:43:21', NULL, 0, 0),
+(111, '20270001', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:50:06', NULL, 0, 0),
+(112, '20270002', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:50:06', NULL, 0, 0),
+(113, '20270003', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:50:06', NULL, 0, 0),
+(114, '20270004', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:50:06', NULL, 0, 0),
+(115, '20270005', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:50:06', NULL, 0, 0),
+(116, '20280001', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:53:16', NULL, 0, 0),
+(117, '20280002', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:53:16', NULL, 0, 0),
+(118, '20280003', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:53:16', NULL, 0, 0),
+(119, '20280004', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:53:16', NULL, 0, 0),
+(120, '20280005', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:53:16', NULL, 0, 0),
+(121, '20290001', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:55:18', NULL, 0, 0),
+(122, '20290002', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:55:18', NULL, 0, 0),
+(123, '20290003', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:55:18', NULL, 0, 0),
+(124, '20290004', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:55:18', NULL, 0, 0),
+(125, '20290005', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:55:18', NULL, 0, 0);
+
+
+
+INSERT INTO `Alumnos` (`Id_alumno`, `Id_usuario`, `Nombre`, `Apellido_P`, `Apellido_M`, `Id_carrera`, `No_Expediente`, `Area_o_programa`, `Observaciones`, `Horario`, `Organizacion`, `Activo`, `Fecha_registro`, `Fecha_modificacion`) VALUES
+(19, 91, 'Juan', 'Pérez', 'García', 24, NULL, 'Ingeniería en Computación', 'Alumno con adeudo de servicio social', 'MATUTINO 8:00-14:00', NULL, 0, '2026-04-14 07:29:33', NULL),
+(20, 92, 'María', 'López', 'Hernández', 31, NULL, 'Administración', 'Pendiente de liberar servicio social', 'VESPERTINO 14:00-20:00', NULL, 0, '2026-04-14 07:29:33', NULL),
+(21, 93, 'Carlos', 'Martínez', 'Rodríguez', 20, NULL, 'Médico Cirujano', 'No ha iniciado trámites', 'MATUTINO 7:00-13:00', NULL, 0, '2026-04-14 07:29:33', NULL),
+(22, 94, 'Ana', 'Sánchez', 'Ramírez', 35, NULL, 'Turismo Internacional', 'Documentación incompleta', 'MIXTO', NULL, 0, '2026-04-14 07:29:33', NULL),
+(23, 95, 'Luis', 'Gómez', 'Torres', 18, NULL, 'Enfermería', 'Requisitos pendientes', 'MATUTINO 8:00-14:00', NULL, 0, '2026-04-14 07:29:33', NULL),
+(24, 96, 'Fernanda', 'Díaz', 'Flores', 28, 'EXP-2024-001', 'Inteligencia Artificial', 'Alumno regular, cursando servicio social', 'MATUTINO 8:00-14:00', 'Sociedad de Alumnos IA', 1, '2026-04-14 07:29:33', NULL),
+(25, 97, 'Alejandro', 'Castro', 'Mendoza', 21, 'EXP-2024-002', 'Nutrición', 'Excelente desempeño académico', 'VESPERTINO 14:00-20:00', 'Club de Nutrición Deportiva', 1, '2026-04-14 07:29:33', NULL),
+(26, 98, 'Valeria', 'Romero', 'Vega', 32, 'EXP-2024-003', 'Contaduría Pública', 'En proceso de titulación', 'MATUTINO 7:00-13:00', 'Asociación de Estudiantes de Contaduría', 1, '2026-04-14 07:29:33', NULL),
+(27, 99, 'Diego', 'Ortega', 'Jiménez', 26, 'EXP-2024-004', 'Ingeniería Mecánica', 'Participa en proyectos de investigación', 'MATUTINO 8:00-14:00', 'Sociedad de Ingeniería Mecánica', 1, '2026-04-14 07:29:33', NULL),
+(28, 100, 'Daniela', 'Reyes', 'Cruz', 37, 'EXP-2024-005', 'Criminología', 'Alumna destacada', 'VESPERTINO 16:00-22:00', 'Sociedad de Criminología', 1, '2026-04-14 07:29:33', NULL),
+(29, 101, 'Paola', 'Jiménez', 'Ríos', 28, 'EXP-2025-001', 'Inteligencia Artificial', 'Alumno activo, servicio social pendiente por iniciar', 'MATUTINO 8:00-14:00', 'Club de Robótica', 1, '2026-04-14 07:35:54', NULL),
+(30, 102, 'Ricardo', 'Mendoza', 'Silva', 33, 'EXP-2025-002', 'Economía y Finanzas', 'Pendiente de asignación de empresa para SS', 'VESPERTINO 14:00-20:00', 'Sociedad de Inversión', 1, '2026-04-14 07:35:54', NULL),
+(31, 103, 'Andrea', 'Guzmán', 'Lara', 19, 'EXP-2025-003', 'Fisioterapia', 'Documentación completa, esperando convenio', 'MATUTINO 7:00-13:00', 'Club de Deportes Adaptados', 1, '2026-04-14 07:35:54', NULL),
+(32, 104, 'Jorge', 'Herrera', 'Núñez', 34, 'EXP-2025-004', 'Negocios Internacionales', 'En trámite de asignación de proyecto', 'MATUTINO 8:00-14:00', 'Asociación de Comercio Exterior', 1, '2026-04-14 07:35:54', NULL),
+(33, 105, 'Mónica', 'Vega', 'Ortiz', 29, 'EXP-2025-005', 'Matemáticas Aplicadas', 'Listo para iniciar servicio social', 'VESPERTINO 16:00-22:00', 'Club de Matemáticas', 1, '2026-04-14 07:35:54', NULL),
+(34, 106, 'Sofía', 'Ramos', 'Cortés', 24, 'EXP-2026-001', 'Ingeniería en Computación', 'Servicio social completado exitosamente', 'MATUTINO 8:00-14:00', 'Sociedad de Software Libre', 1, '2026-04-14 07:43:21', NULL),
+(35, 107, 'Andrés', 'Flores', 'Pacheco', 21, 'EXP-2026-002', 'Nutrición', 'Servicio social concluido con carta de liberación', 'MATUTINO 7:00-13:00', 'Club de Nutrición Clínica', 1, '2026-04-14 07:43:21', NULL),
+(36, 108, 'Regina', 'Morales', 'Campos', 31, 'EXP-2026-003', 'Administración', 'Servicio social terminado, pendiente de titulación', 'VESPERTINO 14:00-20:00', 'Asociación de Administradores', 1, '2026-04-14 07:43:21', NULL),
+(37, 109, 'Emiliano', 'Medina', 'Tovar', 20, 'EXP-2026-004', 'Médico Cirujano', 'Servicio social completado en área clínica', 'MATUTINO 8:00-14:00', 'Sociedad Médica Estudiantil', 1, '2026-04-14 07:43:21', NULL),
+(38, 110, 'Valentina', 'Cruz', 'Maldonado', 37, 'EXP-2026-005', 'Criminología', 'Servicio social concluido, expediente completo', 'VESPERTINO 16:00-22:00', 'Sociedad de Criminología Aplicada', 1, '2026-04-14 07:43:21', NULL),
+(39, 111, 'Diego', 'Fuentes', 'Luna', 24, 'EXP-2027-001', 'Ingeniería en Computación', 'SS completado, PP pendiente de inicio', 'MATUTINO 8:00-14:00', 'Sociedad de Desarrollo Web', 1, '2026-04-14 07:50:06', NULL),
+(40, 112, 'Camila', 'Navarro', 'Sierra', 21, 'EXP-2027-002', 'Nutrición', 'SS terminado, esperando asignación de PP', 'MATUTINO 7:00-13:00', 'Club de Nutrición Deportiva', 1, '2026-04-14 07:50:06', NULL),
+(41, 113, 'Sebastián', 'Mendoza', 'Solís', 32, 'EXP-2027-003', 'Contaduría Pública', 'SS completado, PP pendiente de empresa', 'VESPERTINO 14:00-20:00', 'Asociación de Contaduría', 1, '2026-04-14 07:50:06', NULL),
+(42, 114, 'Renata', 'Peña', 'Orozco', 28, 'EXP-2027-004', 'Inteligencia Artificial', 'SS liberado, PP en trámite de asignación', 'MATUTINO 8:00-14:00', 'Sociedad de IA y Datos', 1, '2026-04-14 07:50:06', NULL),
+(43, 115, 'Mateo', 'Cabrera', 'Rangel', 37, 'EXP-2027-005', 'Criminología', 'SS concluido, PP pendiente por iniciar', 'VESPERTINO 16:00-22:00', 'Sociedad de Análisis Criminal', 1, '2026-04-14 07:50:06', NULL),
+(44, 116, 'Ximena', 'Cárdenas', 'Flores', 24, 'EXP-2028-001', 'Ingeniería en Computación', 'SS completado, PP en curso en SoftSoluciones', 'MATUTINO 8:00-14:00', 'Sociedad de Desarrollo Ágil', 1, '2026-04-14 07:53:16', NULL),
+(45, 117, 'Leonardo', 'García', 'Hidalgo', 31, 'EXP-2028-002', 'Administración', 'SS terminado, PP activas en despacho contable', 'VESPERTINO 14:00-20:00', 'Asociación de Liderazgo', 1, '2026-04-14 07:53:16', NULL),
+(46, 118, 'Isabella', 'Ruiz', 'Serrano', 20, 'EXP-2028-003', 'Médico Cirujano', 'SS completado, PP en curso en Hospital IMSS', 'MATUTINO 7:00-13:00', 'Sociedad Médica Estudiantil', 1, '2026-04-14 07:53:16', NULL),
+(47, 119, 'Santiago', 'Vázquez', 'Miranda', 28, 'EXP-2028-004', 'Inteligencia Artificial', 'SS liberado, PP en empresa de tecnología', 'MATUTINO 8:00-14:00', 'Club de Machine Learning', 1, '2026-04-14 07:53:16', NULL),
+(48, 120, 'Valeria', 'Hernández', 'Soto', 36, 'EXP-2028-005', 'Ciencias Políticas', 'SS concluido, PP en gobierno del estado', 'VESPERTINO 16:00-22:00', 'Sociedad de Análisis Político', 1, '2026-04-14 07:53:16', NULL),
+(49, 121, 'Fernando', 'Aguilar', 'Méndez', 24, 'EXP-2029-001', 'Ingeniería en Computación', 'Egresado - SS y PP completados, titulado', 'MATUTINO 8:00-14:00', 'Sociedad de Alumni', 0, '2026-04-14 07:55:18', NULL),
+(50, 122, 'Lucía', 'Espinosa', 'Chávez', 32, 'EXP-2029-002', 'Contaduría Pública', 'Egresada - Servicio social y prácticas concluidas', 'VESPERTINO 14:00-20:00', 'Asociación de Egresados', 0, '2026-04-14 07:55:18', NULL),
+(51, 123, 'Adrián', 'Luna', 'Ponce', 20, 'EXP-2029-003', 'Médico Cirujano', 'Exalumno - SS y PP completados, en servicio médico', 'MATUTINO 7:00-13:00', 'Asociación de Médicos Egresados', 0, '2026-04-14 07:55:18', NULL),
+(52, 124, 'Danna', 'Ochoa', 'Reyes', 34, 'EXP-2029-004', 'Negocios Internacionales', 'Egresada - Completó todos los requisitos de titulación', 'MATUTINO 8:00-14:00', 'Club de Egresados de Negocios', 0, '2026-04-14 07:55:18', NULL),
+(53, 125, 'Emmanuel', 'Godínez', 'Cruz', 37, 'EXP-2029-005', 'Criminología', 'Exalumno - Servicio y prácticas completados, titulado', 'VESPERTINO 16:00-22:00', 'Sociedad de Criminología Egresados', 0, '2026-04-14 07:55:18', NULL);
+
+
 
 --
 -- Dumping data for table `Actividades`
@@ -125,166 +372,6 @@ INSERT INTO `Administradores` (`Id_admin`, `Id_usuario`, `Nombre`, `Apellido_P`,
 -- Dumping data for table `Alumnos`
 --
 
-INSERT INTO `Alumnos` (`Id_alumno`, `Id_usuario`, `Nombre`, `Apellido_P`, `Apellido_M`, `Id_carrera`, `No_Expediente`, `Area_o_programa`, `Observaciones`, `Horario`, `Organizacion`, `Activo`, `Fecha_registro`, `Fecha_modificacion`) VALUES
-(19, 91, 'Juan', 'Pérez', 'García', 24, NULL, 'Ingeniería en Computación', 'Alumno con adeudo de servicio social', 'MATUTINO 8:00-14:00', NULL, 0, '2026-04-14 07:29:33', NULL),
-(20, 92, 'María', 'López', 'Hernández', 31, NULL, 'Administración', 'Pendiente de liberar servicio social', 'VESPERTINO 14:00-20:00', NULL, 0, '2026-04-14 07:29:33', NULL),
-(21, 93, 'Carlos', 'Martínez', 'Rodríguez', 20, NULL, 'Médico Cirujano', 'No ha iniciado trámites', 'MATUTINO 7:00-13:00', NULL, 0, '2026-04-14 07:29:33', NULL),
-(22, 94, 'Ana', 'Sánchez', 'Ramírez', 35, NULL, 'Turismo Internacional', 'Documentación incompleta', 'MIXTO', NULL, 0, '2026-04-14 07:29:33', NULL),
-(23, 95, 'Luis', 'Gómez', 'Torres', 18, NULL, 'Enfermería', 'Requisitos pendientes', 'MATUTINO 8:00-14:00', NULL, 0, '2026-04-14 07:29:33', NULL),
-(24, 96, 'Fernanda', 'Díaz', 'Flores', 28, 'EXP-2024-001', 'Inteligencia Artificial', 'Alumno regular, cursando servicio social', 'MATUTINO 8:00-14:00', 'Sociedad de Alumnos IA', 1, '2026-04-14 07:29:33', NULL),
-(25, 97, 'Alejandro', 'Castro', 'Mendoza', 21, 'EXP-2024-002', 'Nutrición', 'Excelente desempeño académico', 'VESPERTINO 14:00-20:00', 'Club de Nutrición Deportiva', 1, '2026-04-14 07:29:33', NULL),
-(26, 98, 'Valeria', 'Romero', 'Vega', 32, 'EXP-2024-003', 'Contaduría Pública', 'En proceso de titulación', 'MATUTINO 7:00-13:00', 'Asociación de Estudiantes de Contaduría', 1, '2026-04-14 07:29:33', NULL),
-(27, 99, 'Diego', 'Ortega', 'Jiménez', 26, 'EXP-2024-004', 'Ingeniería Mecánica', 'Participa en proyectos de investigación', 'MATUTINO 8:00-14:00', 'Sociedad de Ingeniería Mecánica', 1, '2026-04-14 07:29:33', NULL),
-(28, 100, 'Daniela', 'Reyes', 'Cruz', 37, 'EXP-2024-005', 'Criminología', 'Alumna destacada', 'VESPERTINO 16:00-22:00', 'Sociedad de Criminología', 1, '2026-04-14 07:29:33', NULL),
-(29, 101, 'Paola', 'Jiménez', 'Ríos', 28, 'EXP-2025-001', 'Inteligencia Artificial', 'Alumno activo, servicio social pendiente por iniciar', 'MATUTINO 8:00-14:00', 'Club de Robótica', 1, '2026-04-14 07:35:54', NULL),
-(30, 102, 'Ricardo', 'Mendoza', 'Silva', 33, 'EXP-2025-002', 'Economía y Finanzas', 'Pendiente de asignación de empresa para SS', 'VESPERTINO 14:00-20:00', 'Sociedad de Inversión', 1, '2026-04-14 07:35:54', NULL),
-(31, 103, 'Andrea', 'Guzmán', 'Lara', 19, 'EXP-2025-003', 'Fisioterapia', 'Documentación completa, esperando convenio', 'MATUTINO 7:00-13:00', 'Club de Deportes Adaptados', 1, '2026-04-14 07:35:54', NULL),
-(32, 104, 'Jorge', 'Herrera', 'Núñez', 34, 'EXP-2025-004', 'Negocios Internacionales', 'En trámite de asignación de proyecto', 'MATUTINO 8:00-14:00', 'Asociación de Comercio Exterior', 1, '2026-04-14 07:35:54', NULL),
-(33, 105, 'Mónica', 'Vega', 'Ortiz', 29, 'EXP-2025-005', 'Matemáticas Aplicadas', 'Listo para iniciar servicio social', 'VESPERTINO 16:00-22:00', 'Club de Matemáticas', 1, '2026-04-14 07:35:54', NULL),
-(34, 106, 'Sofía', 'Ramos', 'Cortés', 24, 'EXP-2026-001', 'Ingeniería en Computación', 'Servicio social completado exitosamente', 'MATUTINO 8:00-14:00', 'Sociedad de Software Libre', 1, '2026-04-14 07:43:21', NULL),
-(35, 107, 'Andrés', 'Flores', 'Pacheco', 21, 'EXP-2026-002', 'Nutrición', 'Servicio social concluido con carta de liberación', 'MATUTINO 7:00-13:00', 'Club de Nutrición Clínica', 1, '2026-04-14 07:43:21', NULL),
-(36, 108, 'Regina', 'Morales', 'Campos', 31, 'EXP-2026-003', 'Administración', 'Servicio social terminado, pendiente de titulación', 'VESPERTINO 14:00-20:00', 'Asociación de Administradores', 1, '2026-04-14 07:43:21', NULL),
-(37, 109, 'Emiliano', 'Medina', 'Tovar', 20, 'EXP-2026-004', 'Médico Cirujano', 'Servicio social completado en área clínica', 'MATUTINO 8:00-14:00', 'Sociedad Médica Estudiantil', 1, '2026-04-14 07:43:21', NULL),
-(38, 110, 'Valentina', 'Cruz', 'Maldonado', 37, 'EXP-2026-005', 'Criminología', 'Servicio social concluido, expediente completo', 'VESPERTINO 16:00-22:00', 'Sociedad de Criminología Aplicada', 1, '2026-04-14 07:43:21', NULL),
-(39, 111, 'Diego', 'Fuentes', 'Luna', 24, 'EXP-2027-001', 'Ingeniería en Computación', 'SS completado, PP pendiente de inicio', 'MATUTINO 8:00-14:00', 'Sociedad de Desarrollo Web', 1, '2026-04-14 07:50:06', NULL),
-(40, 112, 'Camila', 'Navarro', 'Sierra', 21, 'EXP-2027-002', 'Nutrición', 'SS terminado, esperando asignación de PP', 'MATUTINO 7:00-13:00', 'Club de Nutrición Deportiva', 1, '2026-04-14 07:50:06', NULL),
-(41, 113, 'Sebastián', 'Mendoza', 'Solís', 32, 'EXP-2027-003', 'Contaduría Pública', 'SS completado, PP pendiente de empresa', 'VESPERTINO 14:00-20:00', 'Asociación de Contaduría', 1, '2026-04-14 07:50:06', NULL),
-(42, 114, 'Renata', 'Peña', 'Orozco', 28, 'EXP-2027-004', 'Inteligencia Artificial', 'SS liberado, PP en trámite de asignación', 'MATUTINO 8:00-14:00', 'Sociedad de IA y Datos', 1, '2026-04-14 07:50:06', NULL),
-(43, 115, 'Mateo', 'Cabrera', 'Rangel', 37, 'EXP-2027-005', 'Criminología', 'SS concluido, PP pendiente por iniciar', 'VESPERTINO 16:00-22:00', 'Sociedad de Análisis Criminal', 1, '2026-04-14 07:50:06', NULL),
-(44, 116, 'Ximena', 'Cárdenas', 'Flores', 24, 'EXP-2028-001', 'Ingeniería en Computación', 'SS completado, PP en curso en SoftSoluciones', 'MATUTINO 8:00-14:00', 'Sociedad de Desarrollo Ágil', 1, '2026-04-14 07:53:16', NULL),
-(45, 117, 'Leonardo', 'García', 'Hidalgo', 31, 'EXP-2028-002', 'Administración', 'SS terminado, PP activas en despacho contable', 'VESPERTINO 14:00-20:00', 'Asociación de Liderazgo', 1, '2026-04-14 07:53:16', NULL),
-(46, 118, 'Isabella', 'Ruiz', 'Serrano', 20, 'EXP-2028-003', 'Médico Cirujano', 'SS completado, PP en curso en Hospital IMSS', 'MATUTINO 7:00-13:00', 'Sociedad Médica Estudiantil', 1, '2026-04-14 07:53:16', NULL),
-(47, 119, 'Santiago', 'Vázquez', 'Miranda', 28, 'EXP-2028-004', 'Inteligencia Artificial', 'SS liberado, PP en empresa de tecnología', 'MATUTINO 8:00-14:00', 'Club de Machine Learning', 1, '2026-04-14 07:53:16', NULL),
-(48, 120, 'Valeria', 'Hernández', 'Soto', 36, 'EXP-2028-005', 'Ciencias Políticas', 'SS concluido, PP en gobierno del estado', 'VESPERTINO 16:00-22:00', 'Sociedad de Análisis Político', 1, '2026-04-14 07:53:16', NULL),
-(49, 121, 'Fernando', 'Aguilar', 'Méndez', 24, 'EXP-2029-001', 'Ingeniería en Computación', 'Egresado - SS y PP completados, titulado', 'MATUTINO 8:00-14:00', 'Sociedad de Alumni', 0, '2026-04-14 07:55:18', NULL),
-(50, 122, 'Lucía', 'Espinosa', 'Chávez', 32, 'EXP-2029-002', 'Contaduría Pública', 'Egresada - Servicio social y prácticas concluidas', 'VESPERTINO 14:00-20:00', 'Asociación de Egresados', 0, '2026-04-14 07:55:18', NULL),
-(51, 123, 'Adrián', 'Luna', 'Ponce', 20, 'EXP-2029-003', 'Médico Cirujano', 'Exalumno - SS y PP completados, en servicio médico', 'MATUTINO 7:00-13:00', 'Asociación de Médicos Egresados', 0, '2026-04-14 07:55:18', NULL),
-(52, 124, 'Danna', 'Ochoa', 'Reyes', 34, 'EXP-2029-004', 'Negocios Internacionales', 'Egresada - Completó todos los requisitos de titulación', 'MATUTINO 8:00-14:00', 'Club de Egresados de Negocios', 0, '2026-04-14 07:55:18', NULL),
-(53, 125, 'Emmanuel', 'Godínez', 'Cruz', 37, 'EXP-2029-005', 'Criminología', 'Exalumno - Servicio y prácticas completados, titulado', 'VESPERTINO 16:00-22:00', 'Sociedad de Criminología Egresados', 0, '2026-04-14 07:55:18', NULL);
-
---
--- Dumping data for table `Audit_Log`
---
-
-INSERT INTO `Audit_Log` (`Id_audit`, `Tabla_afectada`, `Id_registro`, `Accion`, `Datos_anteriores`, `Datos_nuevos`, `Id_usuario`, `Direccion_ip`, `Fecha_hora`) VALUES
-(14, 'Alumnos', 9, 'INSERT', NULL, '{\"Id_usuario\": 41, \"Nombre\": \"Juan\", \"Apellido_P\": \"Pérez\"}', NULL, NULL, '2026-04-14 07:26:28'),
-(15, 'Alumnos', 10, 'INSERT', NULL, '{\"Id_usuario\": 42, \"Nombre\": \"María\", \"Apellido_P\": \"López\"}', NULL, NULL, '2026-04-14 07:26:28'),
-(16, 'Alumnos', 11, 'INSERT', NULL, '{\"Id_usuario\": 43, \"Nombre\": \"Carlos\", \"Apellido_P\": \"Martínez\"}', NULL, NULL, '2026-04-14 07:26:28'),
-(17, 'Alumnos', 12, 'INSERT', NULL, '{\"Id_usuario\": 44, \"Nombre\": \"Ana\", \"Apellido_P\": \"Sánchez\"}', NULL, NULL, '2026-04-14 07:26:28'),
-(18, 'Alumnos', 13, 'INSERT', NULL, '{\"Id_usuario\": 45, \"Nombre\": \"Luis\", \"Apellido_P\": \"Gómez\"}', NULL, NULL, '2026-04-14 07:26:28'),
-(19, 'Alumnos', 14, 'INSERT', NULL, '{\"Id_usuario\": 46, \"Nombre\": \"Fernanda\", \"Apellido_P\": \"Díaz\"}', NULL, NULL, '2026-04-14 07:26:28'),
-(20, 'Alumnos', 15, 'INSERT', NULL, '{\"Id_usuario\": 47, \"Nombre\": \"Alejandro\", \"Apellido_P\": \"Castro\"}', NULL, NULL, '2026-04-14 07:26:28'),
-(21, 'Alumnos', 16, 'INSERT', NULL, '{\"Id_usuario\": 48, \"Nombre\": \"Valeria\", \"Apellido_P\": \"Romero\"}', NULL, NULL, '2026-04-14 07:26:28'),
-(22, 'Alumnos', 17, 'INSERT', NULL, '{\"Id_usuario\": 49, \"Nombre\": \"Diego\", \"Apellido_P\": \"Ortega\"}', NULL, NULL, '2026-04-14 07:26:28'),
-(23, 'Alumnos', 18, 'INSERT', NULL, '{\"Id_usuario\": 50, \"Nombre\": \"Daniela\", \"Apellido_P\": \"Reyes\"}', NULL, NULL, '2026-04-14 07:26:28'),
-(24, 'Alumnos', 9, 'DELETE', '{\"Id_usuario\": 41, \"Nombre\": \"Juan\", \"Apellido_P\": \"Pérez\"}', NULL, NULL, NULL, '2026-04-14 07:27:11'),
-(25, 'Alumnos', 10, 'DELETE', '{\"Id_usuario\": 42, \"Nombre\": \"María\", \"Apellido_P\": \"López\"}', NULL, NULL, NULL, '2026-04-14 07:27:11'),
-(26, 'Alumnos', 11, 'DELETE', '{\"Id_usuario\": 43, \"Nombre\": \"Carlos\", \"Apellido_P\": \"Martínez\"}', NULL, NULL, NULL, '2026-04-14 07:27:11'),
-(27, 'Alumnos', 12, 'DELETE', '{\"Id_usuario\": 44, \"Nombre\": \"Ana\", \"Apellido_P\": \"Sánchez\"}', NULL, NULL, NULL, '2026-04-14 07:27:11'),
-(28, 'Alumnos', 13, 'DELETE', '{\"Id_usuario\": 45, \"Nombre\": \"Luis\", \"Apellido_P\": \"Gómez\"}', NULL, NULL, NULL, '2026-04-14 07:27:11'),
-(29, 'Alumnos', 14, 'DELETE', '{\"Id_usuario\": 46, \"Nombre\": \"Fernanda\", \"Apellido_P\": \"Díaz\"}', NULL, NULL, NULL, '2026-04-14 07:27:11'),
-(30, 'Alumnos', 15, 'DELETE', '{\"Id_usuario\": 47, \"Nombre\": \"Alejandro\", \"Apellido_P\": \"Castro\"}', NULL, NULL, NULL, '2026-04-14 07:27:11'),
-(31, 'Alumnos', 16, 'DELETE', '{\"Id_usuario\": 48, \"Nombre\": \"Valeria\", \"Apellido_P\": \"Romero\"}', NULL, NULL, NULL, '2026-04-14 07:27:11'),
-(32, 'Alumnos', 17, 'DELETE', '{\"Id_usuario\": 49, \"Nombre\": \"Diego\", \"Apellido_P\": \"Ortega\"}', NULL, NULL, NULL, '2026-04-14 07:27:11'),
-(33, 'Alumnos', 18, 'DELETE', '{\"Id_usuario\": 50, \"Nombre\": \"Daniela\", \"Apellido_P\": \"Reyes\"}', NULL, NULL, NULL, '2026-04-14 07:27:11'),
-(34, 'Alumnos', 19, 'INSERT', NULL, '{\"Id_usuario\": 91, \"Nombre\": \"Juan\", \"Apellido_P\": \"Pérez\"}', NULL, NULL, '2026-04-14 07:29:33'),
-(35, 'Alumnos', 20, 'INSERT', NULL, '{\"Id_usuario\": 92, \"Nombre\": \"María\", \"Apellido_P\": \"López\"}', NULL, NULL, '2026-04-14 07:29:33'),
-(36, 'Alumnos', 21, 'INSERT', NULL, '{\"Id_usuario\": 93, \"Nombre\": \"Carlos\", \"Apellido_P\": \"Martínez\"}', NULL, NULL, '2026-04-14 07:29:33'),
-(37, 'Alumnos', 22, 'INSERT', NULL, '{\"Id_usuario\": 94, \"Nombre\": \"Ana\", \"Apellido_P\": \"Sánchez\"}', NULL, NULL, '2026-04-14 07:29:33'),
-(38, 'Alumnos', 23, 'INSERT', NULL, '{\"Id_usuario\": 95, \"Nombre\": \"Luis\", \"Apellido_P\": \"Gómez\"}', NULL, NULL, '2026-04-14 07:29:33'),
-(39, 'Alumnos', 24, 'INSERT', NULL, '{\"Id_usuario\": 96, \"Nombre\": \"Fernanda\", \"Apellido_P\": \"Díaz\"}', NULL, NULL, '2026-04-14 07:29:33'),
-(40, 'Alumnos', 25, 'INSERT', NULL, '{\"Id_usuario\": 97, \"Nombre\": \"Alejandro\", \"Apellido_P\": \"Castro\"}', NULL, NULL, '2026-04-14 07:29:33'),
-(41, 'Alumnos', 26, 'INSERT', NULL, '{\"Id_usuario\": 98, \"Nombre\": \"Valeria\", \"Apellido_P\": \"Romero\"}', NULL, NULL, '2026-04-14 07:29:33'),
-(42, 'Alumnos', 27, 'INSERT', NULL, '{\"Id_usuario\": 99, \"Nombre\": \"Diego\", \"Apellido_P\": \"Ortega\"}', NULL, NULL, '2026-04-14 07:29:33'),
-(43, 'Alumnos', 28, 'INSERT', NULL, '{\"Id_usuario\": 100, \"Nombre\": \"Daniela\", \"Apellido_P\": \"Reyes\"}', NULL, NULL, '2026-04-14 07:29:33'),
-(44, 'Alumnos', 29, 'INSERT', NULL, '{\"Id_usuario\": 101, \"Nombre\": \"Paola\", \"Apellido_P\": \"Jiménez\"}', NULL, NULL, '2026-04-14 07:35:54'),
-(45, 'Alumnos', 30, 'INSERT', NULL, '{\"Id_usuario\": 102, \"Nombre\": \"Ricardo\", \"Apellido_P\": \"Mendoza\"}', NULL, NULL, '2026-04-14 07:35:54'),
-(46, 'Alumnos', 31, 'INSERT', NULL, '{\"Id_usuario\": 103, \"Nombre\": \"Andrea\", \"Apellido_P\": \"Guzmán\"}', NULL, NULL, '2026-04-14 07:35:54'),
-(47, 'Alumnos', 32, 'INSERT', NULL, '{\"Id_usuario\": 104, \"Nombre\": \"Jorge\", \"Apellido_P\": \"Herrera\"}', NULL, NULL, '2026-04-14 07:35:54'),
-(48, 'Alumnos', 33, 'INSERT', NULL, '{\"Id_usuario\": 105, \"Nombre\": \"Mónica\", \"Apellido_P\": \"Vega\"}', NULL, NULL, '2026-04-14 07:35:54'),
-(49, 'Alumnos', 34, 'INSERT', NULL, '{\"Id_usuario\": 106, \"Nombre\": \"Sofía\", \"Apellido_P\": \"Ramos\"}', NULL, NULL, '2026-04-14 07:43:21'),
-(50, 'Alumnos', 35, 'INSERT', NULL, '{\"Id_usuario\": 107, \"Nombre\": \"Andrés\", \"Apellido_P\": \"Flores\"}', NULL, NULL, '2026-04-14 07:43:21'),
-(51, 'Alumnos', 36, 'INSERT', NULL, '{\"Id_usuario\": 108, \"Nombre\": \"Regina\", \"Apellido_P\": \"Morales\"}', NULL, NULL, '2026-04-14 07:43:21'),
-(52, 'Alumnos', 37, 'INSERT', NULL, '{\"Id_usuario\": 109, \"Nombre\": \"Emiliano\", \"Apellido_P\": \"Medina\"}', NULL, NULL, '2026-04-14 07:43:21'),
-(53, 'Alumnos', 38, 'INSERT', NULL, '{\"Id_usuario\": 110, \"Nombre\": \"Valentina\", \"Apellido_P\": \"Cruz\"}', NULL, NULL, '2026-04-14 07:43:21'),
-(54, 'Alumnos', 39, 'INSERT', NULL, '{\"Id_usuario\": 111, \"Nombre\": \"Diego\", \"Apellido_P\": \"Fuentes\"}', NULL, NULL, '2026-04-14 07:50:06'),
-(55, 'Alumnos', 40, 'INSERT', NULL, '{\"Id_usuario\": 112, \"Nombre\": \"Camila\", \"Apellido_P\": \"Navarro\"}', NULL, NULL, '2026-04-14 07:50:06'),
-(56, 'Alumnos', 41, 'INSERT', NULL, '{\"Id_usuario\": 113, \"Nombre\": \"Sebastián\", \"Apellido_P\": \"Mendoza\"}', NULL, NULL, '2026-04-14 07:50:06'),
-(57, 'Alumnos', 42, 'INSERT', NULL, '{\"Id_usuario\": 114, \"Nombre\": \"Renata\", \"Apellido_P\": \"Peña\"}', NULL, NULL, '2026-04-14 07:50:06'),
-(58, 'Alumnos', 43, 'INSERT', NULL, '{\"Id_usuario\": 115, \"Nombre\": \"Mateo\", \"Apellido_P\": \"Cabrera\"}', NULL, NULL, '2026-04-14 07:50:06'),
-(59, 'Alumnos', 44, 'INSERT', NULL, '{\"Id_usuario\": 116, \"Nombre\": \"Ximena\", \"Apellido_P\": \"Cárdenas\"}', NULL, NULL, '2026-04-14 07:53:16'),
-(60, 'Alumnos', 45, 'INSERT', NULL, '{\"Id_usuario\": 117, \"Nombre\": \"Leonardo\", \"Apellido_P\": \"García\"}', NULL, NULL, '2026-04-14 07:53:16'),
-(61, 'Alumnos', 46, 'INSERT', NULL, '{\"Id_usuario\": 118, \"Nombre\": \"Isabella\", \"Apellido_P\": \"Ruiz\"}', NULL, NULL, '2026-04-14 07:53:16'),
-(62, 'Alumnos', 47, 'INSERT', NULL, '{\"Id_usuario\": 119, \"Nombre\": \"Santiago\", \"Apellido_P\": \"Vázquez\"}', NULL, NULL, '2026-04-14 07:53:16'),
-(63, 'Alumnos', 48, 'INSERT', NULL, '{\"Id_usuario\": 120, \"Nombre\": \"Valeria\", \"Apellido_P\": \"Hernández\"}', NULL, NULL, '2026-04-14 07:53:16'),
-(64, 'Alumnos', 49, 'INSERT', NULL, '{\"Id_usuario\": 121, \"Nombre\": \"Fernando\", \"Apellido_P\": \"Aguilar\"}', NULL, NULL, '2026-04-14 07:55:18'),
-(65, 'Alumnos', 50, 'INSERT', NULL, '{\"Id_usuario\": 122, \"Nombre\": \"Lucía\", \"Apellido_P\": \"Espinosa\"}', NULL, NULL, '2026-04-14 07:55:18'),
-(66, 'Alumnos', 51, 'INSERT', NULL, '{\"Id_usuario\": 123, \"Nombre\": \"Adrián\", \"Apellido_P\": \"Luna\"}', NULL, NULL, '2026-04-14 07:55:18'),
-(67, 'Alumnos', 52, 'INSERT', NULL, '{\"Id_usuario\": 124, \"Nombre\": \"Danna\", \"Apellido_P\": \"Ochoa\"}', NULL, NULL, '2026-04-14 07:55:18'),
-(68, 'Alumnos', 53, 'INSERT', NULL, '{\"Id_usuario\": 125, \"Nombre\": \"Emmanuel\", \"Apellido_P\": \"Godínez\"}', NULL, NULL, '2026-04-14 07:55:18');
-
---
--- Dumping data for table `Carreras`
---
-
-INSERT INTO `Carreras` (`Id_carrera`, `Id_Facultad`, `Nombre`, `Activo`, `Fecha_registro`) VALUES
-(13, 1, 'Licenciatura en Biología', 1, '2026-04-14 05:57:50'),
-(14, 1, 'Licenciatura en Ciencias Ambientales', 1, '2026-04-14 05:57:50'),
-(15, 1, 'Licenciatura en Gastronomía y Hotelería', 1, '2026-04-14 05:57:50'),
-(16, 1, 'Licenciatura en Medicina Veterinaria y Zootecnia', 1, '2026-04-14 05:57:50'),
-(17, 1, 'Licenciatura en Naturopatía', 1, '2026-04-14 05:57:50'),
-(18, 2, 'Licenciatura en Enfermería y Obstetricia', 1, '2026-04-14 05:59:37'),
-(19, 2, 'Licenciatura en Fisioterapia', 1, '2026-04-14 05:59:37'),
-(20, 2, 'Licenciatura en Médico Cirujano ', 1, '2026-04-14 05:59:37'),
-(21, 2, 'Licenciatura en Nutrición', 1, '2026-04-14 05:59:37'),
-(22, 2, 'Licenciatura en Química Clínica', 1, '2026-04-14 05:59:37'),
-(23, 3, 'Licenciatura en Cirujano Dentista', 1, '2026-04-14 06:00:33'),
-(24, 4, 'Licenciatura en Ingeniería en Computación', 1, '2026-04-14 06:02:26'),
-(25, 4, 'Licenciatura en Ingeniería en Sistemas Electrónicos', 1, '2026-04-14 06:02:26'),
-(26, 4, 'Licenciatura en Ingeniería Mecánica', 1, '2026-04-14 06:02:26'),
-(27, 4, 'Licenciatura en Ingeniería Química', 1, '2026-04-14 06:02:26'),
-(28, 4, 'Licenciatura en Inteligencia Artificial', 1, '2026-04-14 06:02:26'),
-(29, 4, 'Licenciatura en Matemáticas Aplicadas', 1, '2026-04-14 06:02:26'),
-(30, 4, 'Licenciatura en Química Industrial', 1, '2026-04-14 06:02:26'),
-(31, 5, 'Licenciatura en Administración', 1, '2026-04-14 06:03:45'),
-(32, 5, 'Licenciatura en Contaduría Pública', 1, '2026-04-14 06:03:45'),
-(33, 5, 'Licenciatura en Economía y Finanzas', 1, '2026-04-14 06:03:45'),
-(34, 5, 'Licenciatura en Negocios Internacionales', 1, '2026-04-14 06:03:45'),
-(35, 5, 'Licenciatura en Turismo Internacional', 1, '2026-04-14 06:03:45'),
-(36, 6, 'Licenciatura en Ciencias Políticas y Administración Pública', 1, '2026-04-14 06:05:24'),
-(37, 6, 'Licenciatura en Criminología', 1, '2026-04-14 06:05:24'),
-(38, 6, 'Licenciatura en Derecho ', 1, '2026-04-14 06:05:24'),
-(39, 7, 'Licenciatura en Psicología', 1, '2026-04-14 06:06:31'),
-(40, 7, 'Licenciatura en Psicoterapia', 1, '2026-04-14 06:06:31'),
-(41, 7, 'Licenciatura en Sociología', 1, '2026-04-14 06:06:31'),
-(42, 7, 'Licenciatura en Trabajo Social', 1, '2026-04-14 06:06:31'),
-(43, 8, 'Licenciatura en Ciencias de la Educación', 1, '2026-04-14 06:07:44'),
-(44, 8, 'Licenciatura en Comunicación e Innovación Educativa', 1, '2026-04-14 06:07:44'),
-(45, 8, 'Licenciatura en Educación Inicial y Gestión de Instituciones', 1, '2026-04-14 06:07:44'),
-(46, 9, 'Licenciatura en Antropología', 1, '2026-04-14 06:08:57'),
-(47, 9, 'Licenciatura en Enseñanza de Lenguas', 1, '2026-04-14 06:08:57'),
-(48, 9, 'Licenciatura en Filosofía', 1, '2026-04-14 06:08:57'),
-(49, 9, 'Licenciatura en Historia', 1, '2026-04-14 06:08:57'),
-(50, 9, 'Licenciatura en Lengua y Literatura Hispanoamericana ', 1, '2026-04-14 06:08:57'),
-(51, 10, 'Licenciatura en Ciencias de la Familia', 1, '2026-04-14 06:09:36'),
-(52, 10, 'Licenciatura en Educación Especial', 1, '2026-04-14 06:09:36'),
-(53, 10, 'Licenciatura en Gerontología Social', 1, '2026-04-14 06:09:36'),
-(54, 11, 'Licenciatura en Arquitectura', 1, '2026-04-14 06:10:38'),
-(55, 11, 'Licenciatura en Artes Visuales', 1, '2026-04-14 06:10:38'),
-(56, 11, 'Licenciatura en Diseño Automotriz', 1, '2026-04-14 06:10:38'),
-(57, 11, 'Licenciatura en Diseño Gráfico', 1, '2026-04-14 06:10:38'),
-(58, 11, 'Licenciatura en Diseño Textil', 1, '2026-04-14 06:10:38'),
-(70, 12, 'Licenciatura en Administración', 1, '2026-04-14 06:12:53'),
-(71, 12, 'Licenciatura en Ciencias de la Educación', 1, '2026-04-14 06:12:53'),
-(72, 12, 'Licenciatura en Ciencias Políticas y Administración Pública', 1, '2026-04-14 06:12:53'),
-(73, 12, 'Licenciatura en Contaduría Pública', 1, '2026-04-14 06:12:53'),
-(74, 12, 'Licenciatura en Derecho', 1, '2026-04-14 06:12:53'),
-(75, 12, 'Licenciatura en Educación Inicial y Gestión de Instituciones', 1, '2026-04-14 06:12:53'),
-(76, 12, 'Licenciatura en Enseñanza de Lenguas', 1, '2026-04-14 06:12:53'),
-(77, 12, 'Licenciatura en Ingeniería en Computación', 1, '2026-04-14 06:12:53'),
-(78, 12, 'Licenciatura en Nutrición', 1, '2026-04-14 06:12:53'),
-(79, 12, 'Licenciatura en Psicología', 1, '2026-04-14 06:12:53'),
-(80, 12, 'Licenciatura en Turismo Internacional', 1, '2026-04-14 06:12:53');
 
 --
 -- Dumping data for table `Contactos_Alumno`
@@ -380,47 +467,6 @@ INSERT INTO `Contactos_Alumno` (`Id_contacto`, `Id_alumno`, `Tipo`, `Valor`, `Pr
 (104, 53, 'TELEFONO_CELULAR', '555-2029-005', 1, 1, '2026-04-14 07:55:19'),
 (105, 53, 'OTRO', '@emmanuel_godinez', 0, 0, '2026-04-14 07:55:19');
 
---
--- Dumping data for table `Empresas`
---
-
-INSERT INTO `Empresas` (`Id_empresa`, `Nombre`, `Descripcion`, `Razon_social`, `RFC`, `Direccion`, `Sitio_web`, `Activo`, `Fecha_registro`, `Fecha_modificacion`) VALUES
-(1, 'Tecnológica del Norte S.A.', 'Empresa de desarrollo de software y soluciones tecnológicas para la industria.', 'Tecnológica del Norte S.A. de C.V.', 'TNO9801125AB', 'Blvd. Industrial 1450, Parque Industrial Norte, Tlaxcala, Tlax. C.P. 90000', 'https://tecnorte.com.mx', 1, '2026-03-10 03:52:22', NULL),
-(2, 'Grupo Industrial Tlaxcala', 'Manufactura y distribución de componentes metálicos para la industria automotriz.', 'Grupo Industrial Tlaxcala S.A. de C.V.', 'GIT0305098CD', 'Carretera Federal 119 Km 12, Ixtacuixtla, Tlaxcala C.P. 90250', 'https://grupointlax.mx', 1, '2026-03-10 03:52:22', NULL),
-(3, 'Gobierno del Estado de Tlaxcala', 'Dirección de Tecnologías de la Información del gobierno estatal.', 'Gobierno del Estado Libre y Soberano de Tlaxcala', 'GET540101000', 'Plaza de la Constitución S/N, Tlaxcala, Tlax. C.P. 90000', 'https://tlaxcala.gob.mx', 1, '2026-03-10 03:52:22', NULL),
-(4, 'Hospital Regional IMSS', 'Unidad médica de atención y servicios de salud del IMSS en Tlaxcala.', 'Instituto Mexicano del Seguro Social', 'IMS4310261I3', 'Av. Juárez 22, Santa Ana Chiautempan, Tlax. C.P. 90800', 'https://imss.gob.mx', 1, '2026-03-10 03:52:22', NULL),
-(5, 'Contadores & Asociados Tlax', 'Despacho contable y fiscal con más de 20 años en la región.', 'Contadores y Asociados Tlaxcala S.C.', 'CAT010612EF5', 'Av. Independencia 340 Local 5, Apizaco, Tlax. C.P. 90300', NULL, 1, '2026-03-10 03:52:22', NULL),
-(6, 'TechStartup MX', 'Startup de desarrollo de aplicaciones móviles y web. EN PAUSA.', 'TechStartup México S.A. de C.V.', 'TSM2012099GH', 'Coworking Center, Tlaxcala, Tlax.', 'https://techstartupmx.io', 0, '2026-03-10 03:52:22', NULL),
-(7, 'SoftSoluciones MX', 'Desarrollo de software a medida y consultoría IT.', 'SoftSoluciones México S.A. de C.V.', 'SME200101ABC', 'Av. Tecnológico 123, Tlaxcala, Tlax. C.P. 90100', 'https://softsoluciones.mx', 1, '2026-04-14 05:13:59', NULL),
-(8, 'Constructora Palma Real', 'Construcción de obra civil y residencial.', 'Constructora Palma Real S.A. de C.V.', 'CPR180321DEF', 'Blvd. Sur 456, Apizaco, Tlax. C.P. 90300', NULL, 1, '2026-04-14 05:13:59', NULL),
-(9, 'Farmacias Salud Total', 'Cadena de farmacias y servicios médicos.', 'Farmacias Salud Total S.A. de C.V.', 'FST220101GHI', 'Av. Juárez 789, Tlaxcala, Tlax. C.P. 90000', 'https://saludtotal.com.mx', 1, '2026-04-14 05:13:59', NULL),
-(10, 'Logística y Transportes UNO', 'Servicios logísticos y de transporte de carga.', 'Logística UNO S.A. de C.V.', 'LTU150505JKL', 'Carretera Tlaxcala-Puebla Km 5, San Pablo Apetatitlán, Tlax. C.P. 90600', NULL, 1, '2026-04-14 05:13:59', NULL),
-(11, 'Consultoría Estratégica Integral', 'Consultoría en negocios y procesos administrativos.', 'CEI Consultores S.C.', 'CEI190909MNO', 'Calle Morelos 234, Centro, Tlaxcala, Tlax. C.P. 90000', 'https://ceiconsultores.mx', 1, '2026-04-14 05:13:59', NULL),
-(12, 'Innovación Textil del Centro', 'Fabricación de textiles y prendas de vestir.', 'Innovación Textil S.A. de C.V.', 'ITC170303PQR', 'Parque Industrial Xicohténcatl, Nave 7, Tzompantepec, Tlax. C.P. 90490', NULL, 1, '2026-04-14 05:13:59', NULL),
-(13, 'Autopartes Tlaxcala', 'Fabricación de autopartes para la industria automotriz.', 'Autopartes Tlaxcala S.A. de C.V.', 'AUT200404STU', 'Av. Industrial 789, Santa Ana Chiautempan, Tlax. C.P. 90800', 'https://autopartestlax.mx', 1, '2026-04-14 05:13:59', NULL),
-(14, 'Laboratorios Químicos del Centro', 'Análisis químicos y control de calidad.', 'Laboratorios Químicos del Centro S.A. de C.V.', 'LQC160606VWX', 'Calle Ciencia 45, Texcoco, Tlax. C.P. 90500', NULL, 1, '2026-04-14 05:13:59', NULL),
-(15, 'Marketing Digital Eficaz', 'Agencia de marketing digital y publicidad online.', 'MDE Marketing S.A. de C.V.', 'MDE210707XYZ', 'Blvd. Independencia 567, Apizaco, Tlax. C.P. 90300', 'https://mdeficaz.com', 1, '2026-04-14 05:13:59', NULL),
-(16, 'Energías Limpias Tlaxcala', 'Instalación y mantenimiento de paneles solares.', 'Energías Limpias S.A. de C.V.', 'ELT180808ABC', 'Carretera a Huamantla Km 8, Huamantla, Tlax. C.P. 90500', 'https://energiaslimpias.mx', 1, '2026-04-14 05:13:59', NULL),
-(17, 'Seguridad Privada Águila', 'Servicios de seguridad y vigilancia.', 'Seguridad Águila S.A. de C.V.', 'SPA190909DEF', 'Calle 5 de Mayo 123, Tlaxcala, Tlax. C.P. 90000', NULL, 1, '2026-04-14 05:13:59', NULL),
-(18, 'Restaurantes La Hacienda', 'Cadena de restaurantes de comida mexicana.', 'Restaurantes La Hacienda S.A. de C.V.', 'RLH200101GHI', 'Blvd. Tlahuicole 890, Tlaxcala, Tlax. C.P. 90100', 'https://lahacienda.com.mx', 1, '2026-04-14 05:13:59', NULL),
-(19, 'Centro Educativo Integral', 'Institución educativa privada nivel básico y medio.', 'Centro Educativo Integral S.C.', 'CEI210202JKL', 'Av. Universidad 456, San Pablo del Monte, Tlax. C.P. 90900', NULL, 1, '2026-04-14 05:13:59', NULL),
-(20, 'Despacho Jurídico Justicia', 'Servicios legales y asesoría jurídica.', 'Despacho Justicia S.C.', 'DJJ220303MNO', 'Calle Independencia 345, Centro, Tlaxcala, Tlax. C.P. 90000', NULL, 1, '2026-04-14 05:13:59', NULL),
-(21, 'Turismo Aventura Tlaxcala', 'Agencia de viajes y turismo de aventura.', 'Turismo Aventura S.A. de C.V.', 'TAT230404PQR', 'Av. La Paz 678, Huamantla, Tlax. C.P. 90500', 'https://aventuratravel.mx', 1, '2026-04-14 05:13:59', NULL),
-(22, 'Impresiones Rápidas Digital', 'Servicios de impresión y papelería.', 'Impresiones Digital S.A. de C.V.', 'IRD240505STU', 'Calle Hidalgo 901, Apizaco, Tlax. C.P. 90300', NULL, 1, '2026-04-14 05:13:59', NULL),
-(23, 'Ferretería Construrama', 'Venta de materiales para construcción.', 'Ferretería Construrama S.A. de C.V.', 'FCS250606VWX', 'Av. Juárez 234, Tlaxco, Tlax. C.P. 90250', 'https://construrama.mx', 1, '2026-04-14 05:13:59', NULL),
-(24, 'Estética y Bienestar Spa', 'Servicios de estética, spa y bienestar.', 'Estética Bienestar S.A. de C.V.', 'EBS260707XYZ', 'Blvd. San Luis 567, Chiautempan, Tlax. C.P. 90800', NULL, 1, '2026-04-14 05:13:59', NULL),
-(25, 'Transportes Ejecutivos VIP', 'Servicio de transporte ejecutivo y turístico.', 'Transportes VIP S.A. de C.V.', 'TVP270808ABC', 'Carretera a Puebla Km 12, Zacatelco, Tlax. C.P. 90700', 'https://transportesvip.mx', 1, '2026-04-14 05:13:59', NULL),
-(26, 'Café y Repostería Delicia', 'Cadena de cafeterías y repostería fina.', 'Café Delicia S.A. de C.V.', 'CDS280909DEF', 'Plaza Central Local 12, Tlaxcala, Tlax. C.P. 90000', NULL, 1, '2026-04-14 05:13:59', NULL),
-(27, 'Servicios Contables Fiscalia', 'Despacho contable y fiscal.', 'Fiscalia Contadores S.C.', 'FCS291010GHI', 'Calle Comercio 789, Apizaco, Tlax. C.P. 90300', NULL, 1, '2026-04-14 05:13:59', NULL),
-(28, 'Mueblería Hogar Ideal', 'Venta de muebles y decoración.', 'Mueblería Hogar Ideal S.A. de C.V.', 'MHI301111JKL', 'Av. Industrial 456, Tlaxcala, Tlax. C.P. 90100', 'https://hogarideal.mx', 1, '2026-04-14 05:13:59', NULL),
-(29, 'Clínica Dental Sonrisas', 'Servicios odontológicos.', 'Clínica Dental Sonrisas S.C.', 'CDS311212MNO', 'Calle Salud 123, San Pablo del Monte, Tlax. C.P. 90900', NULL, 1, '2026-04-14 05:13:59', NULL),
-(30, 'Abarrotes Don Juan', 'Tienda de abarrotes y productos básicos.', 'Abarrotes Don Juan S.A. de C.V.', 'ADJ320101PQR', 'Calle Hidalgo 45, Huamantla, Tlax. C.P. 90500', NULL, 1, '2026-04-14 05:13:59', NULL),
-(31, 'Taller Mecánico Veloz', 'Servicio mecánico automotriz.', 'Taller Veloz S.A. de C.V.', 'TMV330202STU', 'Blvd. Norte 678, Apizaco, Tlax. C.P. 90300', NULL, 1, '2026-04-14 05:13:59', NULL),
-(32, 'Estudio Fotográfico Imagen', 'Servicios de fotografía y video.', 'Estudio Imagen S.C.', 'EIS340303VWX', 'Av. Juárez 901, Tlaxcala, Tlax. C.P. 90000', 'https://estudioimagen.mx', 1, '2026-04-14 05:13:59', NULL),
-(33, 'Gimnasio Fitness Total', 'Centro de acondicionamiento físico.', 'Gimnasio Fitness Total S.A. de C.V.', 'GFT350404XYZ', 'Blvd. Tlahuicole 234, Tlaxcala, Tlax. C.P. 90100', NULL, 1, '2026-04-14 05:13:59', NULL),
-(34, 'Librería y Papelería Saber', 'Venta de libros y artículos de papelería.', 'Librería Saber S.A. de C.V.', 'LSS360505ABC', 'Calle Morelos 567, Centro, Tlaxcala, Tlax. C.P. 90000', NULL, 1, '2026-04-14 05:13:59', NULL),
-(35, 'Veterinaria Mascotas Felices', 'Servicios veterinarios y venta de mascotas.', 'Veterinaria Mascotas S.A. de C.V.', 'VMF370606DEF', 'Av. Universidad 890, San Pablo del Monte, Tlax. C.P. 90900', 'https://mascotasfelices.mx', 1, '2026-04-14 05:13:59', NULL),
-(36, 'Agencia de Viajes Destinos', 'Agencia de viajes y turismo.', 'Agencia Destinos S.A. de C.V.', 'ADV380707GHI', 'Blvd. Independencia 123, Apizaco, Tlax. C.P. 90300', NULL, 1, '2026-04-14 05:13:59', NULL);
 
 --
 -- Dumping data for table `Encuestas`
@@ -432,23 +478,6 @@ INSERT INTO `Encuestas` (`Id_encuesta`, `Nombre`, `Descripcion`, `Id_servicio`, 
 (9, 'Evaluación del Desempeño del Prestador de Servicio Social', 'Encuesta para que la dependencia evalúe el desempeño del alumno durante su Servicio Social', 1, 1, '2026-04-14', '2027-04-14', '2026-04-14 08:34:08', NULL),
 (10, 'Evaluación del Desempeño del Prestador de Practicas Profesionales', 'Encuesta para que la dependencia evalúe el desempeño del alumno durante sus Practicas Profesionales', 2, 1, '2026-04-14', '2027-04-14', '2026-04-14 08:37:42', NULL);
 
---
--- Dumping data for table `Facultades`
---
-
-INSERT INTO `Facultades` (`Id_Facultad`, `Nombre`) VALUES
-(1, 'Facultad de\r\nAgrobiología'),
-(2, 'Facultad de\r\nCiencias de la Salud'),
-(3, 'Facultad de\r\nOdontología'),
-(4, 'Facultad de\r\nCiencias Básicas Ingeniería y Tecnología'),
-(5, 'Facultad de\r\nCiencias Económico Administrativas'),
-(6, 'Facultad de\r\nDerecho, Ciencias Políticas y Criminología'),
-(7, 'Facultad de\r\nTrabajo Social, Sociología y Psicología'),
-(8, 'Facultad de\r\nCiencias de la Educación'),
-(9, 'Facultad de\r\nFilosofía y Letras'),
-(10, 'Facultad de\r\nCiencias para el Desarrollo Humano'),
-(11, 'Facultad de\r\nDiseño, Arte y Arquitectura'),
-(12, 'Unidad Académica Multidisciplinaria campus Calpulalpan');
 
 --
 -- Dumping data for table `Permisos`
@@ -796,14 +825,6 @@ INSERT INTO `Respuestas` (`Id_respuesta`, `Id_pregunta`, `Id_alumno`, `Id_encues
 (292, 91, 51, 10, 2, '5', '2026-04-05 09:01:40'),
 (293, 92, 51, 10, 2, 'Muy responsable con los pacientes. Buena actitud.', '2026-04-05 09:01:40');
 
---
--- Dumping data for table `Tipos_Usuario`
---
-
-INSERT INTO `Tipos_Usuario` (`Id_tipo_usuario`, `Nombre_tipo_usuario`, `Descripcion`, `Activo`, `Fecha_registro`) VALUES
-(1, 'ADMIN', 'Administrador del sistema con acceso completo', 1, '2026-03-10 03:52:22'),
-(2, 'ALUMNO', 'Alumno regular del sistema', 1, '2026-03-10 03:52:22'),
-(3, 'COORDINADOR', 'Coordinador de carrera con permisos intermedios', 1, '2026-03-10 03:52:22');
 
 --
 -- Dumping data for table `TipoUsuarios_Permiso`
@@ -826,76 +847,6 @@ INSERT INTO `TipoUsuarios_Permiso` (`Id_tipo_usuario`, `Id_permiso`, `Fecha_asig
 (2, 5, '2026-03-10 03:52:22'),
 (2, 9, '2026-03-10 03:52:22');
 
---
--- Dumping data for table `Usuarios`
---
-
-INSERT INTO `Usuarios` (`Id_usuario`, `Matricula`, `Contrasena`, `Id_tipo_usuario`, `Activo`, `Fecha_registro`, `Fecha_ultimo_acceso`, `Intentos_fallidos`, `Bloqueado`) VALUES
-(61, '1001', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(62, '1002', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(63, '1003', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(64, '1004', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(65, '1005', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(66, '1006', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(67, '1007', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(68, '1008', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(69, '1009', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(70, '1010', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(71, '1011', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(72, '1012', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(73, '1013', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(74, '1014', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(75, '1015', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(76, '1016', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(77, '1017', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(78, '1018', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(79, '1019', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(80, '1020', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(81, '1021', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(82, '1022', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(83, '1023', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(84, '1024', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(85, '1025', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(86, '1026', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(87, '1027', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(88, '1028', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(89, '1029', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(90, '1030', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 1, 1, '2026-04-14 07:28:52', NULL, 0, 0),
-(91, '20240001', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 0, '2026-04-14 07:29:33', NULL, 0, 0),
-(92, '20240002', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 0, '2026-04-14 07:29:33', NULL, 0, 0),
-(93, '20240003', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 0, '2026-04-14 07:29:33', NULL, 0, 0),
-(94, '20240004', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 0, '2026-04-14 07:29:33', NULL, 0, 0),
-(95, '20240005', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 0, '2026-04-14 07:29:33', NULL, 0, 0),
-(96, '20240006', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:29:33', NULL, 0, 0),
-(97, '20240007', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:29:33', NULL, 0, 0),
-(98, '20240008', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:29:33', NULL, 0, 0),
-(99, '20240009', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:29:33', NULL, 0, 0),
-(100, '20240010', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:29:33', NULL, 0, 0),
-(101, '20250001', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:35:54', NULL, 0, 0),
-(102, '20250002', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:35:54', NULL, 0, 0),
-(103, '20250003', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:35:54', NULL, 0, 0),
-(104, '20250004', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:35:54', NULL, 0, 0),
-(105, '20250005', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:35:54', NULL, 0, 0),
-(106, '20260001', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:43:21', NULL, 0, 0),
-(107, '20260002', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:43:21', NULL, 0, 0),
-(108, '20260003', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:43:21', NULL, 0, 0),
-(109, '20260004', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:43:21', NULL, 0, 0),
-(110, '20260005', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:43:21', NULL, 0, 0),
-(111, '20270001', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:50:06', NULL, 0, 0),
-(112, '20270002', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:50:06', NULL, 0, 0),
-(113, '20270003', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:50:06', NULL, 0, 0),
-(114, '20270004', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:50:06', NULL, 0, 0),
-(115, '20270005', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:50:06', NULL, 0, 0),
-(116, '20280001', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:53:16', NULL, 0, 0),
-(117, '20280002', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:53:16', NULL, 0, 0),
-(118, '20280003', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:53:16', NULL, 0, 0),
-(119, '20280004', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:53:16', NULL, 0, 0),
-(120, '20280005', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:53:16', NULL, 0, 0),
-(121, '20290001', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:55:18', NULL, 0, 0),
-(122, '20290002', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:55:18', NULL, 0, 0),
-(123, '20290003', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:55:18', NULL, 0, 0),
-(124, '20290004', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:55:18', NULL, 0, 0),
-(125, '20290005', '$2a$10$.3MXJfKEUjwFGvzXnQD5Q.hdQ.0LQwOzr57yKmTZbIG1KFqf/foWW', 2, 1, '2026-04-14 07:55:18', NULL, 0, 0);
 
 --
 -- Dumping data for table `Vacantes`
@@ -933,32 +884,6 @@ INSERT INTO `Vacantes` (`Id_vacante`, `Id_empresa`, `Titulo`, `Flyer_Path`, `Des
 (36, 29, 'Apoyo en Archivo Municipal', 'flyer_archivo.jpg', 'Organización y digitalización de expedientes en archivo municipal.', 'Estudiante de Administración, atención al detalle', 31, 2, 2, 1, '2026-04-14', '2026-08-14', 'Lic. Norma Ruiz', 'archivo@municipio.gob.mx', '555-5678-015', '2026-04-14 06:30:14', NULL),
 (37, 30, 'Brigadas de Saneamiento Ambiental', NULL, 'Participar en brigadas de limpieza y saneamiento de cuerpos de agua.', 'Estudiante de Ciencias Ambientales, disponibilidad fines de semana', 14, 1, 3, 1, '2026-04-14', '2026-09-14', 'Biól. Sofía Castillo', 'saneamiento@ambiental.org', '555-1234-015', '2026-04-14 06:30:14', '2026-04-14 06:40:25');
 
--- --------------------------------------------------------
-
---
--- Structure for view `vw_alumnos_completo`
---
-DROP TABLE IF EXISTS `vw_alumnos_completo`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vw_alumnos_completo`  AS SELECT `a`.`Id_alumno` AS `Id_alumno`, `u`.`Matricula` AS `Matricula`, `a`.`Nombre` AS `Nombre`, `a`.`Apellido_P` AS `Apellido_P`, `a`.`Apellido_M` AS `Apellido_M`, `c`.`Nombre_carrera` AS `Carrera`, `a`.`No_Expediente` AS `No_Expediente`, `a`.`Activo` AS `Activo`, group_concat(distinct concat(`ca`.`Tipo`,': ',`ca`.`Valor`) separator ' | ') AS `Contactos`, group_concat(distinct concat(`s`.`Servicio`,' (',`als`.`Estado`,')') separator ' | ') AS `Servicios` FROM (((((`Alumnos` `a` join `Usuario` `u` on(`a`.`Id_usuario` = `u`.`Id_usuario`)) join `Carrera` `c` on(`a`.`Id_carrera` = `c`.`Id_carrera`)) left join `Contacto_Alumno` `ca` on(`a`.`Id_alumno` = `ca`.`Id_alumno`)) left join `Alumno_Servicio` `als` on(`a`.`Id_alumno` = `als`.`Id_alumno`)) left join `Servicio` `s` on(`als`.`Id_servicio` = `s`.`Id_servicio`)) GROUP BY `a`.`Id_alumno` ;
-
--- --------------------------------------------------------
-
---
--- Structure for view `vw_resultados_encuestas`
---
-DROP TABLE IF EXISTS `vw_resultados_encuestas`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vw_resultados_encuestas`  AS SELECT `e`.`Id_encuesta` AS `Id_encuesta`, `e`.`Nombre` AS `Encuesta`, `p`.`Pregunta` AS `Pregunta`, `r`.`Respuesta` AS `Respuesta`, count(0) AS `Total_respuestas`, avg(cast(`r`.`Respuesta` as decimal(10,0))) AS `Promedio` FROM ((`Respuesta` `r` join `Encuesta` `e` on(`r`.`Id_encuesta` = `e`.`Id_encuesta`)) join `Pregunta` `p` on(`r`.`Id_pregunta` = `p`.`Id_pregunta`)) WHERE `p`.`Tipo_respuesta` in ('ESCALA_1_5','ESCALA_1_10') GROUP BY `e`.`Id_encuesta`, `p`.`Id_pregunta`, `r`.`Respuesta` ;
-
--- --------------------------------------------------------
-
---
--- Structure for view `vw_vacantes_activas`
---
-DROP TABLE IF EXISTS `vw_vacantes_activas`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vw_vacantes_activas`  AS SELECT `v`.`Id_vacante` AS `Id_vacante`, `v`.`Titulo` AS `Titulo`, `v`.`Descripcion` AS `Descripcion`, `e`.`Nombre` AS `Empresa`, `c`.`Nombre_carrera` AS `Carrera_requerida`, `s`.`Servicio` AS `Tipo_servicio`, `v`.`Numero_vacantes` AS `Numero_vacantes`, `v`.`Fecha_publicacion` AS `Fecha_publicacion`, `v`.`Fecha_expiracion` AS `Fecha_expiracion`, `v`.`Contacto_nombre` AS `Contacto_nombre`, `v`.`Contacto_email` AS `Contacto_email`, `v`.`Contacto_telefono` AS `Contacto_telefono` FROM (((`Vacantes` `v` join `Empresa` `e` on(`v`.`Id_empresa` = `e`.`Id_empresa`)) left join `Carrera` `c` on(`v`.`Id_carrera` = `c`.`Id_carrera`)) join `Servicio` `s` on(`v`.`Id_servicio` = `s`.`Id_servicio`)) WHERE `v`.`Activa` = 1 AND (`v`.`Fecha_expiracion` is null OR `v`.`Fecha_expiracion` >= curdate()) ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

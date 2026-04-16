@@ -8,6 +8,9 @@
 -- PHP Version: 8.3.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+DROP DATABASE IF EXISTS DB_Sistema_Academico;
+CREATE DATABASE DB_Sistema_Academico;
+USE DB_Sistema_Academico;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -350,26 +353,6 @@ CREATE TABLE `Vacantes` (
 -- Stand-in structure for view `vw_alumnos_completo`
 -- (See below for the actual view)
 --
-CREATE TABLE `vw_alumnos_completo` (
-);
-
--- --------------------------------------------------------
-
---
--- Stand-in structure for view `vw_resultados_encuestas`
--- (See below for the actual view)
---
-CREATE TABLE `vw_resultados_encuestas` (
-);
-
--- --------------------------------------------------------
-
---
--- Stand-in structure for view `vw_vacantes_activas`
--- (See below for the actual view)
---
-CREATE TABLE `vw_vacantes_activas` (
-);
 
 --
 -- Indexes for dumped tables
@@ -616,36 +599,6 @@ ALTER TABLE `Usuarios`
 ALTER TABLE `Vacantes`
   MODIFY `Id_vacante` int(11) NOT NULL AUTO_INCREMENT;
 
--- --------------------------------------------------------
-
---
--- Structure for view `vw_alumnos_completo`
---
-DROP TABLE IF EXISTS `vw_alumnos_completo`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vw_alumnos_completo`  AS SELECT `a`.`Id_alumno` AS `Id_alumno`, `u`.`Matricula` AS `Matricula`, `a`.`Nombre` AS `Nombre`, `a`.`Apellido_P` AS `Apellido_P`, `a`.`Apellido_M` AS `Apellido_M`, `c`.`Nombre_carrera` AS `Carrera`, `a`.`No_Expediente` AS `No_Expediente`, `a`.`Activo` AS `Activo`, group_concat(distinct concat(`ca`.`Tipo`,': ',`ca`.`Valor`) separator ' | ') AS `Contactos`, group_concat(distinct concat(`s`.`Servicio`,' (',`als`.`Estado`,')') separator ' | ') AS `Servicios` FROM (((((`Alumnos` `a` join `Usuario` `u` on(`a`.`Id_usuario` = `u`.`Id_usuario`)) join `Carrera` `c` on(`a`.`Id_carrera` = `c`.`Id_carrera`)) left join `Contacto_Alumno` `ca` on(`a`.`Id_alumno` = `ca`.`Id_alumno`)) left join `Alumno_Servicio` `als` on(`a`.`Id_alumno` = `als`.`Id_alumno`)) left join `Servicio` `s` on(`als`.`Id_servicio` = `s`.`Id_servicio`)) GROUP BY `a`.`Id_alumno` ;
-
--- --------------------------------------------------------
-
---
--- Structure for view `vw_resultados_encuestas`
---
-DROP TABLE IF EXISTS `vw_resultados_encuestas`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vw_resultados_encuestas`  AS SELECT `e`.`Id_encuesta` AS `Id_encuesta`, `e`.`Nombre` AS `Encuesta`, `p`.`Pregunta` AS `Pregunta`, `r`.`Respuesta` AS `Respuesta`, count(0) AS `Total_respuestas`, avg(cast(`r`.`Respuesta` as decimal(10,0))) AS `Promedio` FROM ((`Respuesta` `r` join `Encuesta` `e` on(`r`.`Id_encuesta` = `e`.`Id_encuesta`)) join `Pregunta` `p` on(`r`.`Id_pregunta` = `p`.`Id_pregunta`)) WHERE `p`.`Tipo_respuesta` in ('ESCALA_1_5','ESCALA_1_10') GROUP BY `e`.`Id_encuesta`, `p`.`Id_pregunta`, `r`.`Respuesta` ;
-
--- --------------------------------------------------------
-
---
--- Structure for view `vw_vacantes_activas`
---
-DROP TABLE IF EXISTS `vw_vacantes_activas`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vw_vacantes_activas`  AS SELECT `v`.`Id_vacante` AS `Id_vacante`, `v`.`Titulo` AS `Titulo`, `v`.`Descripcion` AS `Descripcion`, `e`.`Nombre` AS `Empresa`, `c`.`Nombre_carrera` AS `Carrera_requerida`, `s`.`Servicio` AS `Tipo_servicio`, `v`.`Numero_vacantes` AS `Numero_vacantes`, `v`.`Fecha_publicacion` AS `Fecha_publicacion`, `v`.`Fecha_expiracion` AS `Fecha_expiracion`, `v`.`Contacto_nombre` AS `Contacto_nombre`, `v`.`Contacto_email` AS `Contacto_email`, `v`.`Contacto_telefono` AS `Contacto_telefono` FROM (((`Vacantes` `v` join `Empresa` `e` on(`v`.`Id_empresa` = `e`.`Id_empresa`)) left join `Carrera` `c` on(`v`.`Id_carrera` = `c`.`Id_carrera`)) join `Servicio` `s` on(`v`.`Id_servicio` = `s`.`Id_servicio`)) WHERE `v`.`Activa` = 1 AND (`v`.`Fecha_expiracion` is null OR `v`.`Fecha_expiracion` >= curdate()) ;
-
---
--- Constraints for dumped tables
---
 
 --
 -- Constraints for table `Actividades_Alumnos`
