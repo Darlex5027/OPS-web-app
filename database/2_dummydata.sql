@@ -338,13 +338,13 @@ INSERT INTO `Actividades_Alumnos` (`Id_alumno_servicio`, `Id_alumno`, `Id_servic
 --
 
 INSERT INTO `Administradores` (`Id_admin`, `Id_usuario`, `Nombre`, `Apellido_P`, `Apellido_M`, `Id_carrera`, `Telefono`, `Correo`, `Activo`, `Fecha_registro`, `Fecha_modificacion`) VALUES
-(33, 61, 'Ana', 'García', 'Martínez', 13, '555-1001-001', 'ana.garcia@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
-(34, 62, 'Luis', 'Fernández', 'López', 14, '555-1002-002', 'luis.fernandez@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
-(35, 63, 'María', 'Rodríguez', 'Sánchez', 15, '555-1003-003', 'maria.rodriguez@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
-(36, 64, 'Carlos', 'Gómez', 'Pérez', 16, '555-1004-004', 'carlos.gomez@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
-(37, 65, 'Laura', 'Martínez', 'Ramírez', 17, '555-1005-005', 'laura.martinez@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
-(38, 66, 'Javier', 'Hernández', 'Torres', 18, '555-1006-006', 'javier.hernandez@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
-(39, 67, 'Patricia', 'Díaz', 'Flores', 19, '555-1007-007', 'patricia.diaz@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
+(33, 61, 'Ana', 'García', 'Martínez', 24, '555-1001-001', 'ana.garcia@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
+(34, 62, 'Luis', 'Fernández', 'López', 25, '555-1002-002', 'luis.fernandez@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
+(35, 63, 'María', 'Rodríguez', 'Sánchez', 26, '555-1003-003', 'maria.rodriguez@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
+(36, 64, 'Carlos', 'Gómez', 'Pérez', 27, '555-1004-004', 'carlos.gomez@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
+(37, 65, 'Laura', 'Martínez', 'Ramírez', 28, '555-1005-005', 'laura.martinez@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
+(38, 66, 'Javier', 'Hernández', 'Torres', 29, '555-1006-006', 'javier.hernandez@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
+(39, 67, 'Patricia', 'Díaz', 'Flores', 30, '555-1007-007', 'patricia.diaz@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
 (40, 68, 'Roberto', 'Castro', 'Vega', 20, '555-1008-008', 'roberto.castro@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
 (41, 69, 'Martha', 'Reyes', 'Ortiz', 21, '555-1009-009', 'martha.reyes@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
 (42, 70, 'Fernando', 'Morales', 'Jiménez', 22, '555-1010-010', 'fernando.morales@universidad.edu', 1, '2026-04-14 07:28:52', NULL),
