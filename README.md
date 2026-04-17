@@ -1,4 +1,4 @@
-i# OPS Web App - Aplicación Dockerizada con Base de Datos
+# OPS Web App - Aplicación Dockerizada con Base de Datos
 Este proyecto es una aplicación web completamente contenerizada usando Docker, con MariaDB como base de datos backend. Proporciona un entorno consistente y aislado tanto para desarrollo como para despliegue.
 ---
 ## 📋 Requisitos Previos
