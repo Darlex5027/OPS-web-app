@@ -71,3 +71,26 @@ body {
                 transform: translateY(-115px);/* Mueve el logo de manera vertical*/
                 filter: drop-shadow(0 0 2px rgb(199, 196, 1)); /*Brillo*/
             }
+            /* Clase base del mensaje */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-family: sans-serif;
+    transition: opacity 0.4s, transform 0.4s;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Estados de color */
+.toast.exito { background-color: #2ecc71; } /* Verde */
+.toast.error { background-color: #e74c3c; } /* Rojo */
+
+.toast.oculto {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+}
