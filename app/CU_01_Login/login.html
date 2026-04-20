@@ -1,44 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - OPS FCBIyT</title>
 
-<meta charset="UTF-8">
-<title>Login</title>
-
+    <link rel="stylesheet" href="../css/stylesInicio.css">
 </head>
 
 <body>
 
-<h2>Iniciar sesión</h2>
+    <header class="header">
 
-<form id="formLogin">
+        <div class="header-logo-left">
+            <img src="../Imagenes/logo.png" alt="Logo OPS">
+        </div>
 
-<input 
-type="text" 
-id="matricula" 
-placeholder="Matrícula" 
-maxlength="8"
-required>
+        <div class="header-text">
+            <h1>
+                <div class="linea-1"><span>O</span>ptimización de</div>
+                <div class="linea-2"><span>P</span>racticas profesionales y</div>
+                <div class="linea-3"><span>S</span>ervicio social</div>
+            </h1>
+        </div>
 
-<input 
-type="password" 
-id="password" 
-placeholder="Contraseña" 
-required>
+        <div class="header-logo-right">
+            <img src="../Imagenes/FCBIyT.png" alt="Logo FCBIyT">
+        </div>
 
-<button type="submit">Iniciar sesión</button>
+    </header>
 
-</form>
 
-<p id="mensaje" style="display:none;"></p>
+    <main>
 
-<p>
-¿No tienes cuenta?
-<a href="registro.html">Regístrate</a>
-</p>
+        <h2>Iniciar sesión</h2>
 
-<script src="js/login.js"></script>
+        <form id="formLogin">
+
+            <input
+                type="text"
+                id="matricula"
+                placeholder="Matrícula (4 u 8 dígitos)"
+                maxlength="8"
+                required>
+
+            <input
+                type="password"
+                id="contrasena"
+                placeholder="Contraseña"
+                required>
+
+            <button type="submit">Iniciar sesión</button>
+
+        </form>
+
+        <p id="mensaje" style="display:none;"></p>
+
+        <p>
+            ¿Aún no tienes una cuenta?
+            <a href="../CU_02_RegistroUsuario/registro.html">Regístrate aquí</a>
+        </p>
+
+    </main>
+
+
+    <script src="login.js"></script>
 
 </body>
 
