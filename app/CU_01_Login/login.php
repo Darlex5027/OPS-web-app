@@ -1,7 +1,34 @@
 <?php
+/* =========================
+   CONEXIÓN A LA BASE DE DATOS en db.php
+<?php
+$host = 'database'; // Nombre del servicio en tu docker-compose
+$db   = 'DB_Sistema_Academico';
+$user = 'root';
+$pass = getenv('MYSQL_ROOT_PASSWORD') ?: 'root_password';
+$charset = 'utf8mb4';
 
-require_once("../config/database.php");
+$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
+$options = [
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   => false,
+];
+
+try {
+    $pdo = new PDO($dsn, $user, $pass, $options); //Conexion directa a la base de datos
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode([
+        "success" => false,
+        "error" => "DB_CONNECTION_ERROR",
+        "message" => $e->getMessage()
+    ]);
+    exit;
+}  
+*/
+require_once("../php/db.php");
 header("Content-Type: application/json");
 
 $data = json_decode(file_get_contents("php://input"), true);
@@ -38,7 +65,7 @@ if(!preg_match('/^\d{4}$|^\d{8}$/',$matricula)){
 ========================= */
 $stmt = $pdo->prepare("
 SELECT *
-FROM usuarios
+FROM Usuarios
 WHERE Matricula = ?
 ");
 
@@ -76,14 +103,14 @@ if($usuario['Bloqueado']){
 /* =========================
    CONTRASEÑA
 ========================= */
-if(!password_verify($contrasena, $usuario['Contraseña'])){
+if(!password_verify($contrasena, $usuario['Contrasena'])){
 
     $intentos = $usuario['Intentos_fallidos'] + 1;
 
     if($intentos >= 3){
 
         $stmt = $pdo->prepare("
-        UPDATE usuarios
+        UPDATE Usuarios
         SET Intentos_fallidos = ?, Bloqueado = 1
         WHERE Id_usuario = ?
         ");
@@ -110,7 +137,7 @@ if(!password_verify($contrasena, $usuario['Contraseña'])){
    LOGIN EXITOSO
 ========================= */
 $stmt = $pdo->prepare("
-UPDATE usuarios
+UPDATE Usuarios
 SET Intentos_fallidos = 0,
 Fecha_ultimo_acceso = NOW()
 WHERE Id_usuario = ?
@@ -123,8 +150,8 @@ $stmt->execute([$usuario['Id_usuario']]);
 ========================= */
 $stmt = $pdo->prepare("
 SELECT p.Nombre_permiso
-FROM tipousuarios_permisos tp
-JOIN permisos p ON p.Id_permiso = tp.Id_permiso
+FROM TipoUsuarios_Permiso tp
+JOIN Permisos p ON p.Id_permiso = tp.Id_permiso
 WHERE tp.Id_tipo_usuario = ?
 ");
 
@@ -133,7 +160,7 @@ $stmt->execute([$usuario['Id_tipo_usuario']]);
 $permisos = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
 /* =========================
-   🟢 NUEVO: ID CARRERA
+   NUEVO: ID CARRERA
 ========================= */
 $carrera = null;
 
@@ -141,7 +168,7 @@ if ($usuario['Id_tipo_usuario'] == 2) {
 
     $stmt = $pdo->prepare("
         SELECT Id_carrera
-        FROM alumnos
+        FROM Alumnos
         WHERE Id_usuario = ?
     ");
     $stmt->execute([$usuario['Id_usuario']]);
@@ -152,7 +179,7 @@ if ($usuario['Id_tipo_usuario'] == 1) {
 
     $stmt = $pdo->prepare("
         SELECT Id_carrera
-        FROM administradores
+        FROM Administradores
         WHERE Id_usuario = ?
     ");
     $stmt->execute([$usuario['Id_usuario']]);
@@ -165,7 +192,7 @@ $usuario['Id_carrera'] = $carrera;
 /* =========================
    SEGURIDAD
 ========================= */
-unset($usuario['Contraseña']);
+unset($usuario['Contrasena']);
 
 /* =========================
    RESPUESTA FINAL
