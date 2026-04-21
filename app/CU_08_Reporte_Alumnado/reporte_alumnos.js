@@ -20,7 +20,6 @@ function cargar_catalogos(){
 }
 
 document.addEventListener("DOMContentLoaded", function(){
-	document.cookie = "Id_usuario=61"
 	cargar_catalogos();
 });
 
