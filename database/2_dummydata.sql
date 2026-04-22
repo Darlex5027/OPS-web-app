@@ -892,11 +892,6 @@ UPDATE Actividades_Alumnos SET
     periodo_año = YEAR(Fecha_inicio)
 WHERE Fecha_inicio IS NOT NULL;
 
-UPDATE Actividades_Alumnos SET 
-    periodo_tipo = 'primavera',
-    periodo_año = 2024
-WHERE Fecha_inicio IS NULL;
-
 --
 -- Volcado de datos para la tabla `Periodo_Encuesta`
 --
