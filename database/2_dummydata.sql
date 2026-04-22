@@ -879,6 +879,41 @@ INSERT INTO `Vacantes` (`Id_vacante`, `Id_empresa`, `Titulo`, `Flyer_Path`, `Des
 (36, 29, 'Apoyo en Archivo Municipal', 'flyer_archivo.jpg', 'Organización y digitalización de expedientes en archivo municipal.', 'Estudiante de Administración, atención al detalle', 31, 2, 2, 1, '2026-04-14', '2026-08-14', 'Lic. Norma Ruiz', 'archivo@municipio.gob.mx', '555-5678-015', '2026-04-14 06:30:14', NULL),
 (37, 30, 'Brigadas de Saneamiento Ambiental', NULL, 'Participar en brigadas de limpieza y saneamiento de cuerpos de agua.', 'Estudiante de Ciencias Ambientales, disponibilidad fines de semana', 14, 1, 3, 1, '2026-04-14', '2026-09-14', 'Biól. Sofía Castillo', 'saneamiento@ambiental.org', '555-1234-015', '2026-04-14 06:30:14', '2026-04-14 06:40:25');
 
+--
+-- Actualizar Actividades_Alumnos con periodos
+--
+
+UPDATE Actividades_Alumnos SET 
+    periodo_tipo = CASE 
+        WHEN MONTH(Fecha_inicio) BETWEEN 1 AND 6 THEN 'primavera'
+        WHEN MONTH(Fecha_inicio) BETWEEN 7 AND 12 THEN 'otoño'
+        ELSE 'primavera'
+    END,
+    periodo_año = YEAR(Fecha_inicio)
+WHERE Fecha_inicio IS NOT NULL;
+
+--
+-- Volcado de datos para la tabla `Periodo_Encuesta`
+--
+
+INSERT INTO `Periodo_Encuesta` (`Id_encuesta`, `Periodo_tipo`, `Periodo_año`) VALUES
+(7, 'primavera', 2026),
+(7, 'otoño', 2026),
+(7, 'primavera', 2025),
+(7, 'otoño', 2025),
+(8, 'primavera', 2026),
+(8, 'otoño', 2026),
+(8, 'primavera', 2025),
+(8, 'otoño', 2025),
+(9, 'primavera', 2026),
+(9, 'otoño', 2026),
+(9, 'primavera', 2025),
+(9, 'otoño', 2025),
+(10, 'primavera', 2026),
+(10, 'otoño', 2026),
+(10, 'primavera', 2025),
+(10, 'otoño', 2025);
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
