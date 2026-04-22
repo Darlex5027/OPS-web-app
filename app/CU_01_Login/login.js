@@ -74,8 +74,15 @@ formLogin.addEventListener("submit", async function (e) {
             document.cookie = `Id_carrera=${usuario.Id_carrera ?? ''}; max-age=${TIEMPO_SESION}; path=/`;
             document.cookie = `permisos=${encodeURIComponent(JSON.stringify(permisos))}; max-age=${TIEMPO_SESION}; path=/`;
             document.cookie = `perfil=${encodeURIComponent(JSON.stringify(usuario))}; max-age=${TIEMPO_SESION}; path=/`;
-
-            window.location.href = "../index.html";
+            // 1 = Administrador, 2 = Alumno
+            if (usuario.Id_tipo_usuario == 1) {
+                window.location.href = "../CU_03_PerfilGestionable/perfil_administrador.html";
+            } else if (usuario.Id_tipo_usuario == 2) {
+                window.location.href = "../CU_03_PerfilGestionable/perfil_alumno.html";
+            } else {
+                // En caso de que exista un rol diferente, enviamos al index
+                window.location.href = "../index.html";
+            }
             return;
         }
 
@@ -108,7 +115,7 @@ formLogin.addEventListener("submit", async function (e) {
             case "formato_matricula_invalido":
                 mostrarError("El formato de la matrícula no es válido");
                 break;
-            
+
             case "error_conexion_db":
                 mostrarError("Error interno: No se pudo conectar a la base de datos");
                 break;
