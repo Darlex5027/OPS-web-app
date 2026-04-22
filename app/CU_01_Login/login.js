@@ -1,3 +1,16 @@
+/**
+ * Archivo      : login.js
+ * Módulo       : CU_01_Login
+ * Autor        : Francisco Angel Membrilla Alarcon
+ * Fecha        : 22/04/2026
+ * Descripción  : Lógica del formulario de inicio de sesión. Valida la matrícula 
+ * en el frontend, envía las credenciales a login.php mediante fetch,
+ * gestiona la creación de cookies de sesión y redirige al index.
+ */
+
+// Configuración de constantes globales del script
+const TIEMPO_SESION = 3600; // Valor en segundos (1 hora)
+
 const formLogin = document.getElementById("formLogin");
 const mensaje = document.getElementById("mensaje");
 const boton = formLogin.querySelector("button");
@@ -52,24 +65,22 @@ formLogin.addEventListener("submit", async function (e) {
             const usuario = data.usuario;
             const permisos = data.permisos || [];
 
-            const tiempo = 3600;
-
             // =========================
             // COOKIES SEGURAS
             // =========================
-            document.cookie = `Id_usuario=${usuario.Id_usuario}; max-age=${tiempo}; path=/`;
-            document.cookie = `Matricula=${usuario.Matricula}; max-age=${tiempo}; path=/`;
-            document.cookie = `Id_tipo_usuario=${usuario.Id_tipo_usuario}; max-age=${tiempo}; path=/`;
-            document.cookie = `Id_carrera=${usuario.Id_carrera ?? ''}; max-age=${tiempo}; path=/`;
-            document.cookie = `permisos=${encodeURIComponent(JSON.stringify(permisos))}; max-age=${tiempo}; path=/`;
-            document.cookie = `perfil=${encodeURIComponent(JSON.stringify(usuario))}; max-age=${tiempo}; path=/`;
+            document.cookie = `Id_usuario=${usuario.Id_usuario}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `Matricula=${usuario.Matricula}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `Id_tipo_usuario=${usuario.Id_tipo_usuario}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `Id_carrera=${usuario.Id_carrera ?? ''}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `permisos=${encodeURIComponent(JSON.stringify(permisos))}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `perfil=${encodeURIComponent(JSON.stringify(usuario))}; max-age=${TIEMPO_SESION}; path=/`;
 
             window.location.href = "../index.html";
             return;
         }
 
         // =========================
-        // ERRORES DEL BACKEND
+        // ERRORES DEL BACKEND (Sincronizados con login.php)
         // =========================
         switch (data.error) {
 
@@ -87,6 +98,19 @@ formLogin.addEventListener("submit", async function (e) {
 
             case "usuario_inactivo":
                 mostrarError("Cuenta pendiente de activación");
+                break;
+
+            case "datos_invalidos":
+            case "datos_incompletos":
+                mostrarError("Por favor, rellene todos los campos correctamente");
+                break;
+
+            case "formato_matricula_invalido":
+                mostrarError("El formato de la matrícula no es válido");
+                break;
+            
+            case "error_conexion_db":
+                mostrarError("Error interno: No se pudo conectar a la base de datos");
                 break;
 
             default:
