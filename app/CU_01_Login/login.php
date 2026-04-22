@@ -14,22 +14,22 @@ require_once("../php/db.php");
 
 try {
     $pdo = new PDO($dsn, $user, $pass, $options); 
-} catch (PDOException $e) {
+} catch (PDOException $error_pdo) {
     http_response_code(500);
     echo json_encode([
         "success" => false,
         "error"   => "error_conexion_db",
-        "message" => $e->getMessage()
+        "message" => $error_pdo->getMessage()
     ]);
     exit;
 }
 
 header("Content-Type: application/json");
 
-$data = json_decode(file_get_contents("php://input"), true);
+$data_input = json_decode(file_get_contents("php://input"), true);
 
 // CORRECCIÓN SEC. 10: Error estructurado en snake_case
-if (!$data) {
+if (!$data_input) {
     echo json_encode([
         "success" => false,
         "error"   => "datos_invalidos"
@@ -37,8 +37,8 @@ if (!$data) {
     exit;
 }
 
-$matricula = trim($data['matricula'] ?? '');
-$contrasena = $data['contrasena'] ?? '';
+$matricula = trim($data_input['matricula'] ?? '');
+$contrasena = $data_input['contrasena'] ?? '';
 
 // CORRECCIÓN SEC. 10: Error estructurado en snake_case
 if (!$matricula || !$contrasena) {
@@ -68,9 +68,9 @@ $stmt = $pdo->prepare("
 ");
 
 $stmt->execute([$matricula]);
-$usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+$datos_usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$usuario) {
+if (!$datos_usuario) {
     echo json_encode([
         "success" => false,
         "error"   => "matricula_no_existe"
@@ -81,7 +81,7 @@ if (!$usuario) {
 /* =========================
    VALIDACIONES
 ========================= */
-if (!$usuario['Activo']) {
+if (!$datos_usuario['Activo']) {
     echo json_encode([
         "success" => false,
         "error"   => "usuario_inactivo"
@@ -89,7 +89,7 @@ if (!$usuario['Activo']) {
     exit;
 }
 
-if ($usuario['Bloqueado']) {
+if ($datos_usuario['Bloqueado']) {
     echo json_encode([
         "success" => false,
         "error"   => "usuario_bloqueado"
@@ -100,9 +100,9 @@ if ($usuario['Bloqueado']) {
 /* =========================
    CONTRASEÑA
 ========================= */
-if (!password_verify($contrasena, $usuario['Contrasena'])) {
+if (!password_verify($contrasena, $datos_usuario['Contrasena'])) {
 
-    $intentos = $usuario['Intentos_fallidos'] + 1;
+    $intentos = $datos_usuario['Intentos_fallidos'] + 1;
 
     if ($intentos >= 3) {
         $stmt = $pdo->prepare("
@@ -110,7 +110,7 @@ if (!password_verify($contrasena, $usuario['Contrasena'])) {
             SET Intentos_fallidos = ?, Bloqueado = 1
             WHERE Id_usuario = ?
         ");
-        $stmt->execute([$intentos, $usuario['Id_usuario']]);
+        $stmt->execute([$intentos, $datos_usuario['Id_usuario']]);
     } else {
         // CORRECCIÓN SEC. 11.4: Cambio 'usuarios' por 'Usuarios' (PascalCase)
         $stmt = $pdo->prepare("
@@ -118,7 +118,7 @@ if (!password_verify($contrasena, $usuario['Contrasena'])) {
             SET Intentos_fallidos = ?
             WHERE Id_usuario = ?
         ");
-        $stmt->execute([$intentos, $usuario['Id_usuario']]);
+        $stmt->execute([$intentos, $datos_usuario['Id_usuario']]);
     }
 
     echo json_encode([
@@ -138,7 +138,7 @@ $stmt = $pdo->prepare("
     WHERE Id_usuario = ?
 ");
 
-$stmt->execute([$usuario['Id_usuario']]);
+$stmt->execute([$datos_usuario['Id_usuario']]);
 
 /* =========================
    PERMISOS
@@ -150,7 +150,7 @@ $stmt = $pdo->prepare("
     WHERE tp.Id_tipo_usuario = ?
 ");
 
-$stmt->execute([$usuario['Id_tipo_usuario']]);
+$stmt->execute([$datos_usuario['Id_tipo_usuario']]);
 $permisos = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
 /* =========================
@@ -158,39 +158,39 @@ $permisos = $stmt->fetchAll(PDO::FETCH_COLUMN);
 ========================= */
 $carrera = null;
 
-if ($usuario['Id_tipo_usuario'] == 2) {
+if ($datos_usuario['Id_tipo_usuario'] == 2) {
     $stmt = $pdo->prepare("
         SELECT Id_carrera
         FROM Alumnos
         WHERE Id_usuario = ?
     ");
-    $stmt->execute([$usuario['Id_usuario']]);
+    $stmt->execute([$datos_usuario['Id_usuario']]);
     $carrera = $stmt->fetchColumn();
 }
 
-if ($usuario['Id_tipo_usuario'] == 1) {
+if ($datos_usuario['Id_tipo_usuario'] == 1) {
     $stmt = $pdo->prepare("
         SELECT Id_carrera
         FROM Administradores
         WHERE Id_usuario = ?
     ");
-    $stmt->execute([$usuario['Id_usuario']]);
+    $stmt->execute([$datos_usuario['Id_usuario']]);
     $carrera = $stmt->fetchColumn();
 }
 
-$usuario['Id_carrera'] = $carrera;
+$datos_usuario['Id_carrera'] = $carrera;
 
 /* =========================
    SEGURIDAD
 ========================= */
-unset($usuario['Contrasena']);
+unset($datos_usuario['Contrasena']);
 
 /* =========================
    RESPUESTA FINAL
 ========================= */
 echo json_encode([
     "success"  => true,
-    "usuario"  => $usuario,
+    "usuario"  => $datos_usuario,
     "permisos" => $permisos
 ]);
 
