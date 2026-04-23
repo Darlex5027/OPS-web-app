@@ -1,9 +1,6 @@
 <?php
 require_once '../php/db.php';
-
-
 $tipo = $_POST['tipo_registro'];
-
 try{
     $pdo = new PDO($dsn, $user, $pass, $options);
     if($tipo=="flayer"){
@@ -46,8 +43,36 @@ try{
             $id_carrera
         ]);   
         echo "Vacante guardada vinculada a la empresa ID: " . $_POST['Id_empresa'];
+
     }
     else{
+        $idEmpresaFinal = null;
+        if (isset($_POST['nueva_empresa']) && $_POST['nueva_empresa'] === 'true') {
+            $empresa = $pdo->prepare("INSERT INTO Empresas (
+            Nombre,
+            Descripcion,
+            Razon_social,
+            RFC,
+            Direccion,
+            Sitio_web,
+            Activo)
+            VALUES (?,?,?,?,?,?,?)");
+
+            $empresa->execute([
+                $_POST['nombre_empresa'],
+                $_POST['descripcion_empresa'],
+                $_POST['razon_empresa'],
+                $_POST['rfc_empresa'],
+                $_POST['direccion_empresa'],
+                $_POST['web_empresa'],
+                1,
+            ]);
+
+        $idEmpresaFinal = $pdo->lastInsertId();
+        }else{
+            $idEmpresaFinal = $_POST['Id_empresa'];
+        }
+
         $consulta = $pdo->prepare("INSERT INTO Vacantes (
         Titulo, 
         Id_empresa, 
@@ -62,8 +87,8 @@ try{
         VALUES (?,?,?,?,?,?,?,?,?,?)");
         
         $consulta->execute([
-        $_POST['titulo'],
-            $_POST['Id_empresa'], // <--- Aquí va el ID numérico
+            $_POST['titulo'],
+            $idEmpresaFinal, // <--- Aquí va el ID numérico
             $_POST['Id_servicio'],
             $_POST['nombre_contacto'],
             $_POST['email'],
@@ -73,7 +98,7 @@ try{
             $_POST['publicacion'],
             $_POST['expiracion']
         ]);   
-        echo "Vacante guardada vinculada a la empresa ID: " . $_POST['Id_empresa'];
+        echo "Vacante guardada vinculada a la empresa ID: " . $idEmpresaFinal;
     }
 } catch (\PDOException $e){
     http_response_code(500);
