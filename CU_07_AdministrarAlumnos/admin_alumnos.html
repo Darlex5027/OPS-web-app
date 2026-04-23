@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"> <!-- Soporte para caracteres especiales como ñ y tildes -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adaptación a móviles -->
+        <title>Administrar alumnos</title>
+        <link rel="stylesheet" href="../css/prueba.css">
+    </head>
+    <body>
+<div class="sidebar">
+            <div class="profile">
+                <img src="../Imagenes/prueba.png" alt="perfil">
+                <h3>Mtra. M. Guadalupe</h3>
+            </div>
+            <div class="menu">
+                <a href="foro_vacantes.html">
+                    <button>Publicar vacantes para servicio social</button>
+                </a>
+                <a href="admin_alumnos.html">
+                    <button>Administrar alumnos</button>
+                </a>
+                <a href="reportes_alumnos.html">
+                    <button>Generar reporte de alumnos</button>
+                </a>
+                <a href="reportes_estadisticos.html">
+                    <button>Generar reporte estadistico</button>
+                </a>
+                <a href="digitalizar_evaluacones.html">
+                    <button>Llenar formularios del prestador</button>
+                </a>
+                <a href="reportes_prestadores.html">
+                    <button>Generar reporte del prestador</button>
+                </a>
+                <a href="admin_encuentas.html">
+                    <button>Editar formularios</button>
+                </a>
+                <a href="Mensajes.html">
+                    <button>Mensajes</button>
+                </a>
+                <a href="perfil.html">
+                    <button>perfil</button>
+                </a>
+            </div>
+        </div>
+        <div class="main">
+            <div class="header">
+            <div></div><h1>Perfil</h1>
+                <div class="header-logo-right">
+                    <img src="../Imagenes/Logo.png" alt="Logo OPS">
+                </div>
+            </div>
+            <div class="table">
+               <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Matricula</th>
+                            <th>Carrera</th>
+                            <th>Fecha de registro</th>
+                            <th>Servicio</th>
+                            <th>Accion</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla"></tbody>
+                </table>
+            </div>
+        </div>
+        <script type="module" src="aceptar_alumnos.js"></script>
+        <script type="module" src="obtener_alumnos.js"></script>
+        <div id="toast-mensaje" class="toast oculto"></div>
+    </body>
+</html>
