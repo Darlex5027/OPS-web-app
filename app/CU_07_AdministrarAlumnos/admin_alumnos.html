@@ -1,20 +1,37 @@
+<!--
+Daniela Hernandez Hernandez
+Fecha de creacion: 8 de abril del 2026
+El archivo HTML de “Administrar alumnos” funciona como la interfaz principal del sistema.
+Aquí es donde el usuario (por ejemplo, una administradora o maestra) puede ver la información 
+de los alumnos. Contiene la estructura visual, como el menú lateral, el encabezado y la tabla 
+donde se mostrarán los datos. Además, incluye los archivos de JavaScript que se encargan de la 
+lógica del sistema y un contenedor para mostrar notificaciones tipo toast. En pocas palabras, 
+este archivo representa la parte visual con la que interactúa el usuario.
+-->
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8"> <!-- Soporte para caracteres especiales como ñ y tildes -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adaptación a móviles -->
+    <!-- Título que aparece en la pestaña del navegador -->
     <title>Administrar alumnos</title>
+    <!-- Enlace al archivo CSS para estilos -->
     <link rel="stylesheet" href="../css/prueba.css">
 </head>
 
 <body>
+    <!-- Barra lateral (menú de navegación) -->
     <div class="sidebar">
+        <!-- Sección del perfil del usuario -->
         <div class="profile">
             <img src="../Imagenes/prueba.png" alt="perfil">
             <h3>Mtra. M. Guadalupe</h3>
         </div>
+        <!-- Menú de opciones -->
         <div class="menu">
+            <!-- Cada opción es un enlace con un botón -->
             <a href="foro_vacantes.html">
                 <button>Publicar vacantes para servicio social</button>
             </a>
@@ -44,16 +61,23 @@
             </a>
         </div>
     </div>
+    <!-- Contenido principal de la página -->
     <div class="main">
+        <!-- Encabezado superior -->
         <div class="header">
-            <div></div>
-            <h1>Perfil</h1>
+            <div></div><!-- Espacio vacío (puede ser para alineación) -->
+            <!-- Título de la sección -->
+            <h1>Administrar Alumnos</h1>
+            <!-- Logo en la parte derecha -->
             <div class="header-logo-right">
                 <img src="../Imagenes/Logo.png" alt="Logo OPS">
             </div>
         </div>
+        <!-- Contenedor de la tabla -->
         <div class="table">
+            <!-- Tabla para mostrar alumnos -->
             <table border="1">
+                <!-- Encabezados de la tabla -->
                 <thead>
                     <tr>
                         <th>Nombre</th>
@@ -64,12 +88,19 @@
                         <th>Accion</th>
                     </tr>
                 </thead>
+                <!-- Cuerpo de la tabla (se llena dinámicamente con JavaScript) -->
                 <tbody id="tabla"></tbody>
             </table>
         </div>
     </div>
+    <!-- Scripts que manejan la lógica de la página -->
+     <!-- Script para aceptar alumnos -->
     <script type="module" src="aceptar_alumnos.js"></script>
+    <!-- Script para rechazar alumnos -->
+    <script type="module" src="rechazar_alumnos.js"></script>
+    <!-- Script para obtener y mostrar alumnos -->
     <script type="module" src="obtener_alumnos.js"></script>
+    <!-- Contenedor para mostrar mensajes tipo "toast" (notificaciones emergentes) -->
     <div id="toast-mensaje" class="toast oculto"></div>
 </body>
 
