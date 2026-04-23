@@ -10,14 +10,14 @@
 document.addEventListener('DOMContentLoaded', redireccionar);
 
 function redireccionar(){
-	fetch('./verificar_sesion.php')
+	fetch('../verificar_sesion.php')
 	.then(res => res.json())
 	.then(data => {
 		if (data.error){
 			window.location.href = '../CU_01_Login/login.html';
 		}
 	})
-	.cat(() => {
+	.catch(() => {
 		window.location.href = '../CU_01_Login/login.html';
 	});
 }
