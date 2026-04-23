@@ -7,10 +7,10 @@ $identificador = $valor['identificador'];
 
 try{
     $pdo = new PDO($dsn, $user, $pass, $options);
-    if($identificador==="Aceptado"){
-        $consulta = $pdo->prepare("UPDATE Usuario SET Activo=1 WHERE Matricula=?");
+    if($identificador==="Aceptado"){    
+        $consulta = $pdo->prepare("UPDATE Usuarios SET Activo=1 WHERE Matricula=?");
     }else{
-        $consulta = $pdo->prepare("DELETE FROM Usuario WHERE Matricula=?");
+        $consulta = $pdo->prepare("DELETE FROM Usuarios WHERE Matricula=?");
     }
     $consulta->execute([$matricula]);   
     echo json_encode(['success' => true]);

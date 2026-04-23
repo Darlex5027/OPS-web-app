@@ -26,7 +26,7 @@ function cargarAlumnos(){
 function llenarTabla(alumnos){
     const TBODY = document.getElementById("tabla");
     TBODY.innerHTML="";
-
+    
     if(alumnos.length==0){
         alert("No hay alumnos pendientes")
     }else{
@@ -34,9 +34,9 @@ function llenarTabla(alumnos){
         const FILA = document.createElement("tr"); 
 
         FILA.innerHTML=`
-        <td>${alumno.Nombre}</td>
+        <td>${alumno.Nombre_Completo}</td>
         <td>${alumno.Matricula}</td>
-        <td>${alumno.Nombre_carrera}</td>
+        <td>${alumno.Nombre_Carrera}</td>
         <td>${alumno.Fecha_registro}</td>
         <td>${alumno.Servicio}</td>
         <td><button onclick="aceptarAlumno('${alumno.Matricula}')">Aceptar</button> 

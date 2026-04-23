@@ -3,18 +3,19 @@ require_once '../php/db.php';
 
 try{
     $pdo = new PDO($dsn, $user, $pass, $options);
+    $id_carrera = $_COOKIE['Id_carrera'];
     $consulta = $pdo->prepare("SELECT 
-    Alumnos.Nombre, 
-    Carrera.Nombre_carrera, 
-    Usuario.Matricula, 
-    Usuario.Fecha_registro, 
-    Servicio.Servicio 
-    FROM Usuario JOIN Alumnos JOIN Alumno_Servicio JOIN Carrera JOIN Servicio 
-    WHERE Alumno_Servicio.Id_servicio=Servicio.Id_servicio 
-    AND Carrera.Id_carrera=Alumnos.Id_carrera AND Usuario.Id_tipo_usuario=2 
-    AND Usuario.Id_usuario=Alumnos.Id_usuario AND Alumnos.Id_alumno=Alumno_Servicio.Id_alumno 
-    AND Usuario.Activo=0");
-    $consulta->execute();   
+    CONCAT (Alumnos.Nombre, ' ', Alumnos.Apellido_M, ' ', Alumnos.Apellido_P) As Nombre_Completo, 
+    Carreras.Nombre as Nombre_Carrera, 
+    Usuarios.Matricula, 
+    Usuarios.Fecha_registro, 
+    Actividades.Servicio 
+    FROM Usuarios JOIN Alumnos JOIN Actividades_Alumnos JOIN Carreras JOIN Actividades 
+    WHERE Actividades_Alumnos.Id_servicio=Actividades.Id_servicio 
+    AND Carreras.Id_carrera=Alumnos.Id_carrera AND Usuarios.Id_tipo_usuario=2 
+    AND Usuarios.Id_usuario=Alumnos.Id_usuario AND Alumnos.Id_alumno=Actividades_Alumnos.Id_alumno 
+    AND Usuarios.Activo=0 AND Carreras.Id_carrera=?");
+    $consulta->execute([$id_carrera]);   
     echo json_encode($consulta->fetchAll());
 } catch (\PDOException $e){
     http_response_code(500);
