@@ -96,7 +96,7 @@ CREATE TABLE `Alumnos` (
   `Apellido_P` varchar(100) NOT NULL,
   `Apellido_M` varchar(100) DEFAULT NULL,
   `Id_carrera` int(11) NOT NULL,
-  `Grupo` varchar(1) NOT NULL,
+  `Grupo` varchar(5) NOT NULL,
   `No_Expediente` varchar(50) DEFAULT NULL,
   `Area_o_programa` varchar(255) DEFAULT NULL,
   `Observaciones` text DEFAULT NULL,
