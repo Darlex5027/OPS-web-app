@@ -6,7 +6,13 @@ document.getElementById('miFormulario').addEventListener('submit', function(e) {
     let formData = new FormData();
     formData.append('tipo_registro', eleccion);
     const hoy = new Date();
-    const fechaFormateada = hoy.toISOString().split('T')[0];
+    const formatoServidor = new Intl.DateTimeFormat('en-CA', { 
+        timeZone: 'America/Mexico_City', 
+        year: 'numeric', 
+        month: '2-digit', 
+        day: '2-digit' 
+    });
+    const fechaFormateada = formatoServidor.format(hoy);
     if(eleccion === "manual"){
         expiracion = document.getElementById('expiracion_manual').value
         if(fechaFormateada<expiracion){
@@ -38,7 +44,7 @@ document.getElementById('miFormulario').addEventListener('submit', function(e) {
             if (archivoFlayer) {
                 formData.append('archivo_flayer', archivoFlayer);
             } else {
-                console.warn("No se seleccionó ningún flayer");
+                lanzarToast("No se selecciono ningun flyer", "error");
             }
             enviarDatos(formData);
         }else{
@@ -70,10 +76,6 @@ function enviarDatos(datosParaEnviar){
         body: datosParaEnviar
     })
     .then(function(respuesta){
-        return respuesta.text();
-    })
-    .then(function(texto){
-        console.log("Respuesta PHP:", texto);
         lanzarToast("Publicacion exitosa    ", "exito");
         document.getElementById('miFormulario').reset();
         document.getElementById('opciones').dispatchEvent(new Event('change'));

@@ -1,10 +1,6 @@
 <?php
 require_once '../php/db.php';
 
-//Eliminar estas 2 lineas
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 
 $tipo = $_POST['tipo_registro'];
 
@@ -50,13 +46,6 @@ try{
             $id_carrera
         ]);   
         echo "Vacante guardada vinculada a la empresa ID: " . $_POST['Id_empresa'];
-
-        //Eliminar este if con else
-        if($result) {
-            echo json_encode(['success' => true, 'id' => $pdo->lastInsertId()]);
-        } else {
-            echo json_encode(['error' => 'El execute falló', 'info' => $consulta->errorInfo()]);
-        }
     }
     else{
         $consulta = $pdo->prepare("INSERT INTO Vacantes (
@@ -85,11 +74,6 @@ try{
             $_POST['expiracion']
         ]);   
         echo "Vacante guardada vinculada a la empresa ID: " . $_POST['Id_empresa'];
-        if($result) {
-            echo json_encode(['success' => true, 'id' => $pdo->lastInsertId()]);
-        } else {
-            echo json_encode(['error' => 'El execute falló', 'info' => $consulta->errorInfo()]);
-        }
     }
 } catch (\PDOException $e){
     http_response_code(500);

@@ -6,16 +6,28 @@ function cargarFecha(){
     inputFecha = document.getElementById('fecha_Manual');
     // Creamos el objeto de fecha de hoy
     hoy = new Date();
+    formatoServidor = new Intl.DateTimeFormat('en-CA', { 
+        timeZone: 'America/Mexico_City', 
+        year: 'numeric', 
+        month: '2-digit', 
+        day: '2-digit' 
+    });
     // Formateamos a YYYY-MM-DD (que es lo que requiere el input de HTML5)
-    fechaFormateada = hoy.toISOString().split('T')[0];
+    fechaFormateada = formatoServidor.format(hoy);
     // Asignamos el valor
     inputFecha.innerHTML = "Fecha de registro: "+ fechaFormateada;
 
     inputFecha = document.getElementById('fecha_flayer');
     // Creamos el objeto de fecha de hoy
     hoy = new Date();
+    formatoServidor = new Intl.DateTimeFormat('en-CA', { 
+        timeZone: 'America/Mexico_City', 
+        year: 'numeric', 
+        month: '2-digit', 
+        day: '2-digit' 
+    });
     // Formateamos a YYYY-MM-DD (que es lo que requiere el input de HTML5)
-    fechaFormateada = hoy.toISOString().split('T')[0];
+    fechaFormateada = formatoServidor.format(hoy);
     // Asignamos el valor
     inputFecha.innerHTML = "Fecha de registro: "+ fechaFormateada;
 }
@@ -41,8 +53,6 @@ function cargarEmpresas(){
             opcion.textContent = empresa.Nombre; // Texto que ve el usuario
             select.appendChild(opcion);
         });
-        //document.getElementById('btnEnviar').disabled = false;
-        //console.log("Botón habilitado"); // 👈 ¿Aparece esto?
     })
     .catch(function(error) {
         console.error('Error al cargar empresas:', error);
