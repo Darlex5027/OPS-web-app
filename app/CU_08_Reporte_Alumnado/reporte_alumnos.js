@@ -2,7 +2,8 @@
 import {dirigirPerfil} from '../manejo_perfil.js';
 
 window.dirigirPerfil=dirigirPerfil;
-
+window.cargar_tabla=cargar_tabla;
+window.exportarExcel=exportarExcel;
 /*
  * Al cargar la página se revisa que el usuario tenga una sesión iniciada
  * Posterior a tener una sesión iniciada se cargan los catalogos para los
@@ -37,7 +38,7 @@ function cargar_catalogos(){
 	.then(function(catalogos){
 		catalogos.servicios.forEach(function (servicio){
 			//Se crea una opción con value como el Id_servicio de la actividad a cargar
-			option = document.createElement('option');
+			const option = document.createElement('option');
 			option.value = servicio.Id_servicio;
 			//A la opción se le da el texto de Servicio (nombre del servicio)
 			option.textContent = servicio.Servicio;
@@ -46,7 +47,7 @@ function cargar_catalogos(){
 		catalogos.estados.forEach(function (estado){
 			// Se cargan los estados disponibles que puede tener un servicio.
 			// PENDIENTE, EN_CURSO, COMPLETADO
-			option = document.createElement('option');
+			const option = document.createElement('option');
 			option.value = estado.Estado;
 			option.textContent = estado.Estado;
 			document.getElementById('estado').appendChild(option)
@@ -62,10 +63,10 @@ function cargar_catalogos(){
 function cargar_tabla(){
 
 	// Se cargan los elemento a usar desde el HTML
-	actividad = document.getElementById("actividad").value;
-	estado = document.getElementById("estado").value;
-	titulos = document.getElementById("Titulos");
-	tabla = document.getElementById("Tabla");
+	const actividad = document.getElementById("actividad").value;
+	const estado = document.getElementById("estado").value;
+	const titulos = document.getElementById("Titulos");
+	const tabla = document.getElementById("Tabla");
 
 	// Se limpian las tablas de caulquier contenido que tengan
 	titulos.innerHTML=""
@@ -101,7 +102,7 @@ function cargar_tabla(){
 		// Renderizado de el contenido de la tabla
 		impresion.forEach(function(fila){
 			//Variable para guardar la fila temporal
-			table="";
+			let table="";
 			
 			table=table+"<tr>";
 			// Por cada titulo (celda) se agrega la celda a la estructura de la fila	
@@ -116,6 +117,11 @@ function cargar_tabla(){
 	});
 }
 
+function exportarExcel(){
+	event.preventDefault();
+	workbook=XLSX.utils.table_to_book(document.getElementById('tabla-resultados'));
+	XLSX.writeFile(workbook, 'reporte_alumnos.xlsx');
+}
 
 function lanzarToast(texto, tipo) {
     const toast = document.getElementById('toast-mensaje');
