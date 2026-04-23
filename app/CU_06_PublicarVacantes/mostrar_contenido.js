@@ -1,9 +1,21 @@
+/* 
+Daniela Hernandez Hernandez
+Fecha de creacion: 20 de abril del 2026
+El archivo mostrar_contenido.js controla la lógica visual del formulario de vacantes. 
+Permite cambiar entre los tipos de registro (manual o flayer), carga la fecha actual, 
+obtiene la lista de empresas desde el servidor y gestiona la opción de crear una nueva empresa
+o seleccionar una existente.
+*/
+// Se ejecuta cuando el HTML ya cargó completamente
 document.addEventListener('DOMContentLoaded', function () {
+    // Muestra el contenido inicial según la opción seleccionada
     cambiarContenido();
+    // Oculta el formulario de nueva empresa al iniciar
     const divNueva = document.getElementById('nueva_empresa');
     if (divNueva) {
         divNueva.style.display = 'none';
     }
+    // Crea una cookie con el Id del usuario (simulación o prueba)
     document.cookie = "Id_usuario=24"
 });
 function cargarFecha() {
@@ -37,21 +49,28 @@ function cargarFecha() {
     inputFecha.innerHTML = "Fecha de registro: " + fechaFormateada;
 }
 
+// Función para cargar las empresas desde el servidor
 function cargarEmpresas() {
     fetch('obtener_empresas.php')
+    // Convierte la respuesta a JSON
         .then(function (respuesta) {
             return respuesta.json();
         })
+        // Procesa la lista de empresas
         .then(function (empresas) {
+            // Detecta qué tipo de formulario está activo
             const seleccion = document.getElementById("opciones").value;
+            // Define el select correspondiente
             if (seleccion === "manual") {
                 id = "empresa_manual";
             } else {
                 id = "empresa_flayer";
             }
+            // Obtiene el elemento select
             const select = document.getElementById(id);
+            // Limpia las opciones anteriores
             select.innerHTML = '<option value="">-- Selecciona una empresa --</option>';
-
+             // Recorre las empresas y las agrega como opciones
             empresas.forEach(function (empresa) {
                 const opcion = document.createElement('option');
                 opcion.value = empresa.Id_empresa;   // ID que se manda a la BD
@@ -59,11 +78,12 @@ function cargarEmpresas() {
                 select.appendChild(opcion);
             });
         })
+        // Manejo de errores
         .catch(function (error) {
             console.error('Error al cargar empresas:', error);
         });
 }
-
+// Función que cambia entre formulario manual y flayer
 function cambiarContenido() {
     // 1. Obtenemos el valor actual del select
     const seleccion = document.getElementById("opciones").value;
@@ -84,11 +104,11 @@ function cambiarContenido() {
         divManual.style.display = "none";
         divFlayer.style.display = "none";
     }
-
+    // Carga empresas y fecha cada vez que cambia la vista
     cargarEmpresas();
     cargarFecha();
 }
-
+// Función para mostrar mensajes tipo toast
 function lanzarToast(texto, tipo) {
     const toast = document.getElementById('toast-mensaje');
 
@@ -108,7 +128,7 @@ function lanzarToast(texto, tipo) {
     }, 3000);
 }
 
-
+// Función para mostrar el formulario de nueva empresa
 function mostrarFormularioNuevo() {
     // Mostramos el contenedor
     const divNueva = document.getElementById('nueva_empresa');
@@ -122,18 +142,22 @@ function mostrarFormularioNuevo() {
     // Ocultamos el botón de "+ Crear Nueva"
     document.getElementById('btn-activar-nueva').style.display = 'none';
 
+    // Hace obligatorios los campos de nueva empresa
     document.getElementById('nombre_empresa').required = true;
     document.getElementById('descripcion_empresa').required = true;
     document.getElementById('razon_empresa').required = true;
     document.getElementById('rfc_empresa').required = true;
     document.getElementById('direccion_empresa').required = true;
 }
-
+// Función para cancelar el registro de nueva empresa
 function cancelarRegistro() {
+    // Oculta el formulario de nueva empresa
     document.getElementById('nueva_empresa').style.display = 'none';
+    // Reactiva el select de empresas existentes
     document.getElementById('empresa_manual').disabled = false;
+    // Muestra nuevamente el botón
     document.getElementById('btn-activar-nueva').style.display = 'inline-block';
-
+    // Quita el atributo requerido a los campos
     document.getElementById('nombre_empresa').required = false;
     document.getElementById('descripcion_empresa').required = false;
     document.getElementById('razon_empresa').required = false;
