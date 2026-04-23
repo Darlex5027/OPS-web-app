@@ -20,6 +20,7 @@ document.getElementById('miFormulario').addEventListener('submit', function(e) {
             formData.append('requisitos', document.getElementById('requisitos').value);
             formData.append('publicacion', fechaFormateada);
             formData.append('expiracion', document.getElementById('expiracion_manual').value);
+            enviarDatos(formData);
         }
         else{
             lanzarToast("La fecha de expiracion debe de ser mayor que la actual", "error");
@@ -39,12 +40,11 @@ document.getElementById('miFormulario').addEventListener('submit', function(e) {
             } else {
                 console.warn("No se seleccionó ningún flayer");
             }
+            enviarDatos(formData);
         }else{
             lanzarToast("La fecha de expiracion debe de ser mayor que la actual", "error");
         }
-        
     }
-    enviarDatos(formData);
 });
 /*function enviarDatos(datosParaEnviar){
     fetch("guardar_vacante.php", {
@@ -70,10 +70,11 @@ function enviarDatos(datosParaEnviar){
         body: datosParaEnviar
     })
     .then(function(respuesta){
-        return respuesta.text(); // 👈 Agrega esto
+        return respuesta.text();
     })
     .then(function(texto){
-        console.log("Respuesta PHP:", texto); // 👈 Y esto
+        console.log("Respuesta PHP:", texto);
+        lanzarToast("Publicacion exitosa    ", "exito");
         document.getElementById('miFormulario').reset();
         document.getElementById('opciones').dispatchEvent(new Event('change'));
         cargarEmpresas();
