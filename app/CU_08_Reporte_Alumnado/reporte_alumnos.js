@@ -20,8 +20,8 @@ function cargar_catalogos(){
 }
 
 document.addEventListener("DOMContentLoaded", function(){
-	cargar_catalogos();
 	redireccionar();
+	cargar_catalogos();
 });
 
 
