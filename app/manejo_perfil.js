@@ -5,10 +5,10 @@ export{dirigirPerfil}
  * y se le redirecciona a la página correcta.
 */
 function dirigirPerfil(){
-	const usuario=document.cookie;
-	if (usuario.Id_tipo_usuario == 1) {
+	const	Id_tipo_usuario=document.cookie.split('; ').find( r => r.startsWith('Id_tipo_usuario=')).split('=')[1];
+	if (Id_tipo_usuario == 1) {
         	window.location.href = "../CU_03_PerfilGestionable/perfil_administrador.html";
-        } else if (usuario.Id_tipo_usuario == 2) {
+        } else if (Id_tipo_usuario == 2) {
         	window.location.href = "../CU_03_PerfilGestionable/perfil_alumno.html";
         }
 }
