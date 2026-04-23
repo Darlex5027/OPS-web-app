@@ -17,7 +17,7 @@ document.getElementById('miFormulario').addEventListener('submit', function (e) 
         expiracion = document.getElementById('expiracion_manual').value
         if (fechaFormateada < expiracion) {
             formData.append('titulo', document.getElementById('titulo_manual').value);
-            formData.append('Id_empresa', document.getElementById('empresa_manual').value);
+            //formData.append('Id_empresa', document.getElementById('empresa_manual').value);
             formData.append('Id_servicio', document.getElementById('servicio_manual').value);
             formData.append('nombre_contacto', document.getElementById('nombre_contacto').value);
             formData.append('email', document.getElementById('email').value);
@@ -26,6 +26,21 @@ document.getElementById('miFormulario').addEventListener('submit', function (e) 
             formData.append('requisitos', document.getElementById('requisitos').value);
             formData.append('publicacion', fechaFormateada);
             formData.append('expiracion', document.getElementById('expiracion_manual').value);
+
+            select_empresa = document.getElementById('empresa_manual')
+            if (select_empresa.disabled) {
+                formData.append('nueva_empresa', 'true');
+                formData.append('nombre_empresa', document.getElementById('nombre_empresa').value);
+                formData.append('descripcion_empresa', document.getElementById('descripcion_empresa').value);
+                formData.append('razon_empresa', document.getElementById('razon_empresa').value);
+                formData.append('rfc_empresa', document.getElementById('rfc_empresa').value);
+                formData.append('direccion_empresa', document.getElementById('direccion_empresa').value);
+                formData.append('web_empresa', document.getElementById('web_empresa').value);
+            }
+            else {
+                formData.append('nueva_empresa', 'false');
+                formData.append('Id_empresa', select_empresa.value);
+            }
             enviarDatos(formData);
         }
         else {
@@ -52,21 +67,6 @@ document.getElementById('miFormulario').addEventListener('submit', function (e) 
         }
     }
 });
-/*function enviarDatos(datosParaEnviar){
-    fetch("guardar_vacante.php", {
-        method: "POST",
-        body: datosParaEnviar
-    })
-    .then(function(respuesta){
-        console.log(respuesta);
-        document.getElementById('miFormulario').reset();
-        document.getElementById('opciones').dispatchEvent(new Event('change'));
-        cargarEmpresas();
-    })
-    .catch(function(error){
-        console.error("Error", error);
-    })
-}*/
 
 
 //Cambiar al otro enviar datos
@@ -75,15 +75,16 @@ function enviarDatos(datosParaEnviar) {
         method: "POST",
         body: datosParaEnviar
     })
-        .then(function (respuesta) {
-            lanzarToast("Publicacion exitosa    ", "exito");
-            document.getElementById('miFormulario').reset();
-            document.getElementById('opciones').dispatchEvent(new Event('change'));
-            cargarEmpresas();
-        })
-        .catch(function (error) {
-            lanzarToast("Error", "error");
-        })
+    .then(function (texto) {
+        console.log("Respuesta PHP:", texto);
+        lanzarToast("Publicacion exitosa    ", "exito");
+        document.getElementById('miFormulario').reset();
+        document.getElementById('opciones').dispatchEvent(new Event('change'));
+        cargarEmpresas();
+    })
+    .catch(function (error) {
+        lanzarToast("Error", "error");
+    })
 }
 
 function lanzarToast(texto, tipo) {
