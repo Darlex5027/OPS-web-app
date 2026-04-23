@@ -1,3 +1,8 @@
+
+import {dirigirPerfil} from '../manejo_perfil.js';
+
+window.dirigirPerfil=dirigirPerfil;
+
 /*
  * Al cargar la página se revisa que el usuario tenga una sesión iniciada
  * Posterior a tener una sesión iniciada se cargan los catalogos para los
