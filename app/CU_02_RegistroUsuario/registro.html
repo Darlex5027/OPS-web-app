@@ -11,186 +11,188 @@
 
 <body>
 
-<header class="header">
+    <header class="header">
 
-    <div class="header-logo-left">
-        <img src="../Imagenes/logo.png" alt="Logo OPS">
-    </div>
+        <div class="header-logo-left">
+            <img src="../Imagenes/logo.png" alt="Logo OPS">
+        </div>
 
-    <div class="header-text">
-        <h1>
-            <div class="linea-1"><span>O</span>ptimización de</div>
-            <div class="linea-2"><span>P</span>racticas profesionales y</div>
-            <div class="linea-3"><span>S</span>ervicio social</div>
-        </h1>
-    </div>
+        <div class="header-text">
+            <h1>
+                <div class="linea-1"><span>O</span>ptimización de</div>
+                <div class="linea-2"><span>P</span>racticas profesionales y</div>
+                <div class="linea-3"><span>S</span>ervicio social</div>
+            </h1>
+        </div>
 
-    <div class="header-logo-right">
-        <img src="../Imagenes/FCBIyT.png" alt="Logo FCBIyT">
-    </div>
+        <div class="header-logo-right">
+            <img src="../Imagenes/FCBIyT.png" alt="Logo FCBIyT">
+        </div>
 
-</header>
+    </header>
 
-<main>
+    <main>
 
-<h2>Registro de usuario</h2>
+        <h2>Registro de usuario</h2>
 
-<form id="formRegistro">
+        <form id="formRegistro">
 
-    <h3>Tipo de cuenta</h3>
+            <h3>Tipo de cuenta</h3>
 
-    <label>
-        <input type="radio" name="tipo_usuario" value="alumno" checked>
-        Alumno
-    </label>
+            <label>
+                <input type="radio" name="tipo_usuario" value="alumno" checked>
+                Alumno
+            </label>
 
-    <label>
-        <input type="radio" name="tipo_usuario" value="admin">
-        Administrador
-    </label>
+            <label>
+                <input type="radio" name="tipo_usuario" value="admin">
+                Administrador
+            </label>
 
-    <h3>Datos de acceso</h3>
+            <h3>Datos de acceso</h3>
 
-    <label>Matrícula <span class="required">*</span></label>
-    <input type="text" id="matricula" name="matricula" maxlength="8" required>
+            <label>Matrícula <span class="required">*</span></label>
+            <input type="text" id="matricula" name="matricula" maxlength="8" required>
 
-    <label>Contraseña <span class="required">*</span></label>
-    <input type="password" id="password" name="password" required>
+            <label>Contraseña <span class="required">*</span></label>
+            <input type="password" id="password" name="password" required>
 
-    <label>Confirmar contraseña <span class="required">*</span></label>
-    <input type="password" id="confirmar_password" name="confirmar_password" required>
+            <label>Confirmar contraseña <span class="required">*</span></label>
+            <input type="password" id="confirmar_password" name="confirmar_password" required>
+
+
+            <!-- ========================= -->
+            <!-- ALUMNO -->
+            <!-- ========================= -->
+            <div id="grupoAlumno">
+
+                <h3>Información del alumno</h3>
+
+                <label>Nombre <span class="required">*</span></label>
+                <input type="text" id="nombre_alumno" name="nombre_alumno" required>
+
+                <label>Apellido paterno <span class="required">*</span></label>
+                <input type="text" id="apellido_p_alumno" name="apellido_p_alumno" required>
+
+                <label>Apellido materno</label>
+                <input type="text" id="apellido_m_alumno" name="apellido_m_alumno">
+
+                <label>Carrera <span class="required">*</span></label>
+                <select id="carrera_alumno" name="carrera_alumno" required>
+                    <option value="">Cargando carreras...</option>
+                </select>
+
+                <label>Semestre y Grupo (ej. 7A) <span class="required">*</span></label>
+                <input type="text" id="grupo" name="grupo" placeholder="Ej. 7A" maxlength="10" required>
+
+                <label>Horario (opcional)</label>
+                <input type="text" id="horario" name="horario">
+
+                <label>Email <span class="required">*</span></label>
+                <input type="email" id="email_alumno" name="email_alumno" required>
+
+                <label>Teléfono celular <span class="required">*</span></label>
+                <input type="text" id="telefono_alumno" name="telefono_alumno" required>
+
+                <label>Organización (opcional)</label>
+
+                <!-- 🔁 SELECT que muestra empresas desde la tabla Empresas -->
+                <select id="organizacion" name="organizacion">
+                    <option value="">Seleccione una empresa</option>
+                </select>
+
+                <!-- 🔘 Botón para registrar nueva empresa (modal) -->
+                <button type="button" id="btnNuevaEmpresa">
+                    Registrar nueva empresa
+                </button>
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- ADMIN (sin horario ni organización) -->
+            <!-- ========================= -->
+            <div id="grupoAdmin" hidden>
+
+                <h3>Información del administrador</h3>
+
+                <label>Nombre <span class="required">*</span></label>
+                <input type="text" id="nombre_admin" name="nombre_admin" required>
+
+                <label>Apellido paterno <span class="required">*</span></label>
+                <input type="text" id="apellido_p_admin" name="apellido_p_admin" required>
+
+                <label>Apellido materno</label>
+                <input type="text" id="apellido_m_admin" name="apellido_m_admin">
+
+                <label>Carrera a cargo <span class="required">*</span></label>
+                <select id="carrera_admin" name="carrera_admin" required>
+                    <option value="">Cargando carreras...</option>
+                </select>
+
+                <label>Teléfono <span class="required">*</span></label>
+                <input type="text" id="telefono_admin" name="telefono_admin" required>
+
+                <label>Correo <span class="required">*</span></label>
+                <input type="email" id="correo_admin" name="correo_admin" required>
+
+            </div>
+
+
+            <button type="submit">Registrarse</button>
+
+        </form>
+
+        <p id="mensaje"></p>
+
+        <p>
+            ¿Ya tienes cuenta?
+            <a href="login.html">Inicia sesión</a>
+        </p>
+
+    </main>
 
 
     <!-- ========================= -->
-    <!-- ALUMNO -->
+    <!-- MODAL NUEVA EMPRESA -->
     <!-- ========================= -->
-    <div id="grupoAlumno">
-
-        <h3>Información del alumno</h3>
-
-        <label>Nombre <span class="required">*</span></label>
-        <input type="text" id="nombre_alumno" name="nombre_alumno" required>
-
-        <label>Apellido paterno <span class="required">*</span></label>
-        <input type="text" id="apellido_p_alumno" name="apellido_p_alumno" required>
-
-        <label>Apellido materno</label>
-        <input type="text" id="apellido_m_alumno" name="apellido_m_alumno">
-
-        <label>Carrera <span class="required">*</span></label>
-        <select id="carrera_alumno" name="carrera_alumno" required>
-            <option value="">Cargando carreras...</option>
-        </select>
-
-        <!-- ❌ NÚMERO DE EXPEDIENTE ELIMINADO -->
-
-        <label>Horario (opcional)</label>
-        <input type="text" id="horario" name="horario">
-
-        <label>Email <span class="required">*</span></label>
-        <input type="email" id="email_alumno" name="email_alumno" required>
-
-        <label>Teléfono celular <span class="required">*</span></label>
-        <input type="text" id="telefono_alumno" name="telefono_alumno" required>
-
-        <label>Organización (opcional)</label>
-
-        <!-- 🔁 SELECT que muestra empresas desde la tabla Empresas -->
-        <select id="organizacion" name="organizacion">
-            <option value="">Seleccione una empresa</option>
-        </select>
-
-        <!-- 🔘 Botón para registrar nueva empresa (modal) -->
-        <button type="button" id="btnNuevaEmpresa">
-            Registrar nueva empresa
-        </button>
-
-    </div>
-
-
-    <!-- ========================= -->
-    <!-- ADMIN (sin horario ni organización) -->
-    <!-- ========================= -->
-    <div id="grupoAdmin" hidden>
-
-        <h3>Información del administrador</h3>
-
-        <label>Nombre <span class="required">*</span></label>
-        <input type="text" id="nombre_admin" name="nombre_admin" required>
-
-        <label>Apellido paterno <span class="required">*</span></label>
-        <input type="text" id="apellido_p_admin" name="apellido_p_admin" required>
-
-        <label>Apellido materno</label>
-        <input type="text" id="apellido_m_admin" name="apellido_m_admin">
-
-        <label>Carrera a cargo <span class="required">*</span></label>
-        <select id="carrera_admin" name="carrera_admin" required>
-            <option value="">Cargando carreras...</option>
-        </select>
-
-        <label>Teléfono <span class="required">*</span></label>
-        <input type="text" id="telefono_admin" name="telefono_admin" required>
-
-        <label>Correo <span class="required">*</span></label>
-        <input type="email" id="correo_admin" name="correo_admin" required>
-
-    </div>
-
-
-    <button type="submit">Registrarse</button>
-
-</form>
-
-<p id="mensaje"></p>
-
-<p>
-    ¿Ya tienes cuenta?
-    <a href="login.html">Inicia sesión</a>
-</p>
-
-</main>
-
-
-<!-- ========================= -->
-<!-- MODAL NUEVA EMPRESA -->
-<!-- ========================= -->
-<div id="modalEmpresa" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+    <div id="modalEmpresa" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
 background:rgba(0,0,0,0.5);">
 
-    <div style="background:white; padding:20px; width:400px; margin:10% auto;">
+        <div style="background:white; padding:20px; width:400px; margin:10% auto;">
 
-        <h3>Registrar nueva empresa</h3>
+            <h3>Registrar nueva empresa</h3>
 
-        <label>Nombre comercial <span class="required">*</span></label>
-        <input type="text" id="emp_nombre">
+            <label>Nombre comercial <span class="required">*</span></label>
+            <input type="text" id="emp_nombre">
 
-        <label>Razón social <span class="required">*</span></label>
-        <input type="text" id="emp_razon">
+            <label>Razón social <span class="required">*</span></label>
+            <input type="text" id="emp_razon">
 
-        <label>RFC <span class="required">*</span></label>
-        <input type="text" id="emp_rfc">
+            <label>RFC <span class="required">*</span></label>
+            <input type="text" id="emp_rfc">
 
-        <label>Dirección <span class="required">*</span></label>
-        <input type="text" id="emp_direccion">
+            <label>Dirección <span class="required">*</span></label>
+            <input type="text" id="emp_direccion">
 
-        <label>Sitio web</label>
-        <input type="text" id="emp_web">
+            <label>Sitio web</label>
+            <input type="text" id="emp_web">
 
-        <label>Descripción</label>
-        <textarea id="emp_desc"></textarea>
+            <label>Descripción</label>
+            <textarea id="emp_desc"></textarea>
 
-        <br><br>
+            <br><br>
 
-        <button type="button" id="guardarEmpresa">Guardar</button>
-        <button type="button" id="cerrarModal">Cancelar</button>
+            <button type="button" id="guardarEmpresa">Guardar</button>
+            <button type="button" id="cerrarModal">Cancelar</button>
+
+        </div>
 
     </div>
 
-</div>
 
-
-<script src="registro.js"></script>
+    <script src="registro.js"></script>
 
 </body>
+
 </html>

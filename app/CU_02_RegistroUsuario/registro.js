@@ -57,11 +57,12 @@ function cargarEmpresas() {
         .then(data => {
             if (data.empresas) {
                 selectOrganizacion.innerHTML = '<option value="">Seleccione una empresa (opcional)</option>';
+                console.log("Empresas cargadas:", data.empresas); // Verificar datos recibidos
                 data.empresas.forEach(emp => {
                     const option = document.createElement("option");
                     option.value = emp.Id_empresa;
                     // Ajustado a "Nombre_comercial" según tu tabla empresas
-                    option.textContent = emp.Nombre_comercial; 
+                    option.textContent = emp.Nombre; 
                     selectOrganizacion.appendChild(option);
                 });
             }
@@ -70,15 +71,31 @@ function cargarEmpresas() {
 }
 
 // Alternar formularios Admin/Alumno
+// Alternar formularios Admin/Alumno
 radiosTipo.forEach(radio => {
     radio.addEventListener("change", function() {
         const esAlumno = this.value === "alumno";
         grupoAlumno.hidden = !esAlumno;
         grupoAdmin.hidden = esAlumno;
         
-        // Resetear validaciones al cambiar de tipo
+        // --- SOLUCIÓN AQUÍ: Gestionar campos obligatorios dinámicamente ---
+        
+        // Campos de Alumno
+        const camposAlumno = grupoAlumno.querySelectorAll("input[required], select[required]");
+        camposAlumno.forEach(el => el.disabled = !esAlumno);
+
+        // Campos de Admin
+        const camposAdmin = grupoAdmin.querySelectorAll("input[required], select[required]");
+        camposAdmin.forEach(el => el.disabled = esAlumno);
+        
+        // Limpiar mensajes
         mensaje.style.display = "none";
     });
+});
+
+// Al cargar la página, ejecutar el cambio una vez para desactivar los campos del Admin por defecto
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelector("input[name='tipo_usuario']:checked").dispatchEvent(new Event('change'));
 });
 
 // ==========================================
@@ -158,6 +175,7 @@ form.addEventListener("submit", function(e) {
         datos.apellido_p = document.getElementById("apellido_p_alumno").value.trim();
         datos.apellido_m = document.getElementById("apellido_m_alumno").value.trim();
         datos.id_carrera = selectCarreraAlumno.value;
+        datos.grupo = document.getElementById("grupo").value.trim();
         datos.horario = document.getElementById("horario").value.trim();
         datos.email = document.getElementById("email_alumno").value.trim();
         datos.telefono = document.getElementById("telefono_alumno").value.trim();

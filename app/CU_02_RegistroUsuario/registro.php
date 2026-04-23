@@ -1,58 +1,64 @@
 <?php
-// Ajusta la ruta según tu estructura: subir dos niveles para llegar a php/db.php
-require_once("../../php/db.php");
+/**
+ * ARCHIVO: registro.php
+ * Ubicación: app/CU_02_RegistroUsuario/
+ */
+
+require_once("../php/db.php");
 header("Content-Type: application/json");
 
 $data = json_decode(file_get_contents("php://input"), true);
 
 if (!$data) {
-    echo json_encode(["success" => false, "error" => "Datos inválidos"]);
-    exit;
-}
-
-$matricula = trim($data['matricula'] ?? '');
-$password  = $data['password'] ?? '';
-$tipo      = $data['tipo_usuario'] ?? '';
-
-// Validaciones básicas
-if (!$matricula || !$password || !$tipo) {
-    echo json_encode(["success" => false, "error" => "Datos incompletos"]);
+    echo json_encode(["success" => false, "error" => "No se recibieron datos"]);
     exit;
 }
 
 try {
-    // 1. Verificar si la matrícula ya existe
-    $stmt = $pdo->prepare("SELECT Id_usuario FROM usuarios WHERE Matricula = ?");
-    $stmt->execute([$matricula]);
-    if ($stmt->fetch()) {
-        echo json_encode(["success" => false, "error" => "La matrícula ya está registrada"]);
-        exit;
+    if (!isset($pdo)) {
+        $pdo = new PDO($dsn, $user, $pass, $options);
     }
 
-    $pdo->beginTransaction();
+    $pdo->beginTransaction(); // Iniciamos transacción para asegurar que se creen ambos registros o ninguno
 
-    $hash = password_hash($password, PASSWORD_DEFAULT);
+    // 1. CREAR EL USUARIO (Tabla base de acceso)
+    // El Id_tipo_usuario debería ser 1 para Alumno y 2 para Admin (verifica tu tabla Tipos_Usuario)
+    $id_tipo = ($data['tipo_usuario'] === 'alumno') ? 1 : 2;
+    $pass_hash = password_hash($data['password'], PASSWORD_BCRYPT);
 
-    // Determinar estado inicial
-    $id_tipo_usuario = ($tipo === "admin") ? 1 : 2;
-    $activo_usuario = ($tipo === "admin") ? 1 : 0; // Alumnos inactivos hasta aprobación
-
-    // 2. Insertar en tabla USUARIOS
-    $stmt = $pdo->prepare("
-        INSERT INTO usuarios (Matricula, Contraseña, Id_tipo_usuario, Activo, Intentos_fallidos, Bloqueado, Fecha_registro)
-        VALUES (?, ?, ?, ?, 0, 0, NOW())
+    $stmtUser = $pdo->prepare("
+        INSERT INTO Usuarios (Matricula, Contrasena, Id_tipo_usuario, Activo, Fecha_registro)
+        VALUES (?, ?, ?, 1, NOW())
     ");
-    $stmt->execute([$matricula, $hash, $id_tipo_usuario, $activo_usuario]);
-    
+    $stmtUser->execute([$data['matricula'], $pass_hash, $id_tipo]);
     $id_usuario_nuevo = $pdo->lastInsertId();
 
-    // 3. Insertar según tipo de perfil
-    if ($tipo === "admin") {
-        $stmt = $pdo->prepare("
-            INSERT INTO administradores (Id_usuario, Nombre, Apellido_P, Apellido_M, Id_carrera, Telefono, Correo, Activo, Fecha_registro)
-            VALUES (?, ?, ?, ?, ?, ?, ?, 1, NOW())
+    // 2. REGISTRAR DATOS ESPECÍFICOS
+    if ($data['tipo_usuario'] === 'alumno') {
+        // Registro de Alumno
+        $stmtAlumno = $pdo->prepare("
+    INSERT INTO Alumnos (Id_usuario, Nombre, Apellido_P, Apellido_M, Id_carrera, Grupo, Horario, Organizacion, Activo)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
+");
+
+// 2. El execute DEBE tener exactamente 8 elementos en el arreglo
+$stmtAlumno->execute([
+    $id_usuario_nuevo,    // 1
+    $data['nombre'],      // 2
+    $data['apellido_p'],  // 3
+    $data['apellido_m'],  // 4
+    $data['id_carrera'],  // 5
+    $data['grupo'],       // 6 <- ESTE ES EL NUEVO
+    $data['horario'],     // 7
+    $data['organizacion'] // 8
+]);
+    } else {
+        // Registro de Administrador
+        $stmtAdmin = $pdo->prepare("
+            INSERT INTO Administradores (Id_usuario, Nombre, Apellido_P, Apellido_M, Id_carrera, Telefono, Correo, Activo)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 1)
         ");
-        $stmt->execute([
+        $stmtAdmin->execute([
             $id_usuario_nuevo,
             $data['nombre'],
             $data['apellido_p'],
@@ -61,53 +67,20 @@ try {
             $data['telefono'],
             $data['correo']
         ]);
-    } 
-    else if ($tipo === "alumno") {
-        // Insertar en ALUMNOS
-        $stmt = $pdo->prepare("
-            INSERT INTO alumnos (Id_usuario, Nombre, Apellido_P, Apellido_M, Id_carrera, Horario, Organizacion, Activo, Fecha_registro)
-            VALUES (?, ?, ?, ?, ?, ?, ?, 1, NOW())
-        ");
-        $stmt->execute([
-            $id_usuario_nuevo,
-            $data['nombre'],
-            $data['apellido_p'],
-            $data['apellido_m'],
-            $data['id_carrera'],
-            $data['horario'],
-            $data['organizacion']
-        ]);
-
-        // IMPORTANTE: Obtener el ID autoincremental de la tabla ALUMNOS
-        $id_alumno_real = $pdo->lastInsertId();
-
-        // 4. Insertar CONTACTOS (usando $id_alumno_real)
-        $stmt_cont = $pdo->prepare("
-            INSERT INTO contactos_alumnos (Id_alumno, Tipo, Valor, Principal, Verificado, Fecha_registro)
-            VALUES (?, ?, ?, 1, 0, NOW())
-        ");
-        
-        // Email
-        $stmt_cont->execute([$id_alumno_real, 'email', $data['email']]);
-        // Teléfono
-        $stmt_cont->execute([$id_alumno_real, 'telefono', $data['telefono']]);
-
-        // 5. Insertar ACTIVIDAD INICIAL (usando $id_alumno_real)
-        $stmt_act = $pdo->prepare("
-            INSERT INTO actividades_alumnos (Id_alumno, Estado, Fecha_registro)
-            VALUES (?, 'PENDIENTE', NOW())
-        ");
-        $stmt_act->execute([$id_alumno_real]);
     }
 
     $pdo->commit();
     echo json_encode(["success" => true]);
 
 } catch (Exception $e) {
-    if ($pdo->inTransaction()) {
-        $pdo->rollBack();
+    if ($pdo->inTransaction()) $pdo->rollBack();
+    
+    // Manejo de error por matrícula duplicada
+    if ($e->getCode() == 23000) {
+        $error = "La matrícula ya está registrada.";
+    } else {
+        $error = "Error en el servidor: " . $e->getMessage();
     }
-    // Opcional: registrar el error real para depuración en logs de Docker
-    error_log("Error en registro: " . $e->getMessage());
-    echo json_encode(["success" => false, "error" => "Error interno al procesar el registro"]);
+    
+    echo json_encode(["success" => false, "error" => $error]);
 }
