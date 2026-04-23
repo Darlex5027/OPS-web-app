@@ -4,6 +4,7 @@ import {dirigirPerfil} from '../manejo_perfil.js';
 window.dirigirPerfil=dirigirPerfil;
 window.cargar_tabla=cargar_tabla;
 window.exportarExcel=exportarExcel;
+window.imprimirPDF=imprimirPDF;
 /*
  * Al cargar la página se revisa que el usuario tenga una sesión iniciada
  * Posterior a tener una sesión iniciada se cargan los catalogos para los
@@ -67,7 +68,8 @@ function cargar_tabla(){
 	const estado = document.getElementById("estado").value;
 	const titulos = document.getElementById("Titulos");
 	const tabla = document.getElementById("Tabla");
-
+	const bExcel = document.getElementById("btnGenerarExcel");
+	const bPDF = document.getElementById("btnGenerarPDF");
 	// Se limpian las tablas de caulquier contenido que tengan
 	titulos.innerHTML=""
 	tabla.innerHTML="";
@@ -91,6 +93,8 @@ function cargar_tabla(){
 		//por lo que no se encontraron resultados.
 		if(impresion.length==0){
            		lanzarToast("No se encontraron Resultados", "error");
+			bExcel.style.visibility="hidden";
+			bPDF.style.visibility="hidden";
 			return;
 		}
 
@@ -114,15 +118,25 @@ function cargar_tabla(){
 			table=table+"</tr>";
 			tabla.innerHTML+=table;
 		});
+		
+		bExcel.style.visibility="visible";
+		bPDF.style.visibility="visible";
+			
 	});
 }
 
 function exportarExcel(){
 	event.preventDefault();
-	workbook=XLSX.utils.table_to_book(document.getElementById('tabla-resultados'));
+	const workbook=XLSX.utils.table_to_book(document.getElementById('tabla-resultados'));
 	XLSX.writeFile(workbook, 'reporte_alumnos.xlsx');
 }
 
+function imprimirPDF(){
+	const { jsPDF } = window.jspdf;
+	const doc = new jsPDF();
+	doc.autoTable({ html: '#tabla-resultados' });
+	doc.save('reporte_alumnos.pdf');	
+}
 function lanzarToast(texto, tipo) {
     const toast = document.getElementById('toast-mensaje');
    

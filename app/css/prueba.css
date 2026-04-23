@@ -95,3 +95,8 @@ body {
     transform: translateY(20px);
     pointer-events: none;
 }
+
+@media print {
+    .sidebar, .opciones, .header { display: none; }
+    .table { display: block; }
+}

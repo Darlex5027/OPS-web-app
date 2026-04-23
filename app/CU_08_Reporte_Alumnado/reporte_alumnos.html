@@ -5,6 +5,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Reporte Alumnos</title>
         <link rel="stylesheet" href="../css/prueba.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+	<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     </head>
     <body>
         <div class="sidebar">
@@ -46,8 +49,9 @@
 		<select id="estado">
 			<option value ="TODOS">--Todas--</option>
 		</select>
-		<button onClick="cargar_tabla()">Generar Tabla</button>
-		<button onClick="exportarExcel()">Generar Tabla</button>
+		<button onClick="cargar_tabla()" id="btnGenerarTabla">Generar Tabla</button>
+		<button onClick="exportarExcel()" id="btnGenerarExcel" style="visibility: hidden">Generar Excel</button>
+		<button onClick="imprimirPDF()" id="btnGenerarPDF" style="visibility: hidden">Generar PDF</button>
 	
 	    </div>
             <div class="table">
