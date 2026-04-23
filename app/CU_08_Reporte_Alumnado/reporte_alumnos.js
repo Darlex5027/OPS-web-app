@@ -21,9 +21,15 @@ function cargar_catalogos(){
 
 document.addEventListener("DOMContentLoaded", function(){
 	cargar_catalogos();
+	redireccionar();
 });
 
 
+function redireccionar(){
+	if(!document.cookie){
+		window.location.href = "../CU_01_Login/login.html";
+	}
+}
 
 function cargar_tabla(){
 	actividad = document.getElementById("actividad").value;
