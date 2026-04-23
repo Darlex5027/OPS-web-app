@@ -31,6 +31,7 @@ if (!$nombre || !$razon || !$rfc || !$direccion) {
 }
 
 try {
+
     // IMPORTANTE: Asegurar conexión activa
     if (!isset($pdo)) {
         $pdo = new PDO($dsn, $user, $pass, $options);
@@ -45,22 +46,30 @@ try {
         INSERT INTO Empresas (Nombre, Razon_social, RFC, Direccion, Sitio_web, Descripcion, Activo, Fecha_registro)
         VALUES (?, ?, ?, ?, ?, ?, 1, NOW())
     ");
-    
-    $stmt->execute([$nombre, $razon, $rfc, $direccion, $web, $desc]);
-    
+
+    $stmt->execute([
+        $nombre,
+        $razon,
+        $rfc,
+        $direccion,
+        $web,
+        $desc
+    ]);
+
     // 5. Retornar el ID generado para el frontend
     $id_empresa = $pdo->lastInsertId();
-    
+
     echo json_encode([
-        "success" => true, 
+        "success" => true,
         "id_empresa" => $id_empresa,
         "nombre" => $nombre
     ]);
 
-} catch(PDOException $e) {
+} catch (PDOException $e) {
+
     // 6. Manejo de errores específicos de SQL
     error_log("Error DB al registrar empresa: " . $e->getMessage());
-    
+
     // Si el RFC o Nombre ya existe (son UNIQUE en tu SQL)
     if ($e->getCode() == 23000) {
         $error_msg = "El nombre de la empresa o el RFC ya se encuentran registrados.";
@@ -69,8 +78,9 @@ try {
     }
 
     echo json_encode([
-        "success" => false, 
+        "success" => false,
         "error" => $error_msg,
-        "debug" => $e->getMessage() 
+        "debug" => $e->getMessage()
     ]);
+
 }
