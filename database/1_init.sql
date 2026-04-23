@@ -51,6 +51,8 @@ CREATE TABLE `Actividades_Alumnos` (
   `Area` varchar(300) DEFAULT NULL,
   `Programa` varchar(300) DEFAULT NULL,
   `Estado` enum('PENDIENTE','EN_CURSO','COMPLETADO','CANCELADO') NOT NULL DEFAULT 'PENDIENTE',
+  `periodo_tipo` enum('primavera','otoño') NOT NULL,
+  `periodo_año` year(4) NOT NULL,
   `Fecha_inicio` date DEFAULT NULL,
   `Fecha_fin` date DEFAULT NULL,
   `Horas_totales` int(11) DEFAULT NULL,
@@ -94,7 +96,7 @@ CREATE TABLE `Alumnos` (
   `Apellido_P` varchar(100) NOT NULL,
   `Apellido_M` varchar(100) DEFAULT NULL,
   `Id_carrera` int(11) NOT NULL,
-  `Grupo` varchar(1) NOT NULL,
+  `Grupo` varchar(5) NOT NULL,
   `No_Expediente` varchar(50) DEFAULT NULL,
   `Area_o_programa` varchar(255) DEFAULT NULL,
   `Observaciones` text DEFAULT NULL,
@@ -224,6 +226,7 @@ CREATE TABLE `Encuestas` (
 
 -- --------------------------------------------------------
 
+
 --
 -- Estructura de tabla para la tabla `Facultades`
 --
@@ -336,7 +339,7 @@ CREATE TABLE `Vacantes` (
   `Id_empresa` int(11) NOT NULL,
   `Titulo` varchar(200) NOT NULL,
   `Flyer_Path` varchar(100) DEFAULT NULL,
-  `Descripcion` text NOT NULL,
+  `Descripcion` text DEFAULT NULL,
   `Requisitos` text DEFAULT NULL,
   `Id_carrera` int(11) DEFAULT NULL,
   `Id_servicio` int(11) NOT NULL,
@@ -680,6 +683,22 @@ ALTER TABLE `Vacantes`
   ADD CONSTRAINT `2` FOREIGN KEY (`Id_carrera`) REFERENCES `Carreras` (`Id_carrera`) ON DELETE SET NULL,
   ADD CONSTRAINT `3` FOREIGN KEY (`Id_servicio`) REFERENCES `Actividades` (`Id_servicio`);
 COMMIT;
+
+--
+-- Estrucutura de tabla para relacionar Encuestas con Periodos
+--
+
+CREATE TABLE Periodo_Encuesta (
+    `Id_periodo_encuesta` int(11) AUTO_INCREMENT PRIMARY KEY,
+    `Id_encuesta` INT NOT NULL,
+    `Periodo_tipo` ENUM('primavera', 'otoño') NOT NULL,
+    `Periodo_año` YEAR(4) NOT NULL,
+    `Fecha_creacion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (Id_encuesta) REFERENCES Encuestas(Id_encuesta) ON DELETE CASCADE,
+    UNIQUE KEY unique_periodo_encuesta (Id_encuesta, Periodo_tipo, Periodo_año)
+);
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

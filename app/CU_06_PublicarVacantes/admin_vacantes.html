@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"> <!-- Soporte para caracteres especiales como ñ y tildes -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adaptación a móviles -->
+        <title>Administación de Vacantes</title>
+        <link rel="stylesheet" href="../css/prueba.css">
+    </head>
+    <body>
+        <div class="sidebar">
+            <div class="profile">
+                <img src="../Imagenes/prueba.png" alt="perfil">
+                <h3>Mtra. M. Guadalupe</h3>
+            </div>
+            <div class="menu">
+                <a href="foro_vacantes.html">
+                    <button>Publicar vacantes para servicio social</button>
+                </a>
+                <a href="admin_alumnos.html">
+                    <button>Administrar alumnos</button>
+                </a>
+                <a href="reportes_alumnos.html">
+                    <button>Generar reporte de alumnos</button>
+                </a>
+                <a href="reportes_estadisticos.html">
+                    <button>Generar reporte estadistico</button>
+                </a>
+                <a href="digitalizar_evaluacones.html">
+                    <button>Llenar formularios del prestador</button>
+                </a>
+                <a href="reportes_prestadores.html">
+                    <button>Generar reporte del prestador</button>
+                </a>
+                <a href="admin_encuentas.html">
+                    <button>Editar formularios</button>
+                </a>
+                <a href="Mensajes.html">
+                    <button>Mensajes</button>
+                </a>
+                <a href="perfil.html">
+                    <button>perfil</button>
+                </a>
+            </div>
+        </div>
+        <div class="main">
+            <div class="header">
+            <div></div><h1>Administación de vacantes</h1>
+                <div class="header-logo-right">
+                    <img src="../Imagenes/Logo.png" alt="Logo OPS">
+                </div>
+            </div>
+            <div class="table">
+                <form id="miFormulario">
+                <label>Selecciona una categoría:</label>
+
+                    <select id="opciones" onchange="cambiarContenido()">
+                        <option value="manual">Registro manual</option>
+                        <option value="flayer">Registro con flayer</option>
+                    </select>
+                    <div id="registro_manual" style="display:none;">
+                        <label for="titulo_manual">Titulo: </label>
+                        <input type="text" id="titulo_manual" placeholder="Titulo">
+
+                        <label for="empresa">Empresa:</label>
+                        <select id="empresa_manual">
+                            <option value="">-- Cargando empresas... --</option>
+                        </select>
+
+                        <label for="servicio">servicio: </label>
+                        <select id="servicio_manual">
+                            <option value="2">Practicas profesionales</option>
+                            <option value="1">Servicio social</option>
+                        </select>
+                        
+                        <label for="nombre_contacto">Nombre del contacto: </label>
+                        <input type="text" id="nombre_contacto" placeholder="Nombre del contacto">
+                        <label for="email">Contacto e-mail: </label>
+                        <input type="email" id="email" placeholder="Contacto e-mail">
+                        <label for="telefono">Contacto telefono: </label>
+                        <input type="tel" pattern="[0-9]*" id="telefono" placeholder="Contacto telefono">
+                        <label for="descripcion">Descripcion: </label>
+                        <input type="text" id="descripcion" placeholder="descripcion">
+                        <label for="requisitos">Requisitos: </label>
+                        <input type="text" id="requisitos" placeholder="requisitos">
+
+                        <label id="fecha_Manual"></label>
+                        <!--<label for="publicacion">Fecha de publicacion: </label>
+                        <label type="date" id="publicacion_manual" placeholder="Fecha de publicacion"></label>-->
+                        <label for="expiracion">Fecha de expiracion: </label>
+                        <input type="date" id="expiracion_manual" placeholder="Fecha de expiracion">
+                    </div>
+
+                    <div id="registro_flayer" style="display: none;">
+                        <label for="titulo_flayer">Titulo: </label>
+                        <input type="text" id="titulo_flayer" placeholder="Titulo">
+                        <label for="titulo">Flayer: </label>
+                        <input type="file" id="flayer" placeholder="flayer">
+                        <label for="empresa">Empresa:</label>
+                        <select id="empresa_flayer">
+                            <option value="">-- Cargando empresas... --</option>
+                        </select>
+
+                        <label for="servicio">servicio: </label>
+                        <select id="servicio_flayer">
+                            <option value="2">Practicas profecionales</option>
+                            <option value="1">Servicio social</option>
+                        </select>
+
+                        <label id="fecha_flayer"></label>
+                        <!--<label for="publicacion">Fecha de publicacio: </label>
+                        <input type="date" id="publicacion_flayer" placeholder="Fecha de publicacion">-->
+                        <label for="expiracion">Fecha de expiracion: </label>
+                        <input type="date" id="expiracion_flayer" placeholder="Fecha de expiracion">
+                    </div>
+                    <script src="mostrar_contenido.js"></script>
+
+                    
+                    <button type="submit" id="btnEnviar">Enviar</button>
+                </form>
+                <script src="enviar_vacantes.js"></script>
+            </div>
+            <div id="toast-mensaje" class="toast oculto"></div>
+        </div>
+    </body>
+</html>

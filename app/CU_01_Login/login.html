@@ -1,0 +1,82 @@
+<!--
+  Archivo     : login.html
+  Módulo      : CU_01_Login
+  Autor       : Francisco Angel Membrilla Alarcon
+  Fecha       : 22/04/2026
+  Descripción : Vista del formulario de inicio de sesión. Permite al usuario
+                ingresar su matrícula (4 u 8 dígitos) y contraseña. Envía
+                los datos a login.php mediante fetch y redirige al index
+                según el resultado.
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - OPS FCBIyT</title>
+
+    <link rel="stylesheet" href="../css/stylesInicio.css">
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="header-logo-left">
+            <img src="../Imagenes/logo.png" alt="Logo OPS">
+        </div>
+
+        <div class="header-text">
+            <h1>
+                <div class="linea-1"><span>O</span>ptimización de</div>
+                <div class="linea-2"><span>P</span>racticas profesionales y</div>
+                <div class="linea-3"><span>S</span>ervicio social</div>
+            </h1>
+        </div>
+
+        <div class="header-logo-right">
+            <img src="../Imagenes/FCBIyT.png" alt="Logo FCBIyT">
+        </div>
+
+    </header>
+
+
+    <main>
+
+        <h2>Iniciar sesión</h2>
+
+        <form id="formLogin">
+
+            <input
+                type="text"
+                id="matricula"
+                placeholder="Matrícula (4 u 8 dígitos)"
+                maxlength="8"
+                required>
+
+            <input
+                type="password"
+                id="contrasena"
+                placeholder="Contraseña"
+                required>
+
+            <button type="submit">Iniciar sesión</button>
+
+        </form>
+
+        <p id="mensaje" style="display:none;"></p>
+
+        <p>
+            ¿Aún no tienes una cuenta?
+            <a href="../CU_02_RegistroUsuario/registro.html">Regístrate aquí</a>
+        </p>
+
+    </main>
+
+
+    <script src="login.js"></script>
+
+</body>
+
+</html>

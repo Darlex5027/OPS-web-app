@@ -71,8 +71,7 @@ body {
                 transform: translateY(-115px);/* Mueve el logo de manera vertical*/
                 filter: drop-shadow(0 0 2px rgb(199, 196, 1)); /*Brillo*/
             }
-
-
+            /* Clase base del mensaje */
 .toast {
     position: fixed;
     bottom: 20px;
