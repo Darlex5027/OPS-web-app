@@ -16,22 +16,62 @@ try {
     $pdo = new PDO($dsn, $user, $pass, $options);
     // Obtiene el id de la carrera desde una cookie del navegador
     $id_carrera = $_COOKIE['Id_carrera'];
+    $id_tipo_usuario = $_COOKIE['Id_tipo_usuario'];
+
+
     // Se prepara la consulta SQL para obtener datos de los alumnos
-    $consulta = $pdo->prepare("SELECT 
-    CONCAT (Alumnos.Nombre, ' ', Alumnos.Apellido_M, ' ', Alumnos.Apellido_P) As Nombre_Completo, 
-    Carreras.Nombre as Nombre_Carrera, 
-    Usuarios.Matricula, 
-    Usuarios.Fecha_registro, 
-    Actividades.Servicio 
-    FROM Usuarios JOIN Alumnos JOIN Actividades_Alumnos JOIN Carreras JOIN Actividades 
-    WHERE Actividades_Alumnos.Id_servicio=Actividades.Id_servicio 
-    AND Carreras.Id_carrera=Alumnos.Id_carrera AND Usuarios.Id_tipo_usuario=2 
-    AND Usuarios.Id_usuario=Alumnos.Id_usuario AND Alumnos.Id_alumno=Actividades_Alumnos.Id_alumno 
-    AND Usuarios.Activo=0 AND Carreras.Id_carrera=?");
-    // Ejecuta la consulta pasando el id de la carrera como parámetro
-    $consulta->execute([$id_carrera]);
-    // Convierte los resultados en formato JSON y los envía al frontend
-    echo json_encode($consulta->fetchAll());
+    if ($id_tipo_usuario == 1) {
+        $consultaAlumnos = $pdo->prepare("SELECT 
+        CONCAT (Alumnos.Nombre, ' ', Alumnos.Apellido_M, ' ', Alumnos.Apellido_P) As Nombre_Completo, 
+        Carreras.Nombre as Nombre_Carrera, 
+        Usuarios.Matricula, 
+        Usuarios.Fecha_registro, 
+        Actividades.Servicio 
+        FROM Usuarios JOIN Alumnos JOIN Actividades_Alumnos JOIN Carreras JOIN Actividades 
+        WHERE Actividades_Alumnos.Id_servicio=Actividades.Id_servicio 
+        AND Carreras.Id_carrera=Alumnos.Id_carrera AND Usuarios.Id_tipo_usuario=2 
+        AND Usuarios.Id_usuario=Alumnos.Id_usuario AND Alumnos.Id_alumno=Actividades_Alumnos.Id_alumno 
+        AND Usuarios.Activo=0 AND Carreras.Id_carrera=?");
+        $consultaAlumnos->execute([$id_carrera]);
+        // Convierte los resultados en formato JSON y los envía al frontend
+
+        $consultaCoordinadores = $pdo->prepare("SELECT 
+        CONCAT (Administradores.Nombre, ' ', Administradores.Apellido_P, ' ', Administradores.Apellido_M) As Nombre_Completo, 
+        Carreras.Nombre As Nombre_Carrera, 
+        Usuarios.Matricula, 
+        Usuarios.Fecha_registro, 
+        Administradores.Telefono, 
+        Administradores.Correo 
+        FROM Usuarios, Administradores, Carreras 
+        WHERE Usuarios.Id_usuario = Administradores.Id_usuario 
+        AND Administradores.Id_carrera = Carreras.Id_carrera 
+        AND Usuarios.Activo = 0 AND Usuarios.Id_tipo_usuario = 3");
+        $consultaCoordinadores->execute([]);
+        // Convierte los resultados en formato JSON y los envía al frontend
+        echo json_encode([
+            'alumnos' => $consultaAlumnos->fetchAll(),
+            'coordinadores' => $consultaCoordinadores->fetchAll(),
+        ]);
+    } else if ($id_tipo_usuario == 3) {
+        $consultaAlumnos = $pdo->prepare("SELECT 
+        CONCAT (Alumnos.Nombre, ' ', Alumnos.Apellido_M, ' ', Alumnos.Apellido_P) As Nombre_Completo, 
+        Carreras.Nombre as Nombre_Carrera, 
+        Usuarios.Matricula, 
+        Usuarios.Fecha_registro, 
+        Actividades.Servicio 
+        FROM Usuarios JOIN Alumnos JOIN Actividades_Alumnos JOIN Carreras JOIN Actividades 
+        WHERE Actividades_Alumnos.Id_servicio=Actividades.Id_servicio 
+        AND Carreras.Id_carrera=Alumnos.Id_carrera AND Usuarios.Id_tipo_usuario=2 
+        AND Usuarios.Id_usuario=Alumnos.Id_usuario AND Alumnos.Id_alumno=Actividades_Alumnos.Id_alumno 
+        AND Usuarios.Activo=0 AND Carreras.Id_carrera=?");
+        $consultaAlumnos->execute([$id_carrera]);
+        // Convierte los resultados en formato JSON y los envía al frontend
+        echo json_encode([
+            'alumnos' => $consultaAlumnos->fetchAll(),
+            'coordinadores' => [], // ← vacío porque el coordinador no ve otros coordinadores
+            'tipo_usuario' => $id_tipo_usuario
+        ]);
+    }
 } catch (\PDOException $e) {
     // Si ocurre un error en la conexión o consulta, se envía código HTTP 500
     http_response_code(500);

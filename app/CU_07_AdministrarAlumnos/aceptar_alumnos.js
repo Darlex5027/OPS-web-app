@@ -9,9 +9,11 @@ cambios. Su función principal es actualizar el estado del alumno a aceptado.
 */
 
 // Importa la función cargarAlumnos desde otro archivo JS
-import {cargarAlumnos} from './obtener_alumnos.js';
+import {cargarInformacion} from './obtener_alumnos.js';
 // Exporta la función aceptarAlumno para que pueda usarse en otros archivos
 export {aceptarAlumno};
+export {aceptarCoordinador};
+export {lanzarToast};
 // Función para aceptar a un alumno, recibe la matrícula como parámetro
 function aceptarAlumno(matricula){
     // Se hace una petición al servidor (PHP) usando fetch
@@ -34,7 +36,37 @@ function aceptarAlumno(matricula){
             // Mostramos un mensaje tipo "toast"
             lanzarToast("¡Alumno aceptado correctamente!    ", "exito");
              // Volvemos a cargar la lista de alumnos (actualiza la tabla)
-            cargarAlumnos();
+            cargarInformacion();
+        }
+    })
+    // Captura errores en caso de que falle la petición
+    .catch(function(error){
+        console.error("Error", error);
+    })
+}
+
+function aceptarCoordinador(matricula){
+    // Se hace una petición al servidor (PHP) usando fetch
+    fetch("procesar_validacion.php", {
+        method: "POST",// Método de envío
+        headers:{
+            "Content-Type":"application/json"
+        },
+        // Convertimos los datos a formato JSON
+        body: JSON.stringify({ matricula: matricula, identificador:"Aceptado" })
+    })
+    // Convertimos la respuesta a formato JSON
+    .then(function(respuesta){
+        return respuesta.json();
+    })
+    // Procesamos los datos recibidos del servidor
+    .then(function(datos){
+        // Si la operación fue exitosa
+        if(datos.success){
+            // Mostramos un mensaje tipo "toast"
+            lanzarToast("¡Coordinador aceptado correctamente!    ", "exito");
+             // Volvemos a cargar la lista de alumnos (actualiza la tabla)
+            cargarInformacion();
         }
     })
     // Captura errores en caso de que falle la petición
