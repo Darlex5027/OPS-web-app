@@ -28,25 +28,25 @@ SET time_zone = "+00:00";
 -- Dumping data for table `Facultades`
 --
 
-INSERT INTO `Facultades` (`Id_Facultad`, `Nombre`) VALUES
-(1, 'Facultad de\r\nAgrobiología'),
-(2, 'Facultad de\r\nCiencias de la Salud'),
-(3, 'Facultad de\r\nOdontología'),
-(4, 'Facultad de\r\nCiencias Básicas Ingeniería y Tecnología'),
-(5, 'Facultad de\r\nCiencias Económico Administrativas'),
-(6, 'Facultad de\r\nDerecho, Ciencias Políticas y Criminología'),
-(7, 'Facultad de\r\nTrabajo Social, Sociología y Psicología'),
-(8, 'Facultad de\r\nCiencias de la Educación'),
-(9, 'Facultad de\r\nFilosofía y Letras'),
-(10, 'Facultad de\r\nCiencias para el Desarrollo Humano'),
-(11, 'Facultad de\r\nDiseño, Arte y Arquitectura'),
-(12, 'Unidad Académica Multidisciplinaria campus Calpulalpan');
+INSERT INTO `Facultades` (`Id_facultad`, `Nombre`, `Activo`) VALUES
+(1, 'Facultad de Agrobiología', 0),
+(2, 'Facultad de Ciencias de la Salud', 0),
+(3, 'Facultad de Odontología', 0),
+(4, 'Facultad de Ciencias Básicas Ingeniería y Tecnología', 1),
+(5, 'Facultad de Ciencias Económico Administrativas', 0),
+(6, 'Facultad de Derecho, Ciencias Políticas y Criminología', 0),
+(7, 'Facultad de Trabajo Social, Sociología y Psicología', 0),
+(8, 'Facultad de Ciencias de la Educación', 0),
+(9, 'Facultad de Filosofía y Letras', 0),
+(10, 'Facultad de Ciencias para el Desarrollo Humano', 0),
+(11, 'Facultad de Diseño, Arte y Arquitectura', 0),
+(12, 'Unidad Académica Multidisciplinaria campus Calpulalpan', 0);
 
 --
 -- Dumping data for table `Carreras`
 --
 
-INSERT INTO `Carreras` (`Id_carrera`, `Id_Facultad`, `Nombre`, `Activo`, `Fecha_registro`) VALUES
+INSERT INTO `Carreras` (`Id_carrera`, `Id_facultad`, `Nombre`, `Activo`, `Fecha_registro`) VALUES
 (13, 1, 'Licenciatura en Biología', 1, '2026-04-14 05:57:50'),
 (14, 1, 'Licenciatura en Ciencias Ambientales', 1, '2026-04-14 05:57:50'),
 (15, 1, 'Licenciatura en Gastronomía y Hotelería', 1, '2026-04-14 05:57:50'),
