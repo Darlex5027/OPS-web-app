@@ -165,7 +165,7 @@ CREATE TABLE `Audit_Log` (
 
 CREATE TABLE `Carreras` (
   `Id_carrera` int(11) NOT NULL,
-  `Id_Facultad` int(11) NOT NULL,
+  `Id_facultad` int(11) NOT NULL,
   `Nombre` varchar(100) NOT NULL,
   `Activo` tinyint(1) DEFAULT 1,
   `Fecha_registro` datetime DEFAULT current_timestamp()
@@ -232,8 +232,9 @@ CREATE TABLE `Encuestas` (
 --
 
 CREATE TABLE `Facultades` (
-  `Id_Facultad` int(11) NOT NULL,
-  `Nombre` varchar(100) NOT NULL
+  `Id_facultad` int(11) NOT NULL,
+  `Nombre` varchar(100) NOT NULL,
+  `Activo` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- --------------------------------------------------------
@@ -446,7 +447,7 @@ ALTER TABLE `Encuestas`
 -- Indices de la tabla `Facultades`
 --
 ALTER TABLE `Facultades`
-  ADD PRIMARY KEY (`Id_Facultad`);
+  ADD PRIMARY KEY (`Id_facultad`);
 
 --
 -- Indices de la tabla `Permisos`
@@ -568,7 +569,7 @@ ALTER TABLE `Encuestas`
 -- AUTO_INCREMENT de la tabla `Facultades`
 --
 ALTER TABLE `Facultades`
-  MODIFY `Id_Facultad` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id_facultad` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `Permisos`
