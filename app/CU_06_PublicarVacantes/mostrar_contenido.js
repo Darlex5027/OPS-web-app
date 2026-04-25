@@ -15,8 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (divNueva) {
         divNueva.style.display = 'none';
     }
-    // Crea una cookie con el Id del usuario (simulación o prueba)
-    document.cookie = "Id_usuario=24"
 });
 function cargarFecha() {
     // Obtenemos el elemento

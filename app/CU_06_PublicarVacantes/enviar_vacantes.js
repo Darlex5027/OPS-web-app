@@ -105,7 +105,6 @@ function enviarDatos(datosParaEnviar) {
     })
     // Manejo de la respuesta
         .then(function (texto) {
-            console.log("Respuesta PHP:", texto);
             // Muestra mensaje de éxito
             lanzarToast("Publicacion exitosa    ", "exito");
              // Limpia el formulario
