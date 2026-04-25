@@ -17,7 +17,7 @@ function redireccionar(){
 			window.location.href = '../CU_01_Login/login.html';
 		}
 	})
-	.cat(() => {
+	.catch(() => {
 		window.location.href = '../CU_01_Login/login.html';
 	});
 }
