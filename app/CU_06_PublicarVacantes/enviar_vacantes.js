@@ -6,19 +6,15 @@ al servidor. Valida la información ingresada, construye un objeto FormData con 
 (incluyendo archivos si es necesario) y realiza una petición al backend. También muestra mensajes 
 de éxito o error según el resultado.
 */
-// Se agrega un evento al formulario para interceptar el envío
 document.getElementById('miFormulario').addEventListener('submit', function (e) {
-    // Evita que el formulario se envíe de forma tradicional (recarga de página)
     e.preventDefault();
-    // Obtiene el tipo de registro seleccionado (manual o flayer)
+    if (!validarFormulario()) {
+        return;
+    }
     const eleccion = document.getElementById('opciones').value;
-    // Se crea un objeto FormData para enviar los datos al servidor
     let formData = new FormData();
-    // Se guarda el tipo de registro
     formData.append('tipo_registro', eleccion);
-    // Obtiene la fecha actual
     const hoy = new Date();
-    // Formatea la fecha en formato YYYY-MM-DD (compatible con el servidor)
     const formatoServidor = new Intl.DateTimeFormat('en-CA', {
         timeZone: 'America/Mexico_City',
         year: 'numeric',
@@ -28,11 +24,8 @@ document.getElementById('miFormulario').addEventListener('submit', function (e) 
     const fechaFormateada = formatoServidor.format(hoy);
     // ================= REGISTRO MANUAL =================
     if (eleccion === "manual") {
-        // Obtiene la fecha de expiración ingresada
         expiracion = document.getElementById('expiracion_manual').value
-        // Valida que la fecha de expiración sea mayor a la actual
         if (fechaFormateada < expiracion) {
-            // Agrega los datos del formulario manual
             formData.append('titulo', document.getElementById('titulo_manual').value);
             formData.append('Id_servicio', document.getElementById('servicio_manual').value);
             formData.append('nombre_contacto', document.getElementById('nombre_contacto').value);
@@ -40,14 +33,10 @@ document.getElementById('miFormulario').addEventListener('submit', function (e) 
             formData.append('telefono', document.getElementById('telefono').value);
             formData.append('descripcion', document.getElementById('descripcion').value);
             formData.append('requisitos', document.getElementById('requisitos').value);
-            // Guarda fecha de publicación y expiración
             formData.append('publicacion', fechaFormateada);
             formData.append('expiracion', document.getElementById('expiracion_manual').value);
-            // Obtiene el select de empresa
             select_empresa = document.getElementById('empresa_manual')
-            // Si el select está deshabilitado, significa que se está creando una nueva empresa
             if (select_empresa.disabled) {
-                // Datos de la nueva empresa
                 formData.append('nueva_empresa', 'true');
                 formData.append('nombre_empresa', document.getElementById('nombre_empresa').value);
                 formData.append('descripcion_empresa', document.getElementById('descripcion_empresa').value);
@@ -57,36 +46,42 @@ document.getElementById('miFormulario').addEventListener('submit', function (e) 
                 formData.append('web_empresa', document.getElementById('web_empresa').value);
             }
             else {
-                // Si no, se usa una empresa existente
                 formData.append('nueva_empresa', 'false');
                 formData.append('Id_empresa', select_empresa.value);
             }
-            // Envía los datos al servidor
             enviarDatos(formData);
         }
         else {
-            // Mensaje de error si la fecha no es válida
             lanzarToast("La fecha de expiracion debe de ser mayor que la actual", "error");
         }
         // ================= REGISTRO CON FLAYER =================
     } else {
-        // Obtiene la fecha de expiración
         expiracion = document.getElementById('expiracion_flayer').value
-        // Valida la fecha
         if (fechaFormateada < expiracion) {
-            // Agrega los datos básicos
             formData.append('titulo', document.getElementById('titulo_flayer').value);
-            formData.append('Id_empresa', document.getElementById('empresa_flayer').value);
             formData.append('Id_servicio', document.getElementById('servicio_flayer').value);
             formData.append('publicacion', fechaFormateada);
             formData.append('expiracion', document.getElementById('expiracion_flayer').value);
-            // Obtiene el archivo seleccionado
             const archivoFlayer = document.getElementById('flayer').files[0];
-            // Verifica si se seleccionó un archivo
             if (archivoFlayer) {
                 formData.append('archivo_flayer', archivoFlayer);
             } else {
                 lanzarToast("No se selecciono ningun flyer", "error");
+                return;
+            }
+            const select_empresa = document.getElementById('empresa_flayer')
+            if (select_empresa.disabled) {
+                formData.append('nueva_empresa', 'true');
+                formData.append('nombre_empresa', document.getElementById('nombre_empresa').value);
+                formData.append('descripcion_empresa', document.getElementById('descripcion_empresa').value);
+                formData.append('razon_empresa', document.getElementById('razon_empresa').value);
+                formData.append('rfc_empresa', document.getElementById('rfc_empresa').value);
+                formData.append('direccion_empresa', document.getElementById('direccion_empresa').value);
+                formData.append('web_empresa', document.getElementById('web_empresa').value);
+            }
+            else {
+                formData.append('nueva_empresa', 'false');
+                formData.append('Id_empresa', select_empresa.value);
             }
             // Envía los datos
             enviarDatos(formData);
@@ -96,23 +91,47 @@ document.getElementById('miFormulario').addEventListener('submit', function (e) 
     }
 });
 
-
-// Función para enviar los datos al servidor (PHP)
 function enviarDatos(datosParaEnviar) {
+    const btnEnviar = document.getElementById('btnEnviar');
+    btnEnviar.disabled = true;
+    const esNuevaEmpresa = datosParaEnviar.get('nueva_empresa') === 'true';
     fetch("guardar_vacante.php", {
         method: "POST",
         body: datosParaEnviar // Se envía el FormData
     })
-    // Manejo de la respuesta
+        .then(response => {
+            if (response.status === 401) {
+                lanzarToast("La sesión expiró", "error");
+                setTimeout(() => {
+                    window.location.href = '../CU_01_Login/login.html';
+                }, 3000); // Espera 3 segundos (el mismo tiempo que dura el toast)
+                return null;
+            }
+            if (!response.ok) {
+                return response.text().then(texto => {
+                    throw new Error(texto);
+                });
+            }
+            return response.text();
+        })
         .then(function (texto) {
-            // Muestra mensaje de éxito
+            if (texto === null) {
+                return;
+            }
             lanzarToast("Publicacion exitosa    ", "exito");
-             // Limpia el formulario
+            if (esNuevaEmpresa) {
+                setTimeout(() => {
+                    lanzarToast("Empresa creada exitosamente", "exito");
+                }, 3500)
+            }
+            const modoActual = document.getElementById('opciones').value;
             document.getElementById('miFormulario').reset();
-            // Dispara el evento change para actualizar la vista
-            document.getElementById('opciones').dispatchEvent(new Event('change'));
-            // Recarga las empresas (probablemente si se agregó una nueva)
+            document.getElementById('flayer').value = '';
+            document.getElementById('opciones').value = modoActual;
+            cambiarContenido();
             cargarEmpresas();
+            cargarServicio();
+            btnEnviar.disabled = false;
         })
         // Manejo de errores
         .catch(function (error) {
@@ -137,5 +156,5 @@ function lanzarToast(texto, tipo) {
     // 4. Desvanecemos en 3 segundos
     setTimeout(() => {
         toast.classList.add('oculto');
-    }, 3000);
+    }, 5000);
 }
