@@ -15,13 +15,13 @@
             <h3>Mtra. M. Guadalupe</h3>
         </div>
         <div class="menu">
-            <a href="foro_vacantes.html">
-                <button>Publicar vacantes para servicio social</button>
+            <a href="../CU_06_PublicarVacantes/admin_vacantes.html">
+                <button>Publicar vacantes</button>
             </a>
-            <a href="admin_alumnos.html">
+            <a href="../CU_07_AdministrarAlumnos/admin_alumnos.html">
                 <button>Administrar alumnos</button>
             </a>
-            <a href="reportes_alumnos.html">
+            <a href="../CU_08_Reporte_Alumnado/reporte_alumnos.html">
                 <button>Generar reporte de alumnos</button>
             </a>
             <a href="reportes_estadisticos.html">
@@ -58,91 +58,96 @@
 
                 <select id="opciones" onchange="cambiarContenido()">
                     <option value="manual">Registro manual</option>
-                    <option value="flayer">Registro con flayer</option>
+                    <option value="flayer">Registro con flyer</option>
                 </select>
                 <div id="registro_manual" style="display:none;">
                     <label for="titulo_manual">Titulo: </label>
-                    <input type="text" id="titulo_manual" placeholder="Titulo" required>
+                    <input type="text" id="titulo_manual" maxlength="200" placeholder="Titulo">
 
-
-
-
-                    <div id="contenedor_empresa">
-                        <label for="empresa">Empresa:</label>
+                    <div id="contenedor_empresa_manual">
+                        <label>Empresa:</label>
                         <select id="empresa_manual">
                             <option value="">-- Cargando empresas... --</option>
                         </select>
-                        <button type="button" id="btn-activar-nueva" onclick="mostrarFormularioNuevo()">+ Crear Nueva</button>
-
-                        <div id="nueva_empresa">
-                            <label for="nombre_empresa">Nombre: </label>
-                            <input type="text" id="nombre_empresa" placeholder="Nombre de la empresa" >
-                            <label for="descripcion_empresa">Descripcion: </label>
-                            <input type="text" id="descripcion_empresa" placeholder="Descripcion de la empresa" >
-                            <label for="razon_empresa">Razón social: </label>
-                            <input type="text" id="razon_empresa" placeholder="Razón social">
-                            <label for="rfc_empresa">RFC: </label>
-                            <input type="text" id="rfc_empresa" maxlength="13" pattern="[A-ZÑa-zñ0-9]{12,13}" title="El RFC debe tener entre 12 y 13 caracteres alfanuméricos" placeholder="Ej: ABC123456XYZ">
-                            <label for="nombre_contacto">Dirección: </label>
-                            <input type="text" id="direccion_empresa" placeholder="Dirección de la empresa">
-                            <label for="nombre_contacto">Sitio web: </label>
-                            <input type="text" id="web_empresa" placeholder="Sitio web">
-                            <button type="button" onclick="cancelarRegistro()">Cancelar y elegir existente</button>
-                        </div>
-
+                        <button type="button" id="btn-activar-nueva-manual" onclick="mostrarFormularioNuevo()">+ Crear
+                            Nueva</button>
                     </div>
 
-
-                    <label for="servicio">servicio: </label>
-                    <select id="servicio_manual">
-                        <option value="2">Practicas profesionales</option>
-                        <option value="1">Servicio social</option>
-                    </select>
+                    <div id="Contenedor_servicio_manual">
+                        <label>Servicio: </label>
+                        <select id="servicio_manual">
+                            <option value="">-- Cargando Servicio... --</option>
+                        </select>
+                    </div>
 
                     <label for="nombre_contacto">Nombre del contacto: </label>
-                    <input type="text" id="nombre_contacto" placeholder="Nombre del contacto" required>
+                    <input type="text" id="nombre_contacto" placeholder="Nombre del contacto">
                     <label for="email">Contacto e-mail: </label>
-                    <input type="email" id="email" placeholder="Contacto e-mail" required>
+                    <input type="email" id="email" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" placeholder="Contacto e-mail">
                     <label for="telefono">Contacto telefono: </label>
-                    <input type="tel" maxlength="10" pattern="[0-9]*" id="telefono" placeholder="Contacto telefono" required>
+                    <input type="tel" minlength="10" maxlength="10" pattern="[0-9]*" id="telefono"
+                        placeholder="Sin espacio">
                     <label for="descripcion">Descripcion: </label>
-                    <input type="text" id="descripcion" placeholder="descripcion" required>
+                    <input type="text" id="descripcion" placeholder="descripcion">
                     <label for="requisitos">Requisitos: </label>
-                    <input type="text" id="requisitos" placeholder="requisitos" required>
+                    <input type="text" id="requisitos" placeholder="requisitos">
 
                     <label id="fecha_Manual"></label>
                     <label for="expiracion">Fecha de expiracion: </label>
-                    <input type="date" id="expiracion_manual" placeholder="Fecha de expiracion" required>
+                    <input type="date" id="expiracion_manual" placeholder="Fecha de expiracion">
                 </div>
 
                 <div id="registro_flayer" style="display: none;">
                     <label for="titulo_flayer">Titulo: </label>
-                    <input type="text" id="titulo_flayer" placeholder="Titulo">
-                    <label for="titulo">Flayer: </label>
+                    <input type="text" id="titulo_flayer" maxlength="200" placeholder="Titulo">
+                    <label for="titulo">Flyer: </label>
                     <input type="file" id="flayer" placeholder="flayer">
-                    <label for="empresa">Empresa:</label>
-                    <select id="empresa_flayer">
-                        <option value="">-- Cargando empresas... --</option>
-                    </select>
+                    <div id="contenedor_empresa_flayer">
+                        <label>Empresa:</label>
+                        <select id="empresa_flayer">
+                            <option value="">-- Cargando empresas... --</option>
+                        </select>
+                        <button type="button" id="btn-activar-nueva-flayer" onclick="mostrarFormularioNuevo()">+ Crear
+                            Nueva</button>
+                    </div>
 
-                    <label for="servicio">servicio: </label>
-                    <select id="servicio_flayer">
-                        <option value="2">Practicas profecionales</option>
-                        <option value="1">Servicio social</option>
-                    </select>
+                    <div id="Contenedor_servicio_flayer">
+                        <label>Servicio: </label>
+                        <select id="servicio_flayer">
+                            <option value="">-- Cargando Servicio... --</option>
+                        </select>
+                    </div>
 
                     <label id="fecha_flayer"></label>
                     <label for="expiracion">Fecha de expiracion: </label>
                     <input type="date" id="expiracion_flayer" placeholder="Fecha de expiracion">
                 </div>
-                <script src="mostrar_contenido.js"></script>
 
-
-                <button type="submit" id="btnEnviar">Enviar</button>
-            </form>
-            <script src="enviar_vacantes.js"></script>
+                <!-- BLOQUE COMPARTIDO - fuera de manual y flayer -->
+                <div id="nueva_empresa" style="display:none;">
+                    <h2>Nueva empresa</h2>
+                    <label>Nombre: </label>
+                    <input type="text" id="nombre_empresa" placeholder="Nombre de la empresa">
+                    <label>Descripcion: </label>
+                    <input type="text" id="descripcion_empresa" placeholder="Descripcion de la empresa">
+                    <label>Razón social: </label>
+                    <input type="text" id="razon_empresa" placeholder="Razón social">
+                    <label>RFC: </label>
+                    <input type="text" id="rfc_empresa" maxlength="13" pattern="[A-ZÑa-zñ0-9]{12,13}"
+                        placeholder="Ej: ABC123456XYZ">
+                    <label>Dirección: </label>
+                    <input type="text" id="direccion_empresa" placeholder="Dirección de la empresa">
+                    <label>Sitio web: </label>
+                    <input type="text" id="web_empresa" placeholder="Sitio web">
+                    <button type="button" onclick="cancelarRegistro()">Cancelar y elegir existente</button>
+                </div>
         </div>
-        <div id="toast-mensaje" class="toast oculto"></div>
+        <button type="submit" id="btnEnviar">Enviar</button>
+        </form>
+        <script src="enviar_vacantes.js"></script>
+    </div>
+    <script src="mostrar_contenido.js"></script>
+    <div id="toast-mensaje" class="toast oculto"></div>
     </div>
 </body>
 
