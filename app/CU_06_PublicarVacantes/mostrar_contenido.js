@@ -264,11 +264,6 @@ function mostrarFormularioNuevo() {
     document.getElementById(obtenerIdBoton()).style.display = 'none';
     document.getElementById('nueva_empresa').style.display = 'block';
 
-    document.getElementById('nombre_empresa');
-    document.getElementById('descripcion_empresa');
-    document.getElementById('razon_empresa');
-    document.getElementById('rfc_empresa');
-    document.getElementById('direccion_empresa');
 }
 
 function cancelarRegistro() {
