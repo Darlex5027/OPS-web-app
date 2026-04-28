@@ -55,12 +55,13 @@ function cargarInformacion() {
         })
         // Envía los datos a la función que llena la tabla
         .then(function (datos) {
-            console.log("Respuesta del servidor:", datos);
             if (tipoUsuario == '1') {
                 llenarTablaAlumnos(datos.alumnos);
                 llenarTablaCoordinadores(datos.coordinadores);
             } else if (tipoUsuario == '3') {
                 llenarTablaAlumnos(datos.alumnos);
+            } else if (tipoUsuario == '2'){
+                window.location.href='../CU_03_PerfilGestionable/perfil.html'
             }
         })
         // Captura errores en caso de fallo

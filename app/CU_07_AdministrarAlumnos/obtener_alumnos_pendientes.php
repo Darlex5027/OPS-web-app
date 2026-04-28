@@ -71,6 +71,10 @@ try {
             'coordinadores' => [], // ← vacío porque el coordinador no ve otros coordinadores
             'tipo_usuario' => $id_tipo_usuario
         ]);
+    } else if ($id_tipo_usuario == 2) {
+        echo json_encode([
+            'tipo_usuario' => $id_tipo_usuario
+        ]);
     }
 } catch (\PDOException $e) {
     // Si ocurre un error en la conexión o consulta, se envía código HTTP 500

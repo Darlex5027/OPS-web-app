@@ -15,23 +15,18 @@ require_once '../php/db.php';
 $valor = json_decode(file_get_contents("php://input"), true);
 // Extrae los datos enviados desde JavaScript
 $matricula = $valor['matricula']; // Matrícula del alumno
-$identificador = $valor['identificador']; // Indica si fue "Aceptado" o rechazado
-
+$expediente = $valor['no_expediente'];
 
 try {
     // Se establece la conexión a la base de datos con PDO
     $pdo = new PDO($dsn, $user, $pass, $options);
-    // Dependiendo de la acción recibida:
-    if ($identificador === "Aceptado") {
-        // Si fue aceptado, se actualiza el campo Activo a 1 (activo)
-        $consulta = $pdo->prepare("UPDATE Usuarios SET Activo=1 WHERE Matricula=?");
-    } else {
-        // Si no fue aceptado (rechazado), se elimina el usuario de la base de datos
-        $consulta = $pdo->prepare("DELETE FROM Usuarios WHERE Matricula=?");
+    $id_usuario_alumno = $pdo->prepare("SELECT Id_usuario FROM Usuarios WHERE Matricula=?");
+    $id_usuario_alumno->execute([$matricula]);
+    $id_usuario_alumno = $id_usuario_alumno->fetchColumn();
+    if ($id_usuario_alumno != null) {
+        $consulta = $pdo->prepare("UPDATE Alumnos SET No_expediente=? WHERE Id_usuario=?");
+        $consulta->execute([$expediente, $id_usuario_alumno]);
     }
-    // Ejecuta la consulta pasando la matrícula como parámetro
-    $consulta->execute([$matricula]);
-    // Devuelve una respuesta en formato JSON indicando éxito
     echo json_encode(['success' => true]);
 
 } catch (\PDOException $e) {
