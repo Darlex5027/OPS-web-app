@@ -317,7 +317,7 @@ CREATE TABLE `Usuarios` (
   `Contrasena` varchar(200) NOT NULL,
   `Id_tipo_usuario` int(11) NOT NULL,
   `Activo` tinyint(1) DEFAULT 1,
-  `Flyer_Path` varchar(100) DEFAULT NULL,
+  `Profile_picture_path` varchar(100) DEFAULT NULL,
   `Fecha_registro` datetime DEFAULT current_timestamp(),
   `Fecha_ultimo_acceso` datetime DEFAULT NULL,
   `Intentos_fallidos` int(11) DEFAULT 0,
