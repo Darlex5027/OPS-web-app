@@ -117,15 +117,24 @@ function cambiarContenido() {
     document.getElementById('empresa_manual').disabled = false;
     document.getElementById('empresa_flayer').disabled = false;
 
-    document.getElementById('nombre_empresa').required = false;
+    /*document.getElementById('nombre_empresa').required = false;
     document.getElementById('descripcion_empresa').required = false;
     document.getElementById('razon_empresa').required = false;
     document.getElementById('rfc_empresa').required = false;
-    document.getElementById('direccion_empresa').required = false;
+    document.getElementById('direccion_empresa').required = false;*/
     cargarEmpresas();
     cargarFecha();
     cargarServicio();
 }
+
+const uploadField = document.getElementById("flayer");
+
+uploadField.onchange = function() {
+    if(this.files[0].size > 20971) {
+       lanzarToast("El archivo no puede ser mayor a 20 MB", "error")
+       this.value = "";
+    }
+};
 
 function validarFormulario() {
     const eleccion = document.getElementById("opciones").value;
@@ -193,10 +202,8 @@ function validarFormulario() {
             lanzarToast("Solo se permiten archivos JPG, PNG o PDF", "error");
             return false;
         }
-        if (archivo.size > 20 * 1024 * 1024) {
-            lanzarToast("El archivo no puede superar los 20 MB", "error");
-            return false;
-        }
+        
+        ////////////////////
 
         const campos = ["titulo_flayer", "servicio_flayer", "expiracion_flayer"];
         for (const id of campos) {
@@ -262,11 +269,11 @@ function mostrarFormularioNuevo() {
     document.getElementById(obtenerIdBoton()).style.display = 'none';
     document.getElementById('nueva_empresa').style.display = 'block';
 
-    document.getElementById('nombre_empresa').required = true;
-    document.getElementById('descripcion_empresa').required = true;
-    document.getElementById('razon_empresa').required = true;
-    document.getElementById('rfc_empresa').required = true;
-    document.getElementById('direccion_empresa').required = true;
+    document.getElementById('nombre_empresa');
+    document.getElementById('descripcion_empresa');
+    document.getElementById('razon_empresa');
+    document.getElementById('rfc_empresa');
+    document.getElementById('direccion_empresa');
 }
 
 function cancelarRegistro() {
