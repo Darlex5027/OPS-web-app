@@ -55,13 +55,9 @@ CREATE TABLE `Actividades_Alumnos` (
   `periodo_año` year(4) NOT NULL,
   `Fecha_inicio` date DEFAULT NULL,
   `Fecha_fin` date DEFAULT NULL,
-  `Horas_totales` int(11) DEFAULT NULL,
-  `Horas_completadas` int(11) DEFAULT 0,
-  `Documento_liberacion` varchar(255) DEFAULT NULL,
-  `Observaciones` text DEFAULT NULL,
   `Fecha_registro` datetime DEFAULT current_timestamp(),
   `Fecha_modificacion` datetime DEFAULT NULL ON UPDATE current_timestamp()
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- --------------------------------------------------------
 
