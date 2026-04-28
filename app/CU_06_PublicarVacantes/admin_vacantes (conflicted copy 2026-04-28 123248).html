@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8"> <!-- Soporte para caracteres especiales como ñ y tildes -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adaptación a móviles -->
+    <title>Administación de Vacantes</title>
+    <link rel="stylesheet" href="../css/prueba.css">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="profile">
+            <img src="../Imagenes/prueba.png" alt="perfil">
+            <h3>Mtra. M. Guadalupe</h3>
+        </div>
+        <div class="menu">
+            <a href="../CU_06_PublicarVacantes/admin_vacantes.html">
+                <button>Publicar vacantes</button>
+            </a>
+            <a href="../CU_07_AdministrarAlumnos/admin_alumnos.html">
+                <button>Administrar alumnos</button>
+            </a>
+            <a href="../CU_08_Reporte_Alumnado/reporte_alumnos.html">
+                <button>Generar reporte de alumnos</button>
+            </a>
+            <a href="reportes_estadisticos.html">
+                <button>Generar reporte estadistico</button>
+            </a>
+            <a href="digitalizar_evaluacones.html">
+                <button>Llenar formularios del prestador</button>
+            </a>
+            <a href="reportes_prestadores.html">
+                <button>Generar reporte del prestador</button>
+            </a>
+            <a href="admin_encuentas.html">
+                <button>Editar formularios</button>
+            </a>
+            <a href="../CU_03_PerfilGestionable/perfil.html">
+                <button>perfil</button>
+            </a>
+        </div>
+    </div>
+    <div class="main">
+        <div class="header">
+            <div></div>
+            <h1>Administación de vacantes</h1>
+            <div class="header-logo-right">
+                <img src="../Imagenes/Logo.png" alt="Logo OPS">
+            </div>
+        </div>
+        <div class="table">
+            <form id="miFormulario">
+                <label>Selecciona una categoría:</label>
+
+                <select id="opciones" onchange="cambiarContenido()">
+                    <option value="manual">Registro manual</option>
+                    <option value="flayer">Registro con flyer</option>
+                </select>
+                <div id="registro_manual" style="display:none;">
+                    <label for="titulo_manual">Titulo: </label>
+                    <input type="text" id="titulo_manual" maxlength="200" placeholder="Titulo">
+
+                    <div id="contenedor_empresa_manual">
+                        <label>Empresa:</label>
+                        <select id="empresa_manual">
+                            <option value="">-- Cargando empresas... --</option>
+                        </select>
+                        <button type="button" id="btn-activar-nueva-manual" onclick="mostrarFormularioNuevo()">+ Crear
+                            Nueva</button>
+                    </div>
+
+                    <div id="Contenedor_servicio_manual">
+                        <label>Servicio: </label>
+                        <select id="servicio_manual">
+                            <option value="">-- Cargando Servicio... --</option>
+                        </select>
+                    </div>
+
+                    <label for="nombre_contacto">Nombre del contacto: </label>
+                    <input type="text" id="nombre_contacto" placeholder="Nombre del contacto">
+                    <label for="email">Contacto e-mail: </label>
+                    <input type="email" id="email" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" placeholder="Contacto e-mail">
+                    <label for="telefono">Contacto telefono (10 digitos): </label>
+                    <input type="tel" minlength="10" maxlength="10" pattern="[0-9]*" id="telefono"
+                        placeholder="Sin espacio">
+                    <label for="descripcion">Descripcion: </label>
+                    <input type="text" id="descripcion" placeholder="descripcion">
+                    <label for="requisitos">Requisitos: </label>
+                    <input type="text" id="requisitos" placeholder="requisitos">
+
+                    <label id="fecha_Manual"></label>
+                    <label for="expiracion">Fecha de expiracion: </label>
+                    <input type="date" id="expiracion_manual" placeholder="Fecha de expiracion">
+                </div>
+
+                <div id="registro_flayer" style="display: none;">
+                    <label for="titulo_flayer">Titulo: </label>
+                    <input type="text" id="titulo_flayer" maxlength="200" placeholder="Titulo">
+                    <label for="titulo">Flyer: </label>
+                    <input type="file" id="flayer" placeholder="flayer">
+                    <div id="contenedor_empresa_flayer">
+                        <label>Empresa:</label>
+                        <select id="empresa_flayer">
+                            <option value="">-- Cargando empresas... --</option>
+                        </select>
+                        <button type="button" id="btn-activar-nueva-flayer" onclick="mostrarFormularioNuevo()">+ Crear
+                            Nueva</button>
+                    </div>
+
+                    <div id="Contenedor_servicio_flayer">
+                        <label>Servicio: </label>
+                        <select id="servicio_flayer">
+                            <option value="">-- Cargando Servicio... --</option>
+                        </select>
+                    </div>
+
+                    <label id="fecha_flayer"></label>
+                    <label for="expiracion">Fecha de expiracion: </label>
+                    <input type="date" id="expiracion_flayer" placeholder="Fecha de expiracion">
+                </div>
+
+                <!-- BLOQUE COMPARTIDO - fuera de manual y flayer -->
+                <div id="nueva_empresa" style="display:none;">
+                    <h2>Nueva empresa</h2>
+                    <label>Nombre: </label>
+                    <input type="text" id="nombre_empresa" placeholder="Nombre de la empresa">
+                    <label>Descripcion: </label>
+                    <input type="text" id="descripcion_empresa" placeholder="Descripcion de la empresa">
+                    <label>Razón social: </label>
+                    <input type="text" id="razon_empresa" placeholder="Razón social">
+                    <label>RFC: </label>
+                    <input type="text" id="rfc_empresa" maxlength="13" pattern="[A-ZÑa-zñ0-9]{12,13}"
+                        placeholder="Ej: ABC123456XYZ">
+                    <label>Dirección: </label>
+                    <input type="text" id="direccion_empresa" placeholder="Dirección de la empresa">
+                    <label>Sitio web: </label>
+                    <input type="text" id="web_empresa" placeholder="Sitio web">
+                    <button type="button" onclick="cancelarRegistro()">Cancelar y elegir existente</button>
+                </div>
+        </div>
+        <button type="submit" id="btnEnviar">Enviar</button>
+        </form>
+        <script src="../js/redireccion.js"></script>
+        <script src="enviar_vacantes.js"></script>
+    </div>
+    <script src="mostrar_contenido.js"></script>
+    <div id="toast-mensaje" class="toast oculto"></div>
+    </div>
+</body>
+
+</html>
