@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil gestionable</title>
+    <title>Perfil gestionable</title>   
     <link rel="stylesheet" href="../css/prueba.css">
 </head>
 
@@ -12,11 +12,10 @@
     <div class="sidebar">
         <div class="profile">
             <img src="../Imagenes/prueba.png" alt="perfil">
-            <h3>Mtra. M. Guadalupe</h3>
         </div>
         <div class="menu">
             <a href="../CU_06_PublicarVacantes/admin_vacantes.html">
-                <button>Publicar vacantes para servicio social</button>
+                <button>Publicar Vacantes</button>
             </a>
             <a href="../CU_07_AdministrarAlumnos/admin_alumnos.html">
                 <button>Administrar alumnos</button>
@@ -25,21 +24,18 @@
                 <button>Generar reporte de alumnos</button>
             </a>
             <a href="reportes_estadisticos.html">
-                <button>Generar reporte estadistico</button>
+                <button>Generar reportes estadisticos de alumnos</button>
             </a>
             <a href="digitalizar_evaluaciones.html">
                 <button>Llenar formularios del prestador</button>
             </a>
             <a href="reportes_prestadores.html">
-                <button>Generar reporte del prestador</button>
+                <button>Generar reportes estadisticos del prestador</button>
             </a>
             <a href="admin_encuentas.html">
                 <button>Editar formularios</button>
             </a>
-            <a href="Mensajes.html">
-                <button>Mensajes</button>
-            </a>
-            <a href="../CU_03_PerfilGestionable/perfil_administrador.html">
+            <a href="../CU_03_PerfilGestionable/perfil.html">
                 <button>Perfil</button>
             </a>
         </div>
@@ -81,19 +77,22 @@
                 <label for="telefono">Grupo</label>
                 <input type="text" id="grupo_alumno" name="telefono" placeholder="" disabled>
                 <label for="correo">No.expediente</label>
-                <input type="email" id="no_expediente_alumno" name="correo" placeholder="" disabled>
+                <input type="email" id="no_expediente_alumno" name="correo" placeholder="" disabled readonly>
                 <label for="carrera">Area o Programa</label>
-                <input type="text" id="area_o_programa_alumno" name="carrera" placeholder="" disabled>
+                <input type="text" id="area_o_programa_alumno" name="carrera" placeholder="" disabled readonly>
                 <label for="carrera">Observaciones</label>
-                <input type="text" id="observaciones_alumno" name="carrera" placeholder="" disabled>
+                <input type="text" id="observaciones_alumno" name="carrera" placeholder="" disabled readonly>
                 <label for="carrera">Horario</label>
                 <input type="text" id="horario_alumno" name="carrera" placeholder="" disabled>
                 <label for="carrera">Organizacion</label>
-                <input type="text" id="organizacion_alumno" name="carrera" placeholder="" disabled>
+                <input type="text" id="organizacion_alumno" name="carrera" placeholder="" disabled readonly>
+                <label for="carrera">Fecha de registro</label>
+                <input type="text" id="fecha_registro_alumno" name="carrera" placeholder="" disabled readonly>
                 <label for="carrera">Fecha de registro</label>
                 <input type="text" id="fecha_registro_alumno" name="carrera" placeholder="" disabled readonly>
             </form>
             <script src="mostrar_contenido.js"></script>
+            <script src="../js/redireccion.js"></script>
         </div>
         <div class="form-actions">
             <button type="button" class="btn editar">Editar</button>
