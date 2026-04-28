@@ -36,10 +36,7 @@
             <a href="admin_encuentas.html">
                 <button>Editar formularios</button>
             </a>
-            <a href="Mensajes.html">
-                <button>Mensajes</button>
-            </a>
-            <a href="perfil.html">
+            <a href="../CU_03_PerfilGestionable/perfil.html">
                 <button>perfil</button>
             </a>
         </div>
@@ -84,7 +81,7 @@
                     <input type="text" id="nombre_contacto" placeholder="Nombre del contacto">
                     <label for="email">Contacto e-mail: </label>
                     <input type="email" id="email" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" placeholder="Contacto e-mail">
-                    <label for="telefono">Contacto telefono: </label>
+                    <label for="telefono">Contacto telefono (10 digitos): </label>
                     <input type="tel" minlength="10" maxlength="10" pattern="[0-9]*" id="telefono"
                         placeholder="Sin espacio">
                     <label for="descripcion">Descripcion: </label>
@@ -144,6 +141,7 @@
         </div>
         <button type="submit" id="btnEnviar">Enviar</button>
         </form>
+        <script src="../js/redireccion.js"></script>
         <script src="enviar_vacantes.js"></script>
     </div>
     <script src="mostrar_contenido.js"></script>
