@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .find((row) => row.startsWith("Id_tipo_usuario="));
     const tipoUsuario = tipoCookie ? tipoCookie.split("=")[1].trim() : null;
 
-    console.log("Tipo usuario:", tipoUsuario);
 
     if (!tipoUsuario) {
         console.error("No se encontró la cookie Id_tipo_usuario");
@@ -74,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ── Botón Editar 
     btnEditar.addEventListener("click", () => {
         const formVisible = formAdmin.style.display !== "none" ? formAdmin : formAlumno;
-        formVisible.querySelectorAll("input:not(#nombre_alumno,#apellido_paterno_alumno,#apellido_materno_alumno,#fecha_registro_alumno,#id_carrera_alumno,#fecha_registro_administrador,#nombre_administrador,#apellido_paterno_administrador,#apellido_materno_administrador,#id_carrera_administrador)").forEach(input => input.disabled = false);
+        formVisible.querySelectorAll("input:not(#nombre_alumno,#apellido_paterno_alumno,#apellido_materno_alumno,#fecha_registro_alumno,#id_carrera_alumno,#no_expediente_alumno,#area_o_programa_alumno,#observaciones_alumno,#organizacion_alumno,#fecha_registro_administrador,#nombre_administrador,#apellido_paterno_administrador,#apellido_materno_administrador,#id_carrera_administrador)").forEach(input => input.disabled = false);
 
         btnEditar.style.display = "none";
         btnGuardar.style.display = "inline-block";
