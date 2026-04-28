@@ -117,11 +117,6 @@ function cambiarContenido() {
     document.getElementById('empresa_manual').disabled = false;
     document.getElementById('empresa_flayer').disabled = false;
 
-    /*document.getElementById('nombre_empresa').required = false;
-    document.getElementById('descripcion_empresa').required = false;
-    document.getElementById('razon_empresa').required = false;
-    document.getElementById('rfc_empresa').required = false;
-    document.getElementById('direccion_empresa').required = false;*/
     cargarEmpresas();
     cargarFecha();
     cargarServicio();

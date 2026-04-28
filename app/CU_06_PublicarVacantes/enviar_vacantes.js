@@ -118,10 +118,10 @@ function enviarDatos(datosParaEnviar) {
             if (texto === null) {
                 return;
             }
-            lanzarToast("Publicacion exitosa    ", "exito");
             if (esNuevaEmpresa) {
+                lanzarToast("Empresa creada exitosamente", "exito");
                 setTimeout(() => {
-                    lanzarToast("Empresa creada exitosamente", "exito");
+                    lanzarToast("Publicacion exitosa    ", "exito");
                 }, 3500)
             }
             const modoActual = document.getElementById('opciones').value;
