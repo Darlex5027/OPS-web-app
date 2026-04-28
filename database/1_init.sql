@@ -85,6 +85,7 @@ CREATE TABLE `Administradores` (
 -- Estructura de tabla para la tabla `Alumnos`
 --
 
+
 CREATE TABLE `Alumnos` (
   `Id_alumno` int(11) NOT NULL,
   `Id_usuario` int(11) NOT NULL,
@@ -94,10 +95,7 @@ CREATE TABLE `Alumnos` (
   `Id_carrera` int(11) NOT NULL,
   `Grupo` varchar(5) NOT NULL,
   `No_Expediente` varchar(50) DEFAULT NULL,
-  `Area_o_programa` varchar(255) DEFAULT NULL,
-  `Observaciones` text DEFAULT NULL,
   `Horario` varchar(200) DEFAULT NULL,
-  `Organizacion` varchar(100) DEFAULT NULL,
   `Activo` tinyint(1) DEFAULT 1,
   `Fecha_registro` datetime DEFAULT current_timestamp(),
   `Fecha_modificacion` datetime DEFAULT NULL ON UPDATE current_timestamp()
