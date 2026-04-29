@@ -1,24 +1,34 @@
-/* 
-Daniela Hernandez Hernandez
-Fecha de creacion: 20 de abril del 2026
-El archivo enviar_vacantes.js se encarga de procesar y enviar los datos del formulario de vacantes
-al servidor. Valida la información ingresada, construye un objeto FormData con todos los datos 
-(incluyendo archivos si es necesario) y realiza una petición al backend. También muestra mensajes 
-de éxito o error según el resultado.
-*/
-// Se agrega un evento al formulario para interceptar el envío
+
+/*
+ * Archivo     : enviar_vacantes.js
+ * Módulo      : Modulo 6 CU_06_PublicarVacantes
+ * Autor       : Daniela Hernandez Hernandez
+ * Fecha       : 20 de abril del 2026
+ * Descripción : Este archivo gestiona el envío del formulario de vacantes.
+                - Valida los datos ingresados por el usuario
+                - Construye un objeto FormData con la información
+                - Maneja dos tipos de registro: manual y con flyer
+                - Envía los datos al servidor (PHP)
+                - Muestra mensajes de éxito o error según la respuesta
+ */
+// Importación de funciones auxiliares
+import { lanzarToast } from '../js/lanzar_toast.js';
+import { fetchEmpresas, fetchServicios, handleCambioContenido } from './mostrar_contenido.js';
+
+// Evento que se ejecuta al enviar el formulario
 document.getElementById('miFormulario').addEventListener('submit', function (e) {
-    // Evita que el formulario se envíe de forma tradicional (recarga de página)
-    e.preventDefault();
-    // Obtiene el tipo de registro seleccionado (manual o flayer)
-    const eleccion = document.getElementById('opciones').value;
-    // Se crea un objeto FormData para enviar los datos al servidor
+    e.preventDefault(); // Evita el envío tradicional del formulario (recarga de página)
+    // Validación del formulario antes de continua
+    if (!validarFormulario()) {
+        return;
+    }
+    // Obtiene el tipo de registro (manual o flyer)
+    const modoRegistro = document.getElementById('opciones').value;
+    // Se crea el objeto FormData para enviar datos al servidor
     let formData = new FormData();
-    // Se guarda el tipo de registro
-    formData.append('tipo_registro', eleccion);
-    // Obtiene la fecha actual
+    formData.append('tipo_registro', modoRegistro);
+    // Obtiene la fecha actual en formato YYYY-MM-DD (compatible con servidor)
     const hoy = new Date();
-    // Formatea la fecha en formato YYYY-MM-DD (compatible con el servidor)
     const formatoServidor = new Intl.DateTimeFormat('en-CA', {
         timeZone: 'America/Mexico_City',
         year: 'numeric',
@@ -27,12 +37,12 @@ document.getElementById('miFormulario').addEventListener('submit', function (e) 
     });
     const fechaFormateada = formatoServidor.format(hoy);
     // ================= REGISTRO MANUAL =================
-    if (eleccion === "manual") {
-        // Obtiene la fecha de expiración ingresada
-        expiracion = document.getElementById('expiracion_manual').value
+    if (modoRegistro === "manual") {
+        // Obtiene la fecha de expiración ingresada por el usuario
+        const fechaExpiracion = document.getElementById('expiracion_manual').value;
         // Valida que la fecha de expiración sea mayor a la actual
-        if (fechaFormateada < expiracion) {
-            // Agrega los datos del formulario manual
+        if (fechaFormateada < fechaExpiracion) {
+             // Agrega datos de la vacante al FormData
             formData.append('titulo', document.getElementById('titulo_manual').value);
             formData.append('Id_servicio', document.getElementById('servicio_manual').value);
             formData.append('nombre_contacto', document.getElementById('nombre_contacto').value);
@@ -40,14 +50,12 @@ document.getElementById('miFormulario').addEventListener('submit', function (e) 
             formData.append('telefono', document.getElementById('telefono').value);
             formData.append('descripcion', document.getElementById('descripcion').value);
             formData.append('requisitos', document.getElementById('requisitos').value);
-            // Guarda fecha de publicación y expiración
             formData.append('publicacion', fechaFormateada);
             formData.append('expiracion', document.getElementById('expiracion_manual').value);
-            // Obtiene el select de empresa
-            select_empresa = document.getElementById('empresa_manual')
-            // Si el select está deshabilitado, significa que se está creando una nueva empresa
-            if (select_empresa.disabled) {
-                // Datos de la nueva empresa
+            // Verifica si se está creando una nueva empresa o seleccionando una existente
+            const elSelectEmpresa = document.getElementById('empresa_manual');
+            if (elSelectEmpresa.disabled) {
+                // Se registrará una nueva empresa
                 formData.append('nueva_empresa', 'true');
                 formData.append('nombre_empresa', document.getElementById('nombre_empresa').value);
                 formData.append('descripcion_empresa', document.getElementById('descripcion_empresa').value);
@@ -57,86 +65,111 @@ document.getElementById('miFormulario').addEventListener('submit', function (e) 
                 formData.append('web_empresa', document.getElementById('web_empresa').value);
             }
             else {
-                // Si no, se usa una empresa existente
+                // Se usa una empresa ya existente
                 formData.append('nueva_empresa', 'false');
-                formData.append('Id_empresa', select_empresa.value);
+                formData.append('Id_empresa', elSelectEmpresa.value);
             }
             // Envía los datos al servidor
-            enviarDatos(formData);
+            fetchGuardarVacante(formData);
         }
         else {
-            // Mensaje de error si la fecha no es válida
             lanzarToast("La fecha de expiracion debe de ser mayor que la actual", "error");
         }
         // ================= REGISTRO CON FLAYER =================
     } else {
-        // Obtiene la fecha de expiración
-        expiracion = document.getElementById('expiracion_flayer').value
-        // Valida la fecha
-        if (fechaFormateada < expiracion) {
-            // Agrega los datos básicos
+        const fechaExpiracion = document.getElementById('expiracion_flayer').value;
+        if (fechaFormateada < fechaExpiracion) {
+            // Agrega datos básicos
             formData.append('titulo', document.getElementById('titulo_flayer').value);
-            formData.append('Id_empresa', document.getElementById('empresa_flayer').value);
             formData.append('Id_servicio', document.getElementById('servicio_flayer').value);
             formData.append('publicacion', fechaFormateada);
             formData.append('expiracion', document.getElementById('expiracion_flayer').value);
-            // Obtiene el archivo seleccionado
+            // Obtiene el archivo flyer
             const archivoFlayer = document.getElementById('flayer').files[0];
-            // Verifica si se seleccionó un archivo
+            // Verifica que se haya seleccionado un archivo
             if (archivoFlayer) {
                 formData.append('archivo_flayer', archivoFlayer);
             } else {
                 lanzarToast("No se selecciono ningun flyer", "error");
+                return;
+            }
+            // Manejo de empresa (igual que en modo manual)
+            const elSelectEmpresa = document.getElementById('empresa_flayer');
+            if (elSelectEmpresa.disabled) {
+                formData.append('nueva_empresa', 'true');
+                formData.append('nombre_empresa', document.getElementById('nombre_empresa').value);
+                formData.append('descripcion_empresa', document.getElementById('descripcion_empresa').value);
+                formData.append('razon_empresa', document.getElementById('razon_empresa').value);
+                formData.append('rfc_empresa', document.getElementById('rfc_empresa').value);
+                formData.append('direccion_empresa', document.getElementById('direccion_empresa').value);
+                formData.append('web_empresa', document.getElementById('web_empresa').value);
+            }
+            else {
+                formData.append('nueva_empresa', 'false');
+                formData.append('Id_empresa', elSelectEmpresa.value);
             }
             // Envía los datos
-            enviarDatos(formData);
+            fetchGuardarVacante(formData);
         } else {
             lanzarToast("La fecha de expiracion debe de ser mayor que la actual", "error");
         }
     }
 });
-
-
-// Función para enviar los datos al servidor (PHP)
-function enviarDatos(datosParaEnviar) {
+// ================= FUNCIÓN PARA ENVIAR DATOS =================
+function fetchGuardarVacante(formData) {
+    const elBtnEnviar = document.getElementById('btnEnviar');
+    elBtnEnviar.disabled = true; // Evita múltiples envíos
+    const esNuevaEmpresa = formData.get('nueva_empresa') === 'true';
+    // Petición al servidor
     fetch("guardar_vacante.php", {
         method: "POST",
-        body: datosParaEnviar // Se envía el FormData
+        body: formData // Se envía el FormData
     })
-    // Manejo de la respuesta
-        .then(function (texto) {
-            console.log("Respuesta PHP:", texto);
-            // Muestra mensaje de éxito
-            lanzarToast("Publicacion exitosa    ", "exito");
-             // Limpia el formulario
+        .then(response => {
+            // Manejo de sesión expirada
+            if (response.status === 401) {
+                lanzarToast("La sesión expiró", "error");
+                setTimeout(() => {
+                    window.location.href = '../CU_01_Login/login.html';
+                }, 3000); // Espera 3 segundos (el mismo tiempo que dura el toast)
+                return null;
+            }
+            // Manejo de errores HTTP
+            if (!response.ok) {
+                return response.text().then(textoRespuesta => {
+                    throw new Error(textoRespuesta);
+                });
+            }
+            return response.text();
+        })
+        .then(function (textoRespuesta) {
+            if (textoRespuesta === null) {
+                return;
+            }
+            // Mensajes según el caso
+            if (esNuevaEmpresa) {
+                lanzarToast("Empresa creada exitosamente", "exito");
+                setTimeout(() => {
+                    lanzarToast("Publicacion exitosa", "exito");
+                }, 3500);
+            } else {
+                lanzarToast("Publicacion exitosa", "exito");
+            }
+            // Limpia y restablece el formulario
+            const modoActual = document.getElementById('opciones').value;
             document.getElementById('miFormulario').reset();
-            // Dispara el evento change para actualizar la vista
-            document.getElementById('opciones').dispatchEvent(new Event('change'));
-            // Recarga las empresas (probablemente si se agregó una nueva)
-            cargarEmpresas();
+            document.getElementById('flayer').value = '';
+            document.getElementById('opciones').value = modoActual;
+             // Recarga contenido dinámico
+            handleCambioContenido();
+            fetchEmpresas();
+            fetchServicios();
+            elBtnEnviar.disabled = false;
         })
         // Manejo de errores
         .catch(function (error) {
-            lanzarToast("Error", "error");
+            lanzarToast(error.message || "Ocurrió un error al guardar", "error");
+            elBtnEnviar.disabled = false;
         })
 }
 
-// Función para mostrar mensajes tipo "toast"
-function lanzarToast(texto, tipo) {
-    const toast = document.getElementById('toast-mensaje');
-
-    // 1. Limpiamos clases previas y ponemos la nueva
-    toast.className = 'toast'; // Resetea a la base
-    toast.classList.add(tipo); // Agrega 'exito' o 'error'
-
-    // 2. Insertamos el texto
-    toast.innerText = texto;
-
-    // 3. Mostramos
-    toast.classList.remove('oculto');
-
-    // 4. Desvanecemos en 3 segundos
-    setTimeout(() => {
-        toast.classList.add('oculto');
-    }, 3000);
-}

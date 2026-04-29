@@ -55,13 +55,9 @@ CREATE TABLE `Actividades_Alumnos` (
   `periodo_año` year(4) NOT NULL,
   `Fecha_inicio` date DEFAULT NULL,
   `Fecha_fin` date DEFAULT NULL,
-  `Horas_totales` int(11) DEFAULT NULL,
-  `Horas_completadas` int(11) DEFAULT 0,
-  `Documento_liberacion` varchar(255) DEFAULT NULL,
-  `Observaciones` text DEFAULT NULL,
   `Fecha_registro` datetime DEFAULT current_timestamp(),
   `Fecha_modificacion` datetime DEFAULT NULL ON UPDATE current_timestamp()
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -89,6 +85,7 @@ CREATE TABLE `Administradores` (
 -- Estructura de tabla para la tabla `Alumnos`
 --
 
+
 CREATE TABLE `Alumnos` (
   `Id_alumno` int(11) NOT NULL,
   `Id_usuario` int(11) NOT NULL,
@@ -98,10 +95,7 @@ CREATE TABLE `Alumnos` (
   `Id_carrera` int(11) NOT NULL,
   `Grupo` varchar(5) NOT NULL,
   `No_Expediente` varchar(50) DEFAULT NULL,
-  `Area_o_programa` varchar(255) DEFAULT NULL,
-  `Observaciones` text DEFAULT NULL,
   `Horario` varchar(200) DEFAULT NULL,
-  `Organizacion` varchar(100) DEFAULT NULL,
   `Activo` tinyint(1) DEFAULT 1,
   `Fecha_registro` datetime DEFAULT current_timestamp(),
   `Fecha_modificacion` datetime DEFAULT NULL ON UPDATE current_timestamp()
@@ -165,7 +159,7 @@ CREATE TABLE `Audit_Log` (
 
 CREATE TABLE `Carreras` (
   `Id_carrera` int(11) NOT NULL,
-  `Id_Facultad` int(11) NOT NULL,
+  `Id_facultad` int(11) NOT NULL,
   `Nombre` varchar(100) NOT NULL,
   `Activo` tinyint(1) DEFAULT 1,
   `Fecha_registro` datetime DEFAULT current_timestamp()
@@ -232,8 +226,9 @@ CREATE TABLE `Encuestas` (
 --
 
 CREATE TABLE `Facultades` (
-  `Id_Facultad` int(11) NOT NULL,
-  `Nombre` varchar(100) NOT NULL
+  `Id_facultad` int(11) NOT NULL,
+  `Nombre` varchar(100) NOT NULL,
+  `Activo` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- --------------------------------------------------------
@@ -322,6 +317,7 @@ CREATE TABLE `Usuarios` (
   `Contrasena` varchar(200) NOT NULL,
   `Id_tipo_usuario` int(11) NOT NULL,
   `Activo` tinyint(1) DEFAULT 1,
+  `Profile_picture_path` varchar(100) DEFAULT NULL,
   `Fecha_registro` datetime DEFAULT current_timestamp(),
   `Fecha_ultimo_acceso` datetime DEFAULT NULL,
   `Intentos_fallidos` int(11) DEFAULT 0,
@@ -446,7 +442,7 @@ ALTER TABLE `Encuestas`
 -- Indices de la tabla `Facultades`
 --
 ALTER TABLE `Facultades`
-  ADD PRIMARY KEY (`Id_Facultad`);
+  ADD PRIMARY KEY (`Id_facultad`);
 
 --
 -- Indices de la tabla `Permisos`
@@ -568,7 +564,7 @@ ALTER TABLE `Encuestas`
 -- AUTO_INCREMENT de la tabla `Facultades`
 --
 ALTER TABLE `Facultades`
-  MODIFY `Id_Facultad` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id_facultad` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `Permisos`
