@@ -9,57 +9,132 @@ cambios. Su función principal es actualizar el estado del alumno a aceptado.
 */
 
 // Importa la función cargarAlumnos desde otro archivo JS
-import {cargarAlumnos} from './obtener_alumnos.js';
+import { cargarInformacion } from './obtener_alumnos.js';
+import { lanzarToast } from '../js/lanzar_toast.js';
 // Exporta la función aceptarAlumno para que pueda usarse en otros archivos
-export {aceptarAlumno};
+export { aceptarAlumno };
+export { aceptarCoordinador };
 // Función para aceptar a un alumno, recibe la matrícula como parámetro
-function aceptarAlumno(matricula){
+function aceptarAlumno(matricula) {
+    renderModalExpediente(
+        'Añadir No. de expediente', matricula, function (expediente) {
+            console.log(expediente);
+            fetch("cargar_expediente.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    matricula: matricula,
+                    no_expediente: expediente
+                })
+                
+            })
+            .then(function (respuesta) {
+                console.log("Status:", respuesta.status);
+                return respuesta.json();
+            })
+                .then(function (datosExp) {
+                if (datosExp.success) {
+                        // Se hace una petición al servidor (PHP) usando fetch
+                        return fetch("procesar_validacion.php", {
+                            method: "POST",// Método de envío
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            // Convertimos los datos a formato JSON
+                            body: JSON.stringify({ matricula: matricula, identificador: "Aceptado" })
+                        });
+                    } else {
+                        lanzarToast("error al guardar el expediente", "error");
+                    }
+                })
+                .then(function (respuesta) {
+                if (!respuesta) return; // Si hubo error antes, no continuar
+                return respuesta.json();
+            })
+                // Procesamos los datos recibidos del servidor
+                .then(function (datos) {
+                if (!datos) return;
+                if (datos.success) {
+                    lanzarToast("¡Expediente guardado y alumno aceptado!", "exito");
+                    cargarInformacion();
+                }
+            })
+                // Captura errores en caso de que falle la petición
+                .catch(function (error) {
+                    console.error("Error", error);
+                })
+        }
+    )
+}
+
+function aceptarCoordinador(matricula) {
     // Se hace una petición al servidor (PHP) usando fetch
     fetch("procesar_validacion.php", {
         method: "POST",// Método de envío
-        headers:{
-            "Content-Type":"application/json"
+        headers: {
+            "Content-Type": "application/json"
         },
         // Convertimos los datos a formato JSON
-        body: JSON.stringify({ matricula: matricula, identificador:"Aceptado" })
+        body: JSON.stringify({ matricula: matricula, identificador: "Aceptado" })
     })
-    // Convertimos la respuesta a formato JSON
-    .then(function(respuesta){
-        return respuesta.json();
-    })
-    // Procesamos los datos recibidos del servidor
-    .then(function(datos){
-        // Si la operación fue exitosa
-        if(datos.success){
-            // Mostramos un mensaje tipo "toast"
-            lanzarToast("¡Alumno aceptado correctamente!    ", "exito");
-             // Volvemos a cargar la lista de alumnos (actualiza la tabla)
-            cargarAlumnos();
-        }
-    })
-    // Captura errores en caso de que falle la petición
-    .catch(function(error){
-        console.error("Error", error);
-    })
+        // Convertimos la respuesta a formato JSON
+        .then(function (respuesta) {
+            return respuesta.json();
+        })
+        // Procesamos los datos recibidos del servidor
+        .then(function (datos) {
+            // Si la operación fue exitosa
+            if (datos.success) {
+                // Mostramos un mensaje tipo "toast"
+                lanzarToast("¡Coordinador aceptado correctamente!    ", "exito");
+                // Volvemos a cargar la lista de alumnos (actualiza la tabla)
+                cargarInformacion();
+            }
+        })
+        // Captura errores en caso de que falle la petición
+        .catch(function (error) {
+            console.error("Error", error);
+        })
 }
 
-// Función para mostrar mensajes emergentes (toast)
-function lanzarToast(texto, tipo) {
-    // Obtiene el elemento del DOM donde se mostrará el mensaje
-    const toast = document.getElementById('toast-mensaje');
-    
-    // 1. Limpiamos clases previas y ponemos la nueva
-    toast.className = 'toast'; // Resetea a la base
-    toast.classList.add(tipo); // Agrega 'exito' o 'error'
-    
-    // 2. Insertamos el texto
-    toast.innerText = texto;
-    
-    // 3. Mostramos el toast
-    toast.classList.remove('oculto');
+function renderModalExpediente(mensaje, matricula, onConfirmar) {
+    const elModalPrevio = document.getElementById('modal-confirmacion');
+    if (elModalPrevio) elModalPrevio.remove();
 
-    // 4. Desvanecemos en 3 segundos
-    setTimeout(() => {
-        toast.classList.add('oculto');
-    }, 3000);
+    const elFondo = document.createElement('div');
+    elFondo.id = 'modal-confirmacion';
+
+    const elContenido = document.createElement('div');
+    elContenido.id = 'modal-contenido';
+
+    const elParrafo = document.createElement('p');
+    elParrafo.textContent = mensaje;
+
+    const elInputExpediente = document.createElement('input');
+    elInputExpediente.type = 'text';
+    elInputExpediente.id = 'intput_expediente';
+
+    const elBtnEnviar = document.createElement('button');
+    elBtnEnviar.textContent = 'Enviar';
+
+    elBtnEnviar.onclick = function () {
+        const valor = elInputExpediente.value;
+        if (valor !== "") {
+            onConfirmar(valor);
+            elFondo.remove();
+        }
+    }
+
+    const elBtnCancelar = document.createElement('button');
+    elBtnCancelar.textContent = 'Cancelar';
+    elBtnCancelar.onclick = function () {
+        elFondo.remove();
+    };
+
+    elContenido.appendChild(elParrafo);
+    elContenido.appendChild(elBtnCancelar);
+    elContenido.appendChild(elBtnEnviar);
+    elContenido.appendChild(elInputExpediente);
+    elFondo.appendChild(elContenido); 
+    document.body.appendChild(elFondo);
 }

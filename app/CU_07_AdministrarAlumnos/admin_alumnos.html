@@ -32,13 +32,13 @@ este archivo representa la parte visual con la que interactúa el usuario.
         <!-- Menú de opciones -->
         <div class="menu">
             <!-- Cada opción es un enlace con un botón -->
-            <a href="foro_vacantes.html">
-                <button>Publicar vacantes para servicio social</button>
+            <a href="../CU_06_PublicarVacantes/admin_vacantes.html">
+                <button>Publicar vacantes</button>
             </a>
-            <a href="admin_alumnos.html">
+            <a href="../CU_07_AdministrarAlumnos/admin_alumnos.html">
                 <button>Administrar alumnos</button>
             </a>
-            <a href="reportes_alumnos.html">
+            <a href="../CU_08_Reporte_Alumnado/reporte_alumnos.html">
                 <button>Generar reporte de alumnos</button>
             </a>
             <a href="reportes_estadisticos.html">
@@ -53,10 +53,7 @@ este archivo representa la parte visual con la que interactúa el usuario.
             <a href="admin_encuentas.html">
                 <button>Editar formularios</button>
             </a>
-            <a href="Mensajes.html">
-                <button>Mensajes</button>
-            </a>
-            <a href="perfil.html">
+            <a href="../CU_03_PerfilGestionable/perfil.html">
                 <button>perfil</button>
             </a>
         </div>
@@ -74,7 +71,28 @@ este archivo representa la parte visual con la que interactúa el usuario.
             </div>
         </div>
         <!-- Contenedor de la tabla -->
-        <div class="table">
+         <div id="div-coordinadores" class="table">
+             <h2>Coordinadores pendientes</h2>
+            <!-- Tabla para mostrar docentes -->
+            <table border="1">
+                <!-- Encabezados de la tabla -->
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Matricula</th>
+                        <th>Carrera</th>
+                        <th>Fecha de registro</th>
+                        <th>Telefono</th>
+                        <th>Correo</th>
+                        <th>Accion</th>
+                    </tr>
+                </thead>
+                <!-- Cuerpo de la tabla (se llena dinámicamente con JavaScript) -->
+                <tbody id="tabla-coordinadores"></tbody>
+            </table>
+        </div>
+        <div id="div-alumnos" class="table">
+            <h2>Alumnos pendientes</h2>
             <!-- Tabla para mostrar alumnos -->
             <table border="1">
                 <!-- Encabezados de la tabla -->
@@ -89,11 +107,12 @@ este archivo representa la parte visual con la que interactúa el usuario.
                     </tr>
                 </thead>
                 <!-- Cuerpo de la tabla (se llena dinámicamente con JavaScript) -->
-                <tbody id="tabla"></tbody>
+                <tbody id="tabla-alumnos"></tbody>
             </table>
         </div>
     </div>
     <!-- Scripts que manejan la lógica de la página -->
+    <script src="../js/redireccion.js"></script>
      <!-- Script para aceptar alumnos -->
     <script type="module" src="aceptar_alumnos.js"></script>
     <!-- Script para rechazar alumnos -->

@@ -7,56 +7,110 @@ indicando que el alumno fue rechazado. Después muestra un mensaje al usuario y 
 Básicamente, permite eliminar o descartar a los alumnos que no cumplen con los requisitos.
 */
 // Importa la función para recargar la tabla de alumnos
-import {cargarAlumnos} from './obtener_alumnos.js';
+import { cargarInformacion } from './obtener_alumnos.js';
+import { lanzarToast } from '../js/lanzar_toast.js';
 // Exporta la función rechazarAlumno para usarla en otros archivos
-export {rechazarAlumno};
+export { rechazarAlumno };
+export { rechazarCoordinador };
 // Función para rechazar a un alumno, recibe la matrícula como parámetro
-function rechazarAlumno(matricula){
-    fetch("procesar_validacion.php", {
-        // Realiza una petición al servidor (archivo PHP)
-        method: "POST",
-        headers:{
-            "Content-Type":"application/json"
-        },
-        // Se envían los datos en formato JSON
-        body: JSON.stringify({ matricula: matricula, identificador: "Rechazado"})
-    })
-    // Convierte la respuesta del servidor a JSON
-    .then(function(respuesta){
-        return respuesta.json();
-    })
-    // Procesa la respuesta recibida
-    .then(function(datos){
-        // Si la operación fue exitosa
-        if(datos.success){
-            // Muestra un mensaje tipo "toast" indicando rechazo
-            lanzarToast("Alumno rechazado con éxito", "error");
-            // Recarga la lista de alumnos (actualiza la tabla)
-            cargarAlumnos();
+function rechazarAlumno(matricula) {
+    renderModalConfirmacion(
+        `¿Estás seguro de que deseas rechazar al alumno con matrícula ${matricula}?`,
+        function () {
+            fetch("procesar_validacion.php", {
+                // Realiza una petición al servidor (archivo PHP)
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                // Se envían los datos en formato JSON
+                body: JSON.stringify({ matricula: matricula, identificador: "Rechazado" })
+            })
+                // Convierte la respuesta del servidor a JSON
+                .then(function (respuesta) {
+                    return respuesta.json();
+                })
+                // Procesa la respuesta recibida
+                .then(function (datos) {
+                    // Si la operación fue exitosa
+                    if (datos.success) {
+                        // Muestra un mensaje tipo "toast" indicando rechazo
+                        lanzarToast("Alumno rechazado con éxito", "error");
+                        // Recarga la lista de alumnos (actualiza la tabla)
+                        cargarInformacion();
+                    }
+                })
+                // Captura errores en caso de fallo en la petición
+                .catch(function (error) {
+                    console.error("Error", error);
+                })
         }
-    })
-    // Captura errores en caso de fallo en la petición
-    .catch(function(error){
-        console.error("Error", error);
-    })
+    )
 }
 
-// Función para mostrar notificaciones tipo "toast"
-function lanzarToast(texto, tipo) {
-    const toast = document.getElementById('toast-mensaje');
-    
-    // 1. Limpiamos clases previas y ponemos la nueva
-    toast.className = 'toast'; // Resetea a la base
-    toast.classList.add(tipo); // Agrega 'exito' o 'error'
-    
-    // 2. Insertamos el texto
-    toast.innerText = texto;
-    
-    // 3. Mostramos
-    toast.classList.remove('oculto');
 
-    // 4. Desvanecemos en 3 segundos
-    setTimeout(() => {
-        toast.classList.add('oculto');
-    }, 3000);
+function rechazarCoordinador(matricula) {
+    renderModalConfirmacion(
+        `¿Estás seguro de que deseas rechazar al docente con matrícula ${matricula}?`, function () {
+            fetch("procesar_validacion.php", {
+                // Realiza una petición al servidor (archivo PHP)
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                // Se envían los datos en formato JSON
+                body: JSON.stringify({ matricula: matricula, identificador: "Rechazado" })
+            })
+                // Convierte la respuesta del servidor a JSON
+                .then(function (respuesta) {
+                    return respuesta.json();
+                })
+                // Procesa la respuesta recibida
+                .then(function (datos) {
+                    // Si la operación fue exitosa
+                    if (datos.success) {
+                        // Muestra un mensaje tipo "toast" indicando rechazo
+                        lanzarToast("Coordinador rechazado con éxito", "error");
+                        // Recarga la lista de alumnos (actualiza la tabla)
+                        cargarInformacion();
+                    }
+                })
+                // Captura errores en caso de fallo en la petición
+                .catch(function (error) {
+                    console.error("Error", error);
+                })
+        }
+    )
+}
+
+function renderModalConfirmacion(mensaje, onConfirmar) {
+    const elModalPrevio = document.getElementById('modal-confirmacion');
+    if (elModalPrevio) elModalPrevio.remove();
+
+    const elFondo = document.createElement('div');
+    elFondo.id = 'modal-confirmacion';
+
+    const elContenido = document.createElement('div');
+
+    const elParrafo = document.createElement('p');
+    elParrafo.textContent = mensaje;
+
+    const elBtnCancelar = document.createElement('button');
+    elBtnCancelar.textContent = 'Cancelar';
+    elBtnCancelar.addEventListener('click', function() {
+        elFondo.remove();
+    });
+
+    const elBtnConfirmar = document.createElement('button');
+    elBtnConfirmar.textContent = 'Rechazar';
+    elBtnConfirmar.addEventListener('click', function() {
+        elFondo.remove();
+        onConfirmar();
+    });
+
+    elContenido.appendChild(elParrafo);
+    elContenido.appendChild(elBtnCancelar);
+    elContenido.appendChild(elBtnConfirmar);
+    elFondo.appendChild(elContenido);
+    document.body.appendChild(elFondo);
 }
