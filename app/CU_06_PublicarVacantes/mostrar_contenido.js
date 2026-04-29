@@ -1,35 +1,47 @@
-/* 
-Daniela Hernandez Hernandez
-Fecha de creacion: 20 de abril del 2026
-El archivo mostrar_contenido.js controla la lógica visual del formulario de vacantes. 
-Permite cambiar entre los tipos de registro (manual o flayer), carga la fecha actual, 
-obtiene la lista de empresas desde el servidor y gestiona la opción de crear una nueva empresa
-o seleccionar una existente.
-*/
+/*
+ * Archivo     : mostrar_contenido.js
+ * Módulo      : Modulo 6 CU_06_PublicarVacantes
+ * Autor       : Daniela Hernandez Hernandez
+ * Fecha       : 20 de abril del 2026
+ * Descripción : Este archivo controla la parte visual y validación del formulario de vacantes. 
+ *               Cambia entre modo manual y flyer, carga empresas y servicios, muestra u oculta 
+ *               secciones y verifica que todos los datos estén correctos antes de enviarse.
+ */
+import { lanzarToast } from '../js/lanzar_toast.js';
+// ================= INICIALIZACIÓN =================
 document.addEventListener('DOMContentLoaded', function () {
-    cambiarContenido();
-    const divNueva = document.getElementById('nueva_empresa');
-    if (divNueva) {
-        divNueva.style.display = 'none';
+    // Configura el contenido inicial según el modo seleccionado
+    handleCambioContenido();
+    // Oculta el formulario de nueva empresa al iniciar
+    const elDivNuevaEmpresa = document.getElementById('nueva_empresa');
+    if (elDivNuevaEmpresa) {
+        elDivNuevaEmpresa.style.display = 'none';
     }
+
     document.getElementById('nueva_empresa').style.display = 'none';
+    // Al terminar de cargar completamente la página
     window.addEventListener('load', function () {
         document.getElementById('miFormulario').reset();
+        handleCambioContenido();
     });
 });
-function cargarFecha() {
-    inputFecha = document.getElementById('fecha_Manual');
-    hoy = new Date();
-    formatoServidor = new Intl.DateTimeFormat('en-CA', {
-        timeZone: 'America/Mexico_City',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-    });
-    fechaFormateada = formatoServidor.format(hoy);
-    inputFecha.innerHTML = "Fecha de registro: " + fechaFormateada;
 
-    inputFecha = document.getElementById('fecha_flayer');
+// ================= MOSTRAR FECHA ACTUAL =================
+function renderFecha() {
+    // Fecha para modo manual
+    let elFechaManual = document.getElementById('fecha_Manual');
+    let hoy = new Date();
+    // Formato YYYY-MM-DD
+    let formatoServidor = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Mexico_City',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+    let fechaFormateada = formatoServidor.format(hoy);
+    elFechaManual.innerHTML = "Fecha de registro: " + fechaFormateada;
+    // Fecha para modo flyer (se repite el mismo proceso)
+    let elFechaFlayer = document.getElementById('fecha_flayer');
     hoy = new Date();
     formatoServidor = new Intl.DateTimeFormat('en-CA', {
         timeZone: 'America/Mexico_City',
@@ -38,102 +50,100 @@ function cargarFecha() {
         day: '2-digit'
     });
     fechaFormateada = formatoServidor.format(hoy);
-    inputFecha.innerHTML = "Fecha de registro: " + fechaFormateada;
+    elFechaFlayer.innerHTML = "Fecha de registro: " + fechaFormateada;
 }
-
-function cargarEmpresas() {
+// ================= OBTENER EMPRESAS =================
+export function fetchEmpresas() {
     fetch('obtener_empresas.php')
         .then(function (respuesta) {
             return respuesta.json();
         })
         .then(function (empresas) {
-            const seleccion = document.getElementById("opciones").value;
-            if (seleccion === "manual") {
-                id = "empresa_manual";
-            } else {
-                id = "empresa_flayer";
-            }
-            const select = document.getElementById(id);
-            select.innerHTML = '<option value="">-- Selecciona una empresa --</option>';
-            empresas.forEach(function (empresa) {
-                const opcion = document.createElement('option');
-                opcion.value = empresa.Id_empresa;   // ID que se manda a la BD
-                opcion.textContent = empresa.Nombre; // Texto que ve el usuario
-                select.appendChild(opcion);
+            // Llena ambos selects (manual y flyer)
+            ['empresa_manual', 'empresa_flayer'].forEach(function (idSelect) {
+                const elSelectEmpresa = document.getElementById(idSelect);
+                // Opción por defecto
+                elSelectEmpresa.innerHTML = '<option value="">-- Selecciona una empresa --</option>';
+                // Agrega opciones dinámicamente
+                empresas.forEach(function (empresa) {
+                    const opcion = document.createElement('option');
+                    opcion.value = empresa.Id_empresa;
+                    opcion.textContent = empresa.Nombre;
+                    elSelectEmpresa.appendChild(opcion);
+                });
             });
         })
         .catch(function (error) {
             lanzarToast("La empresa no se pudo cargar", "error");
         });
 }
-
-
-function cargarServicio() {
+// ================= OBTENER SERVICIOS =================
+export function fetchServicios() {
     fetch('obtener_servicios.php')
         .then(function (respuesta) {
             return respuesta.json();
         })
         .then(function (servicios) {
-            const seleccion = document.getElementById("opciones").value;
-            if (seleccion === "manual") {
-                id = "servicio_manual";
-            } else {
-                id = "servicio_flayer";
-            }
-            const select = document.getElementById(id);
-            select.innerHTML = '<option value="">-- Selecciona un Servicio --</option>';
-            servicios.forEach(function (servicio) {
-                const opcion = document.createElement('option');
-                opcion.value = servicio.Id_servicio;
-                opcion.textContent = servicio.Servicio;
-                select.appendChild(opcion);
+            // Llena ambos selects (manual y flyer)
+            ['servicio_manual', 'servicio_flayer'].forEach(function (idSelect) {
+                const elSelectServicio = document.getElementById(idSelect); // ← usa idSelect, no idSelectActivo
+                elSelectServicio.innerHTML = '<option value="">-- Selecciona un Servicio --</option>';
+                servicios.forEach(function (servicio) {
+                    const opcion = document.createElement('option');
+                    opcion.value = servicio.Id_servicio;
+                    opcion.textContent = servicio.Servicio;
+                    elSelectServicio.appendChild(opcion);
+                });
             });
         })
         .catch(function (error) {
             lanzarToast("El servicio no se pudo cargar", "error");
         });
 }
+// ================= CAMBIO DE MODO (MANUAL / FLYER) =================
+export function handleCambioContenido() {
+    const modoRegistro = document.getElementById("opciones").value;
+    const elDivManual = document.getElementById("registro_manual");
+    const elDivFlayer = document.getElementById("registro_flayer");
 
-
-function cambiarContenido() {
-    const seleccion = document.getElementById("opciones").value;
-    const divManual = document.getElementById("registro_manual");
-    const divFlayer = document.getElementById("registro_flayer");
-
-    if (seleccion === "manual") {
-        divManual.style.display = "block";  // Muestra manual
-        divFlayer.style.display = "none";   // Oculta flayer
-    } else if (seleccion === "flayer") {
-        divManual.style.display = "none";   // Oculta manual
-        divFlayer.style.display = "block";  // Muestra flayer
+    // Muestra u oculta secciones según el modo seleccionado
+    if (modoRegistro === "manual") {
+        elDivManual.style.display = "block";  // Muestra manual
+        elDivFlayer.style.display = "none";   // Oculta flayer
+    } else if (modoRegistro === "flayer") {
+        elDivManual.style.display = "none";   // Oculta manual
+        elDivFlayer.style.display = "block";  // Muestra flayer
     } else {
-        divManual.style.display = "none";
-        divFlayer.style.display = "none";
+        elDivManual.style.display = "none";
+        elDivFlayer.style.display = "none";
     }
 
+    // Reinicia el estado del formulario de empresa
     document.getElementById('nueva_empresa').style.display = 'none';
     document.getElementById('btn-activar-nueva-manual').style.display = 'inline-block';
     document.getElementById('btn-activar-nueva-flayer').style.display = 'inline-block';
     document.getElementById('empresa_manual').disabled = false;
     document.getElementById('empresa_flayer').disabled = false;
-
-    cargarEmpresas();
-    cargarFecha();
-    cargarServicio();
+    // Recarga datos dinámicos
+    fetchEmpresas();
+    renderFecha();
+    fetchServicios();
 }
 
-const uploadField = document.getElementById("flayer");
+// ================= VALIDACIÓN DE ARCHIVO =================
+const elInputFlayer = document.getElementById("flayer");
 
-uploadField.onchange = function() {
-    if(this.files[0].size > 20971) {
-       lanzarToast("El archivo no puede ser mayor a 20 MB", "error")
-       this.value = "";
+elInputFlayer.onchange = function () {
+    // Valida tamaño máximo (20MB)
+    if (this.files[0].size > 20971520) {
+        lanzarToast("El archivo no puede ser mayor a 20 MB", "error")
+        this.value = "";
     }
 };
-
-function validarFormulario() {
-    const eleccion = document.getElementById("opciones").value;
-
+// ================= VALIDACIÓN GENERAL DEL FORMULARIO =================
+export function validarFormulario() {
+    const modoRegistro = document.getElementById("opciones").value;
+    // Diccionario para mostrar nombres amigables en errores
     const nombres = {
         "titulo_manual": "Título",
         "empresa_manual": "Empresa",
@@ -157,124 +167,120 @@ function validarFormulario() {
         "web_empresa": "Sitio web"
     };
 
+    // Campos requeridos para nueva empresa
     const camposNuevaEmpresa = ["nombre_empresa", "descripcion_empresa", "razon_empresa", "rfc_empresa", "direccion_empresa", "web_empresa"];
 
-    if (eleccion === "manual") {
+    // -------- VALIDACIÓN MODO MANUAL --------
+    if (modoRegistro === "manual") {
         const campos = ["titulo_manual", "servicio_manual", "nombre_contacto", "email", "telefono", "descripcion", "requisitos", "expiracion_manual"];
-        for (const id of campos) {
-            const campo = document.getElementById(id);
-            if (!campo.value.trim()) {
-                campo.focus();
-                lanzarToast(`${nombres[id]} no puede estar vacío`, "error");
+        // Recorre cada campo obligatorio
+        for (const idCampo of campos) {
+            const elCampo = document.getElementById(idCampo);
+            if (!elCampo.value.trim()) {
+                elCampo.focus();
+                lanzarToast(`${nombres[idCampo]} no puede estar vacío`, "error");
                 return false;
             }
         }
-        const selectManual = document.getElementById('empresa_manual');
-        if (selectManual.disabled) {
-            for (const id of camposNuevaEmpresa) {
-                const campo = document.getElementById(id);
-                if (!campo.value.trim()) {
-                    campo.focus();
-                    lanzarToast(`${nombres[id]} no puede estar vacío`, "error");
+        const elSelectEmpresaManual = document.getElementById('empresa_manual');
+        // Si se crea nueva empresa, valida sus campos
+        if (elSelectEmpresaManual.disabled) {
+            for (const idCampo of camposNuevaEmpresa) {
+                const elCampo = document.getElementById(idCampo);
+                if (!elCampo.value.trim()) {
+                    elCampo.focus();
+                    lanzarToast(`${nombres[idCampo]} no puede estar vacío`, "error");
                     return false;
                 }
             }
-        } else if (!selectManual.value) {
-            selectManual.focus();
+        } else if (!elSelectEmpresaManual.value) {
+            // Si no seleccionó empresa existente
+            elSelectEmpresaManual.focus();
             lanzarToast("Empresa no puede estar vacío", "error");
             return false;
         }
-
-    } else if (eleccion === "flayer") {
-        // Validar archivo
-        const archivo = document.getElementById('flayer').files[0]; // ← variable declarada
-        if (!archivo) {
+        // -------- VALIDACIÓN MODO FLYER --------
+    } else if (modoRegistro === "flayer") {
+        const archivoFlayer = document.getElementById('flayer').files[0];
+         // Valida que exista archivo
+        if (!archivoFlayer) {
             lanzarToast("Flyer no puede estar vacío", "error");
             return false;
         }
+        // Valida tipo de archivo
         const tiposPermitidos = ['image/jpeg', 'image/png', 'application/pdf'];
-        if (!tiposPermitidos.includes(archivo.type)) {
+        if (!tiposPermitidos.includes(archivoFlayer.type)) {
             lanzarToast("Solo se permiten archivos JPG, PNG o PDF", "error");
             return false;
         }
-        
-        ////////////////////
 
         const campos = ["titulo_flayer", "servicio_flayer", "expiracion_flayer"];
-        for (const id of campos) {
-            const campo = document.getElementById(id);
-            if (!campo.value.trim()) {
-                campo.focus();
-                lanzarToast(`${nombres[id]} no puede estar vacío`, "error");
+        
+        for (const idCampo of campos) {
+            const elCampo = document.getElementById(idCampo);
+            if (!elCampo.value.trim()) {
+                elCampo.focus();
+                lanzarToast(`${nombres[idCampo]} no puede estar vacío`, "error");
                 return false;
             }
         }
 
-        const selectFlayer = document.getElementById('empresa_flayer');
-        if (selectFlayer.disabled) {
-            for (const id of camposNuevaEmpresa) {
-                const campo = document.getElementById(id);
-                if (!campo.value.trim()) {
-                    campo.focus();
-                    lanzarToast(`${nombres[id]} no puede estar vacío`, "error");
+        const elSelectEmpresaFlayer = document.getElementById('empresa_flayer');
+        if (elSelectEmpresaFlayer.disabled) {
+            for (const idCampo of camposNuevaEmpresa) {
+                const elCampo = document.getElementById(idCampo);
+                if (!elCampo.value.trim()) {
+                    elCampo.focus();
+                    lanzarToast(`${nombres[idCampo]} no puede estar vacío`, "error");
                     return false;
                 }
             }
-        } else if (!selectFlayer.value) {
-            selectFlayer.focus();
+        } else if (!elSelectEmpresaFlayer.value) {
+            elSelectEmpresaFlayer.focus();
             lanzarToast("Empresa no puede estar vacío", "error");
             return false;
         }
     }
     return true;
 }
-// Función para mostrar mensajes tipo toast
-function lanzarToast(texto, tipo) {
-    const toast = document.getElementById('toast-mensaje');
 
-    // 1. Limpiamos clases previas y ponemos la nueva
-    toast.className = 'toast'; // Resetea a la base
-    toast.classList.add(tipo); // Agrega 'exito' o 'error'
+// ================= FUNCIONES AUXILIARES =================
 
-    // 2. Insertamos el texto
-    toast.innerText = texto;
-
-    // 3. Mostramos
-    toast.classList.remove('oculto');
-
-    // 4. Desvanecemos en 3 segundos
-    setTimeout(() => {
-        toast.classList.add('oculto');
-    }, 5000);
+// Obtiene el select activo según el modo
+function handleObtenerSelectEmpresaActivo() {
+    const modoRegistro = document.getElementById('opciones').value;
+    return document.getElementById(modoRegistro === 'manual' ? 'empresa_manual' : 'empresa_flayer');
 }
-
-function obtenerSelectEmpresaActivo() {
-    const modo = document.getElementById('opciones').value;
-    return document.getElementById(modo === 'manual' ? 'empresa_manual' : 'empresa_flayer');
+// Obtiene el ID del botón correspondiente
+function handleObtenerIdBoton() {
+    const modoRegistro = document.getElementById('opciones').value;
+    return modoRegistro === 'manual' ? 'btn-activar-nueva-manual' : 'btn-activar-nueva-flayer';
 }
-function obtenerIdBoton() {
-    const modo = document.getElementById('opciones').value;
-    return modo === 'manual' ? 'btn-activar-nueva-manual' : 'btn-activar-nueva-flayer';
-}
-
-function mostrarFormularioNuevo() {
-    const select = obtenerSelectEmpresaActivo();
-    select.disabled = true;
-    select.value = "";
+// Muestra el formulario para registrar nueva empresa
+function handleMostrarFormularioNuevaEmpresa() {
+    const elSelectEmpresa = handleObtenerSelectEmpresaActivo();
+    elSelectEmpresa.disabled = true;
+    elSelectEmpresa.value = "";
     document.getElementById(obtenerIdBoton()).style.display = 'none';
     document.getElementById('nueva_empresa').style.display = 'block';
-
 }
-
-function cancelarRegistro() {
-    const select = obtenerSelectEmpresaActivo();
-    select.disabled = false;
+// Cancela el registro de nueva empresa
+function handleCancelarRegistro() {
+    const elSelectEmpresa = handleObtenerSelectEmpresaActivo();
+    elSelectEmpresa.disabled = false;
     document.getElementById('nueva_empresa').style.display = 'none';
     document.getElementById(obtenerIdBoton()).style.display = 'inline-block';
-
+    // Quita el required de los campos
     document.getElementById('nombre_empresa').required = false;
     document.getElementById('descripcion_empresa').required = false;
     document.getElementById('razon_empresa').required = false;
     document.getElementById('rfc_empresa').required = false;
     document.getElementById('direccion_empresa').required = false;
 }
+
+// ================= EXPOSICIÓN GLOBAL =================
+// Permite usar estas funciones desde HTML
+window.handleCambioContenido = handleCambioContenido;
+window.handleMostrarFormularioNuevaEmpresa = handleMostrarFormularioNuevaEmpresa;
+window.handleCancelarRegistro = handleCancelarRegistro;
+window.validarFormulario = validarFormulario;
