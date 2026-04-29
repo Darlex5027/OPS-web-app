@@ -61,10 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("id_carrera_alumno").value = perfil.Nombre_Carrera || "";
                 document.getElementById("grupo_alumno").value = perfil.Grupo || "";
                 document.getElementById("no_expediente_alumno").value = perfil.No_Expediente || "";
-                document.getElementById("area_o_programa_alumno").value = perfil.Area_o_Programa || "";
-                document.getElementById("observaciones_alumno").value = perfil.Observaciones || "";
                 document.getElementById("horario_alumno").value = perfil.Horario || "";
-                document.getElementById("organizacion_alumno").value = perfil.Organizacion || "";
                 document.getElementById("fecha_registro_alumno").value = perfil.Fecha_registro || "";
             }
         })
@@ -73,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ── Botón Editar 
     btnEditar.addEventListener("click", () => {
         const formVisible = formAdmin.style.display !== "none" ? formAdmin : formAlumno;
-        formVisible.querySelectorAll("input:not(#nombre_alumno,#apellido_paterno_alumno,#apellido_materno_alumno,#fecha_registro_alumno,#id_carrera_alumno,#no_expediente_alumno,#area_o_programa_alumno,#observaciones_alumno,#organizacion_alumno,#fecha_registro_administrador,#nombre_administrador,#apellido_paterno_administrador,#apellido_materno_administrador,#id_carrera_administrador)").forEach(input => input.disabled = false);
+        formVisible.querySelectorAll("input:not(#nombre_alumno,#apellido_paterno_alumno,#apellido_materno_alumno,#fecha_registro_alumno,#id_carrera_alumno,#no_expediente_alumno,#area_alumno,#programa_alumno,#observaciones_alumno,#organizacion_alumno,#fecha_registro_administrador,#nombre_administrador,#apellido_paterno_administrador,#apellido_materno_administrador,#id_carrera_administrador)").forEach(input => input.disabled = false);
 
         btnEditar.style.display = "none";
         btnGuardar.style.display = "inline-block";

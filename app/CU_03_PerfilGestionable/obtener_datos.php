@@ -9,7 +9,7 @@ try {
         $consulta = $pdo->prepare("SELECT Administradores.Nombre, Administradores.Apellido_P, Administradores.Apellido_M, Administradores.Telefono, Administradores.Correo, Administradores.Fecha_registro,  Carreras.Nombre AS Nombre_Carrera FROM Administradores JOIN Carreras WHERE Administradores.Id_carrera = Carreras.Id_carrera AND Id_usuario = ? ");//cokie id_usuario
         $consulta->execute([$id_usuario]);
     } elseif ($tipo_usuario == "2") {
-        $consulta = $pdo->prepare("SELECT Alumnos.Nombre, Alumnos.Apellido_P, Alumnos.Apellido_M, Alumnos.Grupo, Alumnos.No_Expediente, Alumnos.Area_o_Programa, Alumnos.Observaciones, Alumnos.Horario, Alumnos.Organizacion, Alumnos.Fecha_registro, Carreras.Nombre AS Nombre_Carrera FROM Alumnos JOIN Carreras WHERE Alumnos.Id_carrera = Carreras.Id_carrera AND Id_usuario = ?");//cokie id_usuario
+        $consulta = $pdo->prepare("SELECT Alumnos.Nombre, Alumnos.Apellido_P, Alumnos.Apellido_M, Alumnos.Grupo, Alumnos.No_Expediente, Alumnos.Horario, Alumnos.Fecha_registro, Carreras.Nombre AS Nombre_Carrera FROM Alumnos JOIN Carreras WHERE Alumnos.Id_carrera = Carreras.Id_carrera AND Id_usuario = ?");//cokie id_usuario
         $consulta->execute([$id_usuario]);
     }
     // Convierte los resultados en un arreglo asociativo y los devuelve en formato JSON
