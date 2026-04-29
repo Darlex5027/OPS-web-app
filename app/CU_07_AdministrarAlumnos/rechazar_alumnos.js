@@ -14,7 +14,7 @@ export { rechazarAlumno };
 export { rechazarCoordinador };
 // Función para rechazar a un alumno, recibe la matrícula como parámetro
 function rechazarAlumno(matricula) {
-    mostrarModalConfirmacion(
+    renderModalConfirmacion(
         `¿Estás seguro de que deseas rechazar al alumno con matrícula ${matricula}?`,
         function () {
             fetch("procesar_validacion.php", {
@@ -50,7 +50,7 @@ function rechazarAlumno(matricula) {
 
 
 function rechazarCoordinador(matricula) {
-    mostrarModalConfirmacion(
+    renderModalConfirmacion(
         `¿Estás seguro de que deseas rechazar al docente con matrícula ${matricula}?`, function () {
             fetch("procesar_validacion.php", {
                 // Realiza una petición al servidor (archivo PHP)
@@ -83,34 +83,34 @@ function rechazarCoordinador(matricula) {
     )
 }
 
-function mostrarModalConfirmacion(mensaje, onConfirmar) {
-    const previo = document.getElementById('modal-confirmacion');
-    if (previo) previo.remove();
+function renderModalConfirmacion(mensaje, onConfirmar) {
+    const elModalPrevio = document.getElementById('modal-confirmacion');
+    if (elModalPrevio) elModalPrevio.remove();
 
-    const fondo = document.createElement('div');
-    fondo.id = 'modal-confirmacion';
+    const elFondo = document.createElement('div');
+    elFondo.id = 'modal-confirmacion';
 
-    const contenido = document.createElement('div');
+    const elContenido = document.createElement('div');
 
-    const parrafo = document.createElement('p');
-    parrafo.textContent = mensaje;
+    const elParrafo = document.createElement('p');
+    elParrafo.textContent = mensaje;
 
-    const btnCancelar = document.createElement('button');
-    btnCancelar.textContent = 'Cancelar';
-    btnCancelar.addEventListener('click', function() {
-        fondo.remove();
+    const elBtnCancelar = document.createElement('button');
+    elBtnCancelar.textContent = 'Cancelar';
+    elBtnCancelar.addEventListener('click', function() {
+        elFondo.remove();
     });
 
-    const btnConfirmar = document.createElement('button');
-    btnConfirmar.textContent = 'Rechazar';
-    btnConfirmar.addEventListener('click', function() {
-        fondo.remove();
+    const elBtnConfirmar = document.createElement('button');
+    elBtnConfirmar.textContent = 'Rechazar';
+    elBtnConfirmar.addEventListener('click', function() {
+        elFondo.remove();
         onConfirmar();
     });
 
-    contenido.appendChild(parrafo);
-    contenido.appendChild(btnCancelar);
-    contenido.appendChild(btnConfirmar);
-    fondo.appendChild(contenido);
-    document.body.appendChild(fondo);
+    elContenido.appendChild(elParrafo);
+    elContenido.appendChild(elBtnCancelar);
+    elContenido.appendChild(elBtnConfirmar);
+    elFondo.appendChild(elContenido);
+    document.body.appendChild(elFondo);
 }

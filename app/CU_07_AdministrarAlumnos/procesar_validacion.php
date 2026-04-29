@@ -24,13 +24,13 @@ try {
     // Dependiendo de la acción recibida:
     if ($identificador === "Aceptado") {
         // Si fue aceptado, se actualiza el campo Activo a 1 (activo)
-        $consulta = $pdo->prepare("UPDATE Usuarios SET Activo=1 WHERE Matricula=?");
+        $stmt = $pdo->prepare("UPDATE Usuarios SET Activo=1 WHERE Matricula=?");
     } else {
         // Si no fue aceptado (rechazado), se elimina el usuario de la base de datos
-        $consulta = $pdo->prepare("DELETE FROM Usuarios WHERE Matricula=?");
+        $stmt = $pdo->prepare("DELETE FROM Usuarios WHERE Matricula=?");
     }
     // Ejecuta la consulta pasando la matrícula como parámetro
-    $consulta->execute([$matricula]);
+    $stmt->execute([$matricula]);
     // Devuelve una respuesta en formato JSON indicando éxito
     echo json_encode(['success' => true]);
 

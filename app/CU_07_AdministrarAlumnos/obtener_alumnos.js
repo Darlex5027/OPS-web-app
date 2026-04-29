@@ -30,16 +30,16 @@ document.addEventListener("DOMContentLoaded", function () {
     //cargarAlumnos();
     if (obtenerCookie('Id_tipo_usuario') == "1") {
         console.log(obtenerCookie('Id_tipo_usuario'))
-        document.getElementById("div_coordinadores").style.display = "block"
-        document.getElementById("div_alumnos").style.display = "block"
+        document.getElementById("div-coordinadores").style.display = "block"
+        document.getElementById("div-alumnos").style.display = "block"
         cargarInformacion();
     } else if (obtenerCookie('Id_tipo_usuario') == "2") {
-        document.getElementById("div_coordinadores").style.display = "none"
-        document.getElementById("div_alumnos").style.display = "none"
+        document.getElementById("div-coordinadores").style.display = "none"
+        document.getElementById("div-alumnos").style.display = "none"
         cargarInformacion();
     } else if (obtenerCookie('Id_tipo_usuario') == "3") {
-        document.getElementById("div_coordinadores").style.display = "none"
-        document.getElementById("div_alumnos").style.display = "block"
+        document.getElementById("div-coordinadores").style.display = "none"
+        document.getElementById("div-alumnos").style.display = "block"
         cargarInformacion();
     }
 });
@@ -56,10 +56,10 @@ function cargarInformacion() {
         // Envía los datos a la función que llena la tabla
         .then(function (datos) {
             if (tipoUsuario == '1') {
-                llenarTablaAlumnos(datos.alumnos);
-                llenarTablaCoordinadores(datos.coordinadores);
+                renderTablaAlumnos(datos.alumnos);
+                renderTablaCoordinadores(datos.coordinadores);
             } else if (tipoUsuario == '3') {
-                llenarTablaAlumnos(datos.alumnos);
+                renderTablaAlumnos(datos.alumnos);
             } else if (tipoUsuario == '2'){
                 window.location.href='../CU_03_PerfilGestionable/perfil.html'
             }
@@ -72,11 +72,11 @@ function cargarInformacion() {
 
 
 // Función que llena la tabla con los datos recibidos
-function llenarTablaAlumnos(alumnos) {
+function renderTablaAlumnos(alumnos) {
     // Obtiene el elemento <tbody> donde se insertarán las filas
-    const TBODY = document.getElementById("tabla_alumnos");
+    const elTbodyAlumnos  = document.getElementById("tabla-alumnos");
     // Limpia la tabla antes de volver a llenarla
-    TBODY.innerHTML = "";
+    elTbodyAlumnos.innerHTML = "";
 
     // Si no hay alumnos pendientes
     if (alumnos.length == 0) {
@@ -85,10 +85,10 @@ function llenarTablaAlumnos(alumnos) {
         // Recorre el arreglo de alumnos
         alumnos.forEach(function (alumno) {
             // Crea una nueva fila
-            const FILA = document.createElement("tr");
+            const elFila = document.createElement("tr");
 
             // Inserta el contenido de la fila usando template literals
-            FILA.innerHTML = `
+            elFila.innerHTML = `
         <td>${alumno.Nombre_Completo}</td>
         <td>${alumno.Matricula}</td>
         <td>${alumno.Nombre_Carrera}</td>
@@ -100,17 +100,17 @@ function llenarTablaAlumnos(alumnos) {
         <button onclick="rechazarAlumno('${alumno.Matricula}')">Rechazar</button></td>
         `;
             // Agrega la fila al tbody
-            TBODY.appendChild(FILA);
+            elTbodyAlumnos .appendChild(elFila);
         });
     }
 }
 
 // Función que llena la tabla con los datos recibidos
-function llenarTablaCoordinadores(coordinador) {
+function renderTablaCoordinadores(coordinador) {
     // Obtiene el elemento <tbody> donde se insertarán las filas
-    const TBODY = document.getElementById("tabla_coordinadores");
+    const elTbodyCoordinadores = document.getElementById("tabla-coordinadores");
     // Limpia la tabla antes de volver a llenarla
-    TBODY.innerHTML = "";
+    elTbodyCoordinadores.innerHTML = "";
 
     // Si no hay alumnos pendientes
     if (coordinador.length == 0) {
@@ -119,10 +119,10 @@ function llenarTablaCoordinadores(coordinador) {
         // Recorre el arreglo de alumnos
         coordinador.forEach(function (coordinador) {
             // Crea una nueva fila
-            const FILA = document.createElement("tr");
+            const elFila = document.createElement("tr");
 
             // Inserta el contenido de la fila usando template literals
-            FILA.innerHTML = `
+            elFila.innerHTML = `
         <td>${coordinador.Nombre_Completo}</td>
         <td>${coordinador.Matricula}</td>
         <td>${coordinador.Nombre_Carrera}</td>
@@ -135,7 +135,7 @@ function llenarTablaCoordinadores(coordinador) {
         <button onclick="rechazarCoordinador('${coordinador.Matricula}')">Rechazar</button></td>
         `;
             // Agrega la fila al tbody
-            TBODY.appendChild(FILA);
+            elTbodyCoordinadores.appendChild(elFila);
         });
     }
 }

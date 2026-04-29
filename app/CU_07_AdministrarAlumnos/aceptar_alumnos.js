@@ -16,7 +16,7 @@ export { aceptarAlumno };
 export { aceptarCoordinador };
 // Función para aceptar a un alumno, recibe la matrícula como parámetro
 function aceptarAlumno(matricula) {
-    mostrarModal(
+    renderModalExpediente(
         'Añadir No. de expediente', matricula, function (expediente) {
             console.log(expediente);
             fetch("cargar_expediente.php", {
@@ -28,13 +28,12 @@ function aceptarAlumno(matricula) {
                 })
                 
             })
-            .then(function (res) {
-                console.log("Status:", res.status);
-                return res.json();
+            .then(function (respuesta) {
+                console.log("Status:", respuesta.status);
+                return respuesta.json();
             })
-                .then(function (dataExp) {
-                    
-                if (dataExp.success) {
+                .then(function (datosExp) {
+                if (datosExp.success) {
                         // Se hace una petición al servidor (PHP) usando fetch
                         return fetch("procesar_validacion.php", {
                             method: "POST",// Método de envío
@@ -98,44 +97,44 @@ function aceptarCoordinador(matricula) {
         })
 }
 
-function mostrarModal(mensaje, matricula, onConfirmar) {
-    const previo = document.getElementById('modal-confirmacion');
-    if (previo) previo.remove();
+function renderModalExpediente(mensaje, matricula, onConfirmar) {
+    const elModalPrevio = document.getElementById('modal-confirmacion');
+    if (elModalPrevio) elModalPrevio.remove();
 
-    const fondo = document.createElement('div');
-    fondo.id = 'modal-confirmacion';
+    const elFondo = document.createElement('div');
+    elFondo.id = 'modal-confirmacion';
 
-    const contenido = document.createElement('div');
-    contenido.id = 'modal-contenido';
+    const elContenido = document.createElement('div');
+    elContenido.id = 'modal-contenido';
 
-    const parrafo = document.createElement('p');
-    parrafo.textContent = mensaje;
+    const elParrafo = document.createElement('p');
+    elParrafo.textContent = mensaje;
 
-    const intputExp = document.createElement('input');
-    intputExp.type = 'text';
-    intputExp.id = 'intput_expediente';
+    const elInputExpediente = document.createElement('input');
+    elInputExpediente.type = 'text';
+    elInputExpediente.id = 'intput_expediente';
 
-    const btsEnviar = document.createElement('button');
-    btsEnviar.textContent = 'Enviar';
+    const elBtnEnviar = document.createElement('button');
+    elBtnEnviar.textContent = 'Enviar';
 
-    btsEnviar.onclick = function () {
-        const valor = intputExp.value;
+    elBtnEnviar.onclick = function () {
+        const valor = elInputExpediente.value;
         if (valor !== "") {
             onConfirmar(valor);
-            fondo.remove();
+            elFondo.remove();
         }
     }
 
-    const btnCancelar = document.createElement('button');
-    btnCancelar.textContent = 'Cancelar';
-    btnCancelar.onclick = function () {
-        fondo.remove();
+    const elBtnCancelar = document.createElement('button');
+    elBtnCancelar.textContent = 'Cancelar';
+    elBtnCancelar.onclick = function () {
+        elFondo.remove();
     };
 
-    contenido.appendChild(parrafo);
-    contenido.appendChild(btnCancelar);
-    contenido.appendChild(btsEnviar);
-    contenido.appendChild(intputExp);
-    fondo.appendChild(contenido); 
-    document.body.appendChild(fondo);
+    elContenido.appendChild(elParrafo);
+    elContenido.appendChild(elBtnCancelar);
+    elContenido.appendChild(elBtnEnviar);
+    elContenido.appendChild(elInputExpediente);
+    elFondo.appendChild(elContenido); 
+    document.body.appendChild(elFondo);
 }

@@ -15,17 +15,18 @@ require_once '../php/db.php';
 $valor = json_decode(file_get_contents("php://input"), true);
 // Extrae los datos enviados desde JavaScript
 $matricula = $valor['matricula']; // Matrícula del alumno
-$expediente = $valor['no_expediente'];
+$no_expediente  = $valor['no_expediente'];
 
 try {
     // Se establece la conexión a la base de datos con PDO
     $pdo = new PDO($dsn, $user, $pass, $options);
-    $id_usuario_alumno = $pdo->prepare("SELECT Id_usuario FROM Usuarios WHERE Matricula=?");
-    $id_usuario_alumno->execute([$matricula]);
-    $id_usuario_alumno = $id_usuario_alumno->fetchColumn();
+    $stmt  = $pdo->prepare("SELECT Id_usuario FROM Usuarios WHERE Matricula=?");
+    $stmt ->execute([$matricula]);
+    $id_usuario_alumno = $stmt ->fetchColumn();
+
     if ($id_usuario_alumno != null) {
-        $consulta = $pdo->prepare("UPDATE Alumnos SET No_expediente=? WHERE Id_usuario=?");
-        $consulta->execute([$expediente, $id_usuario_alumno]);
+        $stmt = $pdo->prepare("UPDATE Alumnos SET No_expediente=? WHERE Id_usuario=?");
+        $stmt ->execute([$no_expediente , $id_usuario_alumno]);
     }
     echo json_encode(['success' => true]);
 

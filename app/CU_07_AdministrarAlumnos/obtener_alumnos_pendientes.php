@@ -21,7 +21,7 @@ try {
 
     // Se prepara la consulta SQL para obtener datos de los alumnos
     if ($id_tipo_usuario == 1) {
-        $consultaAlumnos = $pdo->prepare("SELECT 
+        $resultado_alumnos = $pdo->prepare("SELECT 
         CONCAT (Alumnos.Nombre, ' ', Alumnos.Apellido_M, ' ', Alumnos.Apellido_P) As Nombre_Completo, 
         Carreras.Nombre as Nombre_Carrera, 
         Usuarios.Matricula, 
@@ -32,10 +32,10 @@ try {
         AND Carreras.Id_carrera=Alumnos.Id_carrera AND Usuarios.Id_tipo_usuario=2 
         AND Usuarios.Id_usuario=Alumnos.Id_usuario AND Alumnos.Id_alumno=Actividades_Alumnos.Id_alumno 
         AND Usuarios.Activo=0 AND Carreras.Id_carrera=?");
-        $consultaAlumnos->execute([$id_carrera]);
+        $resultado_alumnos->execute([$id_carrera]);
         // Convierte los resultados en formato JSON y los envía al frontend
 
-        $consultaCoordinadores = $pdo->prepare("SELECT 
+        $resultado_coordinadores = $pdo->prepare("SELECT 
         CONCAT (Administradores.Nombre, ' ', Administradores.Apellido_P, ' ', Administradores.Apellido_M) As Nombre_Completo, 
         Carreras.Nombre As Nombre_Carrera, 
         Usuarios.Matricula, 
@@ -46,14 +46,14 @@ try {
         WHERE Usuarios.Id_usuario = Administradores.Id_usuario 
         AND Administradores.Id_carrera = Carreras.Id_carrera 
         AND Usuarios.Activo = 0 AND Usuarios.Id_tipo_usuario = 3");
-        $consultaCoordinadores->execute([]);
+        $resultado_coordinadores->execute([]);
         // Convierte los resultados en formato JSON y los envía al frontend
         echo json_encode([
-            'alumnos' => $consultaAlumnos->fetchAll(),
-            'coordinadores' => $consultaCoordinadores->fetchAll(),
+            'alumnos' => $resultado_alumnos->fetchAll(),
+            'coordinadores' => $resultado_coordinadores->fetchAll(),
         ]);
     } else if ($id_tipo_usuario == 3) {
-        $consultaAlumnos = $pdo->prepare("SELECT 
+        $resultado_alumnos = $pdo->prepare("SELECT 
         CONCAT (Alumnos.Nombre, ' ', Alumnos.Apellido_M, ' ', Alumnos.Apellido_P) As Nombre_Completo, 
         Carreras.Nombre as Nombre_Carrera, 
         Usuarios.Matricula, 
@@ -64,10 +64,10 @@ try {
         AND Carreras.Id_carrera=Alumnos.Id_carrera AND Usuarios.Id_tipo_usuario=2 
         AND Usuarios.Id_usuario=Alumnos.Id_usuario AND Alumnos.Id_alumno=Actividades_Alumnos.Id_alumno 
         AND Usuarios.Activo=0 AND Carreras.Id_carrera=?");
-        $consultaAlumnos->execute([$id_carrera]);
+        $resultado_alumnos->execute([$id_carrera]);
         // Convierte los resultados en formato JSON y los envía al frontend
         echo json_encode([
-            'alumnos' => $consultaAlumnos->fetchAll(),
+            'alumnos' => $resultado_alumnos->fetchAll(),
             'coordinadores' => [], // ← vacío porque el coordinador no ve otros coordinadores
             'tipo_usuario' => $id_tipo_usuario
         ]);
