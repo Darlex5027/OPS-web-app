@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../css/prueba.css">
 </head>
 
-<body>
+<body class="pagina-vacantes">
     <div class="sidebar">
         <div class="profile">
             <img src="../Imagenes/prueba.png" alt="perfil">
@@ -53,7 +53,7 @@
             <form id="miFormulario">
                 <label>Selecciona una categoría:</label>
 
-                <select id="opciones" onchange="cambiarContenido()">
+                <select id="opciones" onchange="handleCambioContenido()">
                     <option value="manual">Registro manual</option>
                     <option value="flayer">Registro con flyer</option>
                 </select>
@@ -66,11 +66,12 @@
                         <select id="empresa_manual">
                             <option value="">-- Cargando empresas... --</option>
                         </select>
-                        <button type="button" id="btn-activar-nueva-manual" onclick="mostrarFormularioNuevo()">+ Crear
+                        <button type="button" id="btn-activar-nueva-manual"
+                            onclick="handleMostrarFormularioNuevaEmpresa()">+ Crear
                             Nueva</button>
                     </div>
 
-                    <div id="Contenedor_servicio_manual">
+                    <div id="contenedor_servicio_manual">
                         <label>Servicio: </label>
                         <select id="servicio_manual">
                             <option value="">-- Cargando Servicio... --</option>
@@ -80,7 +81,8 @@
                     <label for="nombre_contacto">Nombre del contacto: </label>
                     <input type="text" id="nombre_contacto" placeholder="Nombre del contacto">
                     <label for="email">Contacto e-mail: </label>
-                    <input type="email" id="email" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" placeholder="Contacto e-mail">
+                    <input type="email" id="email" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+                        placeholder="Contacto e-mail">
                     <label for="telefono">Contacto telefono (10 digitos): </label>
                     <input type="tel" minlength="10" maxlength="10" pattern="[0-9]*" id="telefono"
                         placeholder="Sin espacio">
@@ -104,11 +106,12 @@
                         <select id="empresa_flayer">
                             <option value="">-- Cargando empresas... --</option>
                         </select>
-                        <button type="button" id="btn-activar-nueva-flayer" onclick="mostrarFormularioNuevo()">+ Crear
+                        <button type="button" id="btn-activar-nueva-flayer"
+                            onclick="handleMostrarFormularioNuevaEmpresa()">+ Crear
                             Nueva</button>
                     </div>
 
-                    <div id="Contenedor_servicio_flayer">
+                    <div id="contenedor_servicio_flayer">
                         <label>Servicio: </label>
                         <select id="servicio_flayer">
                             <option value="">-- Cargando Servicio... --</option>
@@ -136,17 +139,17 @@
                     <input type="text" id="direccion_empresa" placeholder="Dirección de la empresa">
                     <label>Sitio web: </label>
                     <input type="text" id="web_empresa" placeholder="Sitio web">
-                    <button type="button" onclick="cancelarRegistro()">Cancelar y elegir existente</button>
+                    <button type="button" onclick="handleCancelarRegistro()">Cancelar y elegir existente</button>
                 </div>
         </div>
         <button type="submit" id="btnEnviar">Enviar</button>
         </form>
-        <script src="../js/redireccion.js"></script>
-        <script src="enviar_vacantes.js"></script>
     </div>
-    <script src="mostrar_contenido.js"></script>
     <div id="toast-mensaje" class="toast oculto"></div>
     </div>
+    <script type="module" src="../js/redireccion.js"></script>
+    <script type="module" src="mostrar_contenido.js"></script>
+    <script type="module" src="enviar_vacantes.js"></script>
 </body>
 
 </html>
