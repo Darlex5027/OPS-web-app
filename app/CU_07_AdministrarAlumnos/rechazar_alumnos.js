@@ -8,6 +8,7 @@ Básicamente, permite eliminar o descartar a los alumnos que no cumplen con los 
 */
 // Importa la función para recargar la tabla de alumnos
 import { cargarInformacion } from './obtener_alumnos.js';
+import { lanzarToast } from '../js/lanzar_toast.js';
 // Exporta la función rechazarAlumno para usarla en otros archivos
 export { rechazarAlumno };
 export { rechazarCoordinador };
@@ -112,24 +113,4 @@ function mostrarModalConfirmacion(mensaje, onConfirmar) {
     contenido.appendChild(btnConfirmar);
     fondo.appendChild(contenido);
     document.body.appendChild(fondo);
-}
-
-// Función para mostrar notificaciones tipo "toast"
-function lanzarToast(texto, tipo) {
-    const toast = document.getElementById('toast-mensaje');
-
-    // 1. Limpiamos clases previas y ponemos la nueva
-    toast.className = 'toast'; // Resetea a la base
-    toast.classList.add(tipo); // Agrega 'exito' o 'error'
-
-    // 2. Insertamos el texto
-    toast.innerText = texto;
-
-    // 3. Mostramos
-    toast.classList.remove('oculto');
-
-    // 4. Desvanecemos en 3 segundos
-    setTimeout(() => {
-        toast.classList.add('oculto');
-    }, 3000);
 }

@@ -10,10 +10,10 @@ cambios. Su función principal es actualizar el estado del alumno a aceptado.
 
 // Importa la función cargarAlumnos desde otro archivo JS
 import { cargarInformacion } from './obtener_alumnos.js';
+import { lanzarToast } from '../js/lanzar_toast.js';
 // Exporta la función aceptarAlumno para que pueda usarse en otros archivos
 export { aceptarAlumno };
 export { aceptarCoordinador };
-export { lanzarToast };
 // Función para aceptar a un alumno, recibe la matrícula como parámetro
 function aceptarAlumno(matricula) {
     mostrarModal(
@@ -138,25 +138,4 @@ function mostrarModal(mensaje, matricula, onConfirmar) {
     contenido.appendChild(intputExp);
     fondo.appendChild(contenido); 
     document.body.appendChild(fondo);
-}
-
-// Función para mostrar mensajes emergentes (toast)
-function lanzarToast(texto, tipo) {
-    // Obtiene el elemento del DOM donde se mostrará el mensaje
-    const toast = document.getElementById('toast-mensaje');
-
-    // 1. Limpiamos clases previas y ponemos la nueva
-    toast.className = 'toast'; // Resetea a la base
-    toast.classList.add(tipo); // Agrega 'exito' o 'error'
-
-    // 2. Insertamos el texto
-    toast.innerText = texto;
-
-    // 3. Mostramos el toast
-    toast.classList.remove('oculto');
-
-    // 4. Desvanecemos en 3 segundos
-    setTimeout(() => {
-        toast.classList.add('oculto');
-    }, 3000);
 }

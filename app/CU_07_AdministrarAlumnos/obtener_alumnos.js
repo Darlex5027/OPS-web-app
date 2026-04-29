@@ -15,7 +15,7 @@ import { rechazarAlumno } from './rechazar_alumnos.js';
 import { rechazarCoordinador } from './rechazar_alumnos.js';
 import { aceptarCoordinador } from './aceptar_alumnos.js';
 import { obtenerCookie } from '../js/cookie.js';
-import { lanzarToast } from './aceptar_alumnos.js';
+import { lanzarToast } from '../js/lanzar_toast.js';
 
 //window lo convierte en objeto global
 window.aceptarCoordinador = aceptarCoordinador;
