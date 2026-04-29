@@ -261,7 +261,7 @@ function handleMostrarFormularioNuevaEmpresa() {
     const elSelectEmpresa = handleObtenerSelectEmpresaActivo();
     elSelectEmpresa.disabled = true;
     elSelectEmpresa.value = "";
-    document.getElementById(obtenerIdBoton()).style.display = 'none';
+    document.getElementById(handleObtenerIdBoton()).style.display = 'none';
     document.getElementById('nueva_empresa').style.display = 'block';
 }
 // Cancela el registro de nueva empresa
@@ -269,7 +269,7 @@ function handleCancelarRegistro() {
     const elSelectEmpresa = handleObtenerSelectEmpresaActivo();
     elSelectEmpresa.disabled = false;
     document.getElementById('nueva_empresa').style.display = 'none';
-    document.getElementById(obtenerIdBoton()).style.display = 'inline-block';
+    document.getElementById(handleObtenerIdBoton()).style.display = 'inline-block';
     // Quita el required de los campos
     document.getElementById('nombre_empresa').required = false;
     document.getElementById('descripcion_empresa').required = false;
