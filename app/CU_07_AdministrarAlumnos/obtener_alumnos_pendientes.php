@@ -22,7 +22,7 @@ try {
     // Se prepara la consulta SQL para obtener datos de los alumnos
     if ($id_tipo_usuario == 1) {
         $resultado_alumnos = $pdo->prepare("SELECT 
-        CONCAT (Alumnos.Nombre, ' ', Alumnos.Apellido_M, ' ', Alumnos.Apellido_P) As Nombre_Completo, 
+        CONCAT (Alumnos.Nombre, ' ', Alumnos.Apellido_P, ' ', Alumnos.Apellido_M) As Nombre_Completo, 
         Carreras.Nombre as Nombre_Carrera, 
         Usuarios.Matricula, 
         Usuarios.Fecha_registro, 
@@ -54,7 +54,7 @@ try {
         ]);
     } else if ($id_tipo_usuario == 3) {
         $resultado_alumnos = $pdo->prepare("SELECT 
-        CONCAT (Alumnos.Nombre, ' ', Alumnos.Apellido_M, ' ', Alumnos.Apellido_P) As Nombre_Completo, 
+        CONCAT (Alumnos.Nombre, ' ', Alumnos.Apellido_P, ' ', Alumnos.Apellido_M) As Nombre_Completo, 
         Carreras.Nombre as Nombre_Carrera, 
         Usuarios.Matricula, 
         Usuarios.Fecha_registro, 
