@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8"> <!-- Soporte para caracteres especiales como ñ y tildes -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adaptación a móviles -->
+		<title>Reportes Estadisticos</title>
+		<link rel="stylesheet" href="../css/prueba.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+		<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+	</head>
+	<body>
+		<div class="sidebar">
+			<div class="profile">
+				<img src="../Imagenes/prueba.png" alt="perfil">
+				<h3>Mtra. M. Guadalupe</h3>
+			</div>
+			<div class="menu">
+				<a href="../CU_03_PerfilGestionable/perfil.html">
+					<button>Perfil</button>
+				</a>
+				<a href="foro_vacantes.html">
+					<button>Publicar vacantes para servicio social</button>
+				</a>
+				<a href="../CU_07_AdministrarAlumnos/admin_alumnos.html">
+					<button>Administrar alumnos</button>
+				</a>
+				<a href="../CU_08_Reporte_Alumnado/reportes_alumnos.html">
+					<button>Generar reporte de alumnos</button>
+				</a>
+				<a href="admin_encuentas.html">
+					<button>Editar formularios</button>
+				</a>
+				<a href="Mensajes.html">
+					<button>Mensajes</button>
+				</a>
+				<a href="perfil.html">
+					<button>perfil</button>
+				</a>
+			</div>
+		</div>
+		<div class="main">
+			<div class="header">
+				<div></div><h1>Reportes Estadisticos</h1>
+				<div class="header-logo-right">
+					<img src="../Imagenes/Logo.png" alt="Logo OPS">
+				</div>
+			</div>
+			<select id="slctEncuestas">
+				<option value = "NINGUNA">-- Seleccionar una encuesta--</option>
+			</select>
+			<select id="slctPeriodoTipo">
+				<option value = "NINGUNO">-- Seleccionar un periodo--</option>
+			</select>
+			<select id="slctPeriodoAño">
+				<option value = "NINGUNO">-- Seleccionar una año--</option>
+			</select>
+			<button onClick="cargar_datos()">Generar Reporte</button>
+			<button onClick="exportarExcel()" id="btnGenerarExcel" style="visibility: hidden">Generar Excel</button>
+			<button onClick="imprimirPDF()" id="btnGenerarPDF" style="visibility: hidden">Generar PDF</button>
+
+			<div class="table">
+				<table id="tabla-resultados">
+					<tr id="Titulos">
+					</tr>
+					<tbody id="Tabla">
+					</tbody>
+				</table>
+			</div>
+			<!--<h2 id="h2Promedio">Promedio</h2>-->
+			<!--<label id="lblPromedio"></label>-->
+		</div>
+		<div id="toast-mensaje" class="toast oculto"></div>
+		</div>
+		<script type="module" src="../js/redireccion.js"></script>
+		<script type="module" src="../js/lanzar_toast.js"></script>
+		<script type="module" src="./reporte_estadistico.js"></script>
+		<script type="module" src="./revision_tipo_usuario.js"></script>
+		<script type="module" src="./generar_excel.js"></script>
+		<script type="module" src="./generar_pdf.js"></script>
+	</body>
