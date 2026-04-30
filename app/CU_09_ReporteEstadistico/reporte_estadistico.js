@@ -1,4 +1,6 @@
+import { obtenerCookie } from '../js/cookie.js';
 import { lanzarToast } from '../js/lanzar_toast.js';
+import { renderMenu } from '../js/menu.js';
 
 // Al final del archivo
 window.cargar_datos = cargar_datos;
@@ -11,7 +13,16 @@ periodo_tipo.style.visibility="hidden";
 periodo_año.style.visibility="hidden";
 
 
-document.addEventListener('DOMContentLoaded', cargarEncuestas);
+document.addEventListener('DOMContentLoaded', function(){
+	const tipoUsuario = obtenerCookie('Id_tipo_usuario');
+	if (tipoUsuario == '2') {
+		const tipoUsuario = obtenerCookie('Id_tipo_usuario');
+		window.location.href = '../CU_03_PerfilGestionable/perfil.html';
+		return;
+	}
+	renderMenu();
+	cargarEncuestas();
+});
 
 function cargarEncuestas(){
 	fetch('./obtener_encuestas.php')
