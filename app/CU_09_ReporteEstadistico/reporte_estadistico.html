@@ -16,26 +16,24 @@
 				<h3>Mtra. M. Guadalupe</h3>
 			</div>
 			<div class="menu">
-				<a href="../CU_03_PerfilGestionable/perfil.html">
-					<button>Perfil</button>
-				</a>
-				<a href="foro_vacantes.html">
+
+				<a href="../CU_06_PublicarVacantes/admin_vacantes.html">
 					<button>Publicar vacantes para servicio social</button>
 				</a>
 				<a href="../CU_07_AdministrarAlumnos/admin_alumnos.html">
 					<button>Administrar alumnos</button>
 				</a>
-				<a href="../CU_08_Reporte_Alumnado/reportes_alumnos.html">
+				<a href="../CU_08_Reporte_Alumnado/reporte_alumnos.html">
 					<button>Generar reporte de alumnos</button>
+				</a>
+				<a href="../CU_09_ReporteEstadistico/reporte_estadistico.html">
+					<button>Generar reportes estadisticos de alumnos</button>
 				</a>
 				<a href="admin_encuentas.html">
 					<button>Editar formularios</button>
 				</a>
-				<a href="Mensajes.html">
-					<button>Mensajes</button>
-				</a>
-				<a href="perfil.html">
-					<button>perfil</button>
+				<a href="../CU_03_PerfilGestionable/perfil.html">
+					<button>Perfil</button>
 				</a>
 			</div>
 		</div>
@@ -55,10 +53,11 @@
 			<select id="slctPeriodoAño">
 				<option value = "NINGUNO">-- Seleccionar una año--</option>
 			</select>
-			<button onClick="cargar_datos()">Generar Reporte</button>
-			<button onClick="exportarExcel()" id="btnGenerarExcel" style="visibility: hidden">Generar Excel</button>
-			<button onClick="imprimirPDF()" id="btnGenerarPDF" style="visibility: hidden">Generar PDF</button>
-
+			<div class="buttons-group">
+				<button onClick="cargar_datos()">Generar Reporte</button>
+				<button onClick="exportarExcel()" id="btnGenerarExcel" style="visibility: hidden">Generar Excel</button>
+				<button onClick="imprimirPDF()" id="btnGenerarPDF" style="visibility: hidden">Generar PDF</button>
+			</div>
 			<div class="table">
 				<table id="tabla-resultados">
 					<tr id="Titulos">
