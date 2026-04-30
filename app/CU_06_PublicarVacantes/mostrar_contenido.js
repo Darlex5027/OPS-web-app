@@ -8,8 +8,15 @@
  *               secciones y verifica que todos los datos estén correctos antes de enviarse.
  */
 import { lanzarToast } from '../js/lanzar_toast.js';
+import { obtenerCookie } from '../js/cookie.js';
 // ================= INICIALIZACIÓN =================
 document.addEventListener('DOMContentLoaded', function () {
+    const tipoUsuario = obtenerCookie('Id_tipo_usuario');
+    if (tipoUsuario == '2') {
+        const tipoUsuario = obtenerCookie('Id_tipo_usuario');
+        window.location.href = '../CU_03_PerfilGestionable/perfil.html';
+        return;
+    }
     // Configura el contenido inicial según el modo seleccionado
     handleCambioContenido();
     // Oculta el formulario de nueva empresa al iniciar
