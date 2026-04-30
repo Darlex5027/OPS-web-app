@@ -26,19 +26,13 @@ try {
         $consulta = $pdo->prepare("UPDATE Alumnos SET 
             Grupo = :grupo,
             No_Expediente = :no_expediente,
-            Area_o_Programa = :area_o_programa,
-            Observaciones = :observaciones,
-            Horario = :horario,
-            Organizacion = :organizacion
+            Horario = :horario
             WHERE Id_usuario = :id_usuario");
 
         $consulta->execute([
             ':grupo'           => $datos['grupo_alumno'],
             ':no_expediente'   => $datos['no_expediente_alumno'],
-            ':area_o_programa' => $datos['area_o_programa_alumno'],
-            ':observaciones'   => $datos['observaciones_alumno'],
             ':horario'         => $datos['horario_alumno'],
-            ':organizacion'    => $datos['organizacion_alumno'],
             ':id_usuario'      => $id_usuario
         ]);
     }

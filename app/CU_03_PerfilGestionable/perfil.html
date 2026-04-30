@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil gestionable</title>   
+    <title>Perfil gestionable</title>
     <link rel="stylesheet" href="../css/prueba.css">
 </head>
 
@@ -23,7 +23,7 @@
             <a href="../CU_08_Reporte_Alumnado/reporte_alumnos.html">
                 <button>Generar reporte de alumnos</button>
             </a>
-            <a href="reportes_estadisticos.html">
+            <a href="../CU_09_ReporteEstadistico/reporte_estadistico.html">
                 <button>Generar reportes estadisticos de alumnos</button>
             </a>
             <a href="digitalizar_evaluaciones.html">
@@ -51,7 +51,7 @@
         <div class="table">
             <form id="perfil_administrador">
                 <label for="nombre">Nombre</label>
-                <input type="text" id="nombre_administrador" name="nombre" placeholder="" disabled readonly >
+                <input type="text" id="nombre_administrador" name="nombre" placeholder="" disabled readonly>
                 <label for="nombre">Apellido Paterno</label>
                 <input type="text" id="apellido_paterno_administrador" name="nombre" placeholder="" disabled readonly>
                 <label for="nombre">Apellido Materno</label>
@@ -83,7 +83,47 @@
                 <label for="fecha_registro">Fecha de registro</label>
                 <input type="text" id="fecha_registro_alumno" name="fecha_registro" placeholder="" disabled readonly>
             </form>
-            <script src="mostrar_contenido.js"></script>
+            </form>
+            <form id="perfil_actividades">
+                <h2>Actividades de Servicio</h2>
+
+                <input type="hidden" id="id_alumno_servicio_actividad">
+                <input type="hidden" id="id_alumno_actividad">
+
+                <label>Servicio</label>
+                <input type="text" id="servicio_actividad" disabled readonly>
+
+                <label>Empresa</label>
+                <select id="id_empresa_actividad" disabled>
+                    <option value="">-- Selecciona una empresa --</option>
+                </select>
+
+                <label>Área</label>
+                <input type="text" id="area_actividad" disabled>
+
+                <label>Programa</label>
+                <input type="text" id="programa_actividad" disabled>
+
+                <label>Estado</label>
+                <select id="estado_actividad" disabled>
+                    <option value="">-- Selecciona un estado --</option>
+                </select>
+
+                <label>Periodo</label>
+                <select id="periodo_tipo_actividad" disabled>
+                    <option value="">-- Selecciona un periodo --</option>
+                </select>
+
+                <label>Año del periodo</label>
+                <input type="number" id="periodo_año_actividad" min="2000" max="2100" disabled>
+
+                <label>Fecha de inicio</label>
+                <input type="date" id="fecha_inicio_actividad" disabled>
+
+                <label>Fecha de fin</label>
+                <input type="date" id="fecha_fin_actividad" disabled>
+            </form>
+            <script src="mostrar_contenido.js" type="module"></script>
             <script src="../js/redireccion.js"></script>
         </div>
         <div class="form-actions">
@@ -93,4 +133,5 @@
         <div id="toast-mensaje" class="toast oculto"></div>
     </div>
 </body>
+
 </html>
