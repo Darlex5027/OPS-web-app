@@ -1,7 +1,7 @@
 import { lanzarToast } from '../js/lanzar_toast.js';
 
 
-function imprimirPDF(){
+window.imprimirPDF = function (){
 	const { jsPDF } = window.jspdf;
 	const doc = new jsPDF();
 	doc.autoTable({ html: '#tabla-resultados' });
