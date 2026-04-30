@@ -1,57 +1,96 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8"> <!-- Soporte para caracteres especiales como ñ y tildes -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adaptación a móviles -->
-        <title>Perfil gestionable</title>
-        <link rel="stylesheet" href="../css/prueba.css">
-    </head>
-    <body>
-        <div class="sidebar">
-            <div class="profile">
-                <img src="../Imagenes/prueba.png" alt="perfil">
-                <h3>Mtra. M. Guadalupe</h3>
-            </div>
-            <div class="menu">
-                <a href="foro_vacantes.html">
-                    <button>Publicar vacantes para servicio social</button>
-                </a>
-                <a href="admin_alumnos.html">
-                    <button>Administrar alumnos</button>
-                </a>
-                <a href="reportes_alumnos.html">
-                    <button>Generar reporte de alumnos</button>
-                </a>
-                <a href="reportes_estadisticos.html">
-                    <button>Generar reporte estadistico</button>
-                </a>
-                <a href="digitalizar_evaluacones.html">
-                    <button>Llenar formularios del prestador</button>
-                </a>
-                <a href="reportes_prestadores.html">
-                    <button>Generar reporte del prestador</button>
-                </a>
-                <a href="admin_encuentas.html">
-                    <button>Editar formularios</button>
-                </a>
-                <a href="Mensajes.html">
-                    <button>Mensajes</button>
-                </a>
-                <a href="perfil.html">
-                    <button>perfil</button>
-                </a>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil gestionable</title>   
+    <link rel="stylesheet" href="../css/prueba.css">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="profile">
+            <img src="../Imagenes/prueba.png" alt="perfil">
+        </div>
+        <div class="menu">
+            <a href="../CU_06_PublicarVacantes/admin_vacantes.html">
+                <button>Publicar Vacantes</button>
+            </a>
+            <a href="../CU_07_AdministrarAlumnos/admin_alumnos.html">
+                <button>Administrar alumnos</button>
+            </a>
+            <a href="../CU_08_Reporte_Alumnado/reporte_alumnos.html">
+                <button>Generar reporte de alumnos</button>
+            </a>
+            <a href="reportes_estadisticos.html">
+                <button>Generar reportes estadisticos de alumnos</button>
+            </a>
+            <a href="digitalizar_evaluaciones.html">
+                <button>Llenar formularios del prestador</button>
+            </a>
+            <a href="reportes_prestadores.html">
+                <button>Generar reportes estadisticos del prestador</button>
+            </a>
+            <a href="admin_encuentas.html">
+                <button>Editar formularios</button>
+            </a>
+            <a href="../CU_03_PerfilGestionable/perfil.html">
+                <button>Perfil</button>
+            </a>
+        </div>
+    </div>
+    <div class="main">
+        <div class="header">
+            <div></div>
+            <h1>Perfil</h1>
+            <div class="header-logo-right">
+                <img src="../Imagenes/Logo.png" alt="Logo OPS">
             </div>
         </div>
-        <div class="main">
-            <div class="header">
-            <div></div><h1>Perfil</h1>
-                <div class="header-logo-right">
-                    <img src="../Imagenes/Logo.png" alt="Logo OPS">
-                </div>
-            </div>
-            <div class="table">
-               
-            </div>
+        <div class="table">
+            <form id="perfil_administrador">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre_administrador" name="nombre" placeholder="" disabled readonly >
+                <label for="nombre">Apellido Paterno</label>
+                <input type="text" id="apellido_paterno_administrador" name="nombre" placeholder="" disabled readonly>
+                <label for="nombre">Apellido Materno</label>
+                <input type="text" id="apellido_materno_administrador" name="nombre" placeholder="" disabled readonly>
+                <label for="no_empleado">Carrera.Nombre</label>
+                <input type="text" id="id_carrera_administrador" name="nombre_carrera" placeholder="" disabled readonly>
+                <label for="telefono">Teléfono</label>
+                <input type="text" id="telefono_administrador" name="telefono" placeholder="" disabled>
+                <label for="correo">Correo</label>
+                <input type="email" id="correo_administrador" name="correo" placeholder="" disabled>
+                <label for="carrera">Fecha de Registro</label>
+                <input type="text" id="fecha_registro_administrador" name="carrera" placeholder="" disabled readonly>
+            </form>
+            <form id="perfil_alumno">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre_alumno" name="nombre" placeholder="" disabled readonly>
+                <label for="apellido_p">Apellido Paterno</label>
+                <input type="text" id="apellido_paterno_alumno" name="nombre" placeholder="" disabled readonly>
+                <label for="apellido_m">Apellido Materno</label>
+                <input type="text" id="apellido_materno_alumno" name="nombre" placeholder="" disabled readonly>
+                <label for="carrera_nomnre">Carrera</label>
+                <input type="text" id="id_carrera_alumno" name="nombre_carrera" placeholder="" disabled readonly>
+                <label for="gru">Grupo</label>
+                <input type="int" id="grupo_alumno" name="grupo" placeholder="" disabled>
+                <label for="no_expediente">No.expediente</label>
+                <input type="int" id="no_expediente_alumno" name="expediente" placeholder="" disabled readonly>
+                <label for="horario">Horario</label>
+                <input type="text" id="horario_alumno" name="horario" placeholder="" disabled>
+                <label for="fecha_registro">Fecha de registro</label>
+                <input type="text" id="fecha_registro_alumno" name="fecha_registro" placeholder="" disabled readonly>
+            </form>
+            <script src="mostrar_contenido.js"></script>
+            <script src="../js/redireccion.js"></script>
         </div>
-    </body>
+        <div class="form-actions">
+            <button type="button" class="btn editar">Editar</button>
+            <button type="button" class="btn guardar">Guardar</button>
+        </div>
+        <div id="toast-mensaje" class="toast oculto"></div>
+    </div>
+</body>
 </html>

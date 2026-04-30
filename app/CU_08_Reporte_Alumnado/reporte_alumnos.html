@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Reporte Alumnos</title>
+		<link rel="stylesheet" href="../css/prueba.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+		<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+	</head>
+	<body class="pagina-alumnos">
+		<div class="sidebar">
+			<div class="profile">
+				<img src="../Imagenes/prueba.png" alt="perfil">
+				<h3>Mtra. M. Guadalupe</h3>
+			</div>
+			<div class="menu">
+				<a href="../CU_06_PublicarVacantes/admin_vacantes.html">
+					<button>Publicar vacantes</button>
+				</a>
+				<a href="../CU_07_AdministrarAlumnos/admin_alumnos.html">
+					<button>Administrar alumnos</button>
+				</a>
+				<a href="../CU_08_Reporte_Alumnado/reporte_alumnos.html">
+					<button>Generar reporte de alumnos</button>
+				</a>
+				<a href="reportes_estadisticos.html">
+					<button>Generar reporte estadistico</button>
+				</a>
+				<a href="digitalizar_evaluacones.html">
+					<button>Llenar formularios del prestador</button>
+				</a>
+				<a href="reportes_prestadores.html">
+					<button>Generar reporte del prestador</button>
+				</a>
+				<a href="admin_encuentas.html">
+					<button>Editar formularios</button>
+				</a>    
+				<a href="../CU_03_PerfilGestionable/perfil.html">
+					<button>perfil</button>
+				</a>
+			</div>
+		</div>
+		<div class="main">
+			<div class="header">
+				<div></div><h1>Reporte Alumnos</h1>
+				<div class="header-logo-right">
+					<img src="../Imagenes/Logo.png" alt="Logo OPS">
+				</div>
+			</div>
+			<div class="opciones">
+				<h3>Actividades</h3>
+				<select id="actividad">
+					<option value ="TODOS">--Todas--</option>
+				</select>
+
+				<h3>Actividades</h3>
+				<select id="estado">
+					<option value ="TODOS">--Todas--</option>
+				</select>
+				<div class="buttons-group">
+					<button onClick="cargar_tabla()" id="btnGenerarTabla">Generar Tabla</button>
+					<button onClick="exportarExcel()" id="btnGenerarExcel" style="visibility: hidden">Generar Excel</button>
+					<button onClick="imprimirPDF()" id="btnGenerarPDF" style="visibility: hidden">Generar PDF</button>
+				</div>	
+			</div>
+			<div class="table">
+				<table id="tabla-resultados">
+					<tr id="Titulos">
+					</tr>
+					<tbody id="Tabla">
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div id="toast-mensaje" class="toast oculto"></div>
+		<script type="module" src="reporte_alumnos.js"></script>
+	</body>
+</html>

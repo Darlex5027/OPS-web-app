@@ -1,27 +1,44 @@
+<!--
+Daniela Hernandez Hernandez
+Fecha de creacion: 8 de abril del 2026
+El archivo HTML de “Administrar alumnos” funciona como la interfaz principal del sistema.
+Aquí es donde el usuario (por ejemplo, una administradora o maestra) puede ver la información 
+de los alumnos. Contiene la estructura visual, como el menú lateral, el encabezado y la tabla 
+donde se mostrarán los datos. Además, incluye los archivos de JavaScript que se encargan de la 
+lógica del sistema y un contenedor para mostrar notificaciones tipo toast. En pocas palabras, 
+este archivo representa la parte visual con la que interactúa el usuario.
+-->
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8"> <!-- Soporte para caracteres especiales como ñ y tildes -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adaptación a móviles -->
+    <!-- Título que aparece en la pestaña del navegador -->
     <title>Administrar alumnos</title>
+    <!-- Enlace al archivo CSS para estilos -->
     <link rel="stylesheet" href="../css/prueba.css">
 </head>
 
 <body>
+    <!-- Barra lateral (menú de navegación) -->
     <div class="sidebar">
+        <!-- Sección del perfil del usuario -->
         <div class="profile">
             <img src="../Imagenes/prueba.png" alt="perfil">
             <h3>Mtra. M. Guadalupe</h3>
         </div>
+        <!-- Menú de opciones -->
         <div class="menu">
-            <a href="foro_vacantes.html">
-                <button>Publicar vacantes para servicio social</button>
+            <!-- Cada opción es un enlace con un botón -->
+            <a href="../CU_06_PublicarVacantes/admin_vacantes.html">
+                <button>Publicar vacantes</button>
             </a>
-            <a href="admin_alumnos.html">
+            <a href="../CU_07_AdministrarAlumnos/admin_alumnos.html">
                 <button>Administrar alumnos</button>
             </a>
-            <a href="reportes_alumnos.html">
+            <a href="../CU_08_Reporte_Alumnado/reporte_alumnos.html">
                 <button>Generar reporte de alumnos</button>
             </a>
             <a href="reportes_estadisticos.html">
@@ -36,24 +53,49 @@
             <a href="admin_encuentas.html">
                 <button>Editar formularios</button>
             </a>
-            <a href="Mensajes.html">
-                <button>Mensajes</button>
-            </a>
-            <a href="perfil.html">
+            <a href="../CU_03_PerfilGestionable/perfil.html">
                 <button>perfil</button>
             </a>
         </div>
     </div>
+    <!-- Contenido principal de la página -->
     <div class="main">
+        <!-- Encabezado superior -->
         <div class="header">
-            <div></div>
-            <h1>Perfil</h1>
+            <div></div><!-- Espacio vacío (puede ser para alineación) -->
+            <!-- Título de la sección -->
+            <h1>Administrar Alumnos</h1>
+            <!-- Logo en la parte derecha -->
             <div class="header-logo-right">
                 <img src="../Imagenes/Logo.png" alt="Logo OPS">
             </div>
         </div>
-        <div class="table">
+        <!-- Contenedor de la tabla -->
+         <div id="div-coordinadores" class="table">
+             <h2>Coordinadores pendientes</h2>
+            <!-- Tabla para mostrar docentes -->
             <table border="1">
+                <!-- Encabezados de la tabla -->
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Matricula</th>
+                        <th>Carrera</th>
+                        <th>Fecha de registro</th>
+                        <th>Telefono</th>
+                        <th>Correo</th>
+                        <th>Accion</th>
+                    </tr>
+                </thead>
+                <!-- Cuerpo de la tabla (se llena dinámicamente con JavaScript) -->
+                <tbody id="tabla-coordinadores"></tbody>
+            </table>
+        </div>
+        <div id="div-alumnos" class="table">
+            <h2>Alumnos pendientes</h2>
+            <!-- Tabla para mostrar alumnos -->
+            <table border="1">
+                <!-- Encabezados de la tabla -->
                 <thead>
                     <tr>
                         <th>Nombre</th>
@@ -64,12 +106,20 @@
                         <th>Accion</th>
                     </tr>
                 </thead>
-                <tbody id="tabla"></tbody>
+                <!-- Cuerpo de la tabla (se llena dinámicamente con JavaScript) -->
+                <tbody id="tabla-alumnos"></tbody>
             </table>
         </div>
     </div>
+    <!-- Scripts que manejan la lógica de la página -->
+    <script src="../js/redireccion.js"></script>
+     <!-- Script para aceptar alumnos -->
     <script type="module" src="aceptar_alumnos.js"></script>
+    <!-- Script para rechazar alumnos -->
+    <script type="module" src="rechazar_alumnos.js"></script>
+    <!-- Script para obtener y mostrar alumnos -->
     <script type="module" src="obtener_alumnos.js"></script>
+    <!-- Contenedor para mostrar mensajes tipo "toast" (notificaciones emergentes) -->
     <div id="toast-mensaje" class="toast oculto"></div>
 </body>
 

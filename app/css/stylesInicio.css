@@ -1,67 +1,141 @@
-        :root {
-            --guinda-institucional: #982b2b;
-            --gris-fondo: #e0e0e0;
-            --blanco: #ffffff;
-            --texto-labels: #333;
-        }
+/* ===================================================== */
+/* ===== VARIABLES ===== */
+/* ===================================================== */
+:root {
+    --guinda: #982b2b;
+    --guinda-hover: #7d1f1f;
+    --gris-fondo: #eef1f5;
+    --blanco: #ffffff;
+    --texto: #333;
+    --borde: #ccc;
+    --error: #dc3545;
+}
 
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: var(--gris-fondo);
-            margin: 0;
-            padding: 0;
-        }
+/* ===================================================== */
+/* ===== RESET ===== */
+/* ===================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        /* --- BARRA SUPERIOR (HEADER) --- */
-        .header {
-            background-color: var(--guinda-institucional);
-            height: 140px; /* Aumentado un poco para dar aire al texto escalonado */
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
-            color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
+/* ===================================================== */
+/* ===== BODY ===== */
+/* ===================================================== */
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #e0e0e0, #f5f6fa);
+}
 
-        .header-logo-left img {
-            height: 130px; 
-            filter: drop-shadow(0 0 2px rgb(199, 196, 1));
-        }
+/* ===================================================== */
+/* ===== HEADER (NO SE MODIFICA) ===== */
+/* ===================================================== */
+.header {
+    background-color: var(--guinda);
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+}
 
-        /* --- ESTILO ESPECÍFICO PARA EL TEXTO OPS --- */
-        .header-text {
-            flex-grow: 10;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding-left: 300px;
-            /* Usamos Serif para igualar la imagen */
-            font-family: 'Times New Roman', Times, serif; 
-        }
+.header-logo-left img {
+    height: 130px;
+}
 
-        .header-text h1 {
-            margin: 0;
-            font-size: 15px;
-            font-weight: normal;
-            line-height: 0.85;
-            letter-spacing: 2px;
-        }
+.header-logo-right img {
+    height: 90px;
+}
 
-        /* Las iniciales O, P, S */
-        .header-text h1 span {
-            font-size: 45px; /* Tamaño mucho mayor para las siglas */
-            font-weight: normal;
-            display: inline-block;
-            vertical-align: middle;
-            line-height: 1;
-        }
+.header-text {
+    flex-grow: 1;
+    padding-left: 200px;
+    font-family: 'Times New Roman', serif;
+}
 
-        /* Efecto de escalón (Indentación progresiva) */
-        .linea-1 { margin-left: 0px; }
-        .linea-2 { margin-left: 50px; }
-        .linea-3 { margin-left: 100px; }
+.header-text h1 {
+    font-size: 15px;
+    line-height: 1;
+    letter-spacing: 2px;
+}
 
-        .header-logo-right img {
-            height: 90px;
-        }
+.header-text h1 span {
+    font-size: 40px;
+}
+
+.linea-2 { margin-left: 40px; }
+.linea-3 { margin-left: 80px; }
+
+/* ===================================================== */
+/* ===== MAIN ===== */
+/* ===================================================== */
+main {
+    width: 95%;
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 30px;
+    background: var(--blanco);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+
+/* ===================================================== */
+/* ===== FORMULARIOS ===== */
+/* ===================================================== */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--texto);
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--borde);
+    background: #fafafa;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--guinda);
+    background: #fff;
+    box-shadow: 0 0 6px rgba(152,43,43,0.3);
+}
+
+/* ===================================================== */
+/* ===== BOTONES ===== */
+/* ===================================================== */
+button {
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--guinda), #b23a3a);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+/* ===================================================== */
+/* ===== TITULO LOGIN CENTRADO ===== */
+/* ===================================================== */
+#formLogin h2,
+main h2 {
+    text-align: center;
+}
