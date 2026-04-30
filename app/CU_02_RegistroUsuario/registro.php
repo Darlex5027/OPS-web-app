@@ -7,7 +7,6 @@
 require_once("../php/db.php");
 header("Content-Type: application/json");
 
-// Obtener datos del cuerpo de la petición
 $data = json_decode(file_get_contents("php://input"), true);
 
 if (!$data) {
@@ -20,7 +19,6 @@ try {
         $pdo = new PDO($dsn, $user, $pass, $options);
     }
 
-    // 1. Verificar si la matrícula ya existe ANTES de iniciar la transacción
     $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM Usuarios WHERE Matricula = ?");
     $stmtCheck->execute([$data['matricula']]);
     if ($stmtCheck->fetchColumn() > 0) {
@@ -30,7 +28,7 @@ try {
 
     $pdo->beginTransaction();
 
-    // 2. CREAR EL USUARIO
+    // 1. CREAR EL USUARIO
     $id_tipo = ($data['tipo_usuario'] === 'alumno') ? 1 : 3;
     $pass_hash = password_hash($data['password'], PASSWORD_BCRYPT);
 
@@ -38,21 +36,15 @@ try {
         INSERT INTO Usuarios (Matricula, Contrasena, Id_tipo_usuario, Activo, Fecha_registro)
         VALUES (?, ?, ?, 0, NOW())
     ");
-
-    $stmtUser->execute([
-        $data['matricula'],
-        $pass_hash,
-        $id_tipo
-    ]);
-
+    $stmtUser->execute([$data['matricula'], $pass_hash, $id_tipo]);
     $id_usuario_nuevo = $pdo->lastInsertId();
 
-    // 3. REGISTRAR DATOS ESPECÍFICOS
+    // 2. REGISTRAR DATOS ESPECÍFICOS
     if ($data['tipo_usuario'] === 'alumno') {
-        // NOTA: He añadido No_Expediente como NULL o valor temporal porque es UNIQUE en tu SQL
+        // CORRECCIÓN: Eliminamos Id_actividad/Id_servicio de aquí porque no existen en la tabla Alumnos
         $stmtAlumno = $pdo->prepare("
-        INSERT INTO Alumnos (Id_usuario, Nombre, Apellido_P, Apellido_M, Id_carrera, Id_actividad, Grupo, Horario, Organizacion, No_Expediente, Activo)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+        INSERT INTO Alumnos (Id_usuario, Nombre, Apellido_P, Apellido_M, Id_carrera, Grupo, Horario, Organizacion, No_Expediente, Activo)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
         ");
 
         $stmtAlumno->execute([
@@ -61,15 +53,15 @@ try {
             $data['apellido_p'],
             $data['apellido_m'],
             $data['id_carrera'],
-            $data['actividad'],
             $data['grupo'],
             $data['horario'],
             $data['organizacion'],
-            $data['matricula'],
+            $data['matricula'], // Usamos matrícula como No_Expediente
         ]);
 
         $id_alumno = $pdo->lastInsertId();
 
+        // 3. VINCULAR CON LA ACTIVIDAD (Aquí es donde realmente se guarda el Id_servicio)
         $stmtActividadAlumno = $pdo->prepare("
         INSERT INTO Actividades_Alumnos
         (Id_alumno, Id_servicio, Id_empresa, Estado, periodo_tipo, periodo_año, Fecha_registro)
@@ -78,7 +70,7 @@ try {
 
         $stmtActividadAlumno->execute([
             $id_alumno,
-            $data['actividad'],
+            $data['actividad'], // Id_servicio que viene del select
             $data['organizacion'] ?: null,
             'primavera',
             date('Y')
@@ -90,15 +82,9 @@ try {
             INSERT INTO Administradores (Id_usuario, Nombre, Apellido_P, Apellido_M, Id_carrera, Telefono, Correo, Activo)
             VALUES (?, ?, ?, ?, ?, ?, ?, 1)
         ");
-
         $stmtAdmin->execute([
-            $id_usuario_nuevo,
-            $data['nombre'],
-            $data['apellido_p'],
-            $data['apellido_m'],
-            $data['id_carrera'],
-            $data['telefono'],
-            $data['correo']
+            $id_usuario_nuevo, $data['nombre'], $data['apellido_p'], $data['apellido_m'],
+            $data['id_carrera'], $data['telefono'], $data['correo']
         ]);
     }
 
@@ -106,16 +92,6 @@ try {
     echo json_encode(["success" => true]);
 
 } catch (Exception $e) {
-    if ($pdo->inTransaction()) {
-        $pdo->rollBack();
-    }
-
-    // Si el error es de duplicidad pero pasó el primer filtro, es por otro campo UNIQUE (como Correo o No_Expediente)
-    if ($e->getCode() == 23000) {
-        $error = "Error: El correo o número de expediente ya está en uso.";
-    } else {
-        $error = "Error en el servidor: " . $e->getMessage();
-    }
-
-    echo json_encode(["success" => false, "error" => $error]);
+    if ($pdo->inTransaction()) { $pdo->rollBack(); }
+    echo json_encode(["success" => false, "error" => "Error en el servidor: " . $e->getMessage()]);
 }
