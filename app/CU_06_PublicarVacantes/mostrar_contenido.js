@@ -9,8 +9,10 @@
  */
 import { lanzarToast } from '../js/lanzar_toast.js';
 import { obtenerCookie } from '../js/cookie.js';
+import { renderMenu } from '../js/menu.js';
 // ================= INICIALIZACIÓN =================
 document.addEventListener('DOMContentLoaded', function () {
+    renderMenu();
     const tipoUsuario = obtenerCookie('Id_tipo_usuario');
     if (tipoUsuario == '2') {
         const tipoUsuario = obtenerCookie('Id_tipo_usuario');
