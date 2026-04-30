@@ -17,6 +17,7 @@ import { aceptarCoordinador } from './aceptar_alumnos.js';
 import { obtenerCookie } from '../js/cookie.js';
 import { lanzarToast } from '../js/lanzar_toast.js';
 
+import { renderMenu } from '../js/menu.js';
 //window lo convierte en objeto global
 window.aceptarCoordinador = aceptarCoordinador;
 window.rechazarCoordinador = rechazarCoordinador;
@@ -26,6 +27,7 @@ window.obtenerCookie = obtenerCookie;
 
 // Espera a que el DOM (HTML) esté completamente cargado
 document.addEventListener("DOMContentLoaded", function () {
+    renderMenu();
     // Llama a la función para cargar los alumnos al iniciar la página
     //cargarAlumnos();
     if (obtenerCookie('Id_tipo_usuario') == "1") {
