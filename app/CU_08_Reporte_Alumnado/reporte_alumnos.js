@@ -1,7 +1,3 @@
-
-import {dirigirPerfil} from '../manejo_perfil.js';
-
-window.dirigirPerfil=dirigirPerfil;
 window.cargar_tabla=cargar_tabla;
 window.exportarExcel=exportarExcel;
 window.imprimirPDF=imprimirPDF;
