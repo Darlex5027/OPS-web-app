@@ -55,10 +55,11 @@
 			<select id="slctPeriodoAño">
 				<option value = "NINGUNO">-- Seleccionar una año--</option>
 			</select>
-			<button onClick="cargar_datos()">Generar Reporte</button>
-			<button onClick="exportarExcel()" id="btnGenerarExcel" style="visibility: hidden">Generar Excel</button>
-			<button onClick="imprimirPDF()" id="btnGenerarPDF" style="visibility: hidden">Generar PDF</button>
-
+			<div class="buttons-group">
+				<button onClick="cargar_datos()">Generar Reporte</button>
+				<button onClick="exportarExcel()" id="btnGenerarExcel" style="visibility: hidden">Generar Excel</button>
+				<button onClick="imprimirPDF()" id="btnGenerarPDF" style="visibility: hidden">Generar PDF</button>
+			</div>
 			<div class="table">
 				<table id="tabla-resultados">
 					<tr id="Titulos">
