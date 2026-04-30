@@ -76,7 +76,7 @@ formLogin.addEventListener("submit", async function (e) {
             document.cookie = `perfil=${encodeURIComponent(JSON.stringify(usuario))}; max-age=${TIEMPO_SESION}; path=/`;
             // 1 = Administrador, 2 = Alumno
             if (usuario.Id_tipo_usuario == 1) {
-                window.location.href = "../CU_03_PerfilGestionable/perfil_administrador.html";
+                window.location.href = "../CU_03_PerfilGestionable/perfil_alumno.html";
             } else if (usuario.Id_tipo_usuario == 2) {
                 window.location.href = "../CU_03_PerfilGestionable/perfil_alumno.html";
             } else {
