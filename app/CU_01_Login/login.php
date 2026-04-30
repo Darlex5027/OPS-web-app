@@ -160,12 +160,12 @@ $carrera = null;
 
 if ($datos_usuario['Id_tipo_usuario'] == 2) {
     $stmt = $pdo->prepare("
-        SELECT Id_carrera
-        FROM Alumnos
-        WHERE Id_usuario = ?
-    ");
-    $stmt->execute([$datos_usuario['Id_usuario']]);
-    $carrera = $stmt->fetchColumn();
+        SELECT Id_carrera FROM Alumnos WHERE Id_usuario = ?
+        UNION
+        SELECT Id_carrera FROM Administradores WHERE Id_usuario = ?
+");
+    $stmt->execute([$datos_usuario['Id_usuario'], $datos_usuario['Id_usuario']]);
+    $datos_usuario['Id_carrera'] = $stmt->fetchColumn() ?: null;
 }
 
 if ($datos_usuario['Id_tipo_usuario'] == 1) {
