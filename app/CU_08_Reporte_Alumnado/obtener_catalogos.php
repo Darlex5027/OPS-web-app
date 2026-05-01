@@ -1,4 +1,22 @@
 <?php
+/*
+  Archivo     : obtener_catalogos.php
+  Módulo      : CU_08_Reporte_Alumnado
+  Autor       : Alejandro Resendiz Reyes
+  Fecha       : 15/03/2026		
+  Descripción : Este archivo se encarga de 
+  				obtener los catálogos necesarios 
+				para el reporte de alumnado, 
+				específicamente los servicios 
+				disponibles y los estados de 
+				los alumnos. Se conecta a la 
+				base de datos, ejecuta las consultas
+				necesarias y devuelve los resultados
+				en formato JSON para ser utilizados
+				en el frontend del módulo.
+
+*/
+
 require_once '../php/db.php';
 
 try{

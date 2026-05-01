@@ -1,3 +1,16 @@
+<!--
+
+  Archivo     : reporte_alumnos.html
+  Módulo      : CU_08_Reporte_Alumnado
+  Autor       : Alejandro Resendiz Reyes
+  Fecha       : 15/03/2026		
+  Descripción : Interfaz para generar reportes de alumnos inscritos en actividades, 
+  				con opciones de filtrado por actividad y estado, 
+				y exportación a Excel y PDF.
+
+
+-->
+
 <!DOCTYPE html>
 <html lang="es">
 	<head>
@@ -35,7 +48,7 @@
 					<option value ="TODOS">--Todas--</option>
 				</select>
 				<div class="buttons-group">
-					<button onClick="cargar_tabla()" id="btnGenerarTabla">Generar Tabla</button>
+					<button onClick="renderTablaReporte()" id="btnGenerarTabla">Generar Tabla</button>
 					<button onClick="exportarExcel()" id="btnGenerarExcel" style="visibility: hidden">Generar Excel</button>
 					<button onClick="imprimirPDF()" id="btnGenerarPDF" style="visibility: hidden">Generar PDF</button>
 				</div>	
