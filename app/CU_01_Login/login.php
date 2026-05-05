@@ -2,7 +2,7 @@
 /**
  * Archivo      : login.php
  * Módulo       : CU_01_Login
- * Autor        : Francisco Angel Membrilla Alarcon
+ * Autor        : Francisco Angel Membrila Alarcon
  * Fecha        : 21/04/2026
  * Descripción  : Endpoint que procesa el inicio de sesión. Valida credenciales
  * contra la base de datos MariaDB, gestiona el bloqueo de 
@@ -160,12 +160,12 @@ $carrera = null;
 
 if ($datos_usuario['Id_tipo_usuario'] == 2) {
     $stmt = $pdo->prepare("
-        SELECT Id_carrera
-        FROM Alumnos
-        WHERE Id_usuario = ?
-    ");
-    $stmt->execute([$datos_usuario['Id_usuario']]);
-    $carrera = $stmt->fetchColumn();
+        SELECT Id_carrera FROM Alumnos WHERE Id_usuario = ?
+        UNION
+        SELECT Id_carrera FROM Administradores WHERE Id_usuario = ?
+");
+    $stmt->execute([$datos_usuario['Id_usuario'], $datos_usuario['Id_usuario']]);
+    $datos_usuario['Id_carrera'] = $stmt->fetchColumn() ?: null;
 }
 
 if ($datos_usuario['Id_tipo_usuario'] == 1) {
