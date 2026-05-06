@@ -71,6 +71,10 @@ function rechazarCoordinador(matricula) {
                 })
                 // Procesa la respuesta recibida
                 .then(function (datos) {
+                    if (datos.error) {
+                        lanzarToast(datos.error, "error");
+                        return
+                    }
                     // Si la operación fue exitosa
                     if (datos.success) {
                         // Muestra un mensaje tipo "toast" indicando rechazo

@@ -23,7 +23,7 @@ window.aceptarCoordinador = aceptarCoordinador;
 window.rechazarCoordinador = rechazarCoordinador;
 window.aceptarAlumno = aceptarAlumno;
 window.rechazarAlumno = rechazarAlumno;
-window.obtenerCookie = obtenerCookie;
+//------------------window.obtenerCookie = obtenerCookie;
 
 // Espera a que el DOM (HTML) esté completamente cargado
 document.addEventListener("DOMContentLoaded", function () {

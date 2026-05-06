@@ -17,7 +17,7 @@ export { aceptarCoordinador };
 // Función para aceptar a un alumno, recibe la matrícula como parámetro
 function aceptarAlumno(matricula) {
     renderModalExpediente(
-        'Añadir No. de expediente', matricula, function (expediente) {
+        `Añadir No. de expediente al alumno con matrícula ${matricula}?`, function (expediente) {
             fetch("cargar_expediente.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -102,7 +102,7 @@ function aceptarCoordinador(matricula) {
         })
 }
 
-function renderModalExpediente(mensaje, matricula, onConfirmar) {
+function renderModalExpediente(mensaje, onConfirmar) {
     const elModalPrevio = document.getElementById('modal-confirmacion');
     if (elModalPrevio) elModalPrevio.remove();
 
