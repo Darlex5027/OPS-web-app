@@ -9,38 +9,26 @@
 </head>
 
 <body>
+
     <div class="sidebar">
         <div class="profile">
-            <img src="../Imagenes/prueba.png" alt="perfil">
+            <img id="foto_perfil" src="../Imagenes/prueba.png" alt="perfil">
         </div>
+
         <div class="menu">
-            <a href="../CU_06_PublicarVacantes/admin_vacantes.html">
-                <button>Publicar Vacantes</button>
-            </a>
-            <a href="../CU_07_AdministrarAlumnos/admin_alumnos.html">
-                <button>Administrar alumnos</button>
-            </a>
-            <a href="../CU_08_Reporte_Alumnado/reporte_alumnos.html">
-                <button>Generar reporte de alumnos</button>
-            </a>
-            <a href="../CU_09_ReporteEstadistico/reporte_estadistico.html">
-                <button>Generar reportes estadisticos de alumnos</button>
-            </a>
-            <a href="digitalizar_evaluaciones.html">
-                <button>Llenar formularios del prestador</button>
-            </a>
-            <a href="reportes_prestadores.html">
-                <button>Generar reportes estadisticos del prestador</button>
-            </a>
-            <a href="admin_encuentas.html">
-                <button>Editar formularios</button>
-            </a>
-            <a href="../CU_03_PerfilGestionable/perfil.html">
-                <button>Perfil</button>
-            </a>
+            <a href="../CU_06_PublicarVacantes/admin_vacantes.html"><button>Publicar Vacantes</button></a>
+            <a href="../CU_07_AdministrarAlumnos/admin_alumnos.html"><button>Administrar alumnos</button></a>
+            <a href="../CU_08_Reporte_Alumnado/reporte_alumnos.html"><button>Generar reporte</button></a>
+            <a href="#"><button>Reportes</button></a>
+            <a href="#"><button>Formularios</button></a>
+            <a href="#"><button>Prestador</button></a>
+            <a href="#"><button>Editar formularios</button></a>
+            <a href="../CU_03_PerfilGestionable/perfil.html"><button>Perfil</button></a>
         </div>
     </div>
+
     <div class="main">
+
         <div class="header">
             <div></div>
             <h1>Perfil</h1>
@@ -48,90 +36,148 @@
                 <img src="../Imagenes/Logo.png" alt="Logo OPS">
             </div>
         </div>
+
         <div class="table">
+
+            <!-- ================= ADMIN ================= -->
             <form id="perfil_administrador">
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre_administrador" name="nombre" placeholder="" disabled readonly>
-                <label for="nombre">Apellido Paterno</label>
-                <input type="text" id="apellido_paterno_administrador" name="nombre" placeholder="" disabled readonly>
-                <label for="nombre">Apellido Materno</label>
-                <input type="text" id="apellido_materno_administrador" name="nombre" placeholder="" disabled readonly>
-                <label for="no_empleado">Carrera.Nombre</label>
-                <input type="text" id="id_carrera_administrador" name="nombre_carrera" placeholder="" disabled readonly>
-                <label for="telefono">Teléfono</label>
-                <input type="text" id="telefono_administrador" name="telefono" placeholder="" disabled>
-                <label for="correo">Correo</label>
-                <input type="email" id="correo_administrador" name="correo" placeholder="" disabled>
-                <label for="carrera">Fecha de Registro</label>
-                <input type="text" id="fecha_registro_administrador" name="carrera" placeholder="" disabled readonly>
+
+                <label>Nombre</label>
+                <input type="text" id="nombre_administrador" disabled readonly>
+
+                <label>Apellido Paterno</label>
+                <input type="text" id="apellido_paterno_administrador" disabled readonly>
+
+                <label>Apellido Materno</label>
+                <input type="text" id="apellido_materno_administrador" disabled readonly>
+
+                <label>Carrera</label>
+                <input type="text" id="id_carrera_administrador" disabled readonly>
+
+                <label>Teléfono</label>
+                <input type="text" id="telefono_administrador" disabled>
+
+                <label>Correo</label>
+                <input type="email" id="correo_administrador" disabled>
+
+                <label>Fecha Registro</label>
+                <input type="date" id="fecha_registro_administrador" disabled readonly>
+
             </form>
-            <form id="perfil_alumno">
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre_alumno" name="nombre" placeholder="" disabled readonly>
-                <label for="apellido_p">Apellido Paterno</label>
-                <input type="text" id="apellido_paterno_alumno" name="nombre" placeholder="" disabled readonly>
-                <label for="apellido_m">Apellido Materno</label>
-                <input type="text" id="apellido_materno_alumno" name="nombre" placeholder="" disabled readonly>
-                <label for="carrera_nomnre">Carrera</label>
-                <input type="text" id="id_carrera_alumno" name="nombre_carrera" placeholder="" disabled readonly>
-                <label for="gru">Grupo</label>
-                <input type="int" id="grupo_alumno" name="grupo" placeholder="" disabled>
-                <label for="no_expediente">No.expediente</label>
-                <input type="int" id="no_expediente_alumno" name="expediente" placeholder="" disabled readonly>
-                <label for="horario">Horario</label>
-                <input type="text" id="horario_alumno" name="horario" placeholder="" disabled>
-                <label for="fecha_registro">Fecha de registro</label>
-                <input type="text" id="fecha_registro_alumno" name="fecha_registro" placeholder="" disabled readonly>
-            </form>
-            </form>
-            <form id="perfil_actividades">
-                <h2>Actividades de Servicio</h2>
 
-                <input type="hidden" id="id_alumno_servicio_actividad">
-                <input type="hidden" id="id_alumno_actividad">
+            <!-- ================= ALUMNO ================= -->
+            <div class="contenedor-alumno">
 
-                <label>Servicio</label>
-                <input type="text" id="servicio_actividad" disabled readonly>
+                <!-- PERFIL -->
+                <form id="perfil_alumno">
+                    <h3>Perfil Alumno</h3>
 
-                <label>Empresa</label>
-                <select id="id_empresa_actividad" disabled>
-                    <option value="">-- Selecciona una empresa --</option>
-                </select>
+                    <label>Nombre</label>
+                    <input type="text" id="nombre_alumno" disabled readonly>
 
-                <label>Área</label>
-                <input type="text" id="area_actividad" disabled>
+                    <label>Apellido Paterno</label>
+                    <input type="text" id="apellido_paterno_alumno" disabled readonly>
 
-                <label>Programa</label>
-                <input type="text" id="programa_actividad" disabled>
+                    <label>Apellido Materno</label>
+                    <input type="text" id="apellido_materno_alumno" disabled readonly>
 
-                <label>Estado</label>
-                <select id="estado_actividad" disabled>
-                    <option value="">-- Selecciona un estado --</option>
-                </select>
+                    <label>Carrera</label>
+                    <input type="text" id="id_carrera_alumno" disabled readonly>
 
-                <label>Periodo</label>
-                <select id="periodo_tipo_actividad" disabled>
-                    <option value="">-- Selecciona un periodo --</option>
-                </select>
+                    <label>Grupo</label>
+                    <input type="text" id="grupo_alumno" disabled>
 
-                <label>Año del periodo</label>
-                <input type="number" id="periodo_año_actividad" min="2000" max="2100" disabled>
+                    <label>No. Expediente</label>
+                    <input type="text" id="no_expediente_alumno" disabled readonly>
 
-                <label>Fecha de inicio</label>
-                <input type="date" id="fecha_inicio_actividad" disabled>
+                    <label>Horario</label>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="time" id="horario_entrada" disabled>
+                        <span>-</span>
+                        <input type="time" id="horario_salida" disabled>
+                    </div>
 
-                <label>Fecha de fin</label>
-                <input type="date" id="fecha_fin_actividad" disabled>
-            </form>
-            <script src="mostrar_contenido.js" type="module"></script>
-            <script src="../js/redireccion.js"></script>
+                    <label>Fecha Registro</label>
+                    <input type="date" id="fecha_registro_alumno" disabled readonly>
+                </form>
+
+                <!-- ACTIVIDADES -->
+                <form id="actividades_alumnos">
+                    <h3>Actividades</h3>
+
+                    <label>Servicio Alumno</label>
+                    <input type="text" id="id_alumno_servicio" disabled readonly>
+
+                    <label>Alumno</label>
+                    <input type="text" id="id_alumno" disabled readonly>
+
+                    <label>Servicio</label>
+                    <input type="text" id="id_servicio" disabled>
+
+                    <label>Empresa</label>
+                    <input type="text" id="empresa_texto" disabled readonly>
+                    <select id="id_empresa" style="display:none;">
+                        <option value="">-- Seleccionar empresa --</option>
+                        <option value="nueva">+ Agregar nueva empresa</option>
+                    </select>
+                    <input type="text" id="nueva_empresa" placeholder="Escribe nueva empresa" style="display:none;">
+
+                    <label>Área</label>
+                    <input type="text" id="area" disabled>
+
+                    <label>Programa</label>
+                    <input type="text" id="programa" disabled>
+
+                    <label>Estado</label>
+                    <select id="estado" disabled>
+                        <option value="">-- Seleccionar --</option>
+                        <option value="PENDIENTE">Pendiente</option>
+                        <option value="EN_CURSO">En Curso</option>
+                        <option value="COMPLETADO">Completado</option>
+                    </select>
+
+                    <label>Periodo Tipo</label>
+                    <input type="text" id="periodo_tipo" disabled readonly>
+
+                    <label>Periodo Año</label>
+                    <input type="text" id="periodo_año" disabled>
+
+                    <label>Fecha Inicio</label>
+                    <input type="date" id="fecha_inicio" disabled>
+
+                    <label>Fecha Fin</label>
+                    <input type="date" id="fecha_fin" disabled>
+
+                    <label>Fecha Registro</label>
+                    <input type="date" id="fecha_registro" disabled readonly>
+
+                    <label>Fecha Modificación</label>
+                    <input type="date" id="fecha_modificacion" disabled readonly>
+                </form>
+
+            </div>
+
+            <!-- FOTO -->
+            <div class="subir-foto">
+                <h3>Foto de perfil</h3>
+                <input type="file" id="input_foto" accept="image/*">
+            </div>
+
         </div>
+
         <div class="form-actions">
             <button type="button" class="btn editar">Editar</button>
             <button type="button" class="btn guardar">Guardar</button>
         </div>
+
+        <!-- Toast -->
         <div id="toast-mensaje" class="toast oculto"></div>
+
     </div>
+
+    <script src="mostrar_contenido.js"></script>
+    <script src="../js/redireccion.js"></script>
+
 </body>
 
 </html>
