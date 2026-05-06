@@ -1,6 +1,11 @@
 /**
- * registro.js
- * Controla el registro de alumnos y coordinadores
+ * Archivo      : registro.js
+ * Módulo       : CU_02_RegistroUsuario
+ * Autor        : Francisco Angel Membrilla Alarcon
+ * Fecha        : 22/04/2026
+ * Descripción  : Lógica del formulario de registro de usuario. Valida los datos
+ * en el frontend, envía la información a registro.php mediante fetch,
+ * gestiona la creación de cookies de sesión y redirige al index.
  */
 
 document.addEventListener("DOMContentLoaded", function () {

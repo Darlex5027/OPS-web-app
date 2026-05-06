@@ -1,30 +1,48 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+/**
+ * Archivo      : obtener_actividades.php
+ * Módulo       : CU_02_RegistroUsuario
+ * Autor        : Francisco Angel Membrila Alarcon
+ * Fecha        : 21/04/2026
+ * Descripción  : Endpoint que obtiene las actividades activas del sistema
+ * y las retorna en formato JSON.
+ */
 
 require_once("../php/db.php");
 header("Content-Type: application/json");
 
+/* =========================
+   CONEXIÓN A BD
+========================= */
 try {
+
     if (!isset($pdo)) {
-        $pdo = new PDO(
-            "mysql:host=database;port=3306;dbname=DB_Sistema_Academico;charset=utf8mb4",
-            $user,
-            $pass,
-            [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
-            ]
-        );
+        $pdo = new PDO($dsn, $user, $pass, $options);
     }
 
-    // Usamos los nombres exactos: Id_servicio y Servicio
-    // Mantenemos el alias 'Id_actividad' y 'Nombre' para que tu registro.js no falle
+} catch (PDOException $e) {
+
+    http_response_code(500);
+
+    echo json_encode([
+        "success" => false,
+        "error"   => "error_conexion_db",
+        "detalle" => $e->getMessage()
+    ]);
+    exit;
+}
+
+/* =========================
+   CONSULTA ACTIVIDADES
+========================= */
+try {
+
     $stmt = $pdo->prepare("
-        SELECT Id_servicio AS Id_actividad, Servicio AS Nombre 
-        FROM Actividades 
-        WHERE Activo = 1 
+        SELECT 
+            Id_servicio AS Id_actividad,
+            Servicio AS Nombre
+        FROM Actividades
+        WHERE Activo = 1
         ORDER BY Servicio ASC
     ");
 
@@ -35,10 +53,13 @@ try {
         "actividades" => $stmt->fetchAll(PDO::FETCH_ASSOC)
     ]);
 
-} catch(Exception $e) {
+} catch (Exception $e) {
+
     http_response_code(500);
+
     echo json_encode([
         "success" => false,
-        "error" => $e->getMessage()
+        "error"   => "error_consulta_actividades",
+        "detalle" => $e->getMessage()
     ]);
 }

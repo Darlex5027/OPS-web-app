@@ -1,4 +1,13 @@
 <?php
+/**
+ * Archivo      : obtener_catalogos.php
+ * Módulo       : CU_02_RegistroUsuario
+ * Autor        : Francisco Angel Membrilla Alarcon
+ * Fecha        : 21/04/2026
+ * Descripción  : Endpoint que procesa la obtención de catálogos. Valida los datos
+ * y los almacena en la base de datos MariaDB.
+ * de usuario y retorna la información en formato JSON.
+ */
 require_once("../php/db.php");
 header("Content-Type: application/json");
 

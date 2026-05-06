@@ -1,7 +1,12 @@
 <?php
 /**
- * ARCHIVO  : registrar_empresa.php
- * UBICACIÓN: app/CU_02_RegistroUsuario/php/
+ * Archivo      : registrar_empresa.php
+ * Módulo       : CU_02_RegistroUsuario
+ * Autor        : Francisco Angel Membrilla Alarcon
+ * Fecha        : 21/04/2026
+ * Descripción  : Endpoint que procesa el registro de empresas. Valida los datos
+ * y los almacena en la base de datos MariaDB.
+ * de usuario y retorna la información en formato JSON.
  */
 
 // 1. Ajuste de ruta para llegar a la conexión PDO
