@@ -1,20 +1,20 @@
 <!--
-  Archivo     : reporte_estadistico.html
-  Módulo      : CU_09_ReporteEstadistico
-  Autor       : Alejandro Resendiz Reyes
-  Fecha       : 23/04/2026		
-  Descripción : Interfaz gráfica para la
-  				generación de reportes estadísticos
-				basados en las encuestas realizadas.
-				Permite a los usuarios seleccionar una
-				encuesta, un periodo y un año para
-				generar un reporte detallado. Además,
-				ofrece opciones para exportar el reporte
-				en formato Excel o PDF, facilitando
-				su análisis y presentación. La interfaz
-				está diseñada para ser intuitiva y accesible,
-				con un enfoque en la usabilidad y la
-				eficiencia en la generación de reportes.
+	Archivo     : reporte_estadistico.html
+	Módulo      : CU_09_ReporteEstadistico
+	Autor       : Alejandro Resendiz Reyes
+	Fecha       : 23/04/2026		
+	Descripción : Interfaz gráfica para la
+	generación de reportes estadísticos
+	basados en las encuestas realizadas.
+	Permite a los usuarios seleccionar una
+	encuesta, un periodo y un año para
+	generar un reporte detallado. Además,
+	ofrece opciones para exportar el reporte
+	en formato Excel o PDF, facilitando
+	su análisis y presentación. La interfaz
+	está diseñada para ser intuitiva y accesible,
+	con un enfoque en la usabilidad y la
+	eficiencia en la generación de reportes.
 
 -->
 <!DOCTYPE html>
@@ -59,15 +59,20 @@
 			<!-- Botones para generar reporte, exportar a Excel y PDF -->
 			<div class="buttons-group">
 				<!-- Botón para generar el reporte estadístico -->
-				<button onClick="handleCargarDatos()">Generar Reporte</button>
+				<button onClick="handleCargarResumen()">Generar Resumen</button>
+				<!-- Botón para generar el reporte estadístico -->
+				<button onClick="handleCargarEntregados()">Entregados</button>
+				<!-- Botón para generar el reporte estadístico -->
+				<button onClick="handleCargarPendientes()">Pendientes</button>
 				<!-- Botones para exportar el reporte a Excel-->
-				<button onClick="exportarExcel()" id="btnGenerarExcel" style="visibility: hidden">Generar Excel</button>
+				<button onClick="exportarExcel()" id="btnGenerarExcel" style="display: none">Generar Excel</button>
 				<!-- Botón para generar el PDF del reporte estadístico -->
-				<button onClick="imprimirPDF()" id="btnGenerarPDF" style="visibility: hidden">Generar PDF</button>
+				<button onClick="imprimirPDF()" id="btnGenerarPDF" style="display: none">Generar PDF</button>
 			</div>
 			<!-- Tabla para mostrar los resultados del reporte estadístico -->
 			<div class="table">
 				<table id="tabla-resultados">
+					<caption id="titulo-tabla"></caption>
 					<tr id="Titulos">
 					</tr>
 					<tbody id="Tabla">
@@ -82,8 +87,14 @@
 		<script type="module" src="../js/redireccion.js"></script>
 		<!--Script para lanzar mensajes de toast -->
 		<script type="module" src="../js/lanzar_toast.js"></script>
-		<!--Script para la lógica del reporte estadístico -->
+		<!--Script para el renderizado de menú y primera carga de select -->
 		<script type="module" src="./reporte_estadistico.js"></script>
+		<!--Script para la lógica de la tabla resumen -->
+		<script type="module" src="./generar_resumen.js"></script>
+		<!--Script para la lógica del Tabla con la lista de alumnos que han completado el cuestionario-->
+		<script type="module" src="./generar_tabla_entregados.js"></script>
+		<!--Script para la lógica del Tabla con la lista de alumnos que han completado el cuestionario-->
+		<script type="module" src="./generar_tabla_pendientes.js"></script>
 		<!--Script para revisar el tipo de usuario -->
 		<script type="module" src="./revision_tipo_usuario.js"></script>
 		<!--Script para generar el archivo Excel -->
