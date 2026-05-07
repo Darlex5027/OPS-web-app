@@ -154,21 +154,36 @@ $stmt->execute([$datos_usuario['Id_tipo_usuario']]);
 $permisos = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
 /* =========================
-   ID CARRERA (UNIFICADO)
+   ID CARRERA
 ========================= */
-$stmt = $pdo->prepare("
-    SELECT Id_carrera FROM Alumnos WHERE Id_usuario = ?
-    UNION
-    SELECT Id_carrera FROM Administradores WHERE Id_usuario = ?
-    LIMIT 1
-");
+$carrera = null;
 
-$stmt->execute([
-    $datos_usuario['Id_usuario'],
-    $datos_usuario['Id_usuario']
-]);
+if ($datos_usuario['Id_tipo_usuario'] == 2) {
 
-$datos_usuario['Id_carrera'] = $stmt->fetchColumn() ?: null;
+    $stmt = $pdo->prepare("
+        SELECT Id_carrera
+        FROM Alumnos
+        WHERE Id_usuario = ?
+    ");
+
+    $stmt->execute([$datos_usuario['Id_usuario']]);
+
+    $carrera = $stmt->fetchColumn();
+
+} elseif (in_array($datos_usuario['Id_tipo_usuario'], [1, 3])) {
+
+    $stmt = $pdo->prepare("
+        SELECT Id_carrera
+        FROM Administradores
+        WHERE Id_usuario = ?
+    ");
+
+    $stmt->execute([$datos_usuario['Id_usuario']]);
+
+    $carrera = $stmt->fetchColumn();
+}
+
+$datos_usuario['Id_carrera'] = $carrera ?: null;
 
 /* =========================
    SEGURIDAD

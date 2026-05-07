@@ -68,13 +68,13 @@ formLogin.addEventListener("submit", async function (e) {
             // =========================
             // COOKIES SEGURAS
             // =========================
-            document.cookie = "Id_usuario=" + usuario.Id_usuario + "; max-age=" + TIEMPO_SESION + "; path=/";
-            document.cookie = "Matricula=" + usuario.Matricula + "; max-age=" + TIEMPO_SESION + "; path=/";
-            document.cookie = "Id_tipo_usuario=" + usuario.Id_tipo_usuario + "; max-age=" + TIEMPO_SESION + "; path=/";
-            document.cookie = "Id_carrera=" + (usuario.Id_carrera || 0) + "; max-age=" + TIEMPO_SESION + "; path=/";
-            document.cookie = "permisos=" + encodeURIComponent(JSON.stringify(permisos)) + "; max-age=" + TIEMPO_SESION + "; path=/";
+            document.cookie = `Id_usuario=${usuario.Id_usuario}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `Matricula=${usuario.Matricula}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `Id_tipo_usuario=${usuario.Id_tipo_usuario}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `Id_carrera=${usuario.Id_carrera ?? ''}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `permisos=${encodeURIComponent(JSON.stringify(permisos))}; max-age=${TIEMPO_SESION}; path=/`;
             document.cookie = `perfil=${encodeURIComponent(JSON.stringify(usuario))}; max-age=${TIEMPO_SESION}; path=/`;
-            //  3= Coordinador, 2 = Alumno
+            //  3= Coordinador, 1 = Alumno
             window.location.href = "../CU_03_PerfilGestionable/perfil.html";
             return;
         }
