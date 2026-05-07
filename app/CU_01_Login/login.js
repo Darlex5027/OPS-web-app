@@ -72,8 +72,14 @@ formLogin.addEventListener("submit", async function (e) {
             document.cookie = `Matricula=${usuario.Matricula}; max-age=${TIEMPO_SESION}; path=/`;
             document.cookie = `Id_tipo_usuario=${usuario.Id_tipo_usuario}; max-age=${TIEMPO_SESION}; path=/`;
             document.cookie = `Id_carrera=${usuario.Id_carrera ?? ''}; max-age=${TIEMPO_SESION}; path=/`;
+
+            document.cookie = `Activo=${usuario.Activo}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `Fecha_registro=${usuario.Fecha_registro}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `Fecha_ultimo_acceso=${usuario.Fecha_ultimo_acceso}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `Intentos_fallidos=${usuario.Intentos_fallidos}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `Bloqueado=${usuario.Bloqueado}; max-age=${TIEMPO_SESION}; path=/`;
+
             document.cookie = `permisos=${encodeURIComponent(JSON.stringify(permisos))}; max-age=${TIEMPO_SESION}; path=/`;
-            document.cookie = `perfil=${encodeURIComponent(JSON.stringify(usuario))}; max-age=${TIEMPO_SESION}; path=/`;
             //  3= Coordinador, 1 = Alumno
             window.location.href = "../CU_03_PerfilGestionable/perfil.html";
             return;
