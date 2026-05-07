@@ -16,7 +16,7 @@ export function renderMenu() {
             <a href="../CU_03_PerfilGestionable/perfil.html"><button>Perfil</button></a>
             <a href="../CU_06_PublicarVacantes/admin_vacantes.html"><button>Publicar vacantes</button></a>
             <a href="../CU_07_AdministrarAlumnos/admin_usuarios.html"><button>Administrar usuarios</button></a>
-            <a href="../CU_08_Reporte_Alumnado/reporte_alumnos.html"><button>sGenerar reporte de alumnos</button></a>
+            <a href="../CU_08_Reporte_Alumnado/reporte_alumnos.html"><button>Generar reporte de alumnos</button></a>
             <a href="../CU_09_ReporteEstadistico/reporte_estadistico.html"><button>Generar reporte estadistico</button></a>
             <a href="../CU_12_CrearFormularios/encuestas_lista.html"><button>Ver formularios</button></a>
         `;
