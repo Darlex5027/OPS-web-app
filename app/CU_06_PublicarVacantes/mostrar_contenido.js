@@ -15,19 +15,14 @@ document.addEventListener('DOMContentLoaded', function () {
     renderMenu();
     const tipoUsuario = obtenerCookie('Id_tipo_usuario');
     if (tipoUsuario == '2') {
-        const tipoUsuario = obtenerCookie('Id_tipo_usuario');
         window.location.href = '../CU_03_PerfilGestionable/perfil.html';
         return;
     }
     // Configura el contenido inicial según el modo seleccionado
     handleCambioContenido();
     // Oculta el formulario de nueva empresa al iniciar
-    const elDivNuevaEmpresa = document.getElementById('nueva_empresa');
-    if (elDivNuevaEmpresa) {
-        elDivNuevaEmpresa.style.display = 'none';
-    }
-
     document.getElementById('nueva_empresa').style.display = 'none';
+
     // Al terminar de cargar completamente la página
     window.addEventListener('load', function () {
         document.getElementById('miFormulario').reset();
@@ -37,30 +32,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // ================= MOSTRAR FECHA ACTUAL =================
 function renderFecha() {
-    // Fecha para modo manual
-    let elFechaManual = document.getElementById('fecha_Manual');
-    let hoy = new Date();
-    // Formato YYYY-MM-DD
-    let formatoServidor = new Intl.DateTimeFormat('en-CA', {
-        timeZone: 'America/Mexico_City',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-    });
-    let fechaFormateada = formatoServidor.format(hoy);
-    elFechaManual.innerHTML = "Fecha de registro: " + fechaFormateada;
-    // Fecha para modo flyer (se repite el mismo proceso)
-    let elFechaFlayer = document.getElementById('fecha_flayer');
-    hoy = new Date();
-    formatoServidor = new Intl.DateTimeFormat('en-CA', {
-        timeZone: 'America/Mexico_City',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-    });
-    fechaFormateada = formatoServidor.format(hoy);
-    elFechaFlayer.innerHTML = "Fecha de registro: " + fechaFormateada;
+    function setFecha(elementId) {
+        const hoy = new Date();
+        const fechaFormateada = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'America/Mexico_City',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        }).format(hoy);
+
+        document.getElementById(elementId).innerHTML = "Fecha de registro:  " + fechaFormateada;
+    }
+
+    setFecha('fecha_Manual');
+    setFecha('fecha_flayer');
 }
+
 // ================= OBTENER EMPRESAS =================
 export function fetchEmpresas() {
     fetch('obtener_empresas.php')
@@ -279,12 +266,6 @@ function handleCancelarRegistro() {
     elSelectEmpresa.disabled = false;
     document.getElementById('nueva_empresa').style.display = 'none';
     document.getElementById(handleObtenerIdBoton()).style.display = 'inline-block';
-    // Quita el required de los campos
-    document.getElementById('nombre_empresa').required = false;
-    document.getElementById('descripcion_empresa').required = false;
-    document.getElementById('razon_empresa').required = false;
-    document.getElementById('rfc_empresa').required = false;
-    document.getElementById('direccion_empresa').required = false;
 }
 
 // ================= EXPOSICIÓN GLOBAL =================
