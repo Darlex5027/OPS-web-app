@@ -220,7 +220,11 @@ function exportarExcel() {
 function imprimirPDF() {
 	// Se obtiene la tabla de resultados y se convierte a un PDF usando jsPDF y jsPDF-AutoTable
 	const { jsPDF } = window.jspdf;
-	const doc = new jsPDF();
+		const doc = new jsPDF({
+		orientation: 'landscape',
+		unit: 'mm',
+		format: 'letter' // o 'a4' según prefieras
+	});
 	doc.autoTable({ html: '#tabla-resultados' });
 	doc.save('reporte_alumnos.pdf');
 }

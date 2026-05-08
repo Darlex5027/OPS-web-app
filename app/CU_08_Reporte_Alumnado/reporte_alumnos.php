@@ -38,7 +38,7 @@ try {
 		Actividades_Alumnos.periodo_tipo,
 		Actividades_Alumnos.periodo_año,
 		Actividades_Alumnos.Fecha_inicio,
-		Actividades_Alumnos.Fecha_fin 
+		Actividades_Alumnos.Fecha_fin
 		FROM Alumnos 
 		JOIN Carreras ON Alumnos.Id_Carrera=Carreras.Id_carrera 
 		JOIN Administradores ON Administradores.Id_Carrera=Carreras.Id_carrera 
