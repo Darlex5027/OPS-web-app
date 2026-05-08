@@ -1,7 +1,7 @@
 /**
  * Archivo      : login.js
  * Módulo       : CU_01_Login
- * Autor        : Francisco Angel Membrilla Alarcon
+ * Autor        : Francisco Angel Membrila Alarcon
  * Fecha        : 22/04/2026
  * Descripción  : Lógica del formulario de inicio de sesión. Valida la matrícula 
  * en el frontend, envía las credenciales a login.php mediante fetch,
@@ -72,17 +72,16 @@ formLogin.addEventListener("submit", async function (e) {
             document.cookie = `Matricula=${usuario.Matricula}; max-age=${TIEMPO_SESION}; path=/`;
             document.cookie = `Id_tipo_usuario=${usuario.Id_tipo_usuario}; max-age=${TIEMPO_SESION}; path=/`;
             document.cookie = `Id_carrera=${usuario.Id_carrera ?? ''}; max-age=${TIEMPO_SESION}; path=/`;
+
+            document.cookie = `Activo=${usuario.Activo}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `Fecha_registro=${usuario.Fecha_registro}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `Fecha_ultimo_acceso=${usuario.Fecha_ultimo_acceso}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `Intentos_fallidos=${usuario.Intentos_fallidos}; max-age=${TIEMPO_SESION}; path=/`;
+            document.cookie = `Bloqueado=${usuario.Bloqueado}; max-age=${TIEMPO_SESION}; path=/`;
+
             document.cookie = `permisos=${encodeURIComponent(JSON.stringify(permisos))}; max-age=${TIEMPO_SESION}; path=/`;
-            document.cookie = `perfil=${encodeURIComponent(JSON.stringify(usuario))}; max-age=${TIEMPO_SESION}; path=/`;
-            // 1 = Administrador, 2 = Alumno
-            if (usuario.Id_tipo_usuario == 1) {
-                window.location.href = "../CU_03_PerfilGestionable/perfil_administrador.html";
-            } else if (usuario.Id_tipo_usuario == 2) {
-                window.location.href = "../CU_03_PerfilGestionable/perfil_alumno.html";
-            } else {
-                // En caso de que exista un rol diferente, enviamos al index
-                window.location.href = "../index.html";
-            }
+            //  3= Coordinador, 1 = Alumno
+            window.location.href = "../CU_03_PerfilGestionable/perfil.html";
             return;
         }
 

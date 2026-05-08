@@ -187,6 +187,7 @@ function cargar_tabla() {
 			Object.keys(resultadoReporte[0]).forEach(function (titulo) {
 				elTitulos.innerHTML = elTitulos.innerHTML + "<th>" + titulo + "</th>"
 			});
+
 			// Renderizado de el contenido de la tabla
 			resultadoReporte.forEach(function (fila) {
 				//Variable para guardar la fila temporal
