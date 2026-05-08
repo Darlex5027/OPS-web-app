@@ -9,35 +9,56 @@
  *              reporte generado en formato Excel (.xlsx) o PDF.
  */
 
+
+// Se importan las funciones obtenerCookie y renderMenu desde sus respectivos archivos para manejar las cookies de sesión y renderizar el menú de navegación.
 import { obtenerCookie } from '../js/cookie.js';
 import { renderMenu } from '../js/menu.js';
 
-
+// Se exponen las funciones cargar_tabla, exportarExcel e imprimirPDF al ámbito global para que puedan ser llamadas desde el HTML
 window.cargar_tabla = cargar_tabla;
 window.exportarExcel = exportarExcel;
 window.imprimirPDF = imprimirPDF;
+
+// Se cargan los elemento a usar desde el HTML
+const elActividad = document.getElementById("actividad");
+const elEstado = document.getElementById("estado");
+const elPeriodoTipo = document.getElementById("periodo_tipo");
+const elPeriodoAnio = document.getElementById("periodo_anio");
+
+// Elementos para cargar la tabla de resultados
+const elTitulos = document.getElementById("Titulos");
+const elCuerpoTabla = document.getElementById("Tabla");
+const elExcel = document.getElementById("btnGenerarExcel");
+const elPDF = document.getElementById("btnGenerarPDF");
+
+
+
 /*
- * Al cargar la página se revisa que el usuario tenga una sesión iniciada
- * Posterior a tener una sesión iniciada se cargan los catalogos para los
- * select.
- */
+* Al cargar la página se revisa que el usuario tenga una sesión iniciada
+* Posterior a tener una sesión iniciada se cargan los catalogos para los
+* select.
+*/
 
 
 document.addEventListener("DOMContentLoaded", function () {
+	// Se obtiene el tipo de usuario de las cookies para verificar que el usuario tenga una sesión iniciada y redirigirlo a su perfil si es un usuario de tipo 2 (estudiante).
 	const tipoUsuario = obtenerCookie('Id_tipo_usuario');
+	// Si el tipo de usuario es 2, se redirige al perfil del estudiante.
 	if (tipoUsuario == '2') {
 		const tipoUsuario = obtenerCookie('Id_tipo_usuario');
 		window.location.href = '../CU_03_PerfilGestionable/perfil.html';
 		return;
 	}
+
+	// Se renderiza el menú de navegación y se redirige al inicio de sesión si no hay cookies de sesión, y se cargan los catálogos para los filtros.
 	renderMenu();
 	redireccionar();
 	cargar_catalogos();
 });
 
 /*
- * Si no hay cookies, se redirige al inicio de sesión automaticamente.
- */
+* Si no hay cookies, se redirige al inicio de sesión automaticamente.
+*/
 function redireccionar() {
 	if (!document.cookie) {
 		window.location.href = "../CU_01_Login/login.html";
@@ -46,150 +67,181 @@ function redireccionar() {
 
 
 /*
- * CARGAR CATALOGOS EN LOS SELECT
- */
+* CARGAR CATALOGOS EN LOS SELECT
+*/
 
 function cargar_catalogos() {
 	fetch("./obtener_catalogos.php")
+
+		//Formatear el resultados a JSON para poder manipularlo
 		.then(function (respuesta) {
 			return respuesta.json();
 		})
+
+
+		// Se obtiene un objeto con los catalogos de servicios, estados y periodos
 		.then(function (catalogos) {
+
+			// Se cargan los servicios disponibles para el filtro de actividades.
 			catalogos.servicios.forEach(function (servicio) {
 				//Se crea una opción con value como el Id_servicio de la actividad a cargar
 				const option = document.createElement('option');
 				option.value = servicio.Id_servicio;
 				//A la opción se le da el texto de Servicio (nombre del servicio)
 				option.textContent = servicio.Servicio;
-				document.getElementById('actividad').appendChild(option)
+				elActividad.appendChild(option)
 			});
+
+			// Se cargan los estados disponibles para el filtro de estado de la actividad.
 			catalogos.estados.forEach(function (estado) {
 				// Se cargan los estados disponibles que puede tener un servicio.
 				// PENDIENTE, EN_CURSO, COMPLETADO
 				const option = document.createElement('option');
 				option.value = estado.Estado;
 				option.textContent = estado.Estado;
-				document.getElementById('estado').appendChild(option)
+				elEstado.appendChild(option)
 			});
+
+			// Se cargan los tipos de periodos disponibles para el filtro de periodos.
 			catalogos.periodo_tipo.forEach(function (periodo_tipo) {
 				// Se cargan los tipos de periodos disponibles.
 				// SEMESTRE, CUATRIMESTRE, ANUAL
 				const option = document.createElement('option');
 				option.value = periodo_tipo.periodo_tipo;
 				option.textContent = periodo_tipo.periodo_tipo;
-				document.getElementById('periodo_tipo').appendChild(option)
+				elPeriodoTipo.appendChild(option)
 			});
+
+			// Se cargan los años de periodos disponibles para el filtro de periodos.
 			catalogos.periodo_anio.forEach(function (periodo_año) {
 				// Se cargan los años de periodos disponibles.
 				const option = document.createElement('option');
 				option.value = periodo_año.periodo_año;
 				option.textContent = periodo_año.periodo_año;
-				document.getElementById('periodo_anio').appendChild(option)
+				elPeriodoAnio.appendChild(option)
 			});
 		});
 }
 
 
-/*
- * CARGAR TABLA
- */
-
-function cargar_tabla() {
-
-	// Se cargan los elemento a usar desde el HTML
-	const actividad = document.getElementById("actividad").value;
-	const estado = document.getElementById("estado").value;
-	const periodoTipo = document.getElementById("periodo_tipo").value;
-	const periodoAnio = document.getElementById("periodo_anio").value;
-
-	const titulos = document.getElementById("Titulos");
-	const tabla = document.getElementById("Tabla");
-	const bExcel = document.getElementById("btnGenerarExcel");
-	const bPDF = document.getElementById("btnGenerarPDF");
-	// Se limpian las tablas de caulquier contenido que tengan
-	titulos.innerHTML = ""
-	tabla.innerHTML = "";
-
-
-	console.log(JSON.stringify({ actividad: actividad, estado: estado, periodo_tipo: periodoTipo, periodo_anio: periodoAnio }))
-	fetch("./reporte_alumnos.php", {
+function fetchDatosTabla() {
+	// Se hace la consulta al php para obtener los resultados de acuerdo a los filtros seleccionados
+	return fetch("./reporte_alumnos.php", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json"
 		},
 		// Se cargan los filtros seleccionado por el usuario
-		body: JSON.stringify({ actividad: actividad, estado: estado, periodo_tipo: periodoTipo, periodo_anio: periodoAnio })
+		body: JSON.stringify({
+			actividad: elActividad.value,
+			estado: elEstado.value,
+			periodo_tipo: elPeriodoTipo.value,
+			periodo_anio: elPeriodoAnio.value
+		})
 		// No es necesario enviar el Id_usuario o Id_carrera porque ese se obtiene dentro del php
 
 	})
+
+		// Se obtiene la respuesta del php y se formatea a JSON para poder manipularlo
 		.then(function (respuesta) {
 			//Se obtiene la respuesta del php
 			return respuesta.json();
-		})
-		.then(function (impresion) {
+		});
+}
+
+function ocultarBotones() {
+	// Se ocultan los botones de exportar a Excel y PDF al cargar la página o al generar una nueva consulta para evitar que el usuario intente exportar un reporte sin resultados.
+	elExcel.style.display = "none";
+	elPDF.style.display = "none";
+}
+
+function mostrarBotones() {
+	// Se muestran los botones de exportar a Excel y PDF al generar una consulta con resultados para permitir que el usuario exporte el reporte generado.
+	elExcel.style.display = "block";
+	elPDF.style.display = "block";
+}
+
+/*
+* CARGAR TABLA
+*/
+
+function cargar_tabla() {
+	// Se limpian las tablas de caulquier contenido que tengan
+	elTitulos.innerHTML = ""
+	elCuerpoTabla.innerHTML = "";
+
+
+	fetchDatosTabla()
+		// Se obtiene un arreglo de objetos con los resultados de la consulta
+		.then(function (resultadoReporte) {
 			//Si la impresión es de tamaño 0 significa que la respuesta es un mensaje
 			//por lo que no se encontraron resultados.
-			if (impresion.length == 0) {
+			if (resultadoReporte.length == 0) {
 				lanzarToast("No se encontraron Resultados", "error");
-				bExcel.style.visibility = "hidden";
-				bPDF.style.visibility = "hidden";
+				ocultarBotones();
 				return;
 			}
 
 
 			//Renderizado de los titulos obtenidos
-			Object.keys(impresion[0]).forEach(function (titulo) {
-				titulos.innerHTML = titulos.innerHTML + "<th>" + titulo + "</th>"
+			Object.keys(resultadoReporte[0]).forEach(function (titulo) {
+				elTitulos.innerHTML = elTitulos.innerHTML + "<th>" + titulo + "</th>"
 			});
 			// Renderizado de el contenido de la tabla
-			impresion.forEach(function (fila) {
+			resultadoReporte.forEach(function (fila) {
 				//Variable para guardar la fila temporal
-				let table = "";
+				let htmlFila = "";
 
-				table = table + "<tr>";
+				htmlFila = htmlFila + "<tr>";
 				// Por cada titulo (celda) se agrega la celda a la estructura de la fila	
 				Object.keys(fila).forEach(function (dato) {
-					//Se concatena el dato de la fila dentr
-					table = table + "<td>" + fila[dato] + "</td>";
+					//Se concatena el dato de la fila dentro de la celda
+					htmlFila = htmlFila + "<td>" + fila[dato] + "</td>";
 
 				});
-				table = table + "</tr>";
-				tabla.innerHTML += table;
+				// Se cierra la fila y se agrega a la tabla
+				elCuerpoTabla.innerHTML += htmlFila + "</tr>";
 			});
+			// Se muestran los botones de exportar a Excel y PDF
+			mostrarBotones();
 
-			bExcel.style.visibility = "visible";
-			bPDF.style.visibility = "visible";
+			lanzarToast("Reporte generado correctamente", "exito");
 
 		});
 }
 
 function exportarExcel() {
+	// Se obtiene la tabla de resultados y se convierte a un libro de Excel usando SheetJS
 	event.preventDefault();
 	const workbook = XLSX.utils.table_to_book(document.getElementById('tabla-resultados'));
 	XLSX.writeFile(workbook, 'reporte_alumnos.xlsx');
 }
 
 function imprimirPDF() {
+	// Se obtiene la tabla de resultados y se convierte a un PDF usando jsPDF y jsPDF-AutoTable
 	const { jsPDF } = window.jspdf;
 	const doc = new jsPDF();
 	doc.autoTable({ html: '#tabla-resultados' });
 	doc.save('reporte_alumnos.pdf');
 }
+
+
 function lanzarToast(texto, tipo) {
-	const toast = document.getElementById('toast-mensaje');
+
+	const elToast = document.getElementById('toast-mensaje');
 
 	// 1. Limpiamos clases previas y ponemos la nueva
-	toast.className = 'toast'; // Resetea a la base
-	toast.classList.add(tipo); // Agrega 'exito' o 'error'
+	elToast.className = 'toast'; // Resetea a la base
+	elToast.classList.add(tipo); // Agrega 'exito' o 'error'
 
 	// 2. Insertamos el texto
-	toast.innerText = texto;
+	elToast.innerText = texto;
 
 	// 3. Mostramos
-	toast.classList.remove('oculto');
+	elToast.classList.remove('oculto');
 
-	// 4. Desvanecemos en 3 segundos␍
+	// 4. Desvanecemos en 3 segundos
 	setTimeout(() => {
-		toast.classList.add('oculto');
+		elToast.classList.add('oculto');
 	}, 3000);
 }
