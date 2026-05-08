@@ -1,4 +1,18 @@
 <?php
+
+/**
+ * Archivo:     reporte_alumnos.php
+ * Autor:     	Alejandro Resendiz Reyes
+ * Fecha:       15-03-2026
+ * Descripción: Endpoint PHP del modulo CU08 - Reporte de Alumnado.
+ *              Recibe por POST un objeto JSON con los filtros seleccionados
+ *              (actividad, estado, periodo_tipo, periodo_anio) y retorna en JSON
+ *              el listado de alumnos con sus actividades, filtrado por la carrera
+ *              del administrador autenticado segun la cookie Id_usuario.
+ *              Tablas consultadas: Alumnos, Carreras, Administradores,
+ *              Actividades_Alumnos, Empresas, Actividades.
+ */
+
 require_once '../php/db.php';
 
 try {

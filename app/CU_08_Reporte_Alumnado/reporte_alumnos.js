@@ -1,3 +1,14 @@
+/**
+ * Archivo:     reporte_alumnos.js
+ * Autor:      	Alejandro Resendiz Reyes
+ * Fecha:       15-03-2026
+ * Descripción: Logica del cliente para el modulo CU08 - Reporte de Alumnado.
+ * 				Carga los catalogos de filtros (actividad, estado, periodo) en los
+ *              elementos select del formulario, construye y renderiza la tabla de
+ *              resultados consultando reporte_alumnos.php, y permite exportar el
+ *              reporte generado en formato Excel (.xlsx) o PDF.
+ */
+
 import { obtenerCookie } from '../js/cookie.js';
 import { renderMenu } from '../js/menu.js';
 

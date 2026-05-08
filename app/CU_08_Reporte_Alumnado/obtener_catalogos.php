@@ -1,4 +1,16 @@
 <?php
+
+/**
+ * Archivo:     obtener_catalogos.php
+ * Autor:      	Alejandro Resendiz 
+ * Fecha:       15-03-2026
+ * Descripción: Endpoint PHP del modulo CU08 - Reporte de Alumnado.
+ *              Retorna en JSON los catalogos necesarios para poblar los filtros
+ *              del formulario: servicios activos, estados de actividad,
+ *              tipos de periodo y anios de periodo disponibles.
+ *              Tablas consultadas: Actividades, Actividades_Alumnos.
+ */
+
 require_once '../php/db.php';
 
 try{
