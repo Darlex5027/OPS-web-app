@@ -2,9 +2,9 @@ import { obtenerCookie } from '../js/cookie.js';
 import { renderMenu } from '../js/menu.js';
 
 
-window.cargar_tabla=cargar_tabla;
-window.exportarExcel=exportarExcel;
-window.imprimirPDF=imprimirPDF;
+window.cargar_tabla = cargar_tabla;
+window.exportarExcel = exportarExcel;
+window.imprimirPDF = imprimirPDF;
 /*
  * Al cargar la página se revisa que el usuario tenga una sesión iniciada
  * Posterior a tener una sesión iniciada se cargan los catalogos para los
@@ -12,7 +12,7 @@ window.imprimirPDF=imprimirPDF;
  */
 
 
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", function () {
 	const tipoUsuario = obtenerCookie('Id_tipo_usuario');
 	if (tipoUsuario == '2') {
 		const tipoUsuario = obtenerCookie('Id_tipo_usuario');
@@ -27,8 +27,8 @@ document.addEventListener("DOMContentLoaded", function(){
 /*
  * Si no hay cookies, se redirige al inicio de sesión automaticamente.
  */
-function redireccionar(){
-	if(!document.cookie){
+function redireccionar() {
+	if (!document.cookie) {
 		window.location.href = "../CU_01_Login/login.html";
 	}
 }
@@ -38,29 +38,44 @@ function redireccionar(){
  * CARGAR CATALOGOS EN LOS SELECT
  */
 
-function cargar_catalogos(){
+function cargar_catalogos() {
 	fetch("./obtener_catalogos.php")
-		.then(function (respuesta){
+		.then(function (respuesta) {
 			return respuesta.json();
 		})
-		.then(function(catalogos){
-			catalogos.servicios.forEach(function (servicio){
+		.then(function (catalogos) {
+			catalogos.servicios.forEach(function (servicio) {
 				//Se crea una opción con value como el Id_servicio de la actividad a cargar
 				const option = document.createElement('option');
 				option.value = servicio.Id_servicio;
 				//A la opción se le da el texto de Servicio (nombre del servicio)
 				option.textContent = servicio.Servicio;
 				document.getElementById('actividad').appendChild(option)
-			});	
-			catalogos.estados.forEach(function (estado){
+			});
+			catalogos.estados.forEach(function (estado) {
 				// Se cargan los estados disponibles que puede tener un servicio.
 				// PENDIENTE, EN_CURSO, COMPLETADO
 				const option = document.createElement('option');
 				option.value = estado.Estado;
 				option.textContent = estado.Estado;
 				document.getElementById('estado').appendChild(option)
-			});	
-		});	
+			});
+			catalogos.periodo_tipo.forEach(function (periodo_tipo) {
+				// Se cargan los tipos de periodos disponibles.
+				// SEMESTRE, CUATRIMESTRE, ANUAL
+				const option = document.createElement('option');
+				option.value = periodo_tipo.periodo_tipo;
+				option.textContent = periodo_tipo.periodo_tipo;
+				document.getElementById('periodo_tipo').appendChild(option)
+			});
+			catalogos.periodo_anio.forEach(function (periodo_año) {
+				// Se cargan los años de periodos disponibles.
+				const option = document.createElement('option');
+				option.value = periodo_año.periodo_año;
+				option.textContent = periodo_año.periodo_año;
+				document.getElementById('periodo_anio').appendChild(option)
+			});
+		});
 }
 
 
@@ -68,81 +83,86 @@ function cargar_catalogos(){
  * CARGAR TABLA
  */
 
-function cargar_tabla(){
+function cargar_tabla() {
 
 	// Se cargan los elemento a usar desde el HTML
 	const actividad = document.getElementById("actividad").value;
 	const estado = document.getElementById("estado").value;
+	const periodoTipo = document.getElementById("periodo_tipo").value;
+	const periodoAnio = document.getElementById("periodo_anio").value;
+
 	const titulos = document.getElementById("Titulos");
 	const tabla = document.getElementById("Tabla");
 	const bExcel = document.getElementById("btnGenerarExcel");
 	const bPDF = document.getElementById("btnGenerarPDF");
 	// Se limpian las tablas de caulquier contenido que tengan
-	titulos.innerHTML=""
-	tabla.innerHTML="";
+	titulos.innerHTML = ""
+	tabla.innerHTML = "";
 
 
-	fetch("./reporte_alumnos.php",{
+	console.log(JSON.stringify({ actividad: actividad, estado: estado, periodo_tipo: periodoTipo, periodo_anio: periodoAnio }))
+	fetch("./reporte_alumnos.php", {
 		method: "POST",
-		headers:{
-			"Content-Type":"application/json"
+		headers: {
+			"Content-Type": "application/json"
 		},
 		// Se cargan los filtros seleccionado por el usuario
-		body: JSON.stringify({ actividad: actividad, estado:estado})
+		body: JSON.stringify({ actividad: actividad, estado: estado, periodo_tipo: periodoTipo, periodo_anio: periodoAnio })
 		// No es necesario enviar el Id_usuario o Id_carrera porque ese se obtiene dentro del php
-	}) 
-		.then(function (respuesta){
+
+	})
+		.then(function (respuesta) {
 			//Se obtiene la respuesta del php
 			return respuesta.json();
 		})
-		.then(function (impresion){
+		.then(function (impresion) {
 			//Si la impresión es de tamaño 0 significa que la respuesta es un mensaje
 			//por lo que no se encontraron resultados.
-			if(impresion.length==0){
+			if (impresion.length == 0) {
 				lanzarToast("No se encontraron Resultados", "error");
-				bExcel.style.visibility="hidden";
-				bPDF.style.visibility="hidden";
+				bExcel.style.visibility = "hidden";
+				bPDF.style.visibility = "hidden";
 				return;
 			}
 
 
 			//Renderizado de los titulos obtenidos
-			Object.keys(impresion[0]).forEach(function(titulo){
-				titulos.innerHTML=titulos.innerHTML+"<th>"+titulo+"</th>"
+			Object.keys(impresion[0]).forEach(function (titulo) {
+				titulos.innerHTML = titulos.innerHTML + "<th>" + titulo + "</th>"
 			});
 			// Renderizado de el contenido de la tabla
-			impresion.forEach(function(fila){
+			impresion.forEach(function (fila) {
 				//Variable para guardar la fila temporal
-				let table="";
+				let table = "";
 
-				table=table+"<tr>";
+				table = table + "<tr>";
 				// Por cada titulo (celda) se agrega la celda a la estructura de la fila	
-				Object.keys(fila).forEach(function(dato){
+				Object.keys(fila).forEach(function (dato) {
 					//Se concatena el dato de la fila dentr
-					table=table+"<td>"+fila[dato]+"</td>";
+					table = table + "<td>" + fila[dato] + "</td>";
 
 				});
-				table=table+"</tr>";
-				tabla.innerHTML+=table;
+				table = table + "</tr>";
+				tabla.innerHTML += table;
 			});
 
-			bExcel.style.visibility="visible";
-			bPDF.style.visibility="visible";
+			bExcel.style.visibility = "visible";
+			bPDF.style.visibility = "visible";
 
 		});
 }
 
-function exportarExcel(){
+function exportarExcel() {
 	event.preventDefault();
-	const workbook=XLSX.utils.table_to_book(document.getElementById('tabla-resultados'));
+	const workbook = XLSX.utils.table_to_book(document.getElementById('tabla-resultados'));
 	XLSX.writeFile(workbook, 'reporte_alumnos.xlsx');
 }
 
-function imprimirPDF(){
+function imprimirPDF() {
 	const { jsPDF } = window.jspdf;
 	const doc = new jsPDF();
 	doc.autoTable({ html: '#tabla-resultados' });
-	doc.save('reporte_alumnos.pdf');	
+	doc.save('reporte_alumnos.pdf');
 }
 function lanzarToast(texto, tipo) {
 	const toast = document.getElementById('toast-mensaje');
