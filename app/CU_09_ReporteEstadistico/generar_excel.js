@@ -14,7 +14,9 @@ import { lanzarToast } from '../js/lanzar_toast.js';
 
 // Se define la función exportarExcel que se ejecuta al hacer clic en el botón de exportar a Excel
 window.exportarExcel = function (){
-	// Se previene el comportamiento por defecto del evento para evitar que se recargue la página
+
+	/* Se previene el comportamiento por defecto del evento para evitar 
+	que se recargue la página y se pierda la tabla de resultados al generar el archivo Excel*/
 	event.preventDefault();
 	// Se utiliza la función table_to_book de la librería SheetJS para convertir la tabla de resultados en un libro de Excel
 	const workbook=XLSX.utils.table_to_book(document.getElementById('tabla-resultados'));

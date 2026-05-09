@@ -64,6 +64,8 @@ try {
 try {
 	// Se define la consulta SQL para obtener los resultados agrupados por pregunta según los filtros seleccionados
 	$query = "
+	-- Consulta SQL para obtener los resultados agrupados por pregunta según los filtros seleccionados
+	-- DISTINCT se utiliza para evitar resultados duplicados ya que el alumno debe entregar varias respuestas.
 SELECT DISTINCT
 U.Matricula as Matricula,
 CONCAT(
@@ -92,6 +94,7 @@ JOIN Alumnos AL ON
 AL.Id_alumno = AA.Id_alumno
 JOIN Usuarios U ON
 U.Id_usuario = AL.Id_usuario
+-- Se utiliza LEFT JOIN para incluir a los alumnos que no han entregado la encuesta
 LEFT JOIN Respuestas R ON
 R.Id_encuesta = E.Id_encuesta AND R.Id_alumno = AL.Id_alumno
 WHERE
@@ -109,7 +112,7 @@ R.Id_encuesta IS NOT NULL AND E.Id_encuesta = ? AND AL.Id_carrera = ? AND AA.Id_
 	if (empty($tabla_resultado)) {                       
 		// Si no se obtienen resultados para la consulta, se devuelve un mensaje de error indicando que no hay resultados disponibles
 		http_response_code(404);
-		echo json_encode(['error' => 'No hay resultados para disponibles.']);
+		echo json_encode(['error' => 'No hay resultados disponibles.']);
 	} else {
 		// Si se obtienen resultados para la consulta, se devuelve el resultado en formato JSON
 		echo json_encode($tabla_resultado);

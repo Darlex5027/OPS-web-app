@@ -94,7 +94,7 @@ try {
 	if (empty($tabla_resultado)) {                       
 // Si no se obtienen resultados para la consulta, se devuelve un mensaje de error indicando que no hay resultados disponibles
 		http_response_code(404);
-		echo json_encode(['error' => 'No hay resultados para disponibles.']);
+		echo json_encode(['error' => 'No hay resultados disponibles para los filtros seleccionados.']);
 	} else {
 		// Si se obtienen resultados para la consulta, se devuelve el resultado en formato JSON
 		echo json_encode($tabla_resultado);

@@ -47,7 +47,8 @@ try {
 	// Se define la consulta SQL para obtener el promedio general según los filtros seleccionados
 	$query ="SELECT
 	-- Consulta SQL para obtener el promedio general según los filtros seleccionados
-	-- Se multiplica el promedio por 20 para convertirlo de una escaala 0-5 a una escala de 0 a 100
+	-- Se multiplica el promedio por 20 para convertirlo de una escaala 0-5 que es la manejada por las encuestas
+	-- a una escala de 0 a 100
 		ROUND(AVG(Respuestas.Respuesta + 0), 2)*20 AS Promedio_general
 	-- Se realiza uniones entre las tablas Preguntas, Respuestas, Alumnos y Actividades_Alumnos	
 		FROM Preguntas
@@ -63,7 +64,7 @@ try {
 		AND Respuestas.Id_servicio = Actividades_Alumnos.Id_servicio
 		-- Se filtran los resultados por el ID de la encuesta, el ID de la carrera, el tipo de periodo y el anio del periodo
 		WHERE Preguntas.Id_encuesta            = ?
-		AND Preguntas.Tipo_respuesta        IN ('ESCALA_1_5', 'ESCALA_1_10')
+		AND Preguntas.Tipo_respuesta        IN ('ESCALA_1_5')
 		AND Alumnos.Id_carrera               = ?
 		AND Actividades_Alumnos.periodo_tipo = ?
 		AND Actividades_Alumnos.periodo_año  = ?";

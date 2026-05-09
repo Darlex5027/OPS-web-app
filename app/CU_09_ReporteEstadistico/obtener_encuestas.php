@@ -31,9 +31,9 @@ try{
 // Se intenta ejecutar la consulta para obtener los nombres e IDs de las encuestas disponibles en la base de datos. Si ocurre un error, se devuelve un mensaje de error.
 try{
 	// Se define la consulta SQL para obtener los nombres e IDs de las encuestas disponibles en la base de datos
-	$catalogo_encuestas = $pdo -> query("SELECT DISTINCT Encuestas.Id_encuesta, Encuestas.Nombre From Encuestas");
+	$stmt = $pdo -> query("SELECT DISTINCT Encuestas.Id_encuesta, Encuestas.Nombre From Encuestas");
 	// Se obtiene el resultado de la consulta y se almacena en una variable
-	$catalogo_encuestas = $catalogo_encuestas -> fetchAll();
+	$catalogo_encuestas = $stmt -> fetchAll();
 
 	// Se verifica si el resultado de la consulta está vacío. Si es así, se devuelve un mensaje de error indicando que no hay encuestas disponibles. De lo contrario, se devuelve el catálogo de encuestas en formato JSON.
 	if(empty($catalogo_encuestas)){

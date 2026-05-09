@@ -59,23 +59,32 @@
 			<!-- Botones para generar reporte, exportar a Excel y PDF -->
 			<div class="buttons-group">
 				<!-- Botón para generar el reporte estadístico -->
-				<button onClick="handleCargarResumen()">Generar Resumen</button>
+				<button id="btnCargarResumen" onClick="handleCargarResumen()">Generar Resumen</button>
 				<!-- Botón para generar el reporte estadístico -->
-				<button onClick="handleCargarEntregados()">Entregados</button>
+				<button id="btnCargarEntregados" onClick="handleCargarEntregados()">Entregados</button>
 				<!-- Botón para generar el reporte estadístico -->
-				<button onClick="handleCargarPendientes()">Pendientes</button>
+				<button id="btnCargarPendientes" onClick="handleCargarPendientes()">Pendientes</button>
 				<!-- Botones para exportar el reporte a Excel-->
 				<button onClick="exportarExcel()" id="btnGenerarExcel" style="display: none">Generar Excel</button>
 				<!-- Botón para generar el PDF del reporte estadístico -->
 				<button onClick="imprimirPDF()" id="btnGenerarPDF" style="display: none">Generar PDF</button>
 			</div>
 			<!-- Tabla para mostrar los resultados del reporte estadístico -->
-			<div class="table">
+			<div class="table" id="div-tabla" >
 				<table id="tabla-resultados">
 					<caption id="titulo-tabla"></caption>
 					<tr id="Titulos">
 					</tr>
 					<tbody id="Tabla">
+					</tbody>
+				</table>
+			</div>
+			<div class="table" style="display: none" id="div-respuesta-individual">
+				<table id="Tabla-respuesta-individuale">
+					<caption id="Titulo-respuesta-individual"></caption>
+					<tr id="Titulos-respuesta-individual">
+					</tr>
+					<tbody id="Cuerpo-respuesta-individual">
 					</tbody>
 				</table>
 			</div>
@@ -95,6 +104,9 @@
 		<script type="module" src="./generar_tabla_entregados.js"></script>
 		<!--Script para la lógica del Tabla con la lista de alumnos que han completado el cuestionario-->
 		<script type="module" src="./generar_tabla_pendientes.js"></script>
+		<!--Script para mostrar la respuesta individual-->
+		<script type="module" src="./mostrar_respuesta_individual.js"></script>
+
 		<!--Script para revisar el tipo de usuario -->
 		<script type="module" src="./revision_tipo_usuario.js"></script>
 		<!--Script para generar el archivo Excel -->

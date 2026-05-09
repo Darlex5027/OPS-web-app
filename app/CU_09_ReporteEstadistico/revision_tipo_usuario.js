@@ -7,10 +7,10 @@
 */
 
 // Se obtiene el valor de la cookie "Id_tipo_usuario" para determinar el tipo de usuario que ha iniciado sesión
-const	idTipoUsuario=document.cookie.split('; ').find( r => r.startsWith('Id_tipo_usuario=')).split('=')[1];
+const	IdTipoUsuario=document.cookie.split('; ').find( r => r.startsWith('Id_tipo_usuario=')).split('=')[1];
 
 // Si el tipo de usuario es 2 (administrador), se redirige a la página de perfil gestionable
-if (idTipoUsuario == 2) {
+if (IdTipoUsuario == 2) {
 	window.location.href = "../CU_03_PerfilGestionable/perfil.html";
 }
 

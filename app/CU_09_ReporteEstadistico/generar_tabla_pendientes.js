@@ -18,6 +18,7 @@ const elPeriodo_anio= document.getElementById('slctPeriodoAnio');
 
 // Función para cargar los datos del reporte estadístico y generar la tabla de resultados
 function handleCargarPendientes(){
+	
 	// Se obtienen los valores seleccionados en los filtros de encuesta, periodo tipo y periodo año
 	if(elEncuestas.value === "NINGUNA"){
 		// Si no se ha seleccionado ninguna encuesta, se muestra un mensaje de error y se detiene la ejecución
@@ -72,11 +73,11 @@ function fetchRenderTabla(){
 		.then(function (respuesta){
 			return respuesta.json();
 		})
-		.then(function (impresion){
-			if(impresion.error){
+		.then(function (tabla){
+			if(tabla.error){
 				// Si hay un error al obtener los datos del reporte, 
 				// se muestra un mensaje de error y se ocultan los botones de Excel y PDF
-				lanzarToast(impresion.error,"error");
+				lanzarToast(tabla.error,"error");
 
 				elBtnPDF.style.display="none";
 				elBtnExcel.style.display="none";
@@ -86,10 +87,10 @@ function fetchRenderTabla(){
 
 			//Si la impresión es de tamaño 0 significa que la respuesta es un mensaje
 			//por lo que no se encontraron resultados.
-			if(impresion.length==0){
+			if(tabla.length==0){
 				// Si no se encontraron resultados para los filtros seleccionados,
 				// se muestra un mensaje de error y se ocultan los botones de Excel y PDF
-				lanzarToast("No se encontraron Resultados", "error");
+				lanzarToast("No se encontraron resultados", "error");
 				elBtnExcel.style.display="none";
 				elBtnPDF.style.display="none";
 				return;
@@ -97,12 +98,12 @@ function fetchRenderTabla(){
 			
 			// Renderizado de los títulos de la tabla, se toma el primer elemento de la 
 			// impresión para obtener los títulos de las columnas
-			Object.keys(impresion[0]).forEach(function(titulo){
+			Object.keys(tabla[0]).forEach(function(titulo){
 				// Por cada título, se agrega una celda de encabezado a la fila de títulos de la tabla
 				elTitulos.innerHTML=elTitulos.innerHTML+"<th>"+titulo+"</th>"
 			});
 			// Renderizado de las filas de la tabla.
-			impresion.forEach(function(fila){
+			tabla.forEach(function(fila){
 				// Se crea una variable para almacenar la estructura HTML de la fila de la tabla
 				let table="";
 
