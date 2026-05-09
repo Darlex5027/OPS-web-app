@@ -1,0 +1,82 @@
+<!--
+  Archivo     : pregunta_form.html
+  Módulo      : CU_12_CrearFormularios
+  Autor       : Daniela Hernandez Hernandez
+  Fecha       : 05/05/2026
+  Descripción : Formulario para registrar una nueva pregunta dentro de una encuesta,
+                con tipo de respuesta, sección, obligatoriedad y estado activo.
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8"> <!-- Soporte para caracteres especiales como ñ y tildes -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adaptación a móviles -->
+    <title>Encuestas</title>
+    <!-- Enlace al archivo CSS para estilos -->
+    <link rel="stylesheet" href="../css/prueba.css">
+</head>
+
+<body>
+    <!-- Barra lateral (menú de navegación) -->
+    <div class="sidebar">
+        <!-- Sección del perfil del usuario -->
+        <div class="profile">
+            <img src="../Imagenes/prueba.png" alt="perfil">
+            <h3>Mtra. M. Guadalupe</h3>
+        </div>
+        <!-- Menú de opciones -->
+        <div class="menu"></div>
+    </div>
+    <!-- Contenido principal de la página -->
+    <div class="main">
+        <!-- Encabezado superior -->
+        <div class="header">
+            <div></div><!-- Espacio vacío (puede ser para alineación) -->
+            <!-- Título de la sección -->
+            <h1>Encuestas</h1>
+            <!-- Logo en la parte derecha -->
+            <div class="header-logo-right">
+                <img src="../Imagenes/Logo.png" alt="Logo OPS">
+            </div>
+        </div>
+        <form>
+            <label>Pregunta</label>
+            <input type="text" id="inputPregunta">
+
+            <label>Tipo de respuesta</label>
+            <select id="selectTipoRespuesta">
+                <option value="">-- Seleccionar --</option>
+                <option value="ESCALA_1_5">Escala 1-5</option>
+                <option value="TEXTO">Texto</option>
+                <option value="BOOLEANO">Booleano</option>
+            </select>
+
+            <label>Sección</label>
+            <input type="text" id="inputSeccion" maxlength="1" oninput="this.value = this.value.toUpperCase()">
+
+            <label>Obligatoria</label>
+            <select id="selectObligatoria">
+                <option value="">-- Seleccionar --</option>
+                <option value="1">Sí</option>
+                <option value="0">No</option>
+            </select>
+
+            <label>Activo</label>
+            <select id="selectActivo">
+                <option value="">-- Seleccionar --</option>
+                <option value="1">Sí</option>
+                <option value="0">No</option>
+            </select>
+
+            <button type="button" onclick="guardarPregunta()">Guardar</button>
+        </form>
+    </div>
+    <script type="module" src="pregunta_form.js"></script>
+    <!-- Scripts que manejan la lógica de la página -->
+    <script type="module" src="../js/redireccion.js"></script>
+    <!-- Contenedor para mostrar mensajes tipo "toast" (notificaciones emergentes) -->
+    <div id="toast-mensaje" class="toast oculto"></div>
+</body>
+
+</html>
