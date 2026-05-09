@@ -689,12 +689,25 @@ CREATE TABLE Periodo_Encuesta (
     `Id_encuesta` INT NOT NULL,
     `Periodo_tipo` ENUM('primavera', 'otoño') NOT NULL,
     `Periodo_año` YEAR(4) NOT NULL,
-    `Fecha_creacion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `Fecha_creacion` DATETIME DEFAULT CURRENT_TIMESTAMP
     
     FOREIGN KEY (Id_encuesta) REFERENCES Encuestas(Id_encuesta) ON DELETE CASCADE,
     UNIQUE KEY unique_periodo_encuesta (Id_encuesta, Periodo_tipo, Periodo_año)
 );
 
+
+-- Crear evento para desactivar encuestas al cumplir fecha fin 
+SET GLOBAL event_scheduler = ON;
+
+DROP EVENT IF EXISTS desactivar_encuestas_vencidas;
+CREATE EVENT desactivar_encuestas_vencidas
+ON SCHEDULE EVERY 1 DAY 
+STARTS CONCAT(CURDATE() + INTERVAL 1 DAY, ' 00:00:00')  -- ← mañana, no hoy
+DO
+  UPDATE Encuestas 
+  SET Activo = 0 
+  WHERE Fecha_fin < CURDATE() 
+    AND Activo = 1;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
