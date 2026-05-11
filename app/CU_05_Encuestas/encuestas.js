@@ -9,17 +9,19 @@ const idAlumno = getCookie('Id_alumno');
 let encuestaActualId = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    /* COMENTA ESTO TEMPORALMENTE
     if (!idAlumno) {
         // Redirigir si no hay sesión para cumplir con el permiso de ALUMNO
         window.location.href = '../CU_01_Login/login.html';
         return;
     }
+    */
     cargarEncuestas();
 });
 
 async function cargarEncuestas() {
     try {
-        const resp = await fetch(`php/obtener_encuestas.php?alumno=${idAlumno}`);
+        const resp = await fetch(`obtener_encuestas.php?alumno=${idAlumno}`);
         const data = await resp.json();
         const encuestas = data.pendientes; // accede a la clave 'pendientes' solicitada
 
@@ -60,7 +62,7 @@ async function cargarEncuestas() {
 async function abrirEncuesta(id, nombre, desc) {
     encuestaActualId = id;
     try {
-        const resp = await fetch(`php/obtener_preguntas.php?encuesta=${id}`);
+        const resp = await fetch(`obtener_preguntas.php?encuesta=${id}`);
         const data = await resp.json(); // Obtiene el objeto completo
         const preguntas = data.preguntas; // Accede a la lista de preguntas
 
@@ -157,7 +159,7 @@ document.getElementById('form-encuesta').addEventListener('submit', async (e) =>
             Id_encuesta: encuestaActualId
         };
 
-        const response = await fetch('php/procesar_encuesta.php', {
+        const response = await fetch('procesar_encuesta.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)

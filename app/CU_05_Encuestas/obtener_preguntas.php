@@ -2,7 +2,7 @@
 /**
  * Archivo     : obtener_preguntas.php
  * Módulo      : CU_05_ResponderEncuestas
- * Autor       : Miguel Angel Bello Rivera
+ * Autor       : Francisco Angel Membrila Alarcón
  * Descripción : Obtiene las preguntas de una encuesta específica en formato JSON.
  */
 header('Content-Type: application/json');
