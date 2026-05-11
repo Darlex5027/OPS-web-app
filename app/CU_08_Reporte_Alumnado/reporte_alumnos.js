@@ -196,6 +196,16 @@ function cargar_tabla() {
 				htmlFila = htmlFila + "<tr>";
 				// Por cada titulo (celda) se agrega la celda a la estructura de la fila	
 				Object.keys(fila).forEach(function (dato) {
+
+
+					/** Si el dato es nulo, se muestra un guion para indicar 
+					* que no hay información disponible en lugar de dejar la celda vacía.
+					* Esto mejora la legibilidad de la tabla y evita confusiones sobre 
+					* si el dato no se cargó correctamente o simplemente no existe.
+					*/
+					if (fila[dato] === null) {
+						fila[dato] = "—";
+					}
 					//Se concatena el dato de la fila dentro de la celda
 					htmlFila = htmlFila + "<td>" + fila[dato] + "</td>";
 
