@@ -53,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Se renderiza el menú de navegación y se redirige al inicio de sesión si no hay cookies de sesión, y se cargan los catálogos para los filtros.
 	renderMenu();
-	redireccionar();
 	cargar_catalogos();
 });
 
