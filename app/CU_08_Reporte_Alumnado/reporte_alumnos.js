@@ -57,15 +57,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	cargar_catalogos();
 });
 
-/*
-* Si no hay cookies, se redirige al inicio de sesión automaticamente.
-*/
-function redireccionar() {
-	if (!document.cookie) {
-		window.location.href = "../CU_01_Login/login.html";
-	}
-}
-
 
 /*
 * CARGAR CATALOGOS EN LOS SELECT
