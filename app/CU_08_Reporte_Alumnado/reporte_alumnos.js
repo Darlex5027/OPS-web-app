@@ -12,6 +12,7 @@
 
 // Se importan las funciones obtenerCookie y renderMenu desde sus respectivos archivos para manejar las cookies de sesión y renderizar el menú de navegación.
 import { obtenerCookie } from '../js/cookie.js';
+import { lanzarToast } from '../js/lanzar_toast.js';
 import { renderMenu } from '../js/menu.js';
 
 // Se exponen las funciones cargar_tabla, exportarExcel e imprimirPDF al ámbito global para que puedan ser llamadas desde el HTML
@@ -230,23 +231,3 @@ function imprimirPDF() {
 	doc.save('reporte_alumnos.pdf');
 }
 
-
-function lanzarToast(texto, tipo) {
-
-	const elToast = document.getElementById('toast-mensaje');
-
-	// 1. Limpiamos clases previas y ponemos la nueva
-	elToast.className = 'toast'; // Resetea a la base
-	elToast.classList.add(tipo); // Agrega 'exito' o 'error'
-
-	// 2. Insertamos el texto
-	elToast.innerText = texto;
-
-	// 3. Mostramos
-	elToast.classList.remove('oculto');
-
-	// 4. Desvanecemos en 3 segundos
-	setTimeout(() => {
-		elToast.classList.add('oculto');
-	}, 3000);
-}
