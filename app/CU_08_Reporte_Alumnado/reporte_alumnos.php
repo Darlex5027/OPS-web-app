@@ -39,14 +39,15 @@ try {
 		Actividades_Alumnos.periodo_año,
 		Actividades_Alumnos.Fecha_inicio,
 		Actividades_Alumnos.Fecha_fin
-		FROM Alumnos 
+		FROM Alumnos
+		JOIN Usuarios ON Alumnos.Id_usuario=Usuarios.Id_usuario 
 		JOIN Carreras ON Alumnos.Id_Carrera=Carreras.Id_carrera 
 		JOIN Administradores ON Administradores.Id_Carrera=Carreras.Id_carrera 
 		JOIN Actividades_Alumnos on Actividades_Alumnos.Id_alumno=Alumnos.Id_alumno 
 		LEFT JOIN Empresas ON Actividades_Alumnos.Id_empresa=Empresas.Id_empresa 
 		JOIN Actividades ON Actividades_Alumnos.Id_servicio=Actividades.Id_servicio 
 		WHERE Administradores.Id_usuario=:Id_usuario
-		AND Alumnos.Activo=1";
+		AND Usuarios.Activo=1";
 
 	// Se prepara un arreglo de parámetros para la consulta, iniciando con el Id_usuario obtenido de la cookie de sesión
 	$filtros_consulta = ['Id_usuario' => $_COOKIE['Id_usuario']];
