@@ -19,7 +19,7 @@ try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 
     // =========================
-    // ADMIN / COORDINADOR
+    // ADMIN / MAESTROS
     // =========================
     if ($tipo_usuario == "1" || $tipo_usuario == "3") {
 
@@ -40,9 +40,9 @@ try {
 
         $consulta->execute([$id_usuario]);
 
-        // =========================
-        // ALUMNO
-        // =========================
+    // =========================
+    // ALUMNO
+    // =========================
     } elseif ($tipo_usuario == "2") {
 
         $consulta = $pdo->prepare("
@@ -57,8 +57,7 @@ try {
 
                 Carreras.Nombre AS Nombre_Carrera,
 
-                -- Actividades
-                Actividades_Alumnos.Id_alumno_servicio,
+                -- Actividades del alumno
                 Actividades_Alumnos.Id_alumno,
                 Actividades_Alumnos.Id_empresa,
                 Actividades_Alumnos.Area,
@@ -72,7 +71,8 @@ try {
                 Actividades_Alumnos.Fecha_modificacion,
 
                 -- Servicio y empresa
-                Actividades.Descripcion AS Nombre_servicio,
+                Actividades.Id_servicio,
+                Actividades.Servicio AS Nombre_servicio,
                 Empresas.Nombre AS Nombre_empresa
 
             FROM Alumnos
@@ -108,4 +108,4 @@ try {
     http_response_code(500);
     echo json_encode(['error' => 'Error de conexión: ' . $e->getMessage()]);
 }
-?>
+?>  
