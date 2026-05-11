@@ -1,0 +1,79 @@
+<!--
+  Archivo     : encuestas.html
+  Módulo      : CU_05_ResponderEncuestas
+  Autor       : Miguel Angel Bello Rivera
+  Fecha       : 11/05/2026
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuestas Pendientes - OPS</title>
+    <link rel="stylesheet" href="../css/stylesInicio.css">
+    <link rel="stylesheet" href="css/estilos_encuestas.css"> 
+    <!-- Importante para el ícono de éxito solicitado -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-logo-left"><img src="../Imagenes/logo.png" alt="Logo OPS"></div>
+        <div class="header-text">
+            <h1>
+                <div class="linea-1"><span>O</span>ptimización de</div>
+                <div class="linea-2"><span>P</span>racticas profesionales y</div>
+                <div class="linea-3"><span>S</span>ervicio social</div>
+            </h1>
+        </div>
+        <div class="header-logo-right"><img src="../Imagenes/FCBIyT.png" alt="Logo FCBIyT"></div>
+    </header>
+
+    <main class="container">
+        
+        <!-- 1. SECCIÓN DE LISTA DE ENCUESTAS -->
+        <div id="seccion-lista">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Mis Encuestas Pendientes</h2>
+                <!-- REQUERIMIENTO: Indicador de cuántas quedan -->
+                <span id="contador-encuestas" class="badge-pendientes"></span>
+            </div>
+
+            <div id="lista-encuestas">
+                <!-- JS insertará aquí las encuestas o el mensaje de éxito -->
+                <!-- REQUERIMIENTO: Mensaje '¡No tienes encuestas pendientes!' con ícono -->
+                <div id="estado-vacio" style="display: none; text-align: center;">
+                    <i class="fas fa-check-circle" style="color: green; font-size: 3rem;"></i>
+                    <p>¡No tienes encuestas pendientes!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. SECCIÓN DE FORMULARIO -->
+        <div id="contenedor-preguntas" style="display: none;">
+            <button type="button" class="btn-volver" onclick="volverALista()">← Volver a la lista</button>
+            
+            <h3 id="titulo-encuesta"></h3>
+            <p id="descripcion-encuesta" class="text-muted"></p>
+            <hr>
+
+            <form id="form-encuesta">
+                <!-- REQUERIMIENTO: Preguntas con asterisco (*) si son obligatorias -->
+                <div id="preguntas-dinamicas"></div>
+
+                <!-- REQUERIMIENTO: Botón 'Enviar respuestas' -->
+                <button type="submit" id="btn-enviar">Enviar respuestas</button>
+            </form>
+            
+            <!-- REQUERIMIENTO: Mensaje de éxito tras enviar -->
+            <p id="mensaje-feedback" style="display:none;"></p>
+        </div>
+
+    </main>
+
+    <script src="encuestas.js"></script>
+
+</body>
+</html>
