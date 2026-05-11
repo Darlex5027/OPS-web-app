@@ -36,5 +36,5 @@ try{
 
 } catch (\PDOException $e){
     http_response_code(500);
-        echo json_encode(['error' => "Error de conexión: " . $e->getMessage()]);
+        echo json_encode(['error' => "Hubo un error consultando los catálogos"]);
 }

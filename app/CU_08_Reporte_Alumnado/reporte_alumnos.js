@@ -82,7 +82,10 @@ function cargar_catalogos() {
 
 		// Se obtiene un objeto con los catalogos de servicios, estados y periodos
 		.then(function (catalogos) {
-
+			if(catalogos.error){
+				lanzarToast(catalogos.error, "error");
+				return;
+			}
 			// Se cargan los servicios disponibles para el filtro de actividades.
 			catalogos.servicios.forEach(function (servicio) {
 				//Se crea una opción con value como el Id_servicio de la actividad a cargar
@@ -177,6 +180,12 @@ function cargar_tabla() {
 		.then(function (resultadoReporte) {
 			//Si la impresión es de tamaño 0 significa que la respuesta es un mensaje
 			//por lo que no se encontraron resultados.
+			if(resultadoReporte.error){
+				lanzarToast(resultadoReporte.error, "error");
+				ocultarBotones();
+				return;
+			}
+
 			if (resultadoReporte.length == 0) {
 				lanzarToast("No se encontraron Resultados", "error");
 				ocultarBotones();
@@ -213,21 +222,29 @@ function cargar_tabla() {
 }
 
 function exportarExcel() {
-	// Se obtiene la tabla de resultados y se convierte a un libro de Excel usando SheetJS
-	event.preventDefault();
-	const workbook = XLSX.utils.table_to_book(document.getElementById('tabla-resultados'));
-	XLSX.writeFile(workbook, 'reporte_alumnos.xlsx');
+	try {
+		// Se obtiene la tabla de resultados y se convierte a un libro de Excel usando SheetJS
+		event.preventDefault();
+		const workbook = XLSX.utils.table_to_book(document.getElementById('tabla-resultados'));
+		XLSX.writeFile(workbook, 'reporte_alumnos.xlsx');
+	} catch (error) {
+		lanzarToast("Error al exportar a Excel", "error");
+	}
 }
 
 function imprimirPDF() {
+	try {
 	// Se obtiene la tabla de resultados y se convierte a un PDF usando jsPDF y jsPDF-AutoTable
-	const { jsPDF } = window.jspdf;
-		const doc = new jsPDF({
-		orientation: 'landscape',
-		unit: 'mm',
-		format: 'letter' // o 'a4' según prefieras
-	});
-	doc.autoTable({ html: '#tabla-resultados' });
-	doc.save('reporte_alumnos.pdf');
+		const { jsPDF } = window.jspdf;
+			const doc = new jsPDF({
+			orientation: 'landscape',
+			unit: 'mm',
+			format: 'letter' // o 'a4' según prefieras
+		});
+		doc.autoTable({ html: '#tabla-resultados' });
+		doc.save('reporte_alumnos.pdf');
+	} catch (error) {
+		lanzarToast("Error al exportar a PDF", "error");
+	}
 }
 
