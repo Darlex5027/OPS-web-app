@@ -63,7 +63,7 @@ body {
 .profile .btn.editar:hover {
     background: linear-gradient(135deg, #7d1f1f, #982b2b);
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .profile .btn.editar:active {
@@ -237,7 +237,8 @@ td {
     text-align: center;
 }
 
-th, td {
+th,
+td {
     border-bottom: 1px solid #eee;
 }
 
@@ -301,8 +302,13 @@ tr:hover {
     transition: 0.4s;
 }
 
-.toast.exito { background-color: #2ecc71; }
-.toast.error { background-color: #e74c3c; }
+.toast.exito {
+    background-color: #2ecc71;
+}
+
+.toast.error {
+    background-color: #e74c3c;
+}
 
 .toast.oculto {
     opacity: 0;
@@ -384,102 +390,7 @@ tr:hover {
         font-size: 12px;
     }
 }
-/* ===================================================== */
-/* ===== MODAL CONFIRMACION GRANDE ===== */
-/* ===================================================== */
 
-#modal-confirmacion {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.95);
-    width: 420px; /* MÁS GRANDE */
-    max-width: 90%;
-    background: #ffffff;
-    border-radius: 14px;
-    box-shadow: 0 12px 35px rgba(0,0,0,0.25);
-    padding: 30px 25px;
-    z-index: 999;
-    text-align: center;
-    animation: aparecerModal 0.3s ease forwards;
-}
-
-/* CONTENIDO INTERNO */
-#modal-confirmacion div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-}
-
-/* TEXTO */
-#modal-confirmacion p {
-    font-size: 17px; /* más grande */
-    color: #333;
-    line-height: 1.5;
-}
-
-/* CONTENEDOR BOTONES */
-#modal-confirmacion .botones {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-}
-
-/* BOTONES */
-#modal-confirmacion button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 25px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-/* CANCELAR */
-#modal-confirmacion button:first-of-type {
-    background: #bdc3c7;
-    color: #2c3e50;
-}
-
-#modal-confirmacion button:first-of-type:hover {
-    background: #95a5a6;
-}
-
-/* RECHAZAR */
-#modal-confirmacion button:last-of-type {
-    background: linear-gradient(135deg, #e74c3c, #c0392b);
-    color: white;
-}
-
-#modal-confirmacion button:last-of-type:hover {
-    background: linear-gradient(135deg, #c0392b, #a93226);
-}
-
-/* ANIMACION */
-@keyframes aparecerModal {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -60%) scale(0.85);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-    }
-}   
-/* ===================================================== */
-/* ===== EVITAR QUE EL HEADER CAMBIE DE COLOR ===== */
-/* ===================================================== */
-
-/* Mantiene rojo aunque pases el mouse */
-thead tr:hover {
-    background: linear-gradient(135deg, #982b2b, #b23a3a) !important;
-}
-
-/* Asegura que el texto siga blanco */
-thead th {
-    color: white !important;
-}
 /* ===================================================== */
 /* ===== MODAL CONFIRMACION GRANDE ===== */
 /* ===================================================== */
@@ -493,14 +404,13 @@ thead th {
     max-width: 90%;
     background: #ffffff;
     border-radius: 14px;
-    box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
     padding: 30px 25px;
     z-index: 999;
     text-align: center;
     animation: aparecerModal 0.3s ease forwards;
 }
 
-/* CONTENIDO INTERNO */
 #modal-confirmacion div {
     display: flex;
     flex-direction: column;
@@ -508,51 +418,18 @@ thead th {
     gap: 15px;
 }
 
-/* TEXTO */
 #modal-confirmacion p {
     font-size: 17px;
     color: #333;
     line-height: 1.5;
 }
 
-/* ===== INPUT / TEXTAREA ===== */
-#modal-confirmacion input,
-#modal-confirmacion textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-    outline: none;
-    transition: 0.2s;
-}
-
-/* EFECTO FOCUS */
-#modal-confirmacion input:focus,
-#modal-confirmacion textarea:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 5px rgba(52,152,219,0.4);
-}
-
-/* ===== ORDEN: INPUT ARRIBA, BOTONES ABAJO ===== */
-#modal-confirmacion input,
-#modal-confirmacion textarea {
-    order: 2;
-}
-
-#modal-confirmacion .botones {
-    order: 3;
-}
-
-/* CONTENEDOR BOTONES */
 #modal-confirmacion .botones {
     display: flex;
     gap: 15px;
     justify-content: center;
-    width: 100%;
 }
 
-/* BOTONES */
 #modal-confirmacion button {
     padding: 10px 20px;
     border: none;
@@ -562,7 +439,6 @@ thead th {
     transition: 0.3s;
 }
 
-/* CANCELAR */
 #modal-confirmacion button:first-of-type {
     background: #bdc3c7;
     color: #2c3e50;
@@ -572,7 +448,6 @@ thead th {
     background: #95a5a6;
 }
 
-/* RECHAZAR */
 #modal-confirmacion button:last-of-type {
     background: linear-gradient(135deg, #e74c3c, #c0392b);
     color: white;
@@ -582,26 +457,55 @@ thead th {
     background: linear-gradient(135deg, #c0392b, #a93226);
 }
 
-/* ANIMACION */
+#modal-confirmacion input,
+#modal-confirmacion textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    outline: none;
+    transition: 0.2s;
+    order: 2;
+}
+
+#modal-confirmacion input:focus,
+#modal-confirmacion textarea:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.4);
+}
+
+#modal-confirmacion .botones {
+    order: 3;
+    width: 100%;
+}
+
 @keyframes aparecerModal {
     from {
         opacity: 0;
         transform: translate(-50%, -60%) scale(0.85);
     }
+
     to {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
     }
 }
-/*
-/
+
+/* ===================================================== */
+/* ===== EVITAR QUE EL HEADER CAMBIE DE COLOR ===== */
+/* ===================================================== */
+thead tr:hover {
+    background: linear-gradient(135deg, #982b2b, #b23a3a) !important;
+}
+
+thead th {
+    color: white !important;
+}
 
 /* ===================================================== */
 /* ===== CONTROLES EN FILA (SELECTS + BOTONES) ===== */
 /* ===================================================== */
-
-
-/* SELECTS */
 .main select {
     width: 200px;
     padding: 10px 12px;
@@ -615,10 +519,9 @@ thead th {
 
 .main select:focus {
     border-color: #982b2b;
-    box-shadow: 0 0 5px rgba(152,43,43,0.3);
+    box-shadow: 0 0 5px rgba(152, 43, 43, 0.3);
 }
 
-/* BOTONES */
 .main button {
     padding: 10px 16px;
     margin: 8px;
@@ -633,10 +536,9 @@ thead th {
 
 .main button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* COLORES ESPECIALES */
 #btnGenerarExcel {
     background: linear-gradient(135deg, #27ae60, #2ecc71);
 }
@@ -645,25 +547,6 @@ thead th {
     background: linear-gradient(135deg, #e74c3c, #c0392b);
 }
 
-/* TABLA MÁS ARRIBA */
-.table {
-    margin-top: 15px;
-    width: 95%;
-}
-
-/* RESPONSIVE */
-@media (max-width: 900px) {
-    .main select,
-    .main button {
-        width: 90%;
-        display: block;
-    }
-}
-/* ===================================================== */
-/* ===== CONTROLES EN FILA (SELECTS + BOTONES) ===== */
-/* ===================================================== */
-
-/* Fila de controles - versión con selects izquierda y botones derecha */
 .controls-row {
     display: flex;
     flex-wrap: wrap;
@@ -674,7 +557,6 @@ thead th {
     margin-bottom: 20px;
 }
 
-/* Grupo de selects (izquierda) */
 .selects-group {
     display: flex;
     flex-wrap: wrap;
@@ -682,7 +564,6 @@ thead th {
     align-items: center;
 }
 
-/* Grupo de botones (derecha) */
 .buttons-group {
     display: flex;
     flex-wrap: wrap;
@@ -690,7 +571,6 @@ thead th {
     justify-content: flex-end;
 }
 
-/* SELECTS */
 .selects-group select {
     width: 200px;
     padding: 10px 12px;
@@ -703,10 +583,9 @@ thead th {
 
 .selects-group select:focus {
     border-color: #982b2b;
-    box-shadow: 0 0 5px rgba(152,43,43,0.3);
+    box-shadow: 0 0 5px rgba(152, 43, 43, 0.3);
 }
 
-/* BOTONES */
 .buttons-group button {
     padding: 10px 16px;
     border: none;
@@ -720,42 +599,260 @@ thead th {
 
 .buttons-group button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* COLORES ESPECIALES */
-#btnGenerarExcel {
-    background: linear-gradient(135deg, #27ae60, #2ecc71);
-}
-
-#btnGenerarPDF {
-    background: linear-gradient(135deg, #e74c3c, #c0392b);
-}
-
-/* TABLA MÁS ARRIBA */
-.table {
-    margin-top: 15px;
-    width: 95%;
-}
-
-/* RESPONSIVE */
 @media (max-width: 900px) {
     .controls-row {
         flex-direction: column;
         align-items: stretch;
     }
-    
-    .selects-group {
-        justify-content: center;
-    }
-    
+
+    .selects-group,
     .buttons-group {
         justify-content: center;
     }
-    
+
     .selects-group select,
     .buttons-group button {
         width: 90%;
         display: block;
     }
+}
+
+/* ===================================================== */
+/* ===== PERFIL ALUMNO - FORMULARIOS EN DOS COLUMNAS ===== */
+/* ===================================================== */
+
+/* ✅ Contenedor principal: dos formularios lado a lado */
+.contenedor-alumno {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    /* ✅ Alinea desde arriba, no estira */
+}
+
+/* ✅ Cada formulario ocupa la mitad del espacio */
+.contenedor-alumno form {
+    flex: 1;
+    min-width: 280px;
+    /* ✅ Mínimo para que no colapse */
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 16px;
+}
+
+/* ✅ Título de cada formulario */
+.contenedor-alumno form h3 {
+    color: #982b2b;
+    font-size: 16px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #982b2b;
+}
+
+/* ✅ Cada par label + input en su propia fila */
+.contenedor-alumno form label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-top: 10px;
+    margin-bottom: 4px;
+}
+
+/* ✅ Inputs dentro del contenedor alumno */
+.contenedor-alumno form input {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+    background-color: #fff;
+    color: #333;
+    transition: border 0.2s;
+}
+
+/* ✅ Resaltar input habilitado (editable) */
+.contenedor-alumno form input:not([disabled]):not([readonly]) {
+    border-color: #982b2b;
+    background-color: #fff8f8;
+}
+
+/* ✅ Input deshabilitado con aspecto claro */
+.contenedor-alumno form input:disabled {
+    background-color: #f0f0f0;
+    color: #888;
+    cursor: not-allowed;
+}
+
+/* ===================================================== */
+/* ===== PERFIL ADMIN - FORMULARIO ÚNICO ===== */
+/* ===================================================== */
+
+/* ✅ Formulario admin: grid de dos columnas para label + input */
+#perfil_administrador {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 10px 16px;
+    align-items: center;
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 16px;
+}
+
+#perfil_administrador label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    text-align: right;
+}
+
+#perfil_administrador input {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+    background-color: #fff;
+    color: #333;
+    width: 100%;
+}
+
+#perfil_administrador input:not([disabled]):not([readonly]) {
+    border-color: #982b2b;
+    background-color: #fff8f8;
+}
+
+#perfil_administrador input:disabled {
+    background-color: #f0f0f0;
+    color: #888;
+    cursor: not-allowed;
+}
+
+/* ===================================================== */
+/* ===== FOTO DE PERFIL ===== */
+/* ===================================================== */
+.subir-foto {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.subir-foto h3 {
+    color: #982b2b;
+    margin-bottom: 10px;
+}
+
+.subir-foto img {
+    display: block;
+    margin: 10px auto;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+}
+
+#btn_seleccionar_foto,
+#btn_subir_foto {
+    margin: 5px;
+}
+
+/* ===================================================== */
+/* ===== RESPONSIVE PERFIL ALUMNO ===== */
+/* ===================================================== */
+@media (max-width: 768px) {
+    .contenedor-alumno {
+        flex-direction: column;
+    }
+
+    .contenedor-alumno form {
+        width: 100%;
+    }
+
+    #perfil_administrador {
+        grid-template-columns: 1fr;
+    }
+
+    #perfil_administrador label {
+        text-align: left;
+    }
+}
+
+/* =========================
+           MODAL NUEVA EMPRESA
+        ========================= */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-contenido {
+    background: #fff;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    animation: aparecer 0.2s ease;
+}
+
+@keyframes aparecer {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-contenido h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #7b1e1e;
+}
+
+.modal-contenido label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.modal-contenido input,
+.modal-contenido textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.modal-contenido textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.acciones-modal {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn.crear {
+    margin-top: 10px;
+    width: 100%;
 }
