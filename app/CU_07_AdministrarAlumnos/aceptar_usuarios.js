@@ -9,7 +9,7 @@ cambios. Su función principal es actualizar el estado del alumno a aceptado.
 */
 
 // Importa la función cargarAlumnos desde otro archivo JS
-import { cargarInformacion } from './obtener_alumnos.js';
+import { cargarInformacion } from './admin_usuarios.js';
 import { lanzarToast } from '../js/lanzar_toast.js';
 // Exporta la función aceptarAlumno para que pueda usarse en otros archivos
 export { aceptarAlumno };
@@ -17,8 +17,7 @@ export { aceptarCoordinador };
 // Función para aceptar a un alumno, recibe la matrícula como parámetro
 function aceptarAlumno(matricula) {
     renderModalExpediente(
-        'Añadir No. de expediente', matricula, function (expediente) {
-            console.log(expediente);
+        `Añadir No. de expediente al alumno con matrícula ${matricula}?`, function (expediente) {
             fetch("cargar_expediente.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -26,14 +25,17 @@ function aceptarAlumno(matricula) {
                     matricula: matricula,
                     no_expediente: expediente
                 })
-                
+
             })
-            .then(function (respuesta) {
-                console.log("Status:", respuesta.status);
-                return respuesta.json();
-            })
+                .then(function (respuesta) {
+                    return respuesta.json();
+                })
                 .then(function (datosExp) {
-                if (datosExp.success) {
+                    if (datosExp.error) {
+                        lanzarToast(datosExp.error, "error");
+                        return
+                    }
+                    if (datosExp.success) {
                         // Se hace una petición al servidor (PHP) usando fetch
                         return fetch("procesar_validacion.php", {
                             method: "POST",// Método de envío
@@ -48,20 +50,23 @@ function aceptarAlumno(matricula) {
                     }
                 })
                 .then(function (respuesta) {
-                if (!respuesta) return; // Si hubo error antes, no continuar
-                return respuesta.json();
-            })
+                    if (!respuesta) return; // Si hubo error antes, no continuar
+                    return respuesta.json();
+                })
                 // Procesamos los datos recibidos del servidor
                 .then(function (datos) {
-                if (!datos) return;
-                if (datos.success) {
-                    lanzarToast("¡Expediente guardado y alumno aceptado!", "exito");
-                    cargarInformacion();
-                }
-            })
+                    if (datos.error) {
+                        lanzarToast(datos.error, "error");
+                        return
+                    }
+                    if (datos.success) {
+                        lanzarToast("¡Expediente guardado y alumno aceptado!", "exito");
+                        cargarInformacion();
+                    }
+                })
                 // Captura errores en caso de que falle la petición
                 .catch(function (error) {
-                    console.error("Error", error);
+                    lanzarToast("No se pudo aceptar al alumno", "error");
                 })
         }
     )
@@ -93,11 +98,11 @@ function aceptarCoordinador(matricula) {
         })
         // Captura errores en caso de que falle la petición
         .catch(function (error) {
-            console.error("Error", error);
+            lanzarToast("No se pudo aceptar al coordinador", "error");
         })
 }
 
-function renderModalExpediente(mensaje, matricula, onConfirmar) {
+function renderModalExpediente(mensaje, onConfirmar) {
     const elModalPrevio = document.getElementById('modal-confirmacion');
     if (elModalPrevio) elModalPrevio.remove();
 
@@ -135,6 +140,6 @@ function renderModalExpediente(mensaje, matricula, onConfirmar) {
     elContenido.appendChild(elBtnCancelar);
     elContenido.appendChild(elBtnEnviar);
     elContenido.appendChild(elInputExpediente);
-    elFondo.appendChild(elContenido); 
+    elFondo.appendChild(elContenido);
     document.body.appendChild(elFondo);
 }

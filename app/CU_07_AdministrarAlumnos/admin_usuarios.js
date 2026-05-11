@@ -10,10 +10,10 @@ para aceptar o rechazar. Es el encargado de conectar los datos del backend con l
 // Exporta la función cargarAlumnos para que pueda usarse en otros archivos
 export { cargarInformacion };
 // Importa las funciones para aceptar y rechazar alumnos
-import { aceptarAlumno } from './aceptar_alumnos.js';
-import { rechazarAlumno } from './rechazar_alumnos.js';
-import { rechazarCoordinador } from './rechazar_alumnos.js';
-import { aceptarCoordinador } from './aceptar_alumnos.js';
+import { aceptarAlumno } from './aceptar_usuarios.js';
+import { rechazarAlumno } from './rechazar_usuarios.js';
+import { rechazarCoordinador } from './rechazar_usuarios.js';
+import { aceptarCoordinador } from './aceptar_usuarios.js';
 import { obtenerCookie } from '../js/cookie.js';
 import { lanzarToast } from '../js/lanzar_toast.js';
 
@@ -23,13 +23,12 @@ window.aceptarCoordinador = aceptarCoordinador;
 window.rechazarCoordinador = rechazarCoordinador;
 window.aceptarAlumno = aceptarAlumno;
 window.rechazarAlumno = rechazarAlumno;
-window.obtenerCookie = obtenerCookie;
+//------------------window.obtenerCookie = obtenerCookie;
 
 // Espera a que el DOM (HTML) esté completamente cargado
 document.addEventListener("DOMContentLoaded", function () {
     renderMenu();
-    // Llama a la función para cargar los alumnos al iniciar la página
-    //cargarAlumnos();
+    // Llama a la función para cargar los usuarios al iniciar la página
     if (obtenerCookie('Id_tipo_usuario') == "1") {
         console.log(obtenerCookie('Id_tipo_usuario'))
         document.getElementById("div-coordinadores").style.display = "block"
@@ -50,25 +49,29 @@ document.addEventListener("DOMContentLoaded", function () {
 function cargarInformacion() {
     const tipoUsuario = obtenerCookie('Id_tipo_usuario');
     // Hace una petición al archivo PHP
-    fetch("obtener_alumnos_pendientes.php")
+    fetch("obtener_usuarios_pendientes.php")
         // Convierte la respuesta a JSON
         .then(function (respuesta) {
             return respuesta.json();
         })
         // Envía los datos a la función que llena la tabla
         .then(function (datos) {
+            if (datos.error) {
+                lanzarToast(datos.error, "error");
+                return
+            }
             if (tipoUsuario == '1') {
                 renderTablaAlumnos(datos.alumnos);
                 renderTablaCoordinadores(datos.coordinadores);
             } else if (tipoUsuario == '3') {
                 renderTablaAlumnos(datos.alumnos);
-            } else if (tipoUsuario == '2'){
-                window.location.href='../CU_03_PerfilGestionable/perfil.html'
+            } else if (tipoUsuario == '2') {
+                window.location.href = '../CU_03_PerfilGestionable/perfil.html'
             }
         })
         // Captura errores en caso de fallo
         .catch(function (error) {
-            console.error("Error", error);
+            lanzarToast("No se pudieron cargar", "error");
         })
 }
 
@@ -76,13 +79,16 @@ function cargarInformacion() {
 // Función que llena la tabla con los datos recibidos
 function renderTablaAlumnos(alumnos) {
     // Obtiene el elemento <tbody> donde se insertarán las filas
-    const elTbodyAlumnos  = document.getElementById("tabla-alumnos");
+    const elTbodyAlumnos = document.getElementById("tabla-alumnos");
     // Limpia la tabla antes de volver a llenarla
     elTbodyAlumnos.innerHTML = "";
 
     // Si no hay alumnos pendientes
     if (alumnos.length == 0) {
-        lanzarToast("¡No hay alumnos pendientes!    ", "error");
+        
+        setTimeout(() => {
+            lanzarToast("¡No hay alumnos pendientes!    ", "error");
+        }, 3000);
     } else {
         // Recorre el arreglo de alumnos
         alumnos.forEach(function (alumno) {
@@ -102,7 +108,7 @@ function renderTablaAlumnos(alumnos) {
         <button onclick="rechazarAlumno('${alumno.Matricula}')">Rechazar</button></td>
         `;
             // Agrega la fila al tbody
-            elTbodyAlumnos .appendChild(elFila);
+            elTbodyAlumnos.appendChild(elFila);
         });
     }
 }
