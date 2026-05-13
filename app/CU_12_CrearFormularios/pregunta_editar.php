@@ -32,7 +32,8 @@ try {
 
         echo json_encode(['success' => true, 'mensaje' => 'Pregunta actualizada']);
     } else {
-        $stmt = $pdo->prepare("SELECT 
+        $stmt = $pdo->prepare("SELECT
+        Orden, 
         Pregunta, 
         Tipo_respuesta, 
         Seccion, 

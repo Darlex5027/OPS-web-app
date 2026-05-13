@@ -6,8 +6,13 @@
 //                valida el formulario y envía los cambios al servidor.
 import { renderMenu } from "../js/menu.js";
 import { lanzarToast } from "../js/lanzar_toast.js";
+import { obtenerCookie } from '../js/cookie.js';
 
 document.addEventListener('DOMContentLoaded', function () {
+    const cookieTipoUsuario = obtenerCookie('Id_tipo_usuario');
+    if (cookieTipoUsuario == 2) {
+        window.location.href = '../CU_03_PerfilGestionable/perfil.html';
+    }
     renderMenu();
     const params = new URLSearchParams(window.location.search);
     // Obtiene el ID de la pregunta desde la URL
@@ -36,11 +41,13 @@ function fetchPregunta(idPregunta) {
 }
 // Pre-llena el formulario con los datos actuales de la pregunta
 function renderPregunta(pregunta) {
+    document.getElementById('outputOrden').textContent = pregunta[0].Orden;
     document.getElementById('inputPregunta').value = pregunta[0].Pregunta;
     document.getElementById('selectTipoRespuesta').value = pregunta[0].Tipo_respuesta;
     document.getElementById('inputSeccion').value = pregunta[0].Seccion;
     document.getElementById('selectObligatoria').value = pregunta[0].Obligatoria;
     document.getElementById('selectActivo').value = pregunta[0].Activo;
+    console.log(pregunta[0])
 }
 // Valida el formulario y envía los datos actualizados de la pregunta al servidor
 function editarPregunta() {
@@ -83,14 +90,21 @@ function editarPregunta() {
             lanzarToast("No se pudo guardar la pregunta", "error");
         });
 }
+
+function cancelarPregunta() {
+    const params = new URLSearchParams(window.location.search);
+    const idEncuesta = params.get('Id_encuesta');
+    window.location.href = `./preguntas_lista.html?Id_encuesta=${idEncuesta}`;
+}
+
 // Valida que ningún campo del formulario esté vacío
 function validarFormulario() {
     const nombres = {
-        "inputPregunta": "pregunta",
-        "selectTipoRespuesta": "tipo de respuesta",
-        "inputSeccion": "seccion",
-        "selectObligatoria": "obligatoria",
-        "selectActivo": "activo"
+        "inputPregunta": "Pregunta",
+        "selectTipoRespuesta": "Tipo de respuesta",
+        "inputSeccion": "Seccion",
+        "selectObligatoria": "Obligatoria",
+        "selectActivo": "Activo"
     };
 
     const campos = ["inputPregunta", "selectTipoRespuesta", "inputSeccion", "selectObligatoria", "selectActivo"];
@@ -106,5 +120,6 @@ function validarFormulario() {
     return true;
 }
 // Expone las funciones al scope global para que los botones del HTML puedan invocarlas
+window.cancelarPregunta = cancelarPregunta;
 window.editarPregunta = editarPregunta;
 window.validarFormulario = validarFormulario;

@@ -55,7 +55,7 @@ try {
         Periodo_tipo, Periodo_año 
         FROM Encuestas JOIN Periodo_Encuesta 
         ON Encuestas.Id_encuesta = Periodo_Encuesta.Id_encuesta 
-        WHERE Encuestas.Id_encuesta=?");
+        WHERE Encuestas.Id_encuesta=? order by Periodo_año ASC");
         $stmt->execute([$id_encuesta]);
         $encuestas = [];
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $fila) {

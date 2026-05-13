@@ -42,7 +42,7 @@
         </div>
         <form>
             <label>Pregunta</label>
-            <input type="text" id="inputPregunta">
+            <input type="text" id="inputPregunta" placeholder="Pregunta" >
 
             <label>Tipo de respuesta</label>
             <select id="selectTipoRespuesta">
@@ -53,7 +53,7 @@
             </select>
 
             <label>Sección</label>
-            <input type="text" id="inputSeccion" maxlength="1" oninput="this.value = this.value.toUpperCase()">
+            <input type="text" id="inputSeccion" maxlength="1" placeholder="Solo una letra" oninput="this.value = this.value.replace(/[^a-zA-ZñÑ]/g, '').toUpperCase()">
 
             <label>Obligatoria</label>
             <select id="selectObligatoria">
@@ -70,6 +70,7 @@
             </select>
 
             <button type="button" onclick="guardarPregunta()">Guardar</button>
+            <button type="button" onclick="cancelarPregunta()">Cancelar</button>
         </form>
     </div>
     <script type="module" src="pregunta_form.js"></script>

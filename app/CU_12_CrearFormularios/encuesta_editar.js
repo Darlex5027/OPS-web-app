@@ -6,12 +6,19 @@
 //                y eliminar periodos, y guarda los cambios mediante confirmación modal.
 import { renderMenu } from "../js/menu.js";
 import { lanzarToast } from "../js/lanzar_toast.js";
+import { obtenerCookie } from '../js/cookie.js';
 
 document.addEventListener('DOMContentLoaded', function () {
     renderMenu();
     const params = new URLSearchParams(window.location.search);
     // Obtiene el ID de la encuesta desde la URL
     const idEncuesta = params.get('Id_encuesta');
+
+    const cookieTipoUsuario = obtenerCookie('Id_tipo_usuario');
+    if (cookieTipoUsuario == 2) {
+        window.location.href = '../CU_03_PerfilGestionable/perfil.html';
+    }
+
     // Primero carga los servicios, luego la encuesta (para que el select ya esté poblado)
     fetchServicios(idEncuesta);
 });
@@ -28,11 +35,9 @@ function fetchEncuesta(idEncuesta) {
             return respuesta.json();
         })
         .then(function (respuesta) {
-            console.log(respuesta);
             renderEncuesta(respuesta.data);
         })
         .catch(function (error) {
-            console.log(error);
             lanzarToast("La encuesta no se pudo cargar", "error");
         });
 }
@@ -69,14 +74,25 @@ function renderEncuesta(encuesta) {
     document.getElementById('selectActivo').value = encuesta[0].Activo;
     const elDivPeriodos = document.getElementById('divPeriodos');
     // Renderiza cada periodo con su botón de eliminar
-    encuesta[0].periodos.forEach(function (periodo) {
-        elDivPeriodos.innerHTML += `
+    const contPeriodos = encuesta[0].periodos.length
+    if (contPeriodos > 1) {
+        encuesta[0].periodos.forEach(function (periodo) {
+            elDivPeriodos.innerHTML += `
         <div>
             ${periodo.Periodo_tipo} ${periodo['Periodo_año']}
             <button type="button" onclick="eliminarPeriodo(${periodo.Id_periodo_encuesta})" >Eliminar</button>
         </div>  
     `;
-    });
+        });
+    } else {
+        encuesta[0].periodos.forEach(function (periodo) {
+            elDivPeriodos.innerHTML += `
+        <div>
+            ${periodo.Periodo_tipo} ${periodo['Periodo_año']}
+        </div>  
+    `;
+        });
+    }
     document.getElementById('inputFechaFin').value = encuesta[0].Fecha_fin;
 }
 // Valida y envía un nuevo periodo para agregarlo a la encuesta
@@ -241,10 +257,10 @@ function editarEncuestas() {
 // y que la fecha de expiración sea mayor a hoy si la encuesta está activa
 function validarFormulario() {
     const nombres = {
-        "inputNombre": "nombre",
-        "inputDescripcion": "descripcion",
-        "selectServicio": "servicio",
-        "selectActivo": "activo",
+        "inputNombre": "Nombre",
+        "inputDescripcion": "Descripcion",
+        "selectServicio": "Servicio",
+        "selectActivo": "Activo",
         "inputFechaFin": "Fecha de expiración"
     };
 

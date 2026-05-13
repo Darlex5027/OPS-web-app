@@ -7,8 +7,13 @@
 
 import { renderMenu } from "../js/menu.js";
 import { lanzarToast } from "../js/lanzar_toast.js";
+import { obtenerCookie } from '../js/cookie.js';
 
 document.addEventListener('DOMContentLoaded', function () {
+    const cookieTipoUsuario = obtenerCookie('Id_tipo_usuario');
+    if (cookieTipoUsuario == 2) {
+        window.location.href = '../CU_03_PerfilGestionable/perfil.html';
+    }
     renderMenu();
     fetchServicios();
 });
@@ -81,12 +86,12 @@ function guardarEncuesta() {
 // y que la fecha de expiración sea mayor a hoy
 function validarFormulario() {
     const nombres = {
-        "inputNombre": "nombre",
-        "inputDescripcion": "descripcion",
-        "selectServicio": "servicio",
+        "inputNombre": "Nombre",
+        "inputDescripcion": "Descripcion",
+        "selectServicio": "Servicio",
         "selectPeriodoTipo": "Tipo de periodo",
-        "inputPeriodoAnio": "año",
-        "selectActivo": "activo",
+        "inputPeriodoAnio": "Año",
+        "selectActivo": "Activo",
         "inputFechaFin": "Fecha de expiración"
     };
 

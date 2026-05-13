@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('btnNuevaEncuesta').style.display = 'block';
     } else if (cookieTipoUsuario == 3) {
         document.getElementById('btnNuevaEncuesta').style.display = 'none';
+    } else {
+        window.location.href = '../CU_03_PerfilGestionable/perfil.html';
     }
 });
 // Consulta la lista de encuestas al servidor y las manda a renderizar

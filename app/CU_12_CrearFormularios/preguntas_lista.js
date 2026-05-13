@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if (cookieTipoUsuario == 3) {
         document.getElementById('btnNuevaPregunta').style.display = 'none';
         document.getElementById('elAccion').style.display = 'none';
+    } else {
+        window.location.href = '../CU_03_PerfilGestionable/perfil.html';
     }
 });
 // Consulta las preguntas de la encuesta al servidor y las manda a renderizar
@@ -41,7 +43,12 @@ function fetchPreguntas(idEncuesta) {
             return respuesta.json();
         })
         .then(function (respuesta) {
-            renderPreguntas(respuesta.data, idEncuesta);
+            if(respuesta.data && respuesta.data.length > 0){
+                renderPreguntas(respuesta.data, idEncuesta);
+            } else{
+                lanzarToast("No hay preguntas", "exito")
+            }
+            
         })
         .catch(function (error) {
             lanzarToast("La encuesta no se pudo cargar", "error");
@@ -55,17 +62,24 @@ function renderPreguntas(preguntas, idEncuesta) {
     const tieneRespuestas = preguntas.some(function (pregunta) {
         return pregunta.total_respuestas > 0;
     });
-    if (tieneRespuestas) {
-        document.getElementById('btnNuevaPregunta').style.display = 'none';
-        document.getElementById('elAccion').style.display = 'none';
-    }
-    else {
+
+    if (cookieTipoUsuario == 1 && !tieneRespuestas) {
         document.getElementById('btnNuevaPregunta').style.display = 'block';
         document.getElementById('elAccion').style.display = 'block';
     }
+    else {
+        document.getElementById('btnNuevaPregunta').style.display = 'none';
+        document.getElementById('elAccion').style.display = 'none';
+    }
     preguntas.forEach(function (pregunta) {
         // Muestra el botón de editar solo si es admin y la pregunta no tiene respuestas
-        const btnEditar = cookieTipoUsuario == 1 && pregunta.total_respuestas == 0 ? `<td><button onclick="window.location.href='pregunta_editar.html?Id_pregunta=${pregunta.Id_pregunta}&Id_encuesta=${idEncuesta}'">Editar</button></td>` : '';
+        //const btnEditar = cookieTipoUsuario == 1 && pregunta.total_respuestas == 0 ? `<td><button onclick="window.location.href='pregunta_editar.html?Id_pregunta=${pregunta.Id_pregunta}&Id_encuesta=${idEncuesta}'">Editar</button></td>` : '';
+        var btnEditar = '';
+        if (cookieTipoUsuario == 1 && pregunta.total_respuestas == 0) {
+            btnEditar = `<td><button onclick="window.location.href='pregunta_editar.html?Id_pregunta=${pregunta.Id_pregunta}&Id_encuesta=${idEncuesta}'">Editar</button></td>`;
+        } else {
+            btnEditar = '';
+        }
         const elFila = document.createElement("tr");
         elFila.innerHTML = `
         <td>${pregunta.Seccion}</td>
