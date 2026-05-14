@@ -2,7 +2,7 @@
 /**
  * Archivo      : obtener_catalogos.php
  * Módulo       : CU_02_RegistroUsuario
- * Autor        : Francisco Angel Membrilla Alarcon
+ * Autor        : Francisco Angel Membrila Alarcón
  * Fecha        : 21/04/2026
  * Descripción  : Endpoint que procesa la obtención de catálogos. Valida los datos
  * y los almacena en la base de datos MariaDB.
@@ -21,7 +21,6 @@ try {
     $stmt = $pdo->prepare("
         SELECT Id_facultad, Nombre
         FROM Facultades
-        WHERE Activo = 1
         ORDER BY Nombre
     ");
     $stmt->execute();

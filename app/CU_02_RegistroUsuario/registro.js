@@ -1,13 +1,12 @@
 /**
  * Archivo      : registro.js
  * Módulo       : CU_02_RegistroUsuario
- * Autor        : Francisco Angel Membrilla Alarcon
+ * Autor        : Francisco Angel Membrila Alarcón
  * Fecha        : 22/04/2026
  * Descripción  : Lógica del formulario de registro de usuario. Valida los datos
  * en el frontend, envía la información a registro.php mediante fetch,
  * gestiona la creación de cookies de sesión y redirige al index.
  */
-
 document.addEventListener("DOMContentLoaded", function () {
 
     const PATH_PHP = "";
@@ -77,6 +76,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnNuevaEmpresa = document.getElementById("btnNuevaEmpresa");
     const btnGuardarEmpresa = document.getElementById("guardarEmpresa");
     const btnCerrarModal = document.getElementById("cerrarModal");
+    const inputRFC = document.getElementById("emp_rfc");
+    if (inputRFC) {
+        inputRFC.addEventListener("input", function () {
+            this.value = this.value.toUpperCase();
+        });
+    }
 
 
 
@@ -188,30 +193,32 @@ document.addEventListener("DOMContentLoaded", function () {
        CARGAR EMPRESAS
     ========================= */
 
-    function cargarEmpresas() {
-
+    /* === MODIFICADO: Ahora permite seleccionar un ID específico === */
+    function cargarEmpresas(idASeleccionar = null) {
         fetch(`${PATH_PHP}obtener_empresas.php`)
             .then(res => res.json())
             .then(data => {
-
                 if (!data.empresas || !selectOrganizacion) return;
 
                 selectOrganizacion.innerHTML =
                     '<option value="">Seleccione una empresa (opcional)</option>';
 
                 data.empresas.forEach(emp => {
-
                     const option = document.createElement("option");
                     option.value = emp.Id_empresa;
                     option.textContent = emp.Nombre;
 
+                    // Si recibimos un ID, comparamos para seleccionarlo
+                    if (idASeleccionar && emp.Id_empresa == idASeleccionar) {
+                        option.selected = true;
+                    }
+
                     selectOrganizacion.appendChild(option);
-
                 });
-
             })
-            .catch(() => alert("Error al cargar empresas"));
-
+            .catch(() => {
+                lanzarToast("Error crítico: No se pudieron cargar las empresas", "error");
+            });
     }
 
     cargarEmpresas();
@@ -318,11 +325,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     if (data.success) {
 
-                        alert("Empresa registrada");
+                        alert("¡Empresa registrada y seleccionada automáticamente!");
 
                         modalEmpresa.style.display = "none";
                         limpiarModalEmpresa();
-                        cargarEmpresas();
+                        cargarEmpresas(data.id_empresa);
 
                     } else {
 

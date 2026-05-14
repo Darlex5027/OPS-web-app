@@ -2,7 +2,7 @@
 /**
  * Archivo      : registrar_empresa.php
  * Módulo       : CU_02_RegistroUsuario
- * Autor        : Francisco Angel Membrilla Alarcon
+ * Autor        : Francisco Angel Membrila Alarcón
  * Fecha        : 21/04/2026
  * Descripción  : Endpoint que procesa el registro de empresas. Valida los datos
  * y los almacena en la base de datos MariaDB.

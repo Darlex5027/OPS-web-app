@@ -2,7 +2,7 @@
 /**
  * Archivo      : registro.php
  * Módulo       : CU_02_RegistroUsuario
- * Autor        : Francisco Angel Membrilla Alarcon
+ * Autor        : Francisco Angel Membrila Alarcón
  * Fecha        : 21/04/2026
  * Descripción  : Endpoint que procesa el registro de usuarios. Valida los datos
  * y los almacena en la base de datos MariaDB.
@@ -68,9 +68,9 @@ try {
 
         // 3. VINCULAR CON LA ACTIVIDAD (Aquí es donde realmente se guarda el Id_servicio)
         $stmtActividadAlumno = $pdo->prepare("
-        INSERT INTO Actividades_Alumnos
-        (Id_alumno, Id_servicio, Id_empresa, Estado, periodo_tipo, periodo_año, Fecha_registro)
-        VALUES (?, ?, ?, 'PENDIENTE', ?, ?, NOW())
+        INSERT INTO Actividades_Alumnos 
+        (Id_alumno, Id_servicio, Id_empresa, No_expediente, Estado, periodo_tipo, periodo_año, Fecha_registro) 
+        VALUES (?, ?, ?, NULL, 'PENDIENTE', ?, ?, NOW())
         ");
 
         $stmtActividadAlumno->execute([

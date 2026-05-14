@@ -2,7 +2,7 @@
 /**
  * Archivo      : obtener_actividades.php
  * Módulo       : CU_02_RegistroUsuario
- * Autor        : Francisco Angel Membrila Alarcon
+ * Autor        : Francisco Angel Membrila Alarcón
  * Fecha        : 21/04/2026
  * Descripción  : Endpoint que obtiene las actividades activas del sistema
  * y las retorna en formato JSON.
