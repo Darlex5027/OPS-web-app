@@ -32,7 +32,13 @@ function fetchPregunta(idPregunta) {
             return respuesta.json();
         })
         .then(function (respuesta) {
-            renderPregunta(respuesta.data);
+            if (respuesta.error) {
+                lanzarToast(respuesta.error, "error");
+                return
+            }
+            if (respuesta.success) {
+                renderPregunta(respuesta.data);
+            }
         })
         .catch(function (error) {
             console.log(error);

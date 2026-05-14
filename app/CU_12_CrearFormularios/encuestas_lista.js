@@ -29,7 +29,13 @@ function fetchEncuestas() {
             return respuesta.json();
         })
         .then(function (respuesta) {
-            renderEncuestas(respuesta.data);
+            if (respuesta.error) {
+                lanzarToast(respuesta.error, "error");
+                return
+            }
+            if (respuesta.success) {
+                renderEncuestas(respuesta.data);
+            }
         })
         .catch(function (error) {
             lanzarToast("La encuesta no se pudo cargar", "error");

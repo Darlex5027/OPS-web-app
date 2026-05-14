@@ -24,7 +24,13 @@ function fetchServicios() {
             return respuesta.json();
         })
         .then(function (respuesta) {
-            renderServicios(respuesta);
+            if (respuesta.error) {
+                lanzarToast(respuesta.error, "error");
+                return
+            }
+            if (respuesta.success) {
+                renderServicios(respuesta.data);
+            }
         })
         .catch(function (error) {
             lanzarToast("No se pudo cargar el Servicio", "error");
@@ -71,11 +77,17 @@ function guardarEncuesta() {
             return respuesta.json();
         })
         .then(function (resultado) {
-            lanzarToast("Encuesta guardada correctamente", "exito");
-            // Redirige a la lista de encuestas tras guardar exitosamente
-            setTimeout(() => {
-                window.location.href = './encuestas_lista.html';
-            }, 2000);
+            if (resultado.error) {
+                lanzarToast(resultado.error, "error");
+                return
+            }
+            if (resultado.success) {
+                lanzarToast("Encuesta guardada correctamente", "exito");
+                // Redirige a la lista de encuestas tras guardar exitosamente
+                setTimeout(() => {
+                    window.location.href = './encuestas_lista.html';
+                }, 2000);
+            }
         })
         .catch(function (error) {
             lanzarToast("No se pudo guardar la encuesta", "error");

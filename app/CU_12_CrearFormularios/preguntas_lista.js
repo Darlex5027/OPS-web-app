@@ -43,12 +43,18 @@ function fetchPreguntas(idEncuesta) {
             return respuesta.json();
         })
         .then(function (respuesta) {
-            if(respuesta.data && respuesta.data.length > 0){
-                renderPreguntas(respuesta.data, idEncuesta);
-            } else{
-                lanzarToast("No hay preguntas", "exito")
+            if (respuesta.error) {
+                lanzarToast(respuesta.error, "error");
+                return
             }
-            
+            if (respuesta.success) {
+                if (respuesta.data && respuesta.data.length > 0) {
+                    renderPreguntas(respuesta.data, idEncuesta);
+                } else {
+                    lanzarToast("No hay preguntas", "exito")
+                }
+            }
+
         })
         .catch(function (error) {
             lanzarToast("La encuesta no se pudo cargar", "error");
