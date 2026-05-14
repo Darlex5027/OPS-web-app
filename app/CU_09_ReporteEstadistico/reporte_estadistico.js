@@ -7,6 +7,7 @@
 
 */
 import { renderMenu } from '../js/menu.js';
+import { lanzarToast } from '../js/lanzar_toast.js';
 
 const elEncuestas = document.getElementById('slctEncuestas');
 
@@ -39,6 +40,7 @@ function cargarEncuestas(){
 				// Se agrega la opción al select de encuestas
 				document.getElementById('slctEncuestas').appendChild(option);
 			})
-
+			lanzarToast("Encuestas cargadas. Seleccione una encuesta para cargar los periodos disponibles","exito");	
 		})
+	
 }

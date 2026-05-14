@@ -4,11 +4,9 @@
   Módulo      : CU_09_ReporteEstadistico
   Autor       : Alejandro Resendiz Reyes
   Fecha       : 23/04/2026		
-  Descripción : Este archivo se encarga de generar la tabla de resultados para el reporte estadístico.
-				Se conecta a la base de datos utilizando PDO, recibe los parámetros de filtrado
-				en formato JSON, ejecuta una consulta para obtener los resultados agrupados por pregunta,
-				y devuelve los resultados en formato JSON. Si ocurre algún error durante la conexión,
-				el procesamiento de los datos o la consulta, se devuelve un mensaje de error adecuado.
+  Descripción : Archivo JS para el reporte estadístico, 
+  				genera la lista de alumnos que están pendientes de contestar el cuestionario 
+				filtrando por nombre de cuestionario, periodo y carrera.
 
  */
 require_once '../php/db.php';

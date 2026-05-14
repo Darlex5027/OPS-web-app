@@ -1,6 +1,6 @@
 <?php
 /*
-  Archivo     : generar_promedio.php
+  Archivo     : generar_promedio_resumen.php
   Módulo      : CU_09_ReporteEstadistico
   Autor       : Alejandro Resendiz Reyes
   Fecha       : 29/04/2026		

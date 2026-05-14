@@ -1,6 +1,6 @@
 <?php
 /*
-  Archivo     : generar_tabla.php
+  Archivo     : generar_tabla_resumen.php
   Módulo      : CU_09_ReporteEstadistico
   Autor       : Alejandro Resendiz Reyes
   Fecha       : 23/04/2026		

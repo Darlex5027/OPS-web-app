@@ -1,5 +1,5 @@
 /*
-  Archivo     : reporte_estadistico.js
+  Archivo     : generar_resumen.js
   Módulo      : CU_09_ReporteEstadistico
   Autor       : Alejandro Resendiz Reyes
   Fecha       : 23/04/2026		

@@ -1,5 +1,5 @@
 /*
-  Archivo     : reporte_estadistico.js
+  Archivo     : generar_tabla_entregados.js
   Módulo      : CU_09_ReporteEstadistico
   Autor       : Alejandro Resendiz Reyes
   Fecha       : 23/04/2026		
@@ -131,6 +131,8 @@ function fetchRenderTabla() {
 				elTitulos.innerHTML = elTitulos.innerHTML + "<th>" + titulo + "</th>"
 			});
 
+			elTitulos.innerHTML = elTitulos.innerHTML + "<th> Acción </th>"
+
 			// Renderizado de las filas de la tabla.
 			tabla.forEach(function (fila) {
 
@@ -143,7 +145,7 @@ function fetchRenderTabla() {
 					table = table + "<td>" + fila[dato] + "</td>";
 
 				});
-
+				
 				// Se agrega un botón para ver la respuesta individual del alumno, pasando su matrícula como parámetro
 				table = table + "<td><button onClick='handleRespuestaIndividual(\"" + fila.Matricula + "\")'>Ver respuesta</button></td>";
 

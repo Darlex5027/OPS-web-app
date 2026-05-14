@@ -26,12 +26,14 @@ try{
 
 try{
 	// Se definen las consultas SQL para obtener los tipos de periodo y los anios disponibles en la base de datos
-	$stmt_tipo = $pdo -> query("SELECT DISTINCT Periodo_Encuesta.Periodo_tipo FROM Periodo_Encuesta");
+	$stmt_periodo_tipo = $pdo -> query("SELECT DISTINCT Periodo_Encuesta.Periodo_tipo FROM Periodo_Encuesta");
 	// Se obtiene el resultado de la consulta para los tipos de periodo y se almacena en una variable
-	$stmt_anio = $pdo -> query("SELECT DISTINCT Periodo_Encuesta.Periodo_año as 'Periodo_anio' FROM Periodo_Encuesta");
+	$stmt_periodo_anio = $pdo -> query("SELECT DISTINCT Periodo_Encuesta.Periodo_año as 'Periodo_anio' FROM Periodo_Encuesta");
 
+	$resultado_catalogo_periodos_tipos = $stmt_periodo_tipo -> fetchAll();
+	$resultado_catalogo_periodos_anios = $stmt_periodo_anio -> fetchAll();
 	// Se verifica si los resultados de las consultas están vacíos.
-	if(empty($stmt_tipo)||empty($stmt_anio)){
+	if(empty($stmt_periodo_tipo)||empty($stmt_periodo_anio)){
 		// Si no se obtienen resultados para los tipos de periodo o los anios, 
 		// se devuelve un mensaje de error indicando que no se cargaron periodos
 		echo json_encode(['error' => 'No se encontraron períodos disponibles en la base de datos.']);
@@ -40,9 +42,9 @@ try{
 		// se almacenan en un arreglo asociativo y se devuelve el resultado en formato JSON
 		$periodos=[
 			// Se obtienen los resultados para los tipos de periodo y se almacenan en el arreglo asociativo bajo la clave "tipo"
-			"tipo" =>  $stmt_tipo -> fetchAll(),
+			"tipo" =>  $resultado_catalogo_periodos_tipos,
 			// Se obtienen los resultados para los anios y se almacenan en el arreglo asociativo bajo la clave "anio"
-			"anio" => $stmt_anio -> fetchAll()
+			"anio" => $resultado_catalogo_periodos_anios
 		];
 		// Se devuelve el arreglo asociativo con los tipos de periodo y los anios en formato JSON
 		echo json_encode($periodos);

@@ -1,10 +1,11 @@
 /*
-  Archivo     : reporte_estadistico.js
+  Archivo     : generar_tabla_pendientes.js
   Módulo      : CU_09_ReporteEstadistico
   Autor       : Alejandro Resendiz Reyes
   Fecha       : 23/04/2026		
-  Descripción : Archivo JS para el reporte estadístico, genera la lista de alumnos que han completado el cuestionario
-  		filtrando por nombre de cuestionario, periodo y carrera.
+  Descripción : Archivo JS para el reporte estadístico, 
+  				genera la lista de alumnos que están pendientes de contestar el cuestionario 
+				filtrando por nombre de cuestionario, periodo y carrera.
 */
 import { lanzarToast } from '../js/lanzar_toast.js';
 

@@ -13,7 +13,7 @@ import { lanzarToast } from "../js/lanzar_toast.js";
 
 window.handleRespuestaIndividual = handleRespuestaIndividual;
 
-const elTablaRespuestaIndividual = document.getElementById('Tabla-respuesta-individuale');
+const elTablaRespuestaIndividual = document.getElementById('Tabla-respuesta-individual');
 const elTitulosRespuestaIndividual = document.getElementById('Titulos-respuesta-individual');
 const elCuerpoRespuestaIndividual = document.getElementById('Cuerpo-respuesta-individual');
 const elTituloRespuestaIndividual = document.getElementById('Titulo-respuesta-individual');
@@ -23,8 +23,8 @@ const elDivTablaRespuestaIndividual = document.getElementById('div-respuesta-ind
 const elEncuestas = document.getElementById('slctEncuestas');
 
 // Se obtienen los botones para generar Excel y PDF
-const elBtnExcel = document.getElementById("btnGenerarExcel");
-const elBtnPDF = document.getElementById("btnGenerarPDF");
+const elBtnExcelIndividual = document.getElementById("btnGenerarExcelIndividual");
+const elBtnPDFIndividual = document.getElementById("btnGenerarPDFIndividual");
 const elPeriodo_tipo = document.getElementById('slctPeriodoTipo');
 const elPeriodo_anio = document.getElementById('slctPeriodoAnio');
 
@@ -76,74 +76,69 @@ function limpiarTablaRespuestaIndividual() {
 }
 
 function renderTabla(nombre_alumno, nombre_encuesta, respuesta) {
-
-
+    mostrarBotones();
     elTituloRespuestaIndividual.innerHTML = "<h2>Nombre de la encuesta: " + nombre_encuesta + "</h2>";
     elTituloRespuestaIndividual.innerHTML = elTituloRespuestaIndividual.innerHTML + "<h2>Respuesta individual del alumno: " + nombre_alumno + "</h2>";
 
-    //Si la impresión es de tamaño 0 significa que la respuesta es un mensaje
-    //por lo que no se encontraron resultados.
+    // Si la impresión es de tamaño 0 significa que la respuesta es un mensaje
+    // por lo que no se encontraron resultados.
     if (respuesta.length == 0) {
         // Si no se encontraron resultados para los filtros seleccionados,
         // se muestra un mensaje de error y se ocultan los botones de Excel y PDF
         lanzarToast("No se encontraron Resultados", "error");
-        elBtnExcel.style.display = "none";
-        elBtnPDF.style.display = "none";
+        ocultarBotones();
         return;
     }
 
-    // Renderizado de los títulos de la tabla, se toma el primer elemento de la 
-    // impresión para obtener los títulos de las columnas
-    Object.keys(respuesta[0]).forEach(function (titulo) {
-        // Por cada título, se agrega una celda de encabezado a la fila de títulos de la tabla
-        elTitulosRespuestaIndividual.innerHTML = elTitulosRespuestaIndividual.innerHTML + "<th>" + titulo + "</th>"
+    // Renderizado de los títulos de la tabla
+    // Definimos los títulos fijos para las columnas
+    const titulos = Object.keys(respuesta[0]);
+    titulos.forEach(function (titulo) {
+        elTitulosRespuestaIndividual.innerHTML = elTitulosRespuestaIndividual.innerHTML + "<th>" + titulo + "</th>";
     });
+
     // Renderizado de las filas de la tabla.
     respuesta.forEach(function (fila) {
-        // Se crea una variable para almacenar la estructura HTML de la fila de la tabla
-        let HtmlFila = "";
-
-        // Se inicia la estructura de la fila con la etiqueta <tr>
-        HtmlFila = HtmlFila + "<tr>";
-        // Por cada dato en la fila, se agrega una celda a la estructura HTML de la fila
-        Object.keys(fila).forEach(function (dato) {
-            // Se agrega una celda a la estructura HTML de la fila con el valor del dato correspondiente
-
-            // Escala de respuestas: 1=Deficiente, 2=Suficiente, 3=Bien, 4=Muy bien, 5=Excelente
-            let respuesta_texto = "";   
-            switch (fila[dato]) {
-                case "1":
-                    respuesta_texto = "Deficiente";
-                    break;
-                case "2":
-                    respuesta_texto = "Suficiente";
-                    break;
-                case "3":
-                    respuesta_texto = "Bien";
-                    break;
-                case "4":
-                    respuesta_texto = "Muy bien";
-                    break;
-                case "5":
-                    respuesta_texto = "Excelente";
-                    break;
-                default:
-                    respuesta_texto = fila[dato];
-            }
-            HtmlFila = HtmlFila + "<td>" + respuesta_texto + "</td>";
-        });
-
-        // Se cierra la estructura de la fila con la etiqueta </tr>
-        elCuerpoRespuestaIndividual.innerHTML += HtmlFila + "</tr>";
+        // Verificar si es una respuesta de texto (tiene el texto en Deficiente y las demás columnas vacías)
+        const esRespuestaTexto = fila.Deficiente && !fila.Suficiente && !fila.Bien && !fila["Muy bien"] && !fila.Excelente;
+        
+        if (esRespuestaTexto && fila.Deficiente !== "Deficiente") {
+            // Para respuestas de texto: una sola celda que abarca las 5 columnas de respuestas
+            let htmlFila = "<tr>";
+            htmlFila += "<td>" + fila.seccion + "</td>";
+            htmlFila += "<td>" + fila.pregunta + "</td>";
+            
+            // Celda combinada para las 5 columnas de calificaciones
+            htmlFila += "<td colspan='5'>" + fila.Deficiente + "</td>";
+            htmlFila += "</tr>";
+            elCuerpoRespuestaIndividual.innerHTML += htmlFila;
+        } else {
+            // Para respuestas numéricas: mostrar normal con 6 columnas
+            let htmlFila = "<tr>";
+            htmlFila += "<td>" + fila.seccion + "</td>";
+            htmlFila += "<td>" + fila.pregunta + "</td>";
+            htmlFila += "<td>" + (fila.Deficiente || "") + "</td>";
+            htmlFila += "<td>" + (fila.Suficiente || "") + "</td>";
+            htmlFila += "<td>" + (fila.Bien || "") + "</td>";
+            htmlFila += "<td>" + (fila["Muy bien"] || "") + "</td>";
+            htmlFila += "<td>" + (fila.Excelente || "") + "</td>";
+            htmlFila += "</tr>";
+            elCuerpoRespuestaIndividual.innerHTML += htmlFila;
+        }
     });
 
     // Se muestran los botones para generar Excel y PDF después de cargar la tabla de resultados
-
+    mostrarBotones();
 }
 
 function ocultarBotones() {
-    elBtnExcel.style.display = "none";
-    elBtnPDF.style.display = "none";
+    elBtnExcelIndividual.style.display = "none";
+    elBtnPDFIndividual.style.display = "none";
+}
+
+function mostrarBotones() {
+    elBtnExcelIndividual.style.display = "block";
+    elBtnPDFIndividual.style.display = "block";
 }
 
 function mostrarTabla() {
