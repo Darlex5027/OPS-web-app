@@ -1,0 +1,66 @@
+<!--
+  Archivo     : encuestas_lista.html
+  Módulo      : CU_12_CrearFormularios
+  Autor       : Daniela Hernandez Hernandez
+  Fecha       : 05/05/2026
+  Descripción : Vista que muestra la lista de encuestas registradas en el sistema, 
+                permite navegar a la creación de una nueva encuesta y ver las preguntas de cada una.
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8"> <!-- Soporte para caracteres especiales como ñ y tildes -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adaptación a móviles -->
+    <title>Encuestas</title>
+    <!-- Enlace al archivo CSS para estilos -->
+    <link rel="stylesheet" href="../css/prueba.css">
+</head>
+
+<body>
+    <!-- Barra lateral (menú de navegación) -->
+    <div class="sidebar">
+        <!-- Sección del perfil del usuario -->
+        <div class="profile">
+            <img src="../Imagenes/prueba.png" alt="perfil">
+            <h3>Mtra. M. Guadalupe</h3>
+        </div>
+        <!-- Menú de opciones -->
+        <div class="menu"></div>
+    </div>
+    <!-- Contenido principal de la página -->
+    <div class="main">
+        <div class="header">
+            <div></div>
+            <h1>Encuestas</h1>
+            <div class="header-logo-right">
+                <img src="../Imagenes/Logo.png" alt="Logo OPS">
+            </div>
+        </div>
+        <button type="button" id="btnNuevaEncuesta" onclick="window.location.href='encuesta_form.html'">Nueva
+            Encuesta</button>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripcion</th>
+                    <th>Servicio </th>
+                    <th>Activo</th>
+                    <th>Periodo</th>
+                    <th>Fecha de fin</th>
+                    <th>Accion</th>
+                </tr>
+            </thead>
+            <!-- Cuerpo de la tabla (se llena dinámicamente con JavaScript) -->
+            <tbody id="tbodyEncuestas"></tbody>
+        </table>
+    </div>
+    <script type="module" src="encuestas_lista.js"></script>
+    <!-- Scripts que manejan la lógica de la página -->
+    <script src="../js/redireccion.js"></script>
+    <!-- Contenedor para mostrar mensajes tipo "toast" (notificaciones emergentes) -->
+    <div id="toast-mensaje" class="toast oculto"></div>
+</body>
+
+</html>
