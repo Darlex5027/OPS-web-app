@@ -46,14 +46,14 @@ function guardarPregunta() {
             return respuesta.json();
         })
         .then(function (resultado) {
-            lanzarToast("Encuesta guardada correctamente", "exito");
+            lanzarToast("Pregunta guardada correctamente", "exito");
             // Redirige a la lista de preguntas de la encuesta tras guardar exitosamente
             setTimeout(() => {
                 window.location.href = `./preguntas_lista.html?Id_encuesta=${idEncuesta}`;
             }, 2000);
         })
         .catch(function (error) {
-            lanzarToast("No se pudo guardar la encuesta", "error");
+            lanzarToast("No se pudo guardar la pregunta", "error");
         });
 }
 
