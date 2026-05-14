@@ -1,36 +1,54 @@
 <?php
 /**
- * ARCHIVO: obtener_catalogos.php
- * Ubicación: app/CU_02_RegistroUsuario/php/
+ * Archivo      : obtener_catalogos.php
+ * Módulo       : CU_02_RegistroUsuario
+ * Autor        : Francisco Angel Membrila Alarcón
+ * Fecha        : 21/04/2026
+ * Descripción  : Endpoint que procesa la obtención de catálogos. Valida los datos
+ * y los almacena en la base de datos MariaDB.
+ * de usuario y retorna la información en formato JSON.
  */
-
-// 1. Ajuste de ruta: Subir dos niveles para llegar a la raíz donde está db.php
 require_once("../php/db.php");
-// 2. Indicar al navegador que la respuesta es JSON
 header("Content-Type: application/json");
 
 try {
-    // 3. Consulta (Basada en tu terminal: Tabla 'Carreras' y columna 'Nombre')
+
+    if (!isset($pdo)) {
+        $pdo = new PDO($dsn, $user, $pass, $options);
+    }
+
+    // Facultades activas
     $stmt = $pdo->prepare("
-        SELECT Id_carrera, Nombre 
-        FROM Carreras 
-        WHERE Activo = 1 
+        SELECT Id_facultad, Nombre
+        FROM Facultades
+        WHERE Activo = 1
         ORDER BY Nombre
     ");
-
     $stmt->execute();
+    $facultades = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Carreras activas
+    $stmt = $pdo->prepare("
+        SELECT Id_carrera, Nombre, Id_Facultad
+        FROM Carreras
+        WHERE Activo = 1
+        ORDER BY Nombre
+    ");
+    $stmt->execute();
     $carreras = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // 4. Respuesta exitosa
     echo json_encode([
+        "facultades" => $facultades,
         "carreras" => $carreras
     ]);
 
 } catch (Exception $e) {
-    // 5. Enviar error en formato JSON
+
+    http_response_code(500);
+
     echo json_encode([
-        "error" => "Error al obtener carreras",
-        "detalle" => $e->getMessage() // Opcional para depurar en Docker
+        "error" => "Error al obtener catalogos",
+        "detalle" => $e->getMessage()
     ]);
+
 }
