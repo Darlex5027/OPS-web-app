@@ -1,14 +1,12 @@
 <!--
-
-  Archivo     : reporte_alumnos.html
-  Módulo      : CU_08_Reporte_Alumnado
-  Autor       : Alejandro Resendiz Reyes
-  Fecha       : 15/03/2026		
-  Descripción : Interfaz para generar reportes de alumnos inscritos en actividades, 
-  				con opciones de filtrado por actividad y estado, 
-				y exportación a Excel y PDF.
-
-
+  Archivo:        reporte_alumnos.html
+  Autor:          Alejandro Resendiz Reyes
+  Fecha:          15-03-2026
+  Descripción:    Vista del modulo CU08 - Reporte de Alumnado.
+  					Presenta el formulario de filtros (actividad, estado, periodo) y
+                   	la tabla dinamica de resultados. Permite al administrador generar
+                   	el reporte y descargarlo en formato Excel o PDF.
+               		Requiere permisoes de administrador para acceder a esta vista.	
 -->
 
 <!DOCTYPE html>
@@ -43,19 +41,26 @@
 					<option value ="TODOS">--Todas--</option>
 				</select>
 
-				<h3>Actividades</h3>
+				<h3>Estado de la actividad</h3>
 				<select id="estado">
 					<option value ="TODOS">--Todas--</option>
 				</select>
+				<h3>Periodos</h3>
+				<select id="periodo_tipo">
+					<option value ="TODOS">--Todos los periodos--</option>
+				</select>
+				<select id="periodo_anio">
+					<option value ="TODOS">--Todos los años--</option>
+				</select>
 				<div class="buttons-group">
-					<button onClick="renderTablaReporte()" id="btnGenerarTabla">Generar Tabla</button>
-					<button onClick="exportarExcel()" id="btnGenerarExcel" style="visibility: hidden">Generar Excel</button>
-					<button onClick="imprimirPDF()" id="btnGenerarPDF" style="visibility: hidden">Generar PDF</button>
+					<button onClick="cargar_tabla()" id="btnGenerarTabla">Generar Tabla</button>
+					<button onClick="exportarExcel()" id="btnGenerarExcel" style="display: none">Generar Excel</button>
+					<button onClick="imprimirPDF()" id="btnGenerarPDF" style="display: none">Generar PDF</button>
 				</div>	
 			</div>
 			<div class="table">
 				<table id="tabla-resultados">
-					<tr id="Titulos">
+					<tr id="titulos-tabla">
 					</tr>
 					<tbody id="Tabla">
 					</tbody>
@@ -63,6 +68,7 @@
 			</div>
 		</div>
 		<div id="toast-mensaje" class="toast oculto"></div>
+		<script type="module" src="../js/redireccion.js"></script>
 		<script type="module" src="reporte_alumnos.js"></script>
 	</body>
 </html>
