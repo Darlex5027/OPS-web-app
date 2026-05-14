@@ -53,7 +53,7 @@ function renderPregunta(pregunta) {
     document.getElementById('inputSeccion').value = pregunta[0].Seccion;
     document.getElementById('selectObligatoria').value = pregunta[0].Obligatoria;
     document.getElementById('selectActivo').value = pregunta[0].Activo;
-    console.log(pregunta[0])
+
 }
 // Valida el formulario y envía los datos actualizados de la pregunta al servidor
 function editarPregunta() {
