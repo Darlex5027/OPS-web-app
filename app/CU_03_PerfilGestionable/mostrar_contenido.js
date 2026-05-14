@@ -2,8 +2,8 @@ import { lanzarToast } from '../js/lanzar_toast.js';
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const getEl      = (id) => document.getElementById(id);
-    const setVal     = (id, val) => getEl(id) && (getEl(id).value = val || "");
+    const getEl       = (id) => document.getElementById(id);
+    const setVal      = (id, val) => getEl(id) && (getEl(id).value = val || "");
     const tipoUsuario = document.cookie.split("; ")
         .find(r => r.startsWith("Id_tipo_usuario="))
         ?.split("=")[1].trim();
@@ -13,6 +13,35 @@ document.addEventListener("DOMContentLoaded", () => {
     // Ocultar secciones al inicio
     getEl("perfil_administrador").style.display            = "none";
     document.querySelector(".contenedor-alumno").style.display = "none";
+
+    // Campos que deben estar llenos si el estado es COMPLETADO
+    const CAMPOS_REQUERIDOS_COMPLETADO = [
+        { id: "area",            label: "Área" },
+        { id: "programa",        label: "Programa" },
+        { id: "fecha_inicio",    label: "Fecha de inicio" },
+        { id: "fecha_fin",       label: "Fecha de fin" },
+        { id: "grupo_alumno",    label: "Semestre y Grupo" },
+        { id: "horario_entrada", label: "Horario de entrada" },
+        { id: "horario_salida",  label: "Horario de salida" },
+        { id: "empresa_texto",   label: "Empresa" },
+    ];
+
+    // Resalta en rojo los campos vacíos y avisa al alumno
+    function verificarCamposCompletado() {
+        const vacios = CAMPOS_REQUERIDOS_COMPLETADO.filter(c => !getEl(c.id)?.value?.trim());
+        if (vacios.length === 0) return;
+
+        vacios.forEach(c => {
+            const el = getEl(c.id);
+            if (el) {
+                el.style.borderColor     = "#e74c3c";
+                el.style.backgroundColor = "#fff5f5";
+            }
+        });
+
+        const nombres = vacios.map(c => `• ${c.label}`).join("\n");
+        lanzarToast(`Faltan campos por completar:\n${nombres}`, "error");
+    }
 
     // Parsear horario "8:00-14:00" y repartirlo en los dos inputs
     function cargarHorario(horario) {
@@ -65,6 +94,13 @@ document.addEventListener("DOMContentLoaded", () => {
         getEl("empresa_texto").dataset.idEmpresa = p.Id_empresa || "";
         // Guardar estado actual para control de permisos de edición
         getEl("estado").dataset.estadoActual = p.Estado || "";
+
+        // Asegurar que select y botón crear queden ocultos hasta que el alumno dé click en Editar
+        getEl("id_empresa").classList.add("oculto");
+        getEl("btnCrearEmpresa").classList.add("oculto");
+
+        // Si el estado es COMPLETADO, verificar que todo esté lleno
+        if (p.Estado === "COMPLETADO") verificarCamposCompletado();
     }
 
     // Fetch principal: obtener datos del usuario logueado
@@ -76,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (tipoUsuario === "1" || tipoUsuario === "3") cargarAdmin(p);
             else if (tipoUsuario === "2")                   cargarAlumno(p);
 
-            // ← Avisar que los datos ya están listos
+            // Avisar que los datos ya están listos
             document.dispatchEvent(new CustomEvent("datosCargados"));
         })
         .catch(e => console.error("Error al obtener datos:", e));

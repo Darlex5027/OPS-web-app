@@ -8,9 +8,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const setVis = (id, vis) => getEl(id)?.classList.toggle("oculto", !vis);
 
     // Campos editables según el estado del alumno
-    const COMUNES  = ["estado", "area", "programa", "fecha_inicio", "fecha_fin", "grupo_alumno", "horario_entrada", "horario_salida"];
+    const COMUNES   = ["estado", "area", "programa", "fecha_inicio", "fecha_fin", "grupo_alumno", "horario_entrada", "horario_salida"];
     const PENDIENTE = [...COMUNES, "id_empresa"];
     const POR_ESTADO = { PENDIENTE, EN_CURSO: COMUNES, COMPLETADO: [] };
+
+    // Campos obligatorios para poder marcar como COMPLETADO
+    const CAMPOS_COMPLETADO = [
+        { id: "area",            label: "Área" },
+        { id: "programa",        label: "Programa" },
+        { id: "fecha_inicio",    label: "Fecha de inicio" },
+        { id: "fecha_fin",       label: "Fecha de fin" },
+        { id: "grupo_alumno",    label: "Semestre y Grupo" },
+        { id: "horario_entrada", label: "Horario de entrada" },
+        { id: "horario_salida",  label: "Horario de salida" },
+        { id: "empresa_texto",   label: "Empresa" },
+    ];
 
     // Regex para nueva empresa
     const regexEmpresa = {
@@ -50,24 +62,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const direccion    = getVal("nueva_empresa_direccion").trim();
         const sitio_web    = getVal("nueva_empresa_web").trim();
 
-        // Validaciones
         if (!nombre)
             return lanzarToast("El nombre es obligatorio", "error");
         if (!regexEmpresa.nombre.test(nombre))
             return lanzarToast("Nombre inválido. Solo letras, números y . , -", "error");
-
         if (!descripcion)
             return lanzarToast("La descripción es obligatoria", "error");
-
         if (razon_social && !regexEmpresa.razon_social.test(razon_social))
             return lanzarToast("Razón social inválida. Solo letras, números y . , - &", "error");
-
         if (rfc && !regexEmpresa.rfc.test(rfc))
             return lanzarToast("RFC inválido. Ej: ABC123456XYZ (moral) o ABCD123456XYZ (física)", "error");
-
         if (direccion && !regexEmpresa.direccion.test(direccion))
             return lanzarToast("Dirección inválida. Solo letras, números y . , - #", "error");
-
         if (sitio_web && !regexEmpresa.sitio_web.test(sitio_web))
             return lanzarToast("Sitio web inválido. Ej: https://empresa.com", "error");
 
@@ -108,6 +114,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ------------------------------------
+    // Validar campos obligatorios para COMPLETADO
+    // ------------------------------------
+    function validarCompletado() {
+        for (const campo of CAMPOS_COMPLETADO) {
+            if (!getVal(campo.id).trim()) {
+                lanzarToast(`El campo "${campo.label}" es obligatorio para marcar como Completado.`, "error");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // ------------------------------------
     // Habilitar o deshabilitar campos
     // ------------------------------------
     window.habilitarActividades = async (habilitar) => {
@@ -140,6 +159,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (habilitar) await cargarEmpresas();
     };
 
+    // Ocultar empresa y botón crear al cargar la página
+    setVis("id_empresa", false);
+    setVis("btnCrearEmpresa", false);
+
     // Evitar que fecha fin sea menor a fecha inicio
     getEl("fecha_inicio").addEventListener("change", e => getEl("fecha_fin").min = e.target.value);
 
@@ -148,6 +171,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // ------------------------------------
     window.guardarActividades = () => {
         const estado = getVal("estado");
+
+        // Si el estado es COMPLETADO, verificar que todo esté lleno
+        if (estado === "COMPLETADO" && !validarCompletado()) return;
 
         const datos = {
             estado,
