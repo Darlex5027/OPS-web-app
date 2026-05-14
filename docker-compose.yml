@@ -9,10 +9,13 @@ services:
       - ./uploads:/home/uploads
       - ./app:/var/www/html
     environment:
+      TZ: "America/Mexico_City"
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASS}"
   database:
     image: mariadb
+    command: --event-scheduler=ON
     environment:
+      TZ: "America/Mexico_City"
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASS}"
     volumes:
       - db_data:/var/lib/mysql
