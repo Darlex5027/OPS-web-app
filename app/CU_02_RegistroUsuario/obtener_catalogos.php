@@ -21,7 +21,7 @@ try {
     $stmt = $pdo->prepare("
         SELECT Id_facultad, Nombre
         FROM Facultades
-
+        WHERE Activo = 1
         ORDER BY Nombre
     ");
     $stmt->execute();

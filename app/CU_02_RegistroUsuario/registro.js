@@ -16,20 +16,27 @@ document.addEventListener("DOMContentLoaded", function () {
     const confirmarInput = document.getElementById("confirmar_password");
 
     confirmarInput.addEventListener("input", function () {
-
         const pass = document.getElementById("password").value;
         const confirm = this.value;
+        const errorSpan = document.getElementById("error-password");
+        const btnSubmit = document.querySelector("button[type='submit']");
 
-        if (confirm === pass) {
-
+        if (confirm === "") {
+            // Si está vacío, ocultamos error y resetamos borde
+            errorSpan.style.display = "none";
+            this.style.borderColor = "";
+            btnSubmit.disabled = false;
+        } else if (confirm === pass) {
+            // Coinciden
             this.style.borderColor = "green";
-
+            errorSpan.style.display = "none";
+            btnSubmit.disabled = false;
         } else {
-
+            // NO coinciden
             this.style.borderColor = "red";
-
+            errorSpan.style.display = "block"; // Mostramos el mensaje
+            btnSubmit.disabled = true;        // Bloqueamos el botón
         }
-
     });
     const mensaje = document.getElementById("mensaje");
 
@@ -369,7 +376,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const regexAlumno = /^[0-9]{8}$/;
         const regexCoordinador = /^[0-9]{4}$/;
         const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-        const regexTelefono = /^[0-9]{10}$/;
+        const regexTelefono = /^[0-9]{3}-[0-9]{4}-[0-9]{3}$/;
         const regexGrupo = /^[0-9][A-Z]$/;
 
         if (tipo === "alumno" && !regexAlumno.test(datos.matricula))
@@ -414,7 +421,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return mostrarError("El grupo debe tener formato 7A.");
 
             if (tipo === "alumno" && !regexTelefono.test(datos.telefono))
-                return mostrarError("El teléfono debe tener 10 dígitos.");
+                return mostrarError("El teléfono debe tener el formato xxx-xxxx-xxx.");
 
         } else {
 
