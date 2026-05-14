@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const selectFacultadCoordinador = document.getElementById("facultad_coordinador");
     const selectOrganizacion = document.getElementById("organizacion");
     const selectActividad = document.getElementById("actividad");
+    const selectPeriodo = document.getElementById("periodo_tipo");
 
     const modalEmpresa = document.getElementById("modalEmpresa");
     const passwordInput = document.getElementById("password");
@@ -423,6 +424,11 @@ document.addEventListener("DOMContentLoaded", function () {
             datos.actividad = selectActividad.value;
             if (!datos.actividad)
                 return mostrarError("Debe seleccionar una actividad.");
+
+            datos.periodo_tipo = selectPeriodo.value;
+            if (!datos.periodo_tipo) {
+                return mostrarError("Debe seleccionar un periodo.");
+            }
 
             if (tipo === "alumno" && !regexGrupo.test(datos.grupo.toUpperCase()))
                 return mostrarError("El grupo debe tener formato 7A.");

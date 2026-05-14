@@ -34,7 +34,7 @@ try {
     $pdo->beginTransaction();
 
     // 1. CREAR EL USUARIO
-    $id_tipo = ($data['tipo_usuario'] === 'alumno') ? 1 : 3;
+    $id_tipo = ($data['tipo_usuario'] === 'alumno') ? 2 : 3;
     $pass_hash = password_hash($data['password'], PASSWORD_BCRYPT);
 
     $stmtUser = $pdo->prepare("
@@ -48,8 +48,8 @@ try {
     if ($data['tipo_usuario'] === 'alumno') {
         // CORRECCIÓN: Eliminamos Id_actividad/Id_servicio de aquí porque no existen en la tabla Alumnos
         $stmtAlumno = $pdo->prepare("
-        INSERT INTO Alumnos (Id_usuario, Nombre, Apellido_P, Apellido_M, Id_carrera, Grupo, Horario, Organizacion, No_Expediente, Activo)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+        INSERT INTO Alumnos (Id_usuario, Nombre, Apellido_P, Apellido_M, Id_carrera, Grupo, Horario, No_Expediente, Activo)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
         ");
 
         $stmtAlumno->execute([
@@ -60,7 +60,6 @@ try {
             $data['id_carrera'],
             $data['grupo'],
             $data['horario'],
-            $data['organizacion'],
             $data['matricula'], // Usamos matrícula como No_Expediente
         ]);
 
@@ -77,7 +76,7 @@ try {
             $id_alumno,
             $data['actividad'], // Id_servicio que viene del select
             $data['organizacion'] ?: null,
-            'primavera',
+            $data['periodo_tipo'],
             date('Y')
         ]);
 
