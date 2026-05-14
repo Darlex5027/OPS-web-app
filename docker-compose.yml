@@ -17,6 +17,7 @@ services:
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASS}"
     volumes:
       - db_data:/var/lib/mysql
+      - ./database/event_scheduler.cnf:/etc/mysql/conf.d/event_scheduler.cnf
       - ./database/1_init.sql:/docker-entrypoint-initdb.d/1_init.sql
       - ./database/2_dummydata.sql:/docker-entrypoint-initdb.d/2_dummydata.sql
 volumes:
