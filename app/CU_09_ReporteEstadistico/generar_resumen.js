@@ -53,9 +53,14 @@ elEncuestas.addEventListener('change', (event) => {
 
 
 		fetch('./obtener_periodos.php')
-			.then(res => res.json())
 			.then(function (respuesta) {
-				console.log(respuesta);
+				if (!respuesta.ok) {  // Captura errores HTTP (404, 500, etc.)
+					lanzarToast(`Fallo en la solicitud de periodos`, "error");
+					return Promise.reject(new Error('HTTP error'));
+				}
+				return respuesta.json();
+			})
+			.then(function (respuesta) {
 				if (respuesta.error) {
 					// Si hay un error al obtener los periodos, se muestra un mensaje de error y se detiene la ejecución
 					lanzarToast(respuesta.error, "error");
@@ -86,17 +91,26 @@ elEncuestas.addEventListener('change', (event) => {
 });
 
 function mostrarBotones() {
-	elBtnExcel.style.display = "block";
-	elBtnPDF.style.display = "block";
+	try {
+		elBtnExcel.style.display = "block";
+		elBtnPDF.style.display = "block";
+	} catch (error) {
+		lanzarToast("Hubo un error al mostrar los botones de Excel y PDF", "error");
+	}
 }
 
 function ocultarBotones() {
-	elBtnExcel.style.display = "none";
-	elBtnPDF.style.display = "none";
+	try {
+		elBtnExcel.style.display = "none";
+		elBtnPDF.style.display = "none";
+	} catch (error) {
+		lanzarToast("Hubo un error al ocultar los botones de Excel y PDF", "error");
+	}
 }
 
 // Función para cargar los datos del reporte estadístico y generar la tabla de resultados
 function handleCargarResumen() {
+
 	// Se obtienen los valores seleccionados en los filtros de encuesta, periodo tipo y periodo año
 	if (elEncuestas.value === "NINGUNA") {
 		// Si no se ha seleccionado ninguna encuesta, se muestra un mensaje de error y se detiene la ejecución
@@ -108,8 +122,15 @@ function handleCargarResumen() {
 		lanzarToast("El periodo y el año deben rellenarse", "error")
 		return;
 	}
-	// Si se han seleccionado todos los filtros, se procede a cargar la tabla de resultados del reporte estadístico
-	buildTabla();
+
+	try {
+		// Si se han seleccionado todos los filtros, se procede a cargar la tabla de resultados del reporte estadístico
+		buildTabla();
+	} catch (error) {
+		// Si hay un error al cargar la tabla de resultados, se muestra un mensaje de error y se ocultan los botones de Excel y PDF
+		lanzarToast("Hubo un error al cargar el reporte estadístico", "error");
+		ocultarBotones();
+	}
 }
 
 
@@ -122,47 +143,81 @@ function fetchResumen(id_encuesta, periodo_tipo, periodo_anio) {
 		body: JSON.stringify({ Id_encuesta: id_encuesta, Periodo_tipo: periodo_tipo, Periodo_anio: periodo_anio })
 	})
 		.then(function (respuesta) {
+			if (!respuesta.ok) {  // Captura errores HTTP (404, 500, etc.)
+				lanzarToast(`Fallo en la solicitud del resumen`, "error");
+				return Promise.reject(new Error('HTTP error'));
+			}
 			return respuesta.json();
 		});
 }
 
 function buildTabla() {
 
+
 	const id_encuesta = elEncuestas.value;
 	const periodo_tipo = elPeriodo_tipo.value;
 	const periodo_anio = elPeriodo_anio.value;
-	
+
+
 	//Se realiza una petición al servidor para obtener los datos del reporte estadístico en formato JSON,
-	fetchResumen(id_encuesta, periodo_tipo, periodo_anio)
+	try {
+		fetchResumen(id_encuesta, periodo_tipo, periodo_anio)
 
-	/* Después de obtener los datos del reporte estadístico, se procesa la respuesta para generar la tabla de resultados.
-	 Si hay un error al obtener los datos, se muestra un mensaje de error y se ocultan los botones de Excel y PDF. */
-		.then(function (resumen) {
-			if (resumen.error) {
-				// Si hay un error al obtener los datos del reporte, 
-				// se muestra un mensaje de error y se ocultan los botones de Excel y PDF
-				lanzarToast(resumen.error, "error");
+			/* Después de obtener los datos del reporte estadístico, se procesa la respuesta para generar la tabla de resultados.
+			 Si hay un error al obtener los datos, se muestra un mensaje de error y se ocultan los botones de Excel y PDF. */
+			.then(function (resumen) {
+				if (resumen.error) {
+					// Si hay un error al obtener los datos del reporte, 
+					// se muestra un mensaje de error y se ocultan los botones de Excel y PDF
+					lanzarToast(resumen.error, "error");
 
-				ocultarBotones();
-				return
-			}
+					ocultarBotones();
+					return
+				}
 
-	/* Si se obtienen los datos del reporte estadístico correctamente, se verifica si el resultado está vacío.*/
-			if (resumen.length == 0) {
-				// Si no se encontraron resultados para los filtros seleccionados,
-				// se muestra un mensaje de error y se ocultan los botones de Excel y PDF
-				lanzarToast("No se encontraron resultados", "error");
-				ocultarBotones();
-				return;
-			}
-	// Si se obtienen los datos del reporte estadístico correctamente y no están vacíos, 
-	// se procede a renderizar la tabla de resultados en el DOM utilizando la función renderTabla, 
-	// se muestran los botones de Excel y PDF y se carga el promedio del reporte estadístico utilizando la función fetchPromedio.
-			renderTabla(resumen);
-			mostrarBotones();
-			fetchPromedio();
+				/* Si se obtienen los datos del reporte estadístico correctamente, se verifica si el resultado está vacío.*/
+				if (resumen.length == 0) {
+					// Si no se encontraron resultados para los filtros seleccionados,
+					// se muestra un mensaje de error y se ocultan los botones de Excel y PDF
+					lanzarToast("No se encontraron resultados", "error");
+					ocultarBotones();
+					return;
+				}
+				// Si se obtienen los datos del reporte estadístico correctamente y no están vacíos, 
+				// se procede a renderizar la tabla de resultados en el DOM utilizando la función renderTabla, 
+				// se muestran los botones de Excel y PDF y se carga el promedio del reporte estadístico utilizando la función fetchPromedio.
+				try {
+					renderTabla(resumen);
+				} catch (error) {
+					// Si hay un error al renderizar la tabla de resultados, se muestra un mensaje de error y se ocultan los botones de Excel y PDF
+					lanzarToast("Hubo un error al renderizar la tabla de resultados", "error");
+					ocultarBotones();
+					return;
+				}
+				try {
+					mostrarBotones();
+				} catch (error) {
+					// Si hay un error al mostrar los botones de Excel y PDF, se muestra un mensaje de error y se ocultan los botones de Excel y PDF
+					lanzarToast("Hubo un error al mostrar los botones de Excel y PDF", "error");
+					ocultarBotones();
+					return;
+				}
+				try {
+					fetchPromedio();
+				} catch (error) {
+					// Si hay un error al cargar el promedio del reporte estadístico, se muestra un mensaje de error y se ocultan los botones de Excel y PDF
+					lanzarToast("Hubo un error al cargar el promedio del reporte estadístico", "error");
+					ocultarBotones();
+					return;
+				}
 
-		});
+			});
+	} catch (error) {
+		// Si hay un error al realizar la petición al servidor o al procesar la respuesta, se muestra un mensaje de error y se ocultan los botones de Excel y PDF
+		lanzarToast("Hubo un error al cargar el reporte estadístico", "error");
+		ocultarBotones();
+		return;
+	}
 }
 
 function renderTabla(resumen) {
@@ -230,6 +285,10 @@ function fetchPromedio() {
 		// Se envían los filtros seleccionados como parámetros en el cuerpo de la petición
 		body: JSON.stringify({ Id_encuesta: id_encuesta, Periodo_tipo: periodo_tipo, Periodo_anio: periodo_anio })
 	}).then(function (promedio) {
+		if (!promedio.ok) {  // Captura errores HTTP (404, 500, etc.)
+			lanzarToast(`Fallo en la solicitud del promedio`, "error");
+			return Promise.reject(new Error('HTTP error'));
+		}
 		return promedio.json();
 	})
 		.then(function (promedio) {

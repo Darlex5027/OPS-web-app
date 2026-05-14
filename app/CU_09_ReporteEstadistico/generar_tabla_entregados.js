@@ -61,7 +61,7 @@ function handleCargarEntregados() {
 
 // Función para mostrar los botones de generar Excel y PDF
 function mostrarBotones() {
-	
+
 	elBtnExcel.style.display = "block";
 	elBtnPDF.style.display = "block";
 }
@@ -99,6 +99,10 @@ function fetchRenderTabla() {
 
 		// Se procesa la respuesta del servidor, primero convirtiéndola a formato JSON
 		.then(function (respuesta) {
+			if (!respuesta.ok) {  // Captura errores HTTP (404, 500, etc.)
+				lanzarToast(`Fallo en la solicitud de la tabla solicitada`, "error");
+				return Promise.reject(new Error('HTTP error'));
+			}
 			return respuesta.json();
 		})
 
@@ -145,7 +149,7 @@ function fetchRenderTabla() {
 					table = table + "<td>" + fila[dato] + "</td>";
 
 				});
-				
+
 				// Se agrega un botón para ver la respuesta individual del alumno, pasando su matrícula como parámetro
 				table = table + "<td><button onClick='handleRespuestaIndividual(\"" + fila.Matricula + "\")'>Ver respuesta</button></td>";
 

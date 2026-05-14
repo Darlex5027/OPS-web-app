@@ -65,6 +65,10 @@ function fetchRespuestaIndividual(matricula_alumno) {
         body: JSON.stringify({ Id_encuesta: id_encuesta, Matricula_alumno: matricula_alumno })
     })
         .then(function (respuesta) {
+            if (!respuesta.ok) {  // Captura errores HTTP (404, 500, etc.)
+				lanzarToast(`Fallo en la solicitud de la respuesta individual`, "error");
+    return Promise.reject(new Error('HTTP error')); 
+			}
             return respuesta.json();
         });
 };
