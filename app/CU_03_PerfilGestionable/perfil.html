@@ -5,311 +5,144 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil gestionable</title>
-
     <link rel="stylesheet" href="../css/prueba.css">
 </head>
 
 <body>
-
     <div class="sidebar">
         <div class="profile">
             <img id="foto_perfil_preview" src="../Imagenes/prueba.png" alt="perfil">
         </div>
-
         <div class="menu"></div>
     </div>
-
     <div class="main">
-
         <div class="header">
-
             <div></div>
-
             <h1>Perfil</h1>
-
             <div class="header-logo-right">
                 <img src="../Imagenes/Logo.png" alt="Logo OPS">
             </div>
-
         </div>
-
         <div class="table">
-
             <!-- ================= ADMIN ================= -->
             <form id="perfil_administrador">
-
-                <label>Nombre</label>
+                <label for="nombre_administrador">Nombre</label>
                 <input type="text" id="nombre_administrador" disabled readonly>
-
-                <label>Apellido Paterno</label>
+                <label for="apellido_paterno_administrador">Apellido Paterno</label>
                 <input type="text" id="apellido_paterno_administrador" disabled readonly>
-
-                <label>Apellido Materno</label>
+                <label for="apellido_materno_administrador">Apellido Materno</label>
                 <input type="text" id="apellido_materno_administrador" disabled readonly>
-
-                <label>Carrera</label>
+                <label for="id_carrera_administrador">Carrera</label>
                 <input type="text" id="id_carrera_administrador" disabled readonly>
-
-                <label>Teléfono</label>
-                <input type="text" id="telefono_administrador" maxlength="13" placeholder="246-470-78-88"
-                    pattern="[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}" title="Formato: 246-470-78-88">
-
-                <label>Correo</label>
+                <label for="telefono_administrador">Teléfono</label>
+                <input type="text" id="telefono_administrador" maxlength="12" placeholder="246-4707-488"
+                    pattern="[0-9]{3}-[0-9]{4}-[0-9]{3}" title="Formato: 246-4807-588" disabled>
+                <label for="correo_administrador">Correo</label>
                 <input type="email" id="correo_administrador" placeholder="correo@ejemplo.com"
-                    pattern="^[^\s@]+@[^\s@]+\.(com|mx)$" title="Debe contener @ y terminar en .com o .mx">
-
-                <label>Fecha Registro</label>
+                    pattern="^[^\s@]+@[^\s@]+\.(com|mx)$" title="Debe contener @ y terminar en .com o .mx" disabled>
+                <label for="fecha_registro_administrador">Fecha Registro</label>
                 <input type="date" id="fecha_registro_administrador" disabled readonly>
-
             </form>
-            <!-- ================= Maestro ================= -->
-            <form id="perfil_maestro">
-
-                <label>Nombre</label>
-                <input type="text" id="nombre_maestro" disabled readonly>
-
-                <label>Apellido Paterno</label>
-                <input type="text" id="apellido_paterno_maestro" disabled readonly>
-
-                <label>Apellido Materno</label>
-                <input type="text" id="apellido_materno_maestro" disabled readonly>
-
-                <label>Carrera</label>
-                <input type="text" id="id_carrera_maestro" disabled readonly>
-
-                <label>Teléfono</label>
-                <input type="text" id="telefono_maestro" maxlength="13" placeholder="246-470-78-88"
-                    pattern="[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}" title="Formato: 246-470-78-88">
-
-                <label>Correo</label>
-                <input type="email" id="correo_maestro" placeholder="correo@ejemplo.com"
-                    pattern="^[^\s@]+@[^\s@]+\.(com|mx)$" title="Debe contener @ y terminar en .com o .mx">
-
-                <label>Fecha Registro</label>
-                <input type="date" id="fecha_registro_maestro" disabled readonly>
-
-            </form>
-
             <!-- ================= ALUMNO ================= -->
             <div class="contenedor-alumno">
-
                 <!-- PERFIL -->
                 <form id="perfil_alumno">
-
                     <h3>Perfil Alumno</h3>
-
-                    <label>Nombre</label>
+                    <label for="nombre_alumno">Nombre</label>
                     <input type="text" id="nombre_alumno" disabled readonly>
-
-                    <label>Apellido Paterno</label>
+                    <label for="apellido_paterno_alumno">Apellido Paterno</label>
                     <input type="text" id="apellido_paterno_alumno" disabled readonly>
-
-                    <label>Apellido Materno</label>
+                    <label for="apellido_materno_alumno">Apellido Materno</label>
                     <input type="text" id="apellido_materno_alumno" disabled readonly>
-
-                    <label>Carrera</label>
+                    <label for="id_carrera_alumno">Carrera</label>
                     <input type="text" id="id_carrera_alumno" disabled readonly>
-
-                    <label>Grupo</label>
-                    <input type="text" id="grupo_alumno" maxlength="2" pattern="[1-9][A-Z]"
-                        title="Formato válido: 1A, 2B, 3C..." disabled>
-
-                    <label>No. Expediente</label>
+                    <label for="grupo_alumno">Semestre y Grupo</label>
+                    <input type="text" id="grupo_alumno" maxlength="2"
+                        title="Formato válido: 1A, 2B, 3C..." disabled >
+                    <label for="no_expediente_alumno">No. Expediente</label>
                     <input type="text" id="no_expediente_alumno" disabled readonly>
-
                     <label>Horario</label>
-
-                    <div style="display:flex; gap:8px; align-items:center;">
-
+                    <div class="horario-container">
                         <input type="time" id="horario_entrada" disabled>
-
                         <span>-</span>
-
                         <input type="time" id="horario_salida" disabled>
-
                     </div>
-
-                    <label>Fecha Registro</label>
-
+                    <label for="fecha_registro_alumno">Fecha Registro</label>
                     <input type="date" id="fecha_registro_alumno" disabled readonly>
-
                 </form>
-
                 <!-- ACTIVIDADES -->
                 <form id="actividades_alumnos">
-
                     <h3>Actividades</h3>
-
-                    <label>Servicio</label>
-
+                    <label for="servicio">Servicio</label>
                     <input type="text" id="servicio" disabled>
-
-                    <!-- EMPRESA -->
-                    <label>Empresa</label>
-
-                    <!-- INPUT SOLO LECTURA -->
+                    <label for="empresa_texto">Empresa</label>
                     <input type="text" id="empresa_texto" disabled readonly>
-
-                    <!-- SELECT EDICIÓN -->
-                    <select id="id_empresa" style="display:none;">
-
-                        <option value="">
-                            -- Selecciona una empresa --
-                        </option>
-
+                    <select id="id_empresa" class="oculto">
+                        <option value="">-- Selecciona una empresa --</option>
                     </select>
-
-                    <!-- BOTÓN NUEVA EMPRESA -->
-                    <button type="button" id="btnCrearEmpresa" class="btn crear" style="display:none;">
-
-                        + Crear Nueva Empresa
-
-                    </button>
-
-                    <label>Área</label>
-
+                    <button type="button" id="btnCrearEmpresa" class="btn crear oculto">+ Crear Nueva Empresa</button>
+                    <label for="area">Área</label>
                     <input type="text" id="area" disabled>
-
-                    <label>Programa</label>
-
+                    <label for="programa">Programa</label>
                     <input type="text" id="programa" disabled>
-
-                    <label>Estado</label>
-
-                    <select id="estado">
-
-                        <option value="">
-                            -- Seleccionar --
-                        </option>
-
-                        <option value="Pendiente">
-                            Pendiente
-                        </option>
-
-                        <option value="En_Curso">
-                            En Curso
-                        </option>
-
-                        <option value="Completado">
-                            Completado
-                        </option>
-
+                    <label for="estado">Estado</label>
+                    <select id="estado" disabled>
+                        <option value="">-- Seleccionar --</option>
+                        <option value="PENDIENTE">Pendiente</option>
+                        <option value="EN_CURSO">En_Curso</option>
+                        <option value="COMPLETADO">Completado</option>
                     </select>
-
-                    <label>Periodo Tipo</label>
-
+                    <label for="periodo_tipo">Periodo Tipo</label>
                     <input type="text" id="periodo_tipo" disabled readonly>
-
-                    <label>Periodo Año</label>
-
+                    <label for="periodo_año">Periodo Año</label>
                     <input type="text" id="periodo_año" disabled>
-
-                    <label>Fecha Inicio</label>
-
+                    <label for="fecha_inicio">Fecha Inicio</label>
                     <input type="date" id="fecha_inicio" disabled>
-
-                    <label>Fecha Fin</label>
-
+                    <label for="fecha_fin">Fecha Fin</label>
                     <input type="date" id="fecha_fin" disabled>
-
-                    <label>Fecha Registro</label>
-
+                    <label for="fecha_registro">Fecha Registro</label>
                     <input type="date" id="fecha_registro" disabled readonly>
-
-                    <label>Fecha Modificación</label>
-
+                    <label for="fecha_modificacion">Fecha Modificación</label>
                     <input type="date" id="fecha_modificacion" disabled readonly>
-
                 </form>
-
             </div>
-
-            <!-- FOTO -->
-            <div class="subir-foto">
-
-                <h3>Foto de perfil</h3>
-
-                <input type="file" id="foto_perfil" accept="image/*">
-
-            </div>
-
         </div>
-
         <!-- BOTONES -->
         <div class="form-actions">
-
-            <button type="button" class="btn editar">
-                Editar
-            </button>
-
-            <button type="button" class="btn guardar">
-                Guardar
-            </button>
-
-            <button type="button" class="btn cancelar">
-                Cancelar
-            </button>
-
+            <button type="button" class="btn editar">Editar</button>
+            <button type="button" class="btn guardar">Guardar</button>
+            <button type="button" class="btn cancelar">Cancelar</button>
         </div>
-
         <!-- TOAST -->
         <div id="toast-mensaje" class="toast oculto"></div>
-
     </div>
-
-    <!-- =========================
-         MODAL NUEVA EMPRESA
-    ========================= -->
+    <!-- ======MODAL NUEVA EMPRESA====== -->
     <div class="modal" id="modalNuevaEmpresa">
-
         <div class="modal-contenido">
-
             <h2>Nueva Empresa</h2>
-
-            <label>Nombre</label>
+            <label for="nueva_empresa_nombre">Nombre</label>
             <input type="text" id="nueva_empresa_nombre">
-
-            <label>Descripción</label>
+            <label for="nueva_empresa_descripcion">Descripción</label>
             <textarea id="nueva_empresa_descripcion"></textarea>
-
-            <label>Razón Social</label>
+            <label for="nueva_empresa_razon_social">Razón Social</label>
             <input type="text" id="nueva_empresa_razon_social">
-
-            <label>RFC</label>
+            <label for="nueva_empresa_rfc">RFC</label>
             <input type="text" id="nueva_empresa_rfc">
-
-            <label>Dirección</label>
+            <label for="nueva_empresa_direccion">Dirección</label>
             <textarea id="nueva_empresa_direccion"></textarea>
-
-            <label>Sitio Web</label>
+            <label for="nueva_empresa_web">Sitio Web</label>
             <input type="url" id="nueva_empresa_web" placeholder="https://ejemplo.com">
-
             <div class="acciones-modal">
-
-                <button type="button" class="btn cancelar" id="cerrarModalEmpresa">
-
-                    Cancelar
-
-                </button>
-
-                <button type="button" class="btn guardar" id="guardarNuevaEmpresa">
-
-                    Guardar Empresa
-
-                </button>
-
+                <button type="button" class="btn cancelar" id="cerrarModalEmpresa">Cancelar</button>
+                <button type="button" class="btn guardar" id="guardarNuevaEmpresa">Guardar Empresa</button>
             </div>
-
         </div>
-
     </div>
-
     <script type="module" src="mostrar_contenido.js"></script>
-
+    <script type="module" src="editar_guardar_perfil.js"></script>
+    <script type="module" src="editar_guardar_act_alum.js"></script>
     <script type="module" src="menu.js"></script>
-
-    <script src="../js/redireccion.js"></script>
-
+    <script type="module" src="../js/redireccion.js"></script>
 </body>
 
 </html>
