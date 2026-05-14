@@ -27,7 +27,7 @@ const elPeriodoTipo = document.getElementById("periodo_tipo");
 const elPeriodoAnio = document.getElementById("periodo_anio");
 
 // Elementos para cargar la tabla de resultados
-const elTitulos = document.getElementById("Titulos");
+const elTitulosTabla = document.getElementById("titulos-tabla");
 const elCuerpoTabla = document.getElementById("Tabla");
 const elExcel = document.getElementById("btnGenerarExcel");
 const elPDF = document.getElementById("btnGenerarPDF");
@@ -62,17 +62,21 @@ document.addEventListener("DOMContentLoaded", function () {
 */
 
 function cargar_catalogos() {
+
 	fetch("./obtener_catalogos.php")
 
 		//Formatear el resultados a JSON para poder manipularlo
 		.then(function (respuesta) {
+			if (!respuesta.ok) {  // Captura errores HTTP (404, 500, etc.)
+				lanzarToast(`Fallo en la solicitud de catálogos`, "error");
+			}
 			return respuesta.json();
 		})
 
 
 		// Se obtiene un objeto con los catalogos de servicios, estados y periodos
 		.then(function (catalogos) {
-			if(catalogos.error){
+			if (catalogos.error) {
 				lanzarToast(catalogos.error, "error");
 				return;
 			}
@@ -138,6 +142,9 @@ function fetchDatosTabla() {
 
 		// Se obtiene la respuesta del php y se formatea a JSON para poder manipularlo
 		.then(function (respuesta) {
+			if (!respuesta.ok) {  // Captura errores HTTP (404, 500, etc.)
+				lanzarToast(`Fallo en la solicitud del reporte`, "error");
+			}
 			//Se obtiene la respuesta del php
 			return respuesta.json();
 		});
@@ -161,7 +168,7 @@ function mostrarBotones() {
 
 function cargar_tabla() {
 	// Se limpian las tablas de caulquier contenido que tengan
-	elTitulos.innerHTML = ""
+	elTitulosTabla.innerHTML = ""
 	elCuerpoTabla.innerHTML = "";
 
 
@@ -170,7 +177,7 @@ function cargar_tabla() {
 		.then(function (resultadoReporte) {
 			//Si la impresión es de tamaño 0 significa que la respuesta es un mensaje
 			//por lo que no se encontraron resultados.
-			if(resultadoReporte.error){
+			if (resultadoReporte.error) {
 				lanzarToast(resultadoReporte.error, "error");
 				ocultarBotones();
 				return;
@@ -185,7 +192,7 @@ function cargar_tabla() {
 
 			//Renderizado de los titulos obtenidos
 			Object.keys(resultadoReporte[0]).forEach(function (titulo) {
-				elTitulos.innerHTML = elTitulos.innerHTML + "<th>" + titulo + "</th>"
+				elTitulosTabla.innerHTML = elTitulosTabla.innerHTML + "<th>" + titulo + "</th>"
 			});
 
 			// Renderizado de el contenido de la tabla
@@ -234,9 +241,9 @@ function exportarExcel() {
 
 function imprimirPDF() {
 	try {
-	// Se obtiene la tabla de resultados y se convierte a un PDF usando jsPDF y jsPDF-AutoTable
+		// Se obtiene la tabla de resultados y se convierte a un PDF usando jsPDF y jsPDF-AutoTable
 		const { jsPDF } = window.jspdf;
-			const doc = new jsPDF({
+		const doc = new jsPDF({
 			orientation: 'landscape',
 			unit: 'mm',
 			format: 'letter' // o 'a4' según prefieras
