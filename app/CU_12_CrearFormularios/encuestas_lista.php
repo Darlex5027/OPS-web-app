@@ -51,5 +51,5 @@ try {
     echo json_encode(['success' => true, 'data' => array_values($encuestas)]);
 } catch (\PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'error' => "SELECT ... | Error: " . $e->getMessage()]);
+    echo json_encode(['error' => "Error al mostrar las encuestas"]);
 }

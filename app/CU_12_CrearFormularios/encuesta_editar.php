@@ -80,5 +80,5 @@ try {
     }
 } catch (\PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'error' => "encuesta_editar.php | Error: " . $e->getMessage()]);
+    echo json_encode(['error' => "Error al editar la encuesta"]);
 }

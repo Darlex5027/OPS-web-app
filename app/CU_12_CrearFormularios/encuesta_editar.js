@@ -35,6 +35,10 @@ function fetchEncuesta(idEncuesta) {
             return respuesta.json();
         })
         .then(function (respuesta) {
+            if (respuesta.error) {
+                lanzarToast(respuesta.error, "error");
+                return
+            }
             renderEncuesta(respuesta.data);
         })
         .catch(function (error) {
@@ -48,8 +52,14 @@ function fetchServicios(idEncuesta) {
             return respuesta.json();
         })
         .then(function (servicios) {
-            renderServicios(servicios);
-            fetchEncuesta(idEncuesta);
+            if (servicios.error) {
+                lanzarToast(servicios.error, "error");
+                return
+            }
+            if (servicios.success) {
+                renderServicios(servicios.data);
+                fetchEncuesta(idEncuesta);
+            }
         })
         .catch(function (error) {
             lanzarToast("No se pudo cargar el Servicio", "error");

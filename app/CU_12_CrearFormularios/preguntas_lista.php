@@ -30,5 +30,5 @@ try {
     echo json_encode(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
 } catch (\PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'error' => "SELECT Preguntas WHERE Id_encuesta=? | Error: " . $e->getMessage()]);
+    echo json_encode(['error' => "Error al mostrar las preguntas"]);
 }
