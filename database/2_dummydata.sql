@@ -467,15 +467,15 @@ INSERT INTO `Contactos_Alumno` (`Id_contacto`, `Id_alumno`, `Tipo`, `Valor`, `Pr
 -- Volcado de datos para la tabla `Encuestas`
 --
 
-INSERT INTO `Encuestas` (`Id_encuesta`, `Nombre`, `Descripcion`, `Id_servicio`, `Activo`, `Fecha_inicio`, `Fecha_fin`, `Fecha_registro`, `Fecha_modificacion`) VALUES
-(7, 'Evaluación del Servicio Social', 'Encuesta para evaluar la calidad de los formatos, atención y servicios relacionados con el Servicio Social Universitario', 1, 1, '2026-04-14', '2027-04-14', '2026-04-14 08:33:08', NULL),
-(8, 'Evaluación de Practicas Profesionales', 'Encuesta para evaluar la calidad de los formatos, atención y servicios relacionados con las Practicas Profesionales Universitarias', 2, 1, '2026-04-14', '2027-04-14', '2026-04-14 08:33:43', NULL),
-(9, 'Evaluación del Desempeño del Prestador de Servicio Social', 'Encuesta para que la dependencia evalúe el desempeño del alumno durante su Servicio Social', 1, 1, '2026-04-14', '2027-04-14', '2026-04-14 08:34:08', NULL),
-(10, 'Evaluación del Desempeño del Prestador de Practicas Profesionales', 'Encuesta para que la dependencia evalúe el desempeño del alumno durante sus Practicas Profesionales', 2, 1, '2026-04-14', '2027-04-14', '2026-04-14 08:37:42', NULL),
-(11, 'Evaluación del Servicio Social (sin respuestas)', 'Encuesta para evaluar la calidad de los formatos, atención y servicios relacionados con el Servicio Social Universitario', 1, 1, '2026-04-14', '2027-04-14', '2026-04-14 08:33:08', NULL),
-(12, 'Evaluación de Practicas Profesionales (sin respuestas)', 'Encuesta para evaluar la calidad de los formatos, atención y servicios relacionados con las Practicas Profesionales Universitarias', 2, 1, '2026-04-14', '2027-04-14', '2026-04-14 08:33:43', NULL),
-(13, 'Evaluación del Desempeño del Prestador de Servicio Social (sin respuestas)', 'Encuesta para que la dependencia evalúe el desempeño del alumno durante su Servicio Social', 1, 1, '2026-04-14', '2027-04-14', '2026-04-14 08:34:08', NULL),
-(14, 'Evaluación del Desempeño del Prestador de Practicas Profesionales (sin respuestas)', 'Encuesta para que la dependencia evalúe el desempeño del alumno durante sus Practicas Profesionales', 2, 1, '2026-04-14', '2027-04-14', '2026-04-14 08:37:42', NULL);
+INSERT INTO `Encuestas` (`Id_encuesta`, `Nombre`, `Descripcion`, `Id_servicio`, `Activo`, `Contestador`, `Fecha_inicio`, `Fecha_fin`, `Fecha_registro`, `Fecha_modificacion`) VALUES
+(7, 'Evaluación del Servicio Social', 'Encuesta para evaluar la calidad de los formatos, atención y servicios relacionados con el Servicio Social Universitario', 1, 1, 0, '2026-04-14', '2027-04-14', '2026-04-14 08:33:08', NULL),
+(8, 'Evaluación de Practicas Profesionales', 'Encuesta para evaluar la calidad de los formatos, atención y servicios relacionados con las Practicas Profesionales Universitarias', 2, 1, 0, '2026-04-14', '2027-04-14', '2026-04-14 08:33:43', NULL),
+(9, 'Evaluación del Desempeño del Prestador de Servicio Social', 'Encuesta para que la dependencia evalúe el desempeño del alumno durante su Servicio Social', 1, 1, 1, '2026-04-14', '2027-04-14', '2026-04-14 08:34:08', '2026-05-15 01:22:05'),
+(10, 'Evaluación del Desempeño del Prestador de Practicas Profesionales', 'Encuesta para que la dependencia evalúe el desempeño del alumno durante sus Practicas Profesionales', 2, 1, 1, '2026-04-14', '2027-04-14', '2026-04-14 08:37:42', '2026-05-15 01:22:38'),
+(11, 'Evaluación del Servicio Social (sin respuestas)', 'Encuesta para evaluar la calidad de los formatos, atención y servicios relacionados con el Servicio Social Universitario', 1, 1, 0, '2026-04-14', '2027-04-14', '2026-04-14 08:33:08', NULL),
+(12, 'Evaluación de Practicas Profesionales (sin respuestas)', 'Encuesta para evaluar la calidad de los formatos, atención y servicios relacionados con las Practicas Profesionales Universitarias', 2, 1, 0, '2026-04-14', '2027-04-14', '2026-04-14 08:33:43', NULL),
+(13, 'Evaluación del Desempeño del Prestador de Servicio Social (sin respuestas)', 'Encuesta para que la dependencia evalúe el desempeño del alumno durante su Servicio Social', 1, 1, 1, '2026-04-14', '2027-04-14', '2026-04-14 08:34:08', '2026-05-15 01:22:16'),
+(14, 'Evaluación del Desempeño del Prestador de Practicas Profesionales (sin respuestas)', 'Encuesta para que la dependencia evalúe el desempeño del alumno durante sus Practicas Profesionales', 2, 1, 1, '2026-04-14', '2027-04-14', '2026-04-14 08:37:42', '2026-05-15 01:22:21');
 
 
 --
