@@ -1,60 +1,143 @@
+<!--
+	Archivo     : reporte_estadistico.html
+	Módulo      : CU_09_ReporteEstadistico
+	Autor       : Alejandro Resendiz Reyes
+	Fecha       : 23/04/2026		
+	Descripción : Interfaz gráfica para la
+	generación de reportes estadísticos
+	basados en las encuestas realizadas.
+	Permite a los usuarios seleccionar una
+	encuesta, un periodo y un año para
+	generar un reporte detallado. Además,
+	ofrece opciones para exportar el reporte
+	en formato Excel o PDF, facilitando
+	su análisis y presentación. La interfaz
+	está diseñada para ser intuitiva y accesible,
+	con un enfoque en la usabilidad y la
+	eficiencia en la generación de reportes.
+
+-->
 <!DOCTYPE html>
 <html lang="es">
-	<head>
-		<meta charset="UTF-8"> <!-- Soporte para caracteres especiales como ñ y tildes -->
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adaptación a móviles -->
-		<title>Reportes Estadisticos</title>
-		<link rel="stylesheet" href="../css/prueba.css">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-		<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-	</head>
-	<body>
-		<div class="sidebar">
-			<div class="profile">
-				<img src="../Imagenes/prueba.png" alt="perfil">
-				<h3>Mtra. M. Guadalupe</h3>
-			</div>
-			<div class="menu"></div>
+
+<head>
+	<meta charset="UTF-8"> <!-- Soporte para caracteres especiales como ñ y tildes -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adaptación a móviles -->
+	<title>Reportes Estadisticos</title>
+	<link rel="stylesheet" href="../css/prueba.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+	<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+</head>
+
+<body>
+	<div class="sidebar">
+		<div class="profile">
+			<img src="../Imagenes/prueba.png" alt="perfil">
+			<h3>Mtra. M. Guadalupe</h3>
 		</div>
-		<div class="main">
-			<div class="header">
-				<div></div><h1>Reportes Estadisticos</h1>
-				<div class="header-logo-right">
-					<img src="../Imagenes/Logo.png" alt="Logo OPS">
-				</div>
+		<!-- Menú de navegación -->
+		<div class="menu"></div>
+	</div>
+	<div class="main">
+		<div class="header">
+			<div></div>
+			<h1>Reportes Estadisticos</h1>
+			<div class="header-logo-right">
+				<img src="../Imagenes/Logo.png" alt="Logo OPS">
 			</div>
-			<select id="slctEncuestas">
-				<option value = "NINGUNA">-- Seleccionar una encuesta--</option>
-			</select>
-			<select id="slctPeriodoTipo">
-				<option value = "NINGUNO">-- Seleccionar un periodo--</option>
-			</select>
-			<select id="slctPeriodoAño">
-				<option value = "NINGUNO">-- Seleccionar una año--</option>
-			</select>
-			<div class="buttons-group">
-				<button onClick="cargar_datos()">Generar Reporte</button>
-				<button onClick="exportarExcel()" id="btnGenerarExcel" style="visibility: hidden">Generar Excel</button>
-				<button onClick="imprimirPDF()" id="btnGenerarPDF" style="visibility: hidden">Generar PDF</button>
-			</div>
-			<div class="table">
-				<table id="tabla-resultados">
+		</div>
+		<!-- Filtros para selección de encuesta-->
+		<select id="slctEncuestas">
+			<option value="NINGUNA">-- Seleccionar una encuesta--</option>
+		</select>
+		<!-- Filtros para selección de periodo-->
+		<select id="slctPeriodoTipo">
+			<option value="NINGUNO">-- Seleccionar un periodo--</option>
+		</select>
+		<!-- Filtros para selección de año-->
+		<select id="slctPeriodoAnio">
+			<option value="NINGUNO">-- Seleccionar una año--</option>
+		</select>
+		<!-- Botones para generar reporte, exportar a Excel y PDF -->
+		<div class="buttons-group">
+			<!-- Botón para generar el reporte estadístico -->
+			<button id="btnCargarResumen" onClick="handleCargarResumen()">Generar Resumen</button>
+			<!-- Botón para generar el reporte estadístico -->
+			<button id="btnCargarEntregados" onClick="handleCargarEntregados()">Entregados</button>
+			<!-- Botón para generar el reporte estadístico -->
+			<button id="btnCargarPendientes" onClick="handleCargarPendientes()">Pendientes</button>
+			<!-- Botones para exportar el reporte a Excel-->
+			<button onClick="handleExportarExcel('tabla-resultados')" id="btnGenerarExcel" style="display: none">Generar
+				Excel</button>
+			<!-- Botón para generar el PDF del reporte estadístico -->
+			<button onClick="handleImprimirPDF('tabla-resultados')" id="btnGenerarPDF" style="display: none">Generar
+				PDF</button>
+		</div>
+		<!-- Tabla para mostrar los resultados del reporte estadístico -->
+		<div class="table" id="div-tabla">
+
+			<table id="tabla-resultados">
+				<caption id="titulo-tabla"></caption>
+				<thead>
 					<tr id="Titulos">
 					</tr>
-					<tbody id="Tabla">
-					</tbody>
-				</table>
-			</div>
-			<!--<h2 id="h2Promedio">Promedio</h2>-->
-			<!--<label id="lblPromedio"></label>-->
+				</thead>
+				<tbody id="Tabla">
+				</tbody>
+			</table>
 		</div>
-		<div id="toast-mensaje" class="toast oculto"></div>
+		<div class="table" style="display: none" id="div-respuesta-individual">
+			<table id="Tabla-respuesta-individual">
+				<div id="Titulo-respuesta-individual">
+					<caption id="Titulo-respuesta-individual"></caption>
+					<button onClick="handleExportarExcel('Tabla-respuesta-individual')" id="btnGenerarExcelIndividual"
+						style="display: none">Generar Excel</button>
+					<!-- Botón para generar el PDF del reporte estadístico -->
+					<button onClick="handleImprimirPDF('Tabla-respuesta-individual')" id="btnGenerarPDFIndividual"
+						style="display: none">Generar PDF</button>
+				</div>
+
+				<thead>
+					<tr id="Titulos-respuesta-individual">
+					</tr>
+				</thead>
+				<tbody id="Cuerpo-respuesta-individual"></tbody>
+				</tbody>
+			</table>
 		</div>
-		<script type="module" src="../js/redireccion.js"></script>
-		<script type="module" src="../js/lanzar_toast.js"></script>
-		<script type="module" src="./reporte_estadistico.js"></script>
-		<script type="module" src="./revision_tipo_usuario.js"></script>
-		<script type="module" src="./generar_excel.js"></script>
-		<script type="module" src="./generar_pdf.js"></script>
-	</body>
+	</div>
+	<!-- Contenedor para mostrar mensajes de toast -->
+	<div id="toast-mensaje" class="toast oculto"></div>
+	<!--Script para mantener al usuario o redirigir según su tipo -->
+	<script type="module" src="../js/redireccion.js"></script>
+	<!--Script para lanzar mensajes de toast -->
+	<tbody id="Cuerpo-respuesta-individual">
+	</tbody>
+	</table>
+	</div>
+	</div>
+	<!-- Contenedor para mostrar mensajes de toast -->
+	<div id="toast-mensaje" class="toast oculto"></div>
+	<!--Script para mantener al usuario o redirigir según su tipo -->
+	<script type="module" src="../js/redireccion.js"></script>
+	<!--Script para el renderizado de menú y primera carga de select -->
+	<script type="module" src="./reporte_estadistico.js"></script>
+	<!--Script para la lógica de la tabla resumen -->
+	<script type="module" src="./generar_resumen.js"></script>
+	<!--Script para la lógica del Tabla con la lista de alumnos que han completado el cuestionario-->
+	<script type="module" src="./generar_tabla_entregados.js"></script>
+	<!--Script para la lógica del Tabla con la lista de alumnos que han completado el cuestionario-->
+	<script type="module" src="./generar_tabla_pendientes.js"></script>
+	<!--Script para mostrar la respuesta individual-->
+	<script type="module" src="./mostrar_respuesta_individual.js"></script>
+
+	<!--Script para revisar el tipo de usuario -->
+	<script type="module" src="./revision_tipo_usuario.js"></script>
+	<!--Script para generar el archivo Excel -->
+	<script type="module" src="./generar_excel.js"></script>
+	<!--Script para generar el archivo PDF -->
+	<script type="module" src="./generar_pdf.js"></script>
+</body>
+
+</html>
