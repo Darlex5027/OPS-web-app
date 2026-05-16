@@ -32,7 +32,13 @@ function fetchPregunta(idPregunta) {
             return respuesta.json();
         })
         .then(function (respuesta) {
-            renderPregunta(respuesta.data);
+            if (respuesta.error) {
+                lanzarToast(respuesta.error, "error");
+                return
+            }
+            if (respuesta.success) {
+                renderPregunta(respuesta.data);
+            }
         })
         .catch(function (error) {
             console.log(error);
@@ -47,7 +53,7 @@ function renderPregunta(pregunta) {
     document.getElementById('inputSeccion').value = pregunta[0].Seccion;
     document.getElementById('selectObligatoria').value = pregunta[0].Obligatoria;
     document.getElementById('selectActivo').value = pregunta[0].Activo;
-    console.log(pregunta[0])
+
 }
 // Valida el formulario y envía los datos actualizados de la pregunta al servidor
 function editarPregunta() {

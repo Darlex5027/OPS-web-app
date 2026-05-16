@@ -46,14 +46,20 @@ function guardarPregunta() {
             return respuesta.json();
         })
         .then(function (resultado) {
-            lanzarToast("Pregunta guardada correctamente", "exito");
-            // Redirige a la lista de preguntas de la encuesta tras guardar exitosamente
-            setTimeout(() => {
-                window.location.href = `./preguntas_lista.html?Id_encuesta=${idEncuesta}`;
-            }, 2000);
+            if (resultado.error) {
+                lanzarToast(resultado.error, "error");
+                return
+            }
+            if (resultado.success) {
+                lanzarToast("Pregunta guardada correctamente", "exito");
+                // Redirige a la lista de preguntas de la encuesta tras guardar exitosamente
+                setTimeout(() => {
+                    window.location.href = `./preguntas_lista.html?Id_encuesta=${idEncuesta}`;
+                }, 2000);
+            }
         })
         .catch(function (error) {
-            lanzarToast("No se pudo guardar la pregunta", "error");
+            lanzarToast("No se pudo guardar la Pregunta", "error");
         });
 }
 

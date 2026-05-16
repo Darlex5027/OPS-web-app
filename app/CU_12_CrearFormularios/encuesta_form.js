@@ -24,7 +24,13 @@ function fetchServicios() {
             return respuesta.json();
         })
         .then(function (respuesta) {
-            renderServicios(respuesta);
+            if (respuesta.error) {
+                lanzarToast(respuesta.error, "error");
+                return
+            }
+            if (respuesta.success) {
+                renderServicios(respuesta.data);
+            }
         })
         .catch(function (error) {
             lanzarToast("No se pudo cargar el Servicio", "error");
@@ -46,6 +52,7 @@ function guardarEncuesta() {
     const valorDescripcion = document.getElementById('inputDescripcion').value;
     const valorServicio = document.getElementById('selectServicio').value;
     const valorActivo = document.getElementById('selectActivo').value;
+    const valorContestador = document.getElementById('selectContestador').value;
     const valorPeriodoTipo = document.getElementById('selectPeriodoTipo').value;
     const valorPeriodoAnio = document.getElementById('inputPeriodoAnio').value;
     const valorFechaFin = document.getElementById('inputFechaFin').value;
@@ -62,6 +69,7 @@ function guardarEncuesta() {
             descripcion: valorDescripcion,
             servicio: valorServicio,
             activo: valorActivo,
+            contestador: valorContestador,
             periodo_tipo: valorPeriodoTipo,
             periodo_anio: valorPeriodoAnio,
             fecha_fin: valorFechaFin
@@ -71,11 +79,17 @@ function guardarEncuesta() {
             return respuesta.json();
         })
         .then(function (resultado) {
-            lanzarToast("Encuesta guardada correctamente", "exito");
-            // Redirige a la lista de encuestas tras guardar exitosamente
-            setTimeout(() => {
-                window.location.href = './encuestas_lista.html';
-            }, 2000);
+            if (resultado.error) {
+                lanzarToast(resultado.error, "error");
+                return
+            }
+            if (resultado.success) {
+                lanzarToast("Encuesta guardada correctamente", "exito");
+                // Redirige a la lista de encuestas tras guardar exitosamente
+                setTimeout(() => {
+                    window.location.href = './encuestas_lista.html';
+                }, 2000);
+            }
         })
         .catch(function (error) {
             lanzarToast("No se pudo guardar la encuesta", "error");
@@ -92,10 +106,11 @@ function validarFormulario() {
         "selectPeriodoTipo": "Tipo de periodo",
         "inputPeriodoAnio": "Año",
         "selectActivo": "Activo",
+        "selectContestador": "Contestador",
         "inputFechaFin": "Fecha de expiración"
     };
 
-    const campos = ["inputNombre", "inputDescripcion", "selectServicio", "selectActivo", "selectPeriodoTipo", "inputPeriodoAnio", "inputFechaFin"];
+    const campos = ["inputNombre", "inputDescripcion", "selectServicio", "selectActivo", "selectContestador", "selectPeriodoTipo", "inputPeriodoAnio", "inputFechaFin"];
     // Verifica que ningún campo esté vacío
     for (const idCampo of campos) {
         const elCampo = document.getElementById(idCampo);

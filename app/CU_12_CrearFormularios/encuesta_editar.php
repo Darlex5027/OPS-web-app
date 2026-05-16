@@ -19,6 +19,7 @@ try {
         $descripcion = $datos_encuesta['descripcion'];
         $id_servicio = $datos_encuesta['servicio'];
         $activo = $datos_encuesta['activo'];
+        $contestador = $datos_encuesta['contestador'];
         $fecha_fin = $datos_encuesta['fecha_fin'];
 
         $stmt = $pdo->prepare("UPDATE Encuestas 
@@ -26,10 +27,11 @@ try {
         Descripcion=?, 
         Id_servicio=?, 
         Activo=?, 
+        Contestador=?,
         Fecha_fin=?,
         Fecha_modificacion=NOW()
         WHERE Id_encuesta=?");
-        $stmt->execute([$nombre, $descripcion, $id_servicio, $activo, $fecha_fin, $id_encuesta]);
+        $stmt->execute([$nombre, $descripcion, $id_servicio, $activo, $contestador, $fecha_fin, $id_encuesta]);
 
         echo json_encode(['success' => true, 'mensaje' => 'Encuesta actualizada']);
     } else if (isset($datos_encuesta['periodo_tipo']) && isset($datos_encuesta['periodo_anio'])) {
@@ -49,6 +51,7 @@ try {
         Descripcion, 
         Id_servicio, 
         Activo, 
+        Contestador,
         Fecha_fin, 
         Fecha_registro, 
         Fecha_modificacion,
@@ -66,6 +69,7 @@ try {
                     'Descripcion' => $fila['Descripcion'],
                     'Id_servicio' => $fila['Id_servicio'],
                     'Activo' => $fila['Activo'],
+                    'Contestador' => $fila['Contestador'],
                     'Fecha_fin' => $fila['Fecha_fin'],
                     'periodos' => []
                 ];
@@ -80,5 +84,5 @@ try {
     }
 } catch (\PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'error' => "encuesta_editar.php | Error: " . $e->getMessage()]);
+    echo json_encode(['error' => "Error al editar la encuesta"]);
 }

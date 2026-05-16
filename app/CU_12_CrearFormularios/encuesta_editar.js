@@ -35,6 +35,10 @@ function fetchEncuesta(idEncuesta) {
             return respuesta.json();
         })
         .then(function (respuesta) {
+            if (respuesta.error) {
+                lanzarToast(respuesta.error, "error");
+                return
+            }
             renderEncuesta(respuesta.data);
         })
         .catch(function (error) {
@@ -48,8 +52,14 @@ function fetchServicios(idEncuesta) {
             return respuesta.json();
         })
         .then(function (servicios) {
-            renderServicios(servicios);
-            fetchEncuesta(idEncuesta);
+            if (servicios.error) {
+                lanzarToast(servicios.error, "error");
+                return
+            }
+            if (servicios.success) {
+                renderServicios(servicios.data);
+                fetchEncuesta(idEncuesta);
+            }
         })
         .catch(function (error) {
             lanzarToast("No se pudo cargar el Servicio", "error");
@@ -72,6 +82,7 @@ function renderEncuesta(encuesta) {
     document.getElementById('inputDescripcion').value = encuesta[0].Descripcion;
     document.getElementById('selectServicio').value = encuesta[0].Id_servicio;
     document.getElementById('selectActivo').value = encuesta[0].Activo;
+    document.getElementById('selectContestador').value = encuesta[0].Contestador
     const elDivPeriodos = document.getElementById('divPeriodos');
     // Renderiza cada periodo con su botón de eliminar
     const contPeriodos = encuesta[0].periodos.length
@@ -221,6 +232,7 @@ function editarEncuestas() {
     const valorDescripcion = document.getElementById('inputDescripcion').value;
     const valorServicio = document.getElementById('selectServicio').value;
     const valorActivo = document.getElementById('selectActivo').value;
+    const ValorContestador = document.getElementById('selectContestador').value;
     const valorFechaFin = document.getElementById('inputFechaFin').value;
 
 
@@ -237,6 +249,7 @@ function editarEncuestas() {
             descripcion: valorDescripcion,
             servicio: valorServicio,
             activo: valorActivo,
+            contestador: ValorContestador,
             fecha_fin: valorFechaFin
         })
     })
@@ -261,10 +274,11 @@ function validarFormulario() {
         "inputDescripcion": "Descripcion",
         "selectServicio": "Servicio",
         "selectActivo": "Activo",
+        "selectContestador": "Contestador",
         "inputFechaFin": "Fecha de expiración"
     };
 
-    const campos = ["inputNombre", "inputDescripcion", "selectServicio", "selectActivo"];
+    const campos = ["inputNombre", "inputDescripcion", "selectServicio", "selectActivo", "selectContestador"];
 
     for (const idCampo of campos) {
         const elCampo = document.getElementById(idCampo);

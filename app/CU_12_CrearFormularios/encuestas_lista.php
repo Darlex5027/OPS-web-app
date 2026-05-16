@@ -18,6 +18,7 @@ try {
     Encuestas.Id_encuesta, 
     Encuestas.Nombre, 
     Encuestas.Activo, 
+    Encuestas.Contestador, 
     Encuestas.Descripcion, 
     Encuestas.Fecha_fin, 
     Actividades.Servicio
@@ -37,6 +38,7 @@ try {
                 'Id_encuesta' => $fila['Id_encuesta'],
                 'Nombre' => $fila['Nombre'],
                 'Activo' => $fila['Activo'],
+                'Contestador' => $fila['Contestador'],
                 'Descripcion' => $fila['Descripcion'],
                 'Fecha_fin' => $fila['Fecha_fin'],
                 'Servicio' => $fila['Servicio'],
@@ -51,5 +53,5 @@ try {
     echo json_encode(['success' => true, 'data' => array_values($encuestas)]);
 } catch (\PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'error' => "SELECT ... | Error: " . $e->getMessage()]);
+    echo json_encode(['error' => "Error al mostrar las encuestas"]);
 }
