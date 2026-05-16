@@ -18,6 +18,7 @@ try {
     Encuestas.Id_encuesta, 
     Encuestas.Nombre, 
     Encuestas.Activo, 
+    Encuestas.Contestador, 
     Encuestas.Descripcion, 
     Encuestas.Fecha_fin, 
     Actividades.Servicio
@@ -37,6 +38,7 @@ try {
                 'Id_encuesta' => $fila['Id_encuesta'],
                 'Nombre' => $fila['Nombre'],
                 'Activo' => $fila['Activo'],
+                'Contestador' => $fila['Contestador'],
                 'Descripcion' => $fila['Descripcion'],
                 'Fecha_fin' => $fila['Fecha_fin'],
                 'Servicio' => $fila['Servicio'],

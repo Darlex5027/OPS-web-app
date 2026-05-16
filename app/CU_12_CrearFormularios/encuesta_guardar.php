@@ -15,6 +15,7 @@ $nombre = $datos_encuesta['nombre'];
 $descripcion = $datos_encuesta['descripcion'];
 $id_servicio = $datos_encuesta['servicio'];
 $activo = $datos_encuesta['activo'];
+$contestador = $datos_encuesta['contestador'];
 $periodo_tipo = $datos_encuesta['periodo_tipo'];
 $periodo_anio = $datos_encuesta['periodo_anio'];
 $fecha_fin = $datos_encuesta['fecha_fin'];
@@ -22,10 +23,10 @@ $fecha_fin = $datos_encuesta['fecha_fin'];
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
     $stmt = $pdo->prepare("INSERT INTO 
-    Encuestas (Nombre, Descripcion, Id_servicio, Activo, Fecha_fin, Fecha_registro, 
+    Encuestas (Nombre, Descripcion, Id_servicio, Activo, Contestador,Fecha_fin, Fecha_registro, 
     Fecha_modificacion) 
-    VALUES (?,?,?,?,?, NOW(), NOW())");
-    $stmt->execute([$nombre, $descripcion, $id_servicio, $activo, $fecha_fin]);
+    VALUES (?,?,?,?,?,?, NOW(), NOW())");
+    $stmt->execute([$nombre, $descripcion, $id_servicio, $activo, $contestador, $fecha_fin]);
     $id_encuesta = $pdo->lastInsertId();
     $stmt = $pdo->prepare("INSERT INTO Periodo_Encuesta (Id_encuesta, Periodo_tipo, Periodo_año) 
     VALUES (?,?,?)");

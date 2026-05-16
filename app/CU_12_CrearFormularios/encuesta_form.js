@@ -52,6 +52,7 @@ function guardarEncuesta() {
     const valorDescripcion = document.getElementById('inputDescripcion').value;
     const valorServicio = document.getElementById('selectServicio').value;
     const valorActivo = document.getElementById('selectActivo').value;
+    const valorContestador = document.getElementById('selectContestador').value;
     const valorPeriodoTipo = document.getElementById('selectPeriodoTipo').value;
     const valorPeriodoAnio = document.getElementById('inputPeriodoAnio').value;
     const valorFechaFin = document.getElementById('inputFechaFin').value;
@@ -68,6 +69,7 @@ function guardarEncuesta() {
             descripcion: valorDescripcion,
             servicio: valorServicio,
             activo: valorActivo,
+            contestador: valorContestador,
             periodo_tipo: valorPeriodoTipo,
             periodo_anio: valorPeriodoAnio,
             fecha_fin: valorFechaFin
@@ -104,10 +106,11 @@ function validarFormulario() {
         "selectPeriodoTipo": "Tipo de periodo",
         "inputPeriodoAnio": "Año",
         "selectActivo": "Activo",
+        "selectContestador": "Contestador",
         "inputFechaFin": "Fecha de expiración"
     };
 
-    const campos = ["inputNombre", "inputDescripcion", "selectServicio", "selectActivo", "selectPeriodoTipo", "inputPeriodoAnio", "inputFechaFin"];
+    const campos = ["inputNombre", "inputDescripcion", "selectServicio", "selectActivo", "selectContestador", "selectPeriodoTipo", "inputPeriodoAnio", "inputFechaFin"];
     // Verifica que ningún campo esté vacío
     for (const idCampo of campos) {
         const elCampo = document.getElementById(idCampo);

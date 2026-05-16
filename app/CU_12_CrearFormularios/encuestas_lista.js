@@ -117,6 +117,7 @@ function renderEncuestas(encuestas) {
         <td>${encuesta.Descripcion}</td>
         <td>${encuesta.Servicio}</td>
         <td>${encuesta.Activo == 1 ? 'Sí' : 'No'}</td>
+        <td>${encuesta.Contestador == 1 ? 'Docentes como alumnos' : 'Alumnos'}</td>
         <td>${encuesta.periodos.map(p => `${p.Periodo_tipo} ${p['Periodo_año']}`).join('<br>')}</td>
         <td>${encuesta.Fecha_fin}</td>
         <td>

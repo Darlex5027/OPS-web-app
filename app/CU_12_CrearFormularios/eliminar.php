@@ -5,7 +5,7 @@
   Módulo      : CU_12_CrearFormularios
   Autor       : Daniela Hernandez Hernandez
   Fecha       : 05/05/2026
-  Descripción : 
+  Descripción : php para eliminar preguntas, encustas y respuestas
 */
 
 require_once '../php/db.php';
