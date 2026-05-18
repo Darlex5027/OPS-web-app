@@ -1,3 +1,12 @@
+/*
+  Archivo     : generar_pdf.js
+  Módulo      : CU_09_ReporteEstadistico
+  Autor       : Alejandro Resendiz Reyes
+  Fecha       : 29/04/2026		
+  Descripción : Este archivo se encarga de generar el archivo PDF del reporte estadístico.
+				Se utiliza la librería jsPDF para crear el documento PDF a partir de la tabla de resultados.
+*/
+
 import { lanzarToast } from '../js/lanzar_toast.js';
 
 window.handleImprimirPDF = function (elTabla) {
