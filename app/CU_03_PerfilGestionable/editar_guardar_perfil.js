@@ -1,139 +1,210 @@
 import { lanzarToast } from '../js/lanzar_toast.js';
 
-// ──────────────────────────────────────────────
-// Constantes estáticas (no dependen del DOM)
-// ──────────────────────────────────────────────
+// =========================
+// UTILIDADES
+// =========================
+const getEl = (id) => document.getElementById(id);
 
-const regex = {
-    telefono: /^\d{3}-\d{4}-\d{3}$/,
-    correo: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|mx|edu)$/,
-    grupo: /^[1-9][A-Z]$/
-};
+const tipoUsuario = document.cookie.split("; ")
+    .find(r => r.startsWith("Id_tipo_usuario="))
+    ?.split("=")[1].trim();
 
-const campos = {
-    admin: ["telefono_administrador", "correo_administrador"],
-    alumno: ["grupo_alumno", "horario_entrada", "horario_salida"]
-};
-
-// ──────────────────────────────────────────────
-// Helpers
-// ──────────────────────────────────────────────
-
-const getTipo = () => {
-    const cookie = document.cookie.split("; ").find(r => r.startsWith("Id_tipo_usuario="));
-    return cookie ? cookie.split("=")[1].trim() : null;
-};
-
-const esAdmin = () => { const t = getTipo(); return t === "1" || t === "3"; };
-const getVal  = (id) => document.getElementById(id).value;
-const setDis  = (ids, val) => ids.forEach(id => document.getElementById(id).disabled = val);
-const camposRol = () => esAdmin() ? campos.admin : campos.alumno;
-
-function resetBotones(btn, editando) {
-    btn.editar.style.display  = editando ? "none"         : "inline-block";
-    btn.guardar.style.display = editando ? "inline-block" : "none";
-    btn.cancelar.style.display = editando ? "inline-block" : "none";
+// =========================
+// MODAL
+// =========================
+function abrirModal() {
+    getEl("modalNuevaEmpresa").style.display = "flex";
 }
 
-function formatearTelefono(e) {
-    let val = e.target.value.replace(/\D/g, "");
-    if (val.length > 3) val = val.slice(0, 3) + "-" + val.slice(3);
-    if (val.length > 8) val = val.slice(0, 8) + "-" + val.slice(8);
-    if (val.length > 12) val = val.slice(0, 12);
-    e.target.value = val;
+function cerrarModal() {
+    getEl("modalNuevaEmpresa").style.display = "none";
+    limpiarModal();
 }
 
-function validar() {
-    if (esAdmin()) {
-        if (!regex.telefono.test(getVal("telefono_administrador")))
-            return lanzarToast("Teléfono inválido. Formato: 555-6321-859", "error"), false;
-        if (!regex.correo.test(getVal("correo_administrador")))
-            return lanzarToast("Correo inválido. Ej: a@b.com", "error"), false;
-    } else {
-        if (!regex.grupo.test(getVal("grupo_alumno")))
-            return lanzarToast("Grupo inválido. Ej: 1A, 2B", "error"), false;
-        if (!getVal("fecha_inicio"))
-            return lanzarToast("La fecha de inicio es obligatoria.", "error"), false;
-        if (!getVal("fecha_fin"))
-            return lanzarToast("La fecha de fin es obligatoria.", "error"), false;
-        if (new Date(getVal("fecha_fin")) < new Date(getVal("fecha_inicio")))
-            return lanzarToast("La fecha fin no puede ser mayor a la fecha inicio.", "error"), false;
+function limpiarModal() {
+    [
+        "nueva_empresa_nombre",
+        "nueva_empresa_descripcion",
+        "nueva_empresa_razon_social",
+        "nueva_empresa_rfc",
+        "nueva_empresa_direccion",
+        "nueva_empresa_web"
+    ].forEach(id => { getEl(id).value = ""; });
+}
+
+// =========================
+// CREAR EMPRESA
+// =========================
+function guardarNuevaEmpresa() {
+    const nombre = getEl("nueva_empresa_nombre").value.trim();
+
+    if (!nombre) {
+        lanzarToast("El nombre de la empresa es obligatorio", "error");
+        return;
     }
-    return true;
-}
 
-function guardar(datos) {
-    fetch("guardar_datos.php", {
+    const datos = {
+        accion: "crear_empresa",
+        nombre,
+        descripcion: getEl("nueva_empresa_descripcion").value.trim(),
+        razon_social: getEl("nueva_empresa_razon_social").value.trim(),
+        rfc: getEl("nueva_empresa_rfc").value.trim(),
+        direccion: getEl("nueva_empresa_direccion").value.trim(),
+        sitio_web: getEl("nueva_empresa_web").value.trim()
+    };
+
+    fetch("crear_empresa.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(datos)
     })
         .then(r => r.json())
-        .then(r => lanzarToast(
-            r.success ? "Datos guardados correctamente" : "Error al guardar",
-            r.success ? "exito" : "error"
-        ))
-        .catch(e => console.error(e));
+        .then(result => {
+            if (!result.success) {
+                lanzarToast("Error al crear la empresa", "error");
+                return;
+            }
+
+            const select = getEl("id_empresa");
+            const option = document.createElement("option");
+            option.value = result.id_empresa;
+            option.textContent = nombre;
+            option.selected = true;
+            select.appendChild(option);
+
+            getEl("empresa_texto").value = nombre;
+            lanzarToast("Empresa creada correctamente", "exito");
+            cerrarModal();
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            lanzarToast("Error al conectar con el servidor", "error");
+        });
 }
 
-function getDatosAlumno() {
-    return {
-        grupo:          getVal("grupo_alumno"),
-        horario_entrada: getVal("horario_entrada"),
-        horario_salida:  getVal("horario_salida"),
-        estado:          getVal("estado"),
-        area:            getVal("area"),
-        programa:        getVal("programa"),
-        fecha_inicio:    getVal("fecha_inicio"),
-        fecha_fin:       getVal("fecha_fin"),
-        id_empresa:      getVal("id_empresa"),
-    };
+// =========================
+// EDITAR
+// =========================
+function modoEditar(btnEditar, btnGuardar, btnCancelar) {
+    btnEditar.style.display = "none";
+    btnGuardar.style.display = "inline-block";
+    btnCancelar.style.display = "inline-block";
+
+    const inputFoto = getEl("foto_perfil_input");
+    if (inputFoto) inputFoto.disabled = false;
+
+    if (tipoUsuario === "1" || tipoUsuario === "3") {
+        ["telefono_administrador", "correo_administrador"].forEach(id => {
+            const el = getEl(id);
+            if (el) { el.disabled = false; el.readOnly = false; }
+        });
+    } else {
+        ["grupo_alumno", "horario_entrada", "horario_salida", "id_empresa",
+            "nueva_empresa", "area", "programa", "estado", "fecha_inicio", "fecha_fin"]
+            .forEach(id => {
+                const el = getEl(id);
+                if (el) { el.disabled = false; el.readOnly = false; }
+            });
+
+        const empresaTexto = getEl("empresa_texto");
+        const selectEmpresa = getEl("id_empresa");
+        if (empresaTexto) empresaTexto.style.display = "none";
+        if (selectEmpresa) selectEmpresa.style.display = "block";
+    }
 }
+
+// =========================
+// GUARDAR
+// =========================
+function modoGuardar() {
+    const data = new FormData();
+
+    const inputFoto = getEl("foto_perfil_input");
+    if (inputFoto?.files.length > 0) data.append("foto_perfil", inputFoto.files[0]);
+
+    if (tipoUsuario === "1" || tipoUsuario === "3") {
+        const correo = getEl("correo_administrador")?.value.trim();
+        const telefono = getEl("telefono_administrador")?.value.trim();
+
+        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|mx|edu)$/.test(correo))
+            return lanzarToast("Correo inválido", "error");
+        if (!/^\d{3}-\d{4}-\d{3}$/.test(telefono))
+            return lanzarToast("Formato: 246-5444-885", "error");
+
+        data.append("telefono", telefono);
+        data.append("correo", correo);
+
+    } else {
+        const fechaInicio = getEl("fecha_inicio")?.value;
+        const fechaFin = getEl("fecha_fin")?.value;
+
+        if (fechaInicio && fechaFin && fechaFin <= fechaInicio)
+            return lanzarToast("La fecha fin debe ser posterior a la fecha inicio", "error");
+
+        data.append("grupo", getEl("grupo_alumno")?.value);
+        data.append("horario_entrada", getEl("horario_entrada")?.value);
+        data.append("horario_salida", getEl("horario_salida")?.value);
+        data.append("area", getEl("area")?.value);
+        data.append("programa", getEl("programa")?.value);
+        data.append("estado", getEl("estado")?.value);
+        data.append("fecha_inicio", fechaInicio);
+        data.append("fecha_fin", fechaFin);
+
+        const selectEmpresa = getEl("id_empresa");
+        if (selectEmpresa?.value === "nueva") {
+            data.append("nueva_empresa", getEl("nueva_empresa")?.value || "");
+        } else {
+            data.append("id_empresa", selectEmpresa?.value || "");
+        }
+    }
+
+    fetch("guardar_datos.php", { method: "POST", body: data })
+        .then(async r => {
+            const texto = await r.text();
+            try { return JSON.parse(texto); }
+            catch { throw new Error("La respuesta no es JSON válido"); }
+        })
+        .then(resp => {
+            lanzarToast(
+                resp.success ? "Datos guardados correctamente" : resp.error || "Error al guardar",
+                resp.success ? "exito" : "error"
+            );
+            if (resp.success) setTimeout(() => location.reload(), 1500);
+        })
+        .catch(() => lanzarToast("Error de conexión", "error"));
+}
+
+// =============================================
+// DOMCONTENTLOADED — solo inicialización
+// =============================================
 document.addEventListener("DOMContentLoaded", () => {
 
-    const btn = {
-        editar:   document.querySelector(".btn.editar"),
-        guardar:  document.querySelector(".btn.guardar"),
-        cancelar: document.querySelector(".btn.cancelar")
-    };
+    const btnEditar = document.querySelector(".btn.editar");
+    const btnGuardar = document.querySelector(".btn.guardar");
+    const btnCancelar = document.querySelector(".btn.cancelar");
 
-    // Estado inicial de botones
-    resetBotones(btn, false);
+    btnGuardar.style.display = "none";
+    btnCancelar.style.display = "none";
 
-    // Formato automático en campo teléfono
-    document.getElementById("telefono_administrador").addEventListener("input", formatearTelefono);
+    btnEditar?.addEventListener("click", () => modoEditar(btnEditar, btnGuardar, btnCancelar));
+    btnGuardar?.addEventListener("click", () => modoGuardar());
+    btnCancelar?.addEventListener("click", () => location.reload());
 
-    // Ocultar "Editar" si el alumno ya tiene estado COMPLETADO
-    document.addEventListener("datosCargados", () => {
-        if (!esAdmin() && document.getElementById("estado")?.value === "COMPLETADO") {
-            btn.editar.style.display = "none";
-        }
+    getEl("btnCrearEmpresa").addEventListener("click", abrirModal);
+    getEl("cerrarModalEmpresa").addEventListener("click", cerrarModal);
+    getEl("guardarNuevaEmpresa").addEventListener("click", guardarNuevaEmpresa);
+
+    getEl("modalNuevaEmpresa").addEventListener("click", e => {
+        if (e.target === getEl("modalNuevaEmpresa")) cerrarModal();
     });
 
-    // Botón Editar
-    btn.editar.addEventListener("click", () => {
-        setDis(camposRol(), false);
-        if (!esAdmin()) window.habilitarActividades?.(true);
-        resetBotones(btn, true);
-    });
-
-    // Botón Guardar
-    btn.guardar.addEventListener("click", () => {
-        if (!validar()) return;
-        const datos = esAdmin()
-            ? Object.fromEntries(camposRol().map(id => [id, getVal(id)]))
-            : getDatosAlumno();
-        guardar(datos);
-        setDis(camposRol(), true);
-        if (!esAdmin()) window.habilitarActividades?.(false);
-        resetBotones(btn, false);
-    });
-
-    // Botón Cancelar
-    btn.cancelar.addEventListener("click", () => {
-        setDis(camposRol(), true);
-        if (!esAdmin()) window.habilitarActividades?.(false);
-        resetBotones(btn, false);
+    // Formatear teléfono automáticamente
+    getEl("telefono_administrador")?.addEventListener("input", e => {
+        let val = e.target.value.replace(/\D/g, "");
+        if (val.length > 3) val = val.slice(0, 3) + "-" + val.slice(3);
+        if (val.length > 8) val = val.slice(0, 8) + "-" + val.slice(8);
+        if (val.length > 12) val = val.slice(0, 12);
+        e.target.value = val;
     });
 
 });

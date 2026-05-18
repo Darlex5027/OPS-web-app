@@ -11,58 +11,76 @@ if (!isset($_COOKIE['Id_tipo_usuario']) || !isset($_COOKIE['Id_usuario'])) {
 
 $tipo_usuario = trim($_COOKIE['Id_tipo_usuario']);
 $id_usuario = trim($_COOKIE['Id_usuario']);
-$datos = json_decode(file_get_contents("php://input"), true);
+
+$datos = $_POST;
 
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 
+    // ── Foto de perfil (opcional, aplica a todos) ──────────────────────────
+    if (!empty($_FILES['foto_perfil']['tmp_name'])) {
+        $ext = pathinfo($_FILES['foto_perfil']['name'], PATHINFO_EXTENSION);
+        $destino = "../uploads/fotos/{$id_usuario}.{$ext}";
+        move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $destino);
+        // Aquí podrías guardar la ruta en BD si la tienes como columna
+    }
+
+    // ── Administrador / Coordinador ────────────────────────────────────────
     if ($tipo_usuario == "1" || $tipo_usuario == "3") {
 
-        $sql = "UPDATE Administradores SET"
-            . " Telefono = :telefono,"
-            . " Correo   = :correo"   // ← sin coma aquí
-            . " WHERE Id_usuario = :id_usuario";
+        $sql = "UPDATE Administradores SET
+                    Telefono = :telefono,
+                    Correo   = :correo
+                WHERE Id_usuario = :id_usuario";
 
         $pdo->prepare($sql)->execute([
-            ':telefono' => $datos['telefono_administrador'],
-            ':correo' => $datos['correo_administrador'],
+            ':telefono' => $datos['telefono'] ?? '',
+            ':correo' => $datos['correo'] ?? '',
             ':id_usuario' => $id_usuario
         ]);
 
+        // ── Alumno ─────────────────────────────────────────────────────────────
     } elseif ($tipo_usuario == "2") {
-        $horario = trim (($datos['horario_entrada']??'').'-'.($datos['horario_salida']??''));
-        $sql = "UPDATE Alumnos SET"
-            . " Grupo   = :grupo,"
-            . " Horario = :horario"  // ← sin coma aquí
-            . " WHERE Id_usuario = :id_usuario";
+
+        $horario = trim(($datos['horario_entrada']?? '').'-'.($datos['horario_salida']??''));
+        $sql = "UPDATE Alumnos SET
+                    Grupo   = :grupo,
+                    Horario = :horario
+                WHERE Id_usuario = :id_usuario";
 
         $pdo->prepare($sql)->execute([
-            ':grupo' => $datos['grupo'],
+            ':grupo' => $datos['grupo'] ?? '',
             ':horario' => $horario,
             ':id_usuario' => $id_usuario
         ]);
 
-        // Actualizar actividad solo si viene id_empresa o campos de actividad
+        // Actividades solo si viene el estado
         if (!empty($datos['estado'])) {
-            $sqlAct = "UPDATE Actividades_Alumnos SET"
-                . " Area         = :area,"
-                . " Programa     = :programa,"
-                . " Estado       = :estado,"
-                . " Fecha_inicio = :fecha_inicio,"
-                . " Fecha_fin    = :fecha_fin"
-                . (!empty($datos['id_empresa']) ? ", Id_empresa = :id_empresa" : "")
-                . " WHERE Id_alumno = (SELECT Id_alumno FROM Alumnos WHERE Id_usuario = :id_usuario)";
+
+            $conEmpresa = !empty($datos['id_empresa']);
+
+            $sqlAct = "UPDATE Actividades_Alumnos SET
+                           Area         = :area,
+                           Programa     = :programa,
+                           Estado       = :estado,
+                           Fecha_inicio = :fecha_inicio,
+                           Fecha_fin    = :fecha_fin"
+                . ($conEmpresa ? ", Id_empresa = :id_empresa" : "")
+                . " WHERE Id_alumno = (
+                           SELECT Id_alumno FROM Alumnos
+                           WHERE Id_usuario = :id_usuario
+                       )";
 
             $params = [
-                ':area' => $datos['area'],
-                ':programa' => $datos['programa'],
-                ':estado' => $datos['estado'],
-                ':fecha_inicio' => $datos['fecha_inicio'],
-                ':fecha_fin' => $datos['fecha_fin'],
+                ':area' => $datos['area'] ?? '',
+                ':programa' => $datos['programa'] ?? '',
+                ':estado' => $datos['estado'] ?? '',
+                ':fecha_inicio' => $datos['fecha_inicio'] ?? null,
+                ':fecha_fin' => $datos['fecha_fin'] ?? null,
                 ':id_usuario' => $id_usuario
             ];
 
-            if (!empty($datos['id_empresa'])) {
+            if ($conEmpresa) {
                 $params[':id_empresa'] = $datos['id_empresa'];
             }
 
