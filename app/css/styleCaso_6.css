@@ -1,0 +1,581 @@
+/* ===================================================== */
+/* ===== VARIABLES GLOBALES ===== */
+/* ===================================================== */
+:root{
+    --rojo:#982b2b;
+    --rojo-hover:#7f2020;
+
+    --gris-bg:#f5f5f5;
+    --gris-card:#ffffff;
+    --gris-input:#fafafa;
+    --gris-border:#dddddd;
+    --gris-claro:#f0f0f0;
+
+    --texto:#2a2a2a;
+
+    --radio:12px;
+    --sidebar-width:250px;
+
+    --sombra:0 6px 18px rgba(0,0,0,.08);
+
+    --fuente:'Segoe UI', Arial, sans-serif;
+}
+
+/* ===================================================== */
+/* ===== RESET ===== */
+/* ===================================================== */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    height:100%;
+}
+
+body{
+    font-family:var(--fuente);
+    background:var(--gris-bg);
+    color:var(--texto);
+    overflow-x:hidden;
+}
+
+body.pagina-vacantes{
+    display:flex;
+    min-height:100vh;
+}
+
+/* ===================================================== */
+/* ===== SIDEBAR ===== */
+/* ===================================================== */
+.sidebar{
+    width:250px;
+    background-color:#fff;
+    padding:30px 20px;
+    box-shadow:4px 0 10px rgba(0,0,0,.08);
+    height:100vh;
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:100;
+    overflow-y:auto;
+}
+
+/* ===================================================== */
+/* ===== PERFIL ===== */
+/* ===================================================== */
+.profile{
+    text-align:center;
+    margin-bottom:24px;
+    padding-bottom:20px;
+    border-bottom:1px solid #ececec;
+}
+
+.profile img{
+    width:82px;
+    height:82px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #f0f0f0;
+    margin-bottom:12px;
+}
+
+/* Texto perfil */
+.profile h3,
+.sidebar > p,
+.sidebar > span{
+    font-size:.95rem;
+    color:#333;
+    font-weight:500;
+    text-align:center;
+    display:block;
+    margin-bottom:14px;
+}
+
+/* ===================================================== */
+/* ===== MENU ===== */
+/* ===================================================== */
+.menu{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.menu button{
+    width:100%;
+    padding:10px 14px;
+    margin-bottom:8px;
+    border:none;
+    border-radius:var(--radio);
+    background-color:var(--gris-claro);
+    color:#2a2a2a;
+    cursor:pointer;
+    text-align:left;
+    font-size:14px;
+    font-family:'Segoe UI', Arial, sans-serif;
+    transition:background-color .2s ease, color .2s ease;
+}
+
+.menu button:hover{
+    background-color:#d4d4d4;
+    color:#111;
+}
+
+.menu button.active{
+    background-color:#e0e0e0;
+    font-weight:600;
+}
+
+/* ===================================================== */
+/* ===== MAIN ===== */
+/* ===================================================== */
+.main{
+    margin-left:var(--sidebar-width);
+    width:100%;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+/* ===================================================== */
+/* ===== HEADER ===== */
+/* ===================================================== */
+.header{
+    width:100%;
+    height:150px;
+
+    background-color:var(--rojo);
+
+    display:grid;
+    grid-template-columns:220px 1fr 220px;
+
+    align-items:center;
+
+    padding:0 24px;
+
+    position:sticky;
+    top:0;
+    z-index:90;
+}
+
+/* ===================================================== */
+/* ===== TITULO ===== */
+/* ===================================================== */
+.header h1{
+    color:#fff;
+    font-size:3rem;
+    font-weight:700;
+    text-align:center;
+    letter-spacing:.5px;
+}
+
+/* ===================================================== */
+/* ===== LOGOS ===== */
+/* ===================================================== */
+.header-logo-left,
+.header-logo-right{
+    display:flex;
+    align-items:center;
+}
+
+.header-logo-left{
+    justify-content:flex-start;
+}
+
+.header-logo-right{
+    justify-content:flex-end;
+}
+
+.header-logo-left img,
+.header-logo-right img{
+    height:90px;
+    width:auto;
+    object-fit:contain;
+
+    filter:brightness(0) invert(1);
+    opacity:.95;
+}
+
+/* ===================================================== */
+/* ===== CONTENEDOR ===== */
+/* ===================================================== */
+.table{
+    padding:36px;
+    display:flex;
+    justify-content:center;
+}
+
+/* ===================================================== */
+/* ===== FORMULARIO ===== */
+/* ===================================================== */
+#miFormulario{
+    width:100%;
+    max-width:760px;
+    background:#fff;
+    border-radius:18px;
+    padding:34px;
+    box-shadow:var(--sombra);
+}
+
+/* ===================================================== */
+/* ===== LABELS ===== */
+/* ===================================================== */
+#miFormulario label{
+    display:block;
+    margin-bottom:7px;
+    font-size:14px;
+    font-weight:600;
+    color:#444;
+}
+
+/* ===================================================== */
+/* ===== INPUTS ===== */
+/* ===================================================== */
+#miFormulario input,
+#miFormulario select,
+#miFormulario textarea{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid var(--gris-border);
+    border-radius:10px;
+    background:var(--gris-input);
+    font-size:14px;
+    font-family:var(--fuente);
+    outline:none;
+    transition:.25s ease;
+    margin-bottom:14px;
+}
+
+#miFormulario input:focus,
+#miFormulario select:focus,
+#miFormulario textarea:focus{
+    border-color:var(--rojo);
+    background:#fff;
+    box-shadow:0 0 0 4px rgba(152,43,43,.10);
+}
+
+#miFormulario input::placeholder,
+#miFormulario textarea::placeholder{
+    color:#aaa;
+    font-style:italic;
+}
+
+/* ===================================================== */
+/* ===== SELECTS ===== */
+/* ===================================================== */
+#miFormulario select{
+    appearance:none;
+
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23666' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+
+    background-repeat:no-repeat;
+    background-position:right 14px center;
+
+    padding-right:38px;
+
+    cursor:pointer;
+}
+
+/* ===================================================== */
+/* ===== CONTENEDORES ===== */
+/* ===================================================== */
+#contenedor_empresa_manual,
+#contenedor_empresa_flayer{
+    display:flex;
+    gap:12px;
+    align-items:center;
+}
+
+#contenedor_servicio_manual,
+#contenedor_servicio_flayer{
+    display:flex;
+    flex-direction:column;
+}
+
+/* ===================================================== */
+/* ===== BOTON CREAR ===== */
+/* ===================================================== */
+#btn-activar-nueva-manual,
+#btn-activar-nueva-flayer{
+    padding:12px 16px;
+    border:1px solid var(--rojo);
+    border-radius:10px;
+    background:#fff;
+    color:var(--rojo);
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.25s ease;
+    white-space:nowrap;
+}
+
+#btn-activar-nueva-manual:hover,
+#btn-activar-nueva-flayer:hover{
+    background:var(--rojo);
+    color:#fff;
+}
+
+/* ===================================================== */
+/* ===== NUEVA EMPRESA ===== */
+/* ===================================================== */
+#nueva_empresa{
+    margin-top:18px;
+    background:#fff7f7;
+    border:1px solid rgba(152,43,43,.14);
+    border-left:5px solid var(--rojo);
+    border-radius:14px;
+    padding:24px;
+}
+
+#nueva_empresa h2{
+    color:var(--rojo);
+    font-size:1.15rem;
+    margin-bottom:18px;
+}
+
+#nueva_empresa button[type="button"]{
+    margin-top:10px;
+    padding:11px 18px;
+    border:none;
+    border-radius:10px;
+    background:#ececec;
+    color:#444;
+    cursor:pointer;
+    transition:.25s ease;
+    font-weight:600;
+}
+
+#nueva_empresa button[type="button"]:hover{
+    background:#dddddd;
+}
+
+/* ===================================================== */
+/* ===== FECHAS ===== */
+/* ===================================================== */
+#fecha_Manual,
+#fecha_flayer{
+    font-size:13px;
+    color:#777;
+    font-style:italic;
+    margin-bottom:10px;
+}
+
+/* ===================================================== */
+/* ===== BOTON ENVIAR ===== */
+/* ===================================================== */
+#btnEnviar{
+    width:100%;
+    margin-top:18px;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+
+    background:linear-gradient(
+        90deg,
+        #982b2b,
+        #b43636
+    );
+
+    color:#fff;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.25s ease;
+
+    box-shadow:0 6px 16px rgba(152,43,43,.25);
+}
+
+#btnEnviar:hover{
+    background:linear-gradient(
+        90deg,
+        #7f2020,
+        #982b2b
+    );
+
+    transform:translateY(-1px);
+}
+
+#btnEnviar:active{
+    transform:scale(.98);
+}
+
+/* ===================================================== */
+/* ===== TOAST ===== */
+/* ===================================================== */
+.toast{
+    position:fixed;
+    bottom:28px;
+    right:28px;
+
+    display:flex;
+    align-items:flex-start;
+    gap:11px;
+
+    padding:13px 16px;
+
+    border-radius:10px;
+
+    font-size:.875rem;
+    font-family:'Segoe UI', Arial, sans-serif;
+    font-weight:400;
+    line-height:1.45;
+
+    max-width:380px;
+
+    z-index:9999;
+
+    border:.5px solid transparent;
+
+    opacity:1;
+    transition:opacity .35s ease;
+}
+
+.toast.oculto{
+    display:none !important;
+}
+
+.toast.saliendo{
+    opacity:0;
+}
+
+.toast.exito{
+    background:#EAF3DE;
+    border-color:#97C459;
+    color:#27500A;
+}
+
+.toast.error{
+    background:#FCEBEB;
+    border-color:#F09595;
+    color:#501313;
+}
+
+.toast.info{
+    background:#E6F1FB;
+    border-color:#85B7EB;
+    color:#042C53;
+}
+
+.toast.advertencia{
+    background:#FAEEDA;
+    border-color:#EF9F27;
+    color:#412402;
+}
+
+.toast-icono{
+    font-size:18px;
+    flex-shrink:0;
+    margin-top:1px;
+}
+
+.toast-texto{
+    flex:1;
+}
+
+.toast-cerrar{
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:0;
+    font-size:15px;
+    opacity:.55;
+    flex-shrink:0;
+    color:inherit;
+    line-height:1;
+    margin-top:1px;
+}
+
+.toast-cerrar:hover{
+    opacity:1;
+}
+
+/* ===================================================== */
+/* ===== RESPONSIVE ===== */
+/* ===================================================== */
+@media(max-width:900px){
+
+    .sidebar{
+        width:210px;
+    }
+
+    .main{
+        margin-left:210px;
+    }
+
+    .table{
+        padding:22px;
+    }
+
+    #miFormulario{
+        padding:26px;
+    }
+
+    .header{
+        grid-template-columns:160px 1fr 160px;
+        height:120px;
+    }
+
+    .header h1{
+        font-size:2.2rem;
+    }
+
+    .header-logo-left img,
+    .header-logo-right img{
+        height:70px;
+    }
+}
+
+@media(max-width:680px){
+
+    .sidebar{
+        display:none;
+    }
+
+    .main{
+        margin-left:0;
+    }
+
+    .header{
+        height:90px;
+        grid-template-columns:90px 1fr 90px;
+        padding:0 12px;
+    }
+
+    .header h1{
+        font-size:1.8rem;
+    }
+
+    .header-logo-left img,
+    .header-logo-right img{
+        height:50px;
+    }
+
+    .table{
+        padding:16px;
+    }
+
+    #miFormulario{
+        padding:20px 16px;
+        border-radius:12px;
+    }
+
+    #contenedor_empresa_manual,
+    #contenedor_empresa_flayer{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    #btn-activar-nueva-manual,
+    #btn-activar-nueva-flayer{
+        width:100%;
+    }
+
+    .toast{
+        right:16px;
+        left:16px;
+        max-width:none;
+        bottom:20px;
+    }
+}

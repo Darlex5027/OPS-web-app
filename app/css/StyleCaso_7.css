@@ -1,0 +1,728 @@
+/* ===================================================== */
+/* ===== VARIABLES GLOBALES ===== */
+/* ===================================================== */
+:root{
+    --rojo:#982b2b;
+    --rojo-hover:#7f2020;
+
+    --gris-bg:#f5f5f5;
+    --gris-card:#ffffff;
+    --gris-claro:#f0f0f0;
+    --gris-borde:#dddddd;
+
+    --texto:#2a2a2a;
+
+    --radio:12px;
+    --sidebar-width:250px;
+
+    --sombra:0 6px 18px rgba(0,0,0,.08);
+
+    --fuente:'Segoe UI', Arial, sans-serif;
+}
+
+/* ===================================================== */
+/* ===== RESET ===== */
+/* ===================================================== */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    height:100%;
+}
+
+body{
+    font-family:var(--fuente);
+    background:var(--gris-bg);
+    color:var(--texto);
+    overflow-x:hidden;
+}
+
+/* ===================================================== */
+/* ===== SIDEBAR ===== */
+/* ===================================================== */
+.sidebar{
+    width:250px;
+    background-color:#fff;
+    padding:30px 20px;
+    box-shadow:4px 0 10px rgba(0,0,0,.08);
+    height:100vh;
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:100;
+    overflow-y:auto;
+}
+
+/* ===================================================== */
+/* ===== PERFIL ===== */
+/* ===================================================== */
+.profile{
+    text-align:center;
+    margin-bottom:24px;
+    padding-bottom:20px;
+    border-bottom:1px solid #ececec;
+}
+
+.profile img{
+    width:82px;
+    height:82px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #f0f0f0;
+    margin-bottom:12px;
+    transition:.3s ease;
+}
+
+.profile img:hover{
+    transform:scale(1.05);
+}
+
+.profile h3{
+    font-size:.95rem;
+    color:#333;
+    font-weight:500;
+}
+
+/* ===================================================== */
+/* ===== MENU ===== */
+/* ===================================================== */
+.menu{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.menu button{
+    width:100%;
+    padding:12px 16px;
+    margin-bottom:8px;
+    border:none;
+    border-radius:var(--radio);
+    background-color:var(--gris-claro);
+    color:#2a2a2a;
+    cursor:pointer;
+    text-align:left;
+    font-size:14px;
+    font-family:'Segoe UI', Arial, sans-serif;
+    transition:all .25s ease;
+    font-weight:500;
+}
+
+.menu button:hover{
+    background-color:var(--rojo);
+    color:#fff;
+    transform:translateX(4px);
+}
+
+.menu button.active{
+    background-color:var(--rojo);
+    color:#fff;
+    font-weight:600;
+    box-shadow:0 4px 12px rgba(152,43,43,.25);
+}
+
+/* ===================================================== */
+/* ===== MAIN ===== */
+/* ===================================================== */
+.main{
+    margin-left:250px;
+    width:calc(100% - 250px);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+/* ===================================================== */
+/* ===== HEADER ===== */
+/* ===================================================== */
+.header{
+    width:100%;
+    height:150px;
+
+    background:linear-gradient(135deg,#982b2b,#7f2020);
+
+    display:grid;
+    grid-template-columns:220px 1fr 220px;
+
+    align-items:center;
+
+    padding:0 24px;
+
+    position:sticky;
+    top:0;
+    z-index:90;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.12);
+}
+
+.header h1{
+    color:#fff;
+    font-size:3rem;
+    font-weight:700;
+    text-align:center;
+    letter-spacing:.5px;
+}
+
+.header-logo-right{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+}
+
+.header-logo-right img{
+    height:90px;
+    width:auto;
+    object-fit:contain;
+
+    filter:brightness(0) invert(1);
+    opacity:.95;
+}
+
+/* ===================================================== */
+/* ===== CONTENEDORES ===== */
+/* ===================================================== */
+.table{
+    margin:30px;
+    background:#fff;
+    border-radius:18px;
+    padding:28px;
+    box-shadow:var(--sombra);
+    transition:.3s ease;
+}
+
+.table:hover{
+    box-shadow:0 10px 28px rgba(0,0,0,.12);
+}
+
+/* ===================================================== */
+/* ===== TITULOS ===== */
+/* ===================================================== */
+.table h2{
+    font-size:1.4rem;
+    margin-bottom:22px;
+    color:var(--rojo);
+    font-weight:700;
+}
+
+/* ===================================================== */
+/* ===== TABLAS ===== */
+/* ===================================================== */
+table{
+    width:100%;
+    border-collapse:collapse;
+    overflow:hidden;
+    border-radius:12px;
+    background:#fff;
+}
+
+/* ===================================================== */
+/* ===== HEAD ===== */
+/* ===================================================== */
+thead{
+    background:linear-gradient(135deg,#982b2b,#7f2020);
+    color:#fff;
+}
+
+thead th{
+    padding:16px 14px;
+    text-align:left;
+    font-size:14px;
+    font-weight:600;
+}
+
+/* ===================================================== */
+/* ===== BODY ===== */
+/* ===================================================== */
+tbody tr{
+    transition:.25s ease;
+    border-bottom:1px solid #ececec;
+}
+
+tbody tr:hover{
+    background:#faf7f7;
+}
+
+tbody td{
+    padding:18px 14px;
+    font-size:14px;
+    color:#333;
+    vertical-align:middle;
+}
+
+/* ===================================================== */
+/* ===== BOTONES TABLA ===== */
+/* ===================================================== */
+table button{
+    width:120px;
+
+    padding:12px 0;
+
+    margin:6px auto;
+
+    border:none;
+
+    border-radius:14px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    font-family:'Segoe UI', Arial, sans-serif;
+
+    cursor:pointer;
+
+    transition:all .25s ease;
+
+    position:relative;
+
+    overflow:hidden;
+
+    letter-spacing:.3px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    color:#fff;
+}
+
+/* ===================================================== */
+/* ===== BOTÓN ACEPTAR ===== */
+/* ===================================================== */
+table .btn-aceptar{
+    background:linear-gradient(135deg,#39c86a,#23914b) !important;
+
+    box-shadow:
+        0 8px 18px rgba(35,145,75,.28);
+}
+
+table .btn-aceptar:hover{
+    background:linear-gradient(135deg,#45d978,#1d7d40) !important;
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 12px 22px rgba(35,145,75,.40);
+}
+
+/* ===================================================== */
+/* ===== BOTÓN RECHAZAR ===== */
+/* ===================================================== */
+table .btn-rechazar{
+    background:linear-gradient(135deg,#e54848,#b82222) !important;
+
+    box-shadow:
+        0 8px 18px rgba(184,34,34,.28);
+}
+
+table .btn-rechazar:hover{
+    background:linear-gradient(135deg,#f25555,#9e1717) !important;
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 12px 22px rgba(184,34,34,.40);
+}
+
+/* ===================================================== */
+/* ===== CLICK ===== */
+/* ===================================================== */
+table button:active{
+    transform:scale(.96);
+}
+
+/* ===================================================== */
+/* ===== EFECTO BRILLO ===== */
+/* ===================================================== */
+table button::before{
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    left:-100%;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(255,255,255,.20);
+
+    transition:.55s ease;
+}
+
+table button:hover::before{
+    left:100%;
+}
+
+/* ===================================================== */
+/* ===== MODAL GENERAL ===== */
+/* ===================================================== */
+#modal-confirmacion{
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,.40);
+    backdrop-filter:blur(4px);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    z-index:99999;
+
+    animation:fadeModal .25s ease;
+}
+
+/* ===================================================== */
+/* ===== MODAL CONTENIDO ===== */
+/* ===================================================== */
+#modal-contenido{
+    width:90%;
+    max-width:530px;
+
+    background:#f5f5f5;
+
+    border-radius:26px;
+
+    padding:34px 30px;
+
+    box-shadow:0 14px 40px rgba(0,0,0,.22);
+
+    display:flex;
+    flex-direction:column;
+
+    gap:22px;
+
+    animation:entradaModal .28s ease;
+}
+
+/* ===================================================== */
+/* ===== TEXTO MODAL ===== */
+/* ===================================================== */
+#modal-contenido p{
+    text-align:center;
+
+    font-size:1.05rem;
+
+    color:#333;
+
+    line-height:1.6;
+
+    font-weight:500;
+}
+
+/* ===================================================== */
+/* ===== INPUT ===== */
+/* ===================================================== */
+#intput_expediente{
+    width:100%;
+
+    height:54px;
+
+    border:none;
+
+    border-radius:16px;
+
+    padding:0 16px;
+
+    font-size:15px;
+
+    background:#ececec;
+
+    outline:none;
+
+    transition:.25s ease;
+
+    border:1px solid #d4d4d4;
+}
+
+#intput_expediente:focus{
+    background:#fff;
+
+    border-color:#982b2b;
+
+    box-shadow:0 0 0 4px rgba(152,43,43,.12);
+}
+
+/* ===================================================== */
+/* ===== BOTONES MODAL ===== */
+/* ===================================================== */
+#modal-contenido button{
+    width:100%;
+
+    height:50px;
+
+    border:none;
+
+    border-radius:14px;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:all .25s ease;
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+/* Hover */
+#modal-contenido button:hover{
+    transform:translateY(-2px);
+}
+
+/* Click */
+#modal-contenido button:active{
+    transform:scale(.97);
+}
+
+/* ===================================================== */
+/* ===== BOTÓN CANCELAR ===== */
+/* ===================================================== */
+#modal-contenido button:first-of-type{
+    background:#e7e7e7;
+
+    color:#333;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.8),
+        0 3px 10px rgba(0,0,0,.06);
+}
+
+#modal-contenido button:first-of-type:hover{
+    background:#dddddd;
+}
+
+/* ===================================================== */
+/* ===== BOTÓN ENVIAR / RECHAZAR ===== */
+/* ===================================================== */
+#modal-contenido button:last-of-type{
+    background:linear-gradient(135deg,#a82222,#871818);
+
+    color:#fff;
+
+    box-shadow:
+        0 8px 18px rgba(152,43,43,.28);
+}
+
+#modal-contenido button:last-of-type:hover{
+    background:linear-gradient(135deg,#b62a2a,#941d1d);
+
+    box-shadow:
+        0 12px 24px rgba(152,43,43,.38);
+}
+
+/* ===================================================== */
+/* ===== EFECTO BRILLO MODAL ===== */
+/* ===================================================== */
+#modal-contenido button::before{
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    left:-100%;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(255,255,255,.22);
+
+    transition:.55s ease;
+}
+
+#modal-contenido button:hover::before{
+    left:100%;
+}
+
+/* ===================================================== */
+/* ===== TOAST ===== */
+/* ===================================================== */
+.toast{
+    position:fixed;
+    bottom:28px;
+    right:28px;
+
+    display:flex;
+    align-items:flex-start;
+    gap:11px;
+
+    padding:13px 16px;
+
+    border-radius:10px;
+
+    font-size:.875rem;
+    font-family:'Segoe UI', Arial, sans-serif;
+    font-weight:400;
+    line-height:1.45;
+
+    max-width:380px;
+
+    z-index:9999;
+
+    border:.5px solid transparent;
+
+    opacity:1;
+    transition:opacity .35s ease;
+
+    box-shadow:0 6px 16px rgba(0,0,0,.12);
+}
+
+.toast.oculto{
+    display:none !important;
+}
+
+.toast.saliendo{
+    opacity:0;
+}
+
+.toast.exito{
+    background:#EAF3DE;
+    border-color:#97C459;
+    color:#27500A;
+}
+
+.toast.error{
+    background:#FCEBEB;
+    border-color:#F09595;
+    color:#501313;
+}
+
+.toast.info{
+    background:#E6F1FB;
+    border-color:#85B7EB;
+    color:#042C53;
+}
+
+.toast.advertencia{
+    background:#FAEEDA;
+    border-color:#EF9F27;
+    color:#412402;
+}
+
+/* ===================================================== */
+/* ===== ANIMACIONES ===== */
+/* ===================================================== */
+@keyframes entradaModal{
+    from{
+        opacity:0;
+        transform:translateY(-25px) scale(.95);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+@keyframes fadeModal{
+    from{
+        opacity:0;
+    }
+
+    to{
+        opacity:1;
+    }
+}
+
+/* ===================================================== */
+/* ===== RESPONSIVE ===== */
+/* ===================================================== */
+@media(max-width:1100px){
+
+    .table{
+        overflow-x:auto;
+    }
+
+    table{
+        min-width:900px;
+    }
+}
+
+@media(max-width:900px){
+
+    .sidebar{
+        width:210px;
+    }
+
+    .main{
+        margin-left:210px;
+        width:calc(100% - 210px);
+    }
+
+    .header{
+        grid-template-columns:140px 1fr 140px;
+        height:120px;
+    }
+
+    .header h1{
+        font-size:2.1rem;
+    }
+
+    .header-logo-right img{
+        height:70px;
+    }
+}
+
+@media(max-width:680px){
+
+    .sidebar{
+        display:none;
+    }
+
+    .main{
+        margin-left:0;
+        width:100%;
+    }
+
+    .header{
+        height:90px;
+        grid-template-columns:80px 1fr 80px;
+        padding:0 10px;
+    }
+
+    .header h1{
+        font-size:1.5rem;
+    }
+
+    .header-logo-right img{
+        height:48px;
+    }
+
+    .table{
+        margin:16px;
+        padding:18px;
+    }
+
+    .table h2{
+        font-size:1.1rem;
+    }
+
+    .toast{
+        right:16px;
+        left:16px;
+        max-width:none;
+        bottom:20px;
+    }
+
+    #modal-contenido{
+        padding:26px 20px;
+        border-radius:22px;
+    }
+
+    #modal-contenido p{
+        font-size:.95rem;
+    }
+
+    #modal-contenido button{
+        height:48px;
+        font-size:14px;
+    }
+}
