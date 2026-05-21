@@ -19,48 +19,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const formLogin = document.getElementById("formLogin");
     const mensaje = document.getElementById("mensaje");
-    const boton = formLogin ? formLogin.querySelector("button") : null;
+    const boton = formLogin ? formLogin.querySelector("button[type='submit']") : null;
     
     // =========================
     // FUNCIONALIDAD MOSTRAR/OCULTAR CONTRASEÑA
     // =========================
+    const togglePasswordBtn = document.getElementById("togglePassword");
     const contrasenaInput = document.getElementById("contrasena");
-    
-    // Crear el botón dinámicamente si no existe
-    let togglePasswordBtn = document.getElementById("togglePassword");
-    
-    if (!togglePasswordBtn && contrasenaInput) {
-        // Crear el botón
-        togglePasswordBtn = document.createElement("button");
-        togglePasswordBtn.type = "button";
-        togglePasswordBtn.id = "togglePassword";
-        togglePasswordBtn.textContent = "👁️";
-        togglePasswordBtn.setAttribute("title", "Mostrar contraseña");
-        togglePasswordBtn.style.position = "absolute";
-        togglePasswordBtn.style.right = "10px";
-        togglePasswordBtn.style.top = "50%";
-        togglePasswordBtn.style.transform = "translateY(-50%)";
-        togglePasswordBtn.style.background = "transparent";
-        togglePasswordBtn.style.border = "none";
-        togglePasswordBtn.style.cursor = "pointer";
-        togglePasswordBtn.style.fontSize = "1.2rem";
-        togglePasswordBtn.style.padding = "5px";
-        togglePasswordBtn.style.zIndex = "10";
-        
-        // Envolver el input en un contenedor relativo
-        const parent = contrasenaInput.parentNode;
-        const wrapper = document.createElement("div");
-        wrapper.style.position = "relative";
-        wrapper.style.width = "100%";
-        
-        // Reemplazar el input con el wrapper
-        parent.insertBefore(wrapper, contrasenaInput);
-        wrapper.appendChild(contrasenaInput);
-        wrapper.appendChild(togglePasswordBtn);
-        
-        // Ajustar el padding del input
-        contrasenaInput.style.paddingRight = "40px";
-    }
     
     if (togglePasswordBtn && contrasenaInput) {
         togglePasswordBtn.addEventListener("click", function() {
@@ -147,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.cookie = `Bloqueado=${usuario.Bloqueado}; max-age=${TIEMPO_SESION}; path=/`;
     
                 document.cookie = `permisos=${encodeURIComponent(JSON.stringify(permisos))}; max-age=${TIEMPO_SESION}; path=/`;
-                // 3 = Coordinador, 1 = Alumno (según tu comentario)
+                // 3 = Coordinador, 2 = Alumno
                 window.location.href = "../CU_03_PerfilGestionable/perfil.html";
                 return;
             }
