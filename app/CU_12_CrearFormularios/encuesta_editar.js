@@ -232,7 +232,7 @@ function editarEncuestas() {
     const valorDescripcion = document.getElementById('inputDescripcion').value;
     const valorServicio = document.getElementById('selectServicio').value;
     const valorActivo = document.getElementById('selectActivo').value;
-    const ValorContestador = document.getElementById('selectContestador').value;
+    const valorContestador = document.getElementById('selectContestador').value;
     const valorFechaFin = document.getElementById('inputFechaFin').value;
 
 
@@ -249,7 +249,7 @@ function editarEncuestas() {
             descripcion: valorDescripcion,
             servicio: valorServicio,
             activo: valorActivo,
-            contestador: ValorContestador,
+            contestador: valorContestador,
             fecha_fin: valorFechaFin
         })
     })

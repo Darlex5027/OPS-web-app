@@ -141,8 +141,8 @@ function renderPreguntas(preguntas, idEncuesta) {
     preguntas.forEach(function (pregunta) {
         // Muestra el botón de editar solo si es admin y la pregunta no tiene respuestas
         //const btnEditar = cookieTipoUsuario == 1 && pregunta.total_respuestas == 0 ? `<td><button onclick="window.location.href='pregunta_editar.html?Id_pregunta=${pregunta.Id_pregunta}&Id_encuesta=${idEncuesta}'">Editar</button></td>` : '';
-        var btnEditar = '';
-        var btnEliminar = '';
+        let btnEditar = '';
+        let  btnEliminar = '';
         if (cookieTipoUsuario == 1 && pregunta.total_respuestas == 0) {
             btnEditar = `<button onclick="window.location.href='pregunta_editar.html?Id_pregunta=${pregunta.Id_pregunta}&Id_encuesta=${idEncuesta}'">Editar</button>`;
             btnEliminar = `<button onclick="eliminarPregunta(${pregunta.Id_pregunta},${idEncuesta})">Eliminar</button>`;
