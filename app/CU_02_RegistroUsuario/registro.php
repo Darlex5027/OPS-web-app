@@ -6,7 +6,6 @@
  * Fecha        : 21/04/2026
  * Descripción  : Endpoint que procesa el registro de usuarios. Valida los datos
  * y los almacena en la base de datos MariaDB.
- * de usuario y retorna la información en formato JSON.
  */
 
 require_once("../php/db.php");
@@ -46,11 +45,14 @@ try {
 
     // 2. REGISTRAR DATOS ESPECÍFICOS
     if ($data['tipo_usuario'] === 'alumno') {
-        // CORRECCIÓN: Eliminamos Id_actividad/Id_servicio de aquí porque no existen en la tabla Alumnos
+        // CAMBIO: Eliminamos No_Expediente de Alumnos
         $stmtAlumno = $pdo->prepare("
-        INSERT INTO Alumnos (Id_usuario, Nombre, Apellido_P, Apellido_M, Id_carrera, Grupo, Horario, No_Expediente, Activo)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
+            INSERT INTO Alumnos (Id_usuario, Nombre, Apellido_P, Apellido_M, Id_carrera, Grupo, Horario, Activo)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 1)
         ");
+
+        // Horario opcional
+        $horario = isset($data['horario']) && !empty($data['horario']) ? $data['horario'] : null;
 
         $stmtAlumno->execute([
             $id_usuario_nuevo,
@@ -59,29 +61,28 @@ try {
             $data['apellido_m'],
             $data['id_carrera'],
             $data['grupo'],
-            $data['horario'],
-            $data['matricula'], // Usamos matrícula como No_Expediente
+            $horario
         ]);
 
         $id_alumno = $pdo->lastInsertId();
 
-        // 3. VINCULAR CON LA ACTIVIDAD (Aquí es donde realmente se guarda el Id_servicio)
+        // CAMBIO: Eliminamos No_expediente de Actividades_Alumnos
         $stmtActividadAlumno = $pdo->prepare("
-        INSERT INTO Actividades_Alumnos 
-        (Id_alumno, Id_servicio, Id_empresa, No_expediente, Estado, periodo_tipo, periodo_año, Fecha_registro) 
-        VALUES (?, ?, ?, NULL, 'PENDIENTE', ?, ?, NOW())
+            INSERT INTO Actividades_Alumnos 
+            (Id_alumno, Id_servicio, Id_empresa, Estado, periodo_tipo, periodo_año, Fecha_registro) 
+            VALUES (?, ?, ?, 'PENDIENTE', ?, ?, NOW())
         ");
 
         $stmtActividadAlumno->execute([
             $id_alumno,
-            $data['actividad'], // Id_servicio que viene del select
+            $data['actividad'],
             $data['organizacion'] ?: null,
             $data['periodo_tipo'],
             date('Y')
         ]);
 
     } else {
-        // Registro de Administrador
+        // Registro de Coordinador
         $stmtAdmin = $pdo->prepare("
             INSERT INTO Administradores (Id_usuario, Nombre, Apellido_P, Apellido_M, Id_carrera, Telefono, Correo, Activo)
             VALUES (?, ?, ?, ?, ?, ?, ?, 1)
@@ -99,3 +100,4 @@ try {
     if ($pdo->inTransaction()) { $pdo->rollBack(); }
     echo json_encode(["success" => false, "error" => "Error en el servidor: " . $e->getMessage()]);
 }
+?>

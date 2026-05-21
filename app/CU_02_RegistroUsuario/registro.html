@@ -20,6 +20,9 @@
     <title>Registro de usuario</title>
 
     <link rel="stylesheet" href="../css/stylesInicio.css">
+    <style>
+    
+</style>
 
 </head>
 
@@ -66,7 +69,8 @@
             <h3>Datos de acceso</h3>
 
             <label>Matrícula <span class="required">*</span></label>
-            <input type="text" id="matricula" name="matricula" maxlength="8" required>
+            <input type="text" id="matricula" name="matricula" maxlength="8"
+                oninput="this.value = this.value.toUpperCase()" required>
 
             <label>Contraseña <span class="required">*</span></label>
             <input type="password" id="password" name="password" required>
@@ -122,7 +126,8 @@
                 </select>
 
                 <label>Semestre y Grupo (ej. 7A) <span class="required">*</span></label>
-                <input type="text" id="grupo" name="grupo" placeholder="Ej. 7A" maxlength="10" required>
+                <input type="text" id="grupo" name="grupo" placeholder="Ej. 7A" maxlength="10"
+                    oninput="this.value = this.value.toUpperCase()" required>
 
                 <label>Horario de actividad <span class="required">*</span></label>
                 <small>
@@ -218,7 +223,7 @@
             <input type="text" id="emp_razon" maxlength="200">
 
             <label>RFC <span class="required">*</span></label>
-            <input type="text" id="emp_rfc" maxlength="13">
+            <input type="text" id="emp_rfc" maxlength="13" oninput="this.value = this.value.toUpperCase()">
 
             <label>Dirección <span class="required">*</span></label>
             <input type="text" id="emp_direccion" maxlength="16000">
@@ -237,8 +242,9 @@
         </div>
 
     </div>
+    <div id="toast-mensaje" class="toast oculto"></div>
 
-    <script src="registro.js" defer></script>
+    <script type="module" src="registro.js" defer></script>
 
 </body>
 
