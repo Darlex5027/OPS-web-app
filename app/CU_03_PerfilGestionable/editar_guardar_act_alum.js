@@ -18,27 +18,27 @@ const setVis = (id, vis) =>
 // =========================
 // CONSTANTES / CONFIGURACIÓN
 // =========================
-const COMUNES   = ["estado", "area", "programa", "fecha_inicio", "fecha_fin", "grupo_alumno", "horario_entrada", "horario_salida"];
+const COMUNES = ["estado", "area", "programa", "fecha_inicio", "fecha_fin", "grupo_alumno", "horario_entrada", "horario_salida"];
 const PENDIENTE = [...COMUNES, "id_empresa"];
-const POR_ESTADO = { PENDIENTE, EN_CURSO: COMUNES, COMPLETADO: [] };
+const POR_ESTADO = { EN_CURSO: COMUNES, COMPLETADO: [] };
 
 const CAMPOS_COMPLETADO = [
-    { id: "area",           label: "Área" },
-    { id: "programa",       label: "Programa" },
-    { id: "fecha_inicio",   label: "Fecha de inicio" },
-    { id: "fecha_fin",      label: "Fecha de fin" },
-    { id: "grupo_alumno",   label: "Semestre y Grupo" },
-    { id: "horario_entrada",label: "Horario de entrada" },
-    { id: "horario_salida", label: "Horario de salida" },
-    { id: "empresa_texto",  label: "Empresa" }
+    { id: "area",             label: "Área" },
+    { id: "programa",         label: "Programa" },
+    { id: "fecha_inicio",     label: "Fecha de inicio" },
+    { id: "fecha_fin",        label: "Fecha de fin" },
+    { id: "grupo_alumno",     label: "Semestre y Grupo" },
+    { id: "horario_entrada",  label: "Horario de entrada" },
+    { id: "horario_salida",   label: "Horario de salida" },
+    { id: "empresa_texto",    label: "Empresa" }
 ];
 
 const regexEmpresa = {
-    nombre:      /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-]{2,100}$/,
-    razon_social:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-&]{2,150}$/,
-    rfc:         /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/,
-    direccion:   /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-#]{5,200}$/,
-    sitio_web:   /^https?:\/\/(www\.)?[a-zA-Z0-9\-]+(\.[a-zA-Z]{2,})+([\/\w\-._~:?#[\]@!$&'()*+,;=]*)?$/
+    nombre:       /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-]{2,100}$/,
+    razon_social: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-&]{2,150}$/,
+    rfc:          /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/,
+    direccion:    /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-#]{5,200}$/,
+    sitio_web:    /^https?:\/\/(www\.)?[a-zA-Z0-9\-]+(\.[a-zA-Z]{2,})+([\/\w\-._~:?#[\]@!$&'()*+,;=]*)?$/
 };
 
 const tipoUsuario = document.cookie.split("; ")
@@ -55,7 +55,7 @@ function abrirModal() {
 function cerrarModal() {
     getEl("modalNuevaEmpresa").style.display = "none";
     ["nueva_empresa_nombre", "nueva_empresa_descripcion", "nueva_empresa_razon_social",
-     "nueva_empresa_rfc", "nueva_empresa_direccion", "nueva_empresa_web"]
+        "nueva_empresa_rfc", "nueva_empresa_direccion", "nueva_empresa_web"]
         .forEach(id => { getEl(id).value = ""; });
 }
 
@@ -70,13 +70,13 @@ function guardarNuevaEmpresa() {
     const direccion    = getVal("nueva_empresa_direccion").trim();
     const sitio_web    = getVal("nueva_empresa_web").trim();
 
-    if (!nombre)                                                           return lanzarToast("El nombre es obligatorio", "error");
-    if (!regexEmpresa.nombre.test(nombre))                                 return lanzarToast("Nombre inválido", "error");
-    if (!descripcion)                                                      return lanzarToast("La descripción es obligatoria", "error");
-    if (razon_social && !regexEmpresa.razon_social.test(razon_social))     return lanzarToast("Razón social inválida", "error");
-    if (rfc && !regexEmpresa.rfc.test(rfc))                               return lanzarToast("RFC inválido", "error");
-    if (direccion && !regexEmpresa.direccion.test(direccion))             return lanzarToast("Dirección inválida", "error");
-    if (sitio_web && !regexEmpresa.sitio_web.test(sitio_web))             return lanzarToast("Sitio web inválido", "error");
+    if (!nombre)                                                               return lanzarToast("El nombre es obligatorio", "error");
+    if (!regexEmpresa.nombre.test(nombre))                                     return lanzarToast("Nombre inválido", "error");
+    if (!descripcion)                                                           return lanzarToast("La descripción es obligatoria", "error");
+    if (razon_social && !regexEmpresa.razon_social.test(razon_social))         return lanzarToast("Razón social inválida", "error");
+    if (rfc          && !regexEmpresa.rfc.test(rfc))                           return lanzarToast("RFC inválido", "error");
+    if (direccion    && !regexEmpresa.direccion.test(direccion))               return lanzarToast("Dirección inválida", "error");
+    if (sitio_web    && !regexEmpresa.sitio_web.test(sitio_web))               return lanzarToast("Sitio web inválido", "error");
 
     fetch("crear_empresa.php", {
         method: "POST",
@@ -150,9 +150,9 @@ window.habilitarActividades = async (habilitar) => {
 
     if (estado === "COMPLETADO") {
         setDis(PENDIENTE, true);
-        setVis("id_empresa", false);
+        setVis("id_empresa",      false);
         setVis("btnCrearEmpresa", false);
-        setVis("empresa_texto", true);
+        setVis("empresa_texto",   true);
         if (habilitar) lanzarToast("Este registro está completado y no puede editarse.", "error");
         return;
     }
@@ -160,9 +160,9 @@ window.habilitarActividades = async (habilitar) => {
     setDis(PENDIENTE, true);
     if (habilitar) setDis(POR_ESTADO[estado] ?? [], false);
 
-    setVis("id_empresa", habilitar);
+    setVis("id_empresa",      habilitar);
     setVis("btnCrearEmpresa", habilitar && estado === "PENDIENTE");
-    setVis("empresa_texto", !habilitar);
+    setVis("empresa_texto",   !habilitar);
 
     if (habilitar && estado === "EN_CURSO") setDis(["id_empresa", "btnCrearEmpresa"], true);
     if (habilitar) await cargarEmpresas();
@@ -177,13 +177,13 @@ window.guardarActividades = () => {
 
     const datos = {
         estado,
-        area:            getVal("area"),
-        programa:        getVal("programa"),
-        fecha_inicio:    getVal("fecha_inicio"),
-        fecha_fin:       getVal("fecha_fin"),
-        grupo:           getVal("grupo_alumno"),
-        horario_entrada: getVal("horario_entrada"),
-        horario_salida:  getVal("horario_salida")
+        area:             getVal("area"),
+        programa:         getVal("programa"),
+        fecha_inicio:     getVal("fecha_inicio"),
+        fecha_fin:        getVal("fecha_fin"),
+        grupo:            getVal("grupo_alumno"),
+        horario_entrada:  getVal("horario_entrada"),
+        horario_salida:   getVal("horario_salida")
     };
 
     if (estado === "PENDIENTE") {
@@ -211,7 +211,7 @@ window.guardarActividades = () => {
 // EDITAR
 // =========================
 function modoEditar(btnEditar, btnGuardar, btnCancelar) {
-    btnEditar.style.display  = "none";
+    btnEditar.style.display   = "none";
     btnGuardar.style.display  = "inline-block";
     btnCancelar.style.display = "inline-block";
 
@@ -225,7 +225,7 @@ function modoEditar(btnEditar, btnGuardar, btnCancelar) {
         });
     } else {
         ["grupo_alumno", "horario_entrada", "horario_salida", "id_empresa",
-         "nueva_empresa", "area", "programa", "estado", "fecha_inicio", "fecha_fin"]
+            "nueva_empresa", "area", "programa", "estado", "fecha_inicio", "fecha_fin"]
             .forEach(id => {
                 const el = getEl(id);
                 if (el) { el.disabled = false; el.readOnly = false; }
@@ -258,7 +258,7 @@ function modoGuardar() {
         if (!/^\d{3}-\d{3}-\d{2}-\d{2}$/.test(telefono))
             return lanzarToast("Formato: 246-470-78-88", "error");
 
-        data.append("correo", correo);
+        data.append("correo",   correo);
         data.append("telefono", telefono);
 
     } else {
@@ -300,14 +300,50 @@ function modoGuardar() {
         .catch(() => lanzarToast("Error de conexión", "error"));
 }
 
-// =============================================
-// DOMCONTENTLOADED — solo inicialización
-// =============================================
+// =========================
+// BLOQUEO POR ESTADO COMPLETADO
+// =========================
+
+function estaCompletado() {
+    return getVal("estado") === "COMPLETADO";
+}
+
+function bloquearSiCompletado() {
+    if (!estaCompletado()) return false;
+
+    // Deshabilitar todos los campos
+    setDis(PENDIENTE, true);
+    setVis("id_empresa",      false);
+    setVis("btnCrearEmpresa", false);
+    setVis("empresa_texto",   true);
+
+    // Ocultar y deshabilitar los tres botones de acción
+    const btnEditar   = document.querySelector(".btn.editar");
+    const btnGuardar  = document.querySelector(".btn.guardar");
+    const btnCancelar = document.querySelector(".btn.cancelar");
+
+    if (btnEditar)   { btnEditar.style.display   = "none"; btnEditar.disabled   = true; }
+    if (btnGuardar)  { btnGuardar.style.display  = "none"; btnGuardar.disabled  = true; }
+    if (btnCancelar) { btnCancelar.style.display = "none"; btnCancelar.disabled = true; }
+
+    return true;
+}
+
+function intentarEditar(btnEditar, btnGuardar, btnCancelar) {
+    if (estaCompletado()) {
+        lanzarToast("Este registro está completado y no puede editarse.", "error");
+        return;
+    }
+    modoEditar(btnEditar, btnGuardar, btnCancelar);
+}
+
+// =========================
+// DOMContentLoaded — solo inicialización
+// =========================
 document.addEventListener("DOMContentLoaded", () => {
 
     let estadoAnterior = getVal("estado");
 
-    // Botones principales
     const btnEditar   = document.querySelector(".btn.editar");
     const btnGuardar  = document.querySelector(".btn.guardar");
     const btnCancelar = document.querySelector(".btn.cancelar");
@@ -315,9 +351,16 @@ document.addEventListener("DOMContentLoaded", () => {
     btnGuardar.style.display  = "none";
     btnCancelar.style.display = "none";
 
-    btnEditar?.addEventListener("click",  () => modoEditar(btnEditar, btnGuardar, btnCancelar));
+    // Bloquear UI si ya está COMPLETADO al cargar
+    if (!bloquearSiCompletado()) {
+        setVis("id_empresa",      false);
+        setVis("btnCrearEmpresa", false);
+    }
+
+    // Eventos de botones
+    btnEditar?.addEventListener("click",  () => intentarEditar(btnEditar, btnGuardar, btnCancelar));
     btnGuardar?.addEventListener("click", () => modoGuardar());
-    btnCancelar?.addEventListener("click",() => location.reload());
+    btnCancelar?.addEventListener("click", () => location.reload());
 
     // Modal
     getEl("btnCrearEmpresa").addEventListener("click", abrirModal);
@@ -330,7 +373,7 @@ document.addEventListener("DOMContentLoaded", () => {
     getEl("guardarNuevaEmpresa").addEventListener("click", guardarNuevaEmpresa);
 
     // Cambio de estado
-    getEl("estado").addEventListener("focus", () => { estadoAnterior = getVal("estado"); });
+    getEl("estado").addEventListener("focus",  () => { estadoAnterior = getVal("estado"); });
     getEl("estado").addEventListener("change", e =>
         manejarCambioEstado(e, () => estadoAnterior, v => { estadoAnterior = v; })
     );
@@ -339,9 +382,4 @@ document.addEventListener("DOMContentLoaded", () => {
     getEl("fecha_inicio").addEventListener("change", e => {
         getEl("fecha_fin").min = e.target.value;
     });
-
-    // Visibilidad inicial
-    setVis("id_empresa", false);
-    setVis("btnCrearEmpresa", false);
-
 });
