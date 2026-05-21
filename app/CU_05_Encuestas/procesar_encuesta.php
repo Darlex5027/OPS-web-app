@@ -1,54 +1,63 @@
 <?php
-header('Content-Type: application/json');
-require_once 'conexion.php';
+/**
+ * Archivo     : procesar_encuesta.php
+ * Módulo      : CU_05_ResponderEncuestas
+ * Descripción : Guarda las respuestas de una encuesta en la base de datos
+ */
 
-// Leer el JSON del cuerpo de la petición
-$data = json_decode(file_get_contents("php://input"), true);
+require_once("../php/db.php");
 
-$respuestas = $data['respuestas'] ?? [];
-$id_alumno = $data['Id_alumno'] ?? null;
-$id_encuesta = $data['Id_encuesta'] ?? null;
+header('Content-Type: application/json; charset=utf-8');
+
+$input = json_decode(file_get_contents('php://input'), true);
+
+if (!$input) {
+    echo json_encode(["success" => false, "message" => "Datos no válidos"]);
+    exit;
+}
+
+$respuestas = $input['respuestas'] ?? [];
+$id_alumno = $input['Id_alumno'] ?? null;
+$id_encuesta = $input['Id_encuesta'] ?? null;
 
 if (!$id_alumno || !$id_encuesta || empty($respuestas)) {
-    echo json_encode(["success" => false, "message" => "Datos incompletos"]);
+    echo json_encode([
+        "success" => false, 
+        "message" => "Faltan datos requeridos: alumno, encuesta o respuestas"
+    ]);
     exit;
 }
 
 try {
+    $pdo = new PDO($dsn, $user, $pass, $options);
     $pdo->beginTransaction();
-
-    // 1. Obtener el Id_servicio del alumno (asumiendo que está en la tabla Alumno o similar)
-    // Este valor es necesario según tu requerimiento de INSERT
-    $stmt_serv = $pdo->prepare("SELECT Id_servicio FROM Alumno WHERE Id_alumno = :id LIMIT 1");
-    $stmt_serv->execute(['id' => $id_alumno]);
-    $id_servicio = $stmt_serv->fetchColumn();
-
-    if (!$id_servicio) {
-    throw new Exception("El alumno no tiene un servicio social o práctica profesional vinculada.");
-    }
     
-    // 2. Insertar cada respuesta
-    $sql_insert = "INSERT INTO Respuesta (Id_pregunta, Id_alumno, Id_encuesta, Respuesta, Id_servicio) 
-                   VALUES (:id_p, :id_a, :id_e, :resp, :id_s)";
-    $stmt_ins = $pdo->prepare($sql_insert);
-
-    foreach ($respuestas as $item) {
-        $stmt_ins->execute([
-            'id_p' => $item['Id_pregunta'],
-            'id_a' => $id_alumno,
-            'id_e' => $id_encuesta,
-            'resp' => $item['Respuesta'],
-            'id_s' => $id_servicio
+    $sql = "INSERT INTO Respuestas (Id_encuesta, Id_alumno, Id_pregunta, Respuesta, Fecha_respuesta) 
+            VALUES (:id_encuesta, :id_alumno, :id_pregunta, :respuesta, NOW())";
+    
+    $stmt = $pdo->prepare($sql);
+    
+    foreach ($respuestas as $resp) {
+        $stmt->execute([
+            'id_encuesta' => $id_encuesta,
+            'id_alumno' => $id_alumno,
+            'id_pregunta' => $resp['Id_pregunta'],
+            'respuesta' => $resp['Respuesta']
         ]);
     }
-
+    
     $pdo->commit();
-    echo json_encode(["success" => true]);
-
-} catch (Exception $e) {
-    // Si algo falla en cualquier punto del proceso, se deshacen todos los inserts
-    if ($pdo->inTransaction()) {
-        $pdo->rollBack();
-    }
-    echo json_encode(["success" => false, "message" => $e->getMessage()]);
+    
+    echo json_encode([
+        "success" => true, 
+        "message" => "Encuesta guardada exitosamente"
+    ]);
+    
+} catch (PDOException $e) {
+    $pdo->rollBack();
+    echo json_encode([
+        "success" => false, 
+        "message" => "Error al guardar: " . $e->getMessage()
+    ]);
 }
+?>

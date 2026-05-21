@@ -2,34 +2,47 @@
 /**
  * Archivo     : obtener_preguntas.php
  * Módulo      : CU_05_ResponderEncuestas
- * Autor       : Francisco Angel Membrila Alarcón
- * Descripción : Obtiene las preguntas de una encuesta específica en formato JSON.
+ * Descripción : Obtiene las preguntas de una encuesta específica
  */
-header('Content-Type: application/json');
-require_once 'conexion.php';
+
+require_once("../php/db.php");
+
+header('Content-Type: application/json; charset=utf-8');
 
 $id_encuesta = $_GET['encuesta'] ?? null;
 
 if (!$id_encuesta) {
-    echo json_encode(["error" => "ID de encuesta no proporcionado"]);
+    echo json_encode([
+        "success" => false, 
+        "preguntas" => [], 
+        "error" => "ID de encuesta no proporcionado"
+    ]);
     exit;
 }
 
 try {
-    // Se usa el alias 'Pregunta' para el campo 'Texto' según la especificación
-    $stmt = $pdo->prepare("SELECT Id_pregunta, Texto AS Pregunta, Tipo_respuesta, Obligatoria, Orden 
-                           FROM Pregunta 
-                           WHERE Id_encuesta = :id AND Activo = TRUE 
-                           ORDER BY Orden ASC");
-    $stmt->execute(['id' => $id_encuesta]);
-    $lista_preguntas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // REQUERIMIENTO: Retorna JSON {preguntas:[{...}]}
+    $pdo = new PDO($dsn, $user, $pass, $options);
+    
+    $sql = "SELECT Id_pregunta, Pregunta, Tipo_respuesta, Obligatoria, Orden, Seccion 
+            FROM Preguntas 
+            WHERE Id_encuesta = :id_encuesta 
+            ORDER BY Orden ASC";
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['id_encuesta' => $id_encuesta]);
+    $preguntas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
     echo json_encode([
-        "preguntas" => $lista_preguntas
+        "success" => true,
+        "preguntas" => $preguntas,
+        "total" => count($preguntas)
     ]);
-
+    
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(["error" => "Error al obtener preguntas: " . $e->getMessage()]);
+    echo json_encode([
+        "success" => false,
+        "preguntas" => [],
+        "message" => "Error en la base de datos: " . $e->getMessage()
+    ]);
 }
+?>

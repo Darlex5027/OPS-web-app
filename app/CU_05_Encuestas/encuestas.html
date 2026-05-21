@@ -11,10 +11,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encuestas Pendientes - OPS</title>
-    
-    <link rel="stylesheet" href="../css/stylesInicio.css"> 
-    <!-- Importante para el ícono de éxito solicitado -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/stylesInicio.css">
 </head>
 
 <body>
@@ -23,62 +20,87 @@
         <div class="header-logo-left">
             <img src="../Imagenes/logo.png" alt="Logo OPS">
         </div>
-
         <div class="header-text">
             <h1>
                 <div class="linea-1"><span>O</span>ptimización de</div>
-                <div class="linea-2"><span>P</span>racticas profesionales y</div>
+                <div class="linea-2"><span>P</span>rácticas profesionales y</div>
                 <div class="linea-3"><span>S</span>ervicio social</div>
             </h1>
         </div>
-
         <div class="header-logo-right">
-            <img src="../Imagenes/FCBIyT.png" alt="Logo FCBIyT"></div>
+            <img src="../Imagenes/FCBIyT.png" alt="Logo FCBIyT">
+        </div>
     </header>
 
     <main>
-        
-        <!-- 1. SECCIÓN DE LISTA DE ENCUESTAS -->
-        <div id="seccion-lista">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+
+        <!-- VISTA PRINCIPAL: LISTA DE ENCUESTAS (ALUMNO / COORDINADOR) -->
+        <div id="seccion-lista" class="contenedor-principal-estilos">
+            <!-- Aquí la lógica determinará qué vista mostrar: alumno o coordinador/admin -->
+
+            <!-- VISTA ALUMNO (Id_tipo_usuario = 2) -->
+            <div id="vista-alumno" style="display: none;">
                 <h2>Mis Encuestas Pendientes</h2>
-                <!-- REQUERIMIENTO: Indicador de cuántas quedan -->
-                <span id="contador-encuestas" class="badge-pendientes"></span>
+                <div id="lista-encuestas-alumno">
+                    <!--
+                        Por cada encuesta pendiente se mostrará:
+                        - Nombre del servicio asociado
+                        - Nombre de la encuesta
+                        - Descripción de la encuesta
+                        - Botón "Responder encuesta"
+                    -->
+                </div>
+                <div id="estado-vacio-alumno" style="display: none;">
+                    <p>¡No tienes encuestas pendientes!</p>
+                </div>
             </div>
 
-            <div id="lista-encuestas">
-                <!-- JS insertará aquí las encuestas o el mensaje de éxito -->
-                <!-- REQUERIMIENTO: Mensaje '¡No tienes encuestas pendientes!' con ícono -->
-                <div id="estado-vacio" style="display: none; text-align: center;">
-                    <i class="fas fa-check-circle" style="color: green; font-size: 3rem;"></i>
-                    <p>¡No tienes encuestas pendientes!</p>
+            <!-- VISTA COORDINADOR O ADMINISTRADOR (Id_tipo_usuario = 1 o 3) -->
+            <div id="vista-coordinador" style="display: none;">
+                <h2>Alumnos con Encuestas Pendientes</h2>
+                <div id="lista-alumnos-pendientes">
+                    <!--
+                        Por cada alumno con al menos una encuesta pendiente:
+                        - Nombre completo del alumno
+                        - Contador de encuestas pendientes (solo Contestador=1)
+                        - Botón para desplegar/contraer lista de encuestas
+                        - Al desplegar, por cada encuesta:
+                            - Nombre del servicio asociado
+                            - Nombre de la encuesta
+                            - Descripción de la encuesta
+                            - Botón "Responder encuesta"
+                    -->
+                </div>
+                <div id="estado-vacio-coordinador" style="display: none;">
+                    <p>No hay alumnos con encuestas pendientes.</p>
                 </div>
             </div>
         </div>
 
-        <!-- 2. SECCIÓN DE FORMULARIO -->
-        <div id="contenedor-preguntas" style="display: none;">
+        <!-- FORMULARIO DE RESPUESTA (página separada lógicamente, compartida para ambos tipos de usuario) -->
+        <div id="contenedor-preguntas" class="contenedor-principal-estilos" style="display: none;">
+            <!-- Botón para volver a la lista -->
             <button type="button" class="btn-volver" onclick="volverALista()">← Volver a la lista</button>
-            
+
+            <!-- Encabezado del formulario -->
             <h3 id="titulo-encuesta"></h3>
-            <p id="descripcion-encuesta" class="text-muted"></p>
+            <p id="descripcion-encuesta"></p>
             <hr>
 
-            <form id="form-encuesta">
-                <!-- REQUERIMIENTO: Preguntas con asterisco (*) si son obligatorias -->
+            <!-- Formulario de preguntas -->
+            <form id="form-encuesta" novalidate>
                 <div id="preguntas-dinamicas"></div>
-
-                <!-- REQUERIMIENTO: Botón 'Enviar respuestas' -->
-                <button type="submit" id="btn-enviar">Enviar respuestas</button>
+                <div class="form-actions">
+                    <button type="submit" id="btn-enviar">Enviar respuesta</button>
+                    <button type="button" id="btn-cancelar" onclick="cancelarEncuesta()">Cancelar</button>
+                </div>
             </form>
-            
-            <!-- REQUERIMIENTO: Mensaje de éxito tras enviar -->
             <p id="mensaje-feedback" style="display:none;"></p>
         </div>
 
     </main>
 
     <script src="encuestas.js"></script>
-
 </body>
+
 </html>
