@@ -1,22 +1,54 @@
 <?php
 require_once '../php/db.php';
-$tipo_usuario = $_COOKIE['Id_tipo_usuario'];
-$id_usuario = $_COOKIE['Id_usuario'];
+
+header('Content-Type: application/json');
+if (!isset($_COOKIE['Id_tipo_usuario']) || !isset($_COOKIE['Id_usuario'])) {
+    http_response_code(401);
+    echo json_encode(['error' => 'No hay sesión activa']);
+    exit;
+}
+
+$tipo_usuario = trim($_COOKIE['Id_tipo_usuario']);
+$id_usuario = trim($_COOKIE['Id_usuario']);
+
 try {
-    // Crea una nueva conexión a la base de datos usando PDO
     $pdo = new PDO($dsn, $user, $pass, $options);
     if ($tipo_usuario == "1" || $tipo_usuario == "3") {
-        $consulta = $pdo->prepare("SELECT Administradores.Nombre, Administradores.Apellido_P, Administradores.Apellido_M, Administradores.Telefono, Administradores.Correo, Administradores.Fecha_registro,  Carreras.Nombre AS Nombre_Carrera FROM Administradores JOIN Carreras WHERE Administradores.Id_carrera = Carreras.Id_carrera AND Id_usuario = ? ");//cokie id_usuario
-        $consulta->execute([$id_usuario]);
+        $sql = "SELECT a.Nombre, a.Apellido_P, a.Apellido_M, a.Telefono, a.Correo, a.Fecha_registro,"
+            . " c.Nombre AS Nombre_Carrera"
+            . " FROM Administradores a"
+            . " JOIN Carreras c ON a.Id_carrera = c.Id_carrera"
+            . " WHERE a.Id_usuario = ?";
+
     } elseif ($tipo_usuario == "2") {
-        $consulta = $pdo->prepare("SELECT Alumnos.Nombre, Alumnos.Apellido_P, Alumnos.Apellido_M, Alumnos.Grupo, Alumnos.No_Expediente, Alumnos.Horario, Alumnos.Fecha_registro, Carreras.Nombre AS Nombre_Carrera FROM Alumnos JOIN Carreras WHERE Alumnos.Id_carrera = Carreras.Id_carrera AND Id_usuario = ?");//cokie id_usuario
-        $consulta->execute([$id_usuario]);
+        $sql = "SELECT a.Nombre, a.Apellido_P, a.Apellido_M, a.Grupo, a.No_Expediente, a.Horario, a.Fecha_registro,"
+            . " c.Nombre AS Nombre_Carrera,"
+            . " aa.Id_empresa, aa.Area, aa.Programa, aa.Estado, aa.periodo_tipo, aa.periodo_año,"
+            . " aa.Fecha_inicio, aa.Fecha_fin, aa.Fecha_registro AS Fecha_registro_act, aa.Fecha_modificacion,"
+            . " ac.Servicio AS Nombre_servicio,"
+            . " e.Nombre AS Nombre_empresa"
+            . " FROM Alumnos a"
+            . " JOIN Carreras c ON a.Id_carrera = c.Id_carrera"
+            . " LEFT JOIN Actividades_Alumnos aa ON aa.Id_alumno = a.Id_alumno"
+            . " LEFT JOIN Actividades ac ON aa.Id_servicio = ac.Id_servicio"
+            . " LEFT JOIN Empresas e ON aa.Id_empresa = e.Id_empresa"
+            . " WHERE a.Id_usuario = ?";
     }
-    // Convierte los resultados en un arreglo asociativo y los devuelve en formato JSON
-    echo json_encode($consulta->fetchAll(PDO::FETCH_ASSOC));
-} catch (\PDOException $e) {
-    // Si ocurre un error, se envía un código HTTP 500 (error del servidor)
+
+    $consulta = $pdo->prepare($sql);
+    $consulta->execute([$id_usuario]);
+    $datos = $consulta->fetchAll(PDO::FETCH_ASSOC);
+    $campos_fecha = ['Fecha_registro', 'Fecha_registro_act', 'Fecha_inicio', 'Fecha_fin', 'Fecha_modificacion'];
+    foreach ($datos as &$fila) {
+        foreach ($campos_fecha as $campo) {
+            if (!empty($fila[$campo])) {
+                $fila[$campo] = date('Y-m-d', strtotime($fila[$campo]));
+            }
+        }
+    }
+    echo json_encode($datos, JSON_UNESCAPED_UNICODE);
+} catch (PDOException $e) {
     http_response_code(500);
-    // Se devuelve el mensaje de error en formato JSON
-    echo json_encode(['error' => "Error de conexión: " . $e->getMessage()]);
+    echo json_encode(['error' => $e->getMessage()]);
 }
+?>
