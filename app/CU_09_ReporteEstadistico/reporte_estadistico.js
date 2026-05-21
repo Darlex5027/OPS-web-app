@@ -1,192 +1,52 @@
-import { obtenerCookie } from '../js/cookie.js';
-import { lanzarToast } from '../js/lanzar_toast.js';
+/*
+  Archivo     : reporte_estadistico.js
+  Módulo      : CU_09_ReporteEstadistico
+  Autor       : Alejandro Resendiz Reyes
+  Fecha       : 23/04/2026		
+  Descripción : Archivo JS para el reporte estadístico se encarga de renderizar el menu y cargar las encuestas en el select.
+
+*/
 import { renderMenu } from '../js/menu.js';
+import { lanzarToast } from '../js/lanzar_toast.js';
 
-// Al final del archivo
-window.cargar_datos = cargar_datos;
+const elEncuestas = document.getElementById('slctEncuestas');
 
-const encuestas = document.getElementById('slctEncuestas');
-const periodo_tipo = document.getElementById('slctPeriodoTipo');
-const periodo_año = document.getElementById('slctPeriodoAño');
-
-periodo_tipo.style.visibility="hidden";
-periodo_año.style.visibility="hidden";
-
-
-document.addEventListener('DOMContentLoaded', function(){
-	const tipoUsuario = obtenerCookie('Id_tipo_usuario');
-	if (tipoUsuario == '2') {
-		const tipoUsuario = obtenerCookie('Id_tipo_usuario');
-		window.location.href = '../CU_03_PerfilGestionable/perfil.html';
-		return;
-	}
+document.addEventListener('DOMContentLoaded', function () {
+	// Si el tipo de usuario es diferente de 2, se renderiza el menú y se cargan las encuestas disponibles
 	renderMenu();
 	cargarEncuestas();
 });
 
-function cargarEncuestas(){
+
+// Función para cargar las encuestas disponibles desde el servidor
+function cargarEncuestas() {
 	fetch('./obtener_encuestas.php')
-		.then(res => res.json())
-		.then( encuestas => {
-			if(encuestas.error){
-				lanzarToast(encuestas.error,"error");
-				return
+		.then(function (respuesta) {
+			if (!respuesta.ok) {
+				lanzarToast(`Fallo en la solicitud del catalogo de encuestas`, "error");
+				return Promise.reject(new Error('HTTP error'));
 			}
-			encuestas.forEach(function (encuesta){
-				const option = document.createElement('option');
-				option.value = encuesta.Id_encuesta;
-				option.textContent = encuesta.Nombre;
-				document.getElementById('slctEncuestas').appendChild(option);
-			})
-
-		})
-}
-encuestas.addEventListener('change', (event) => {
-
-	periodo_tipo.innerHTML="<option value ='NINGUNO'>-- Seleccionar una periodo--</option>";
-	periodo_año.innerHTML="<option value ='NINGUNO'>-- Seleccionar una año--</option>";
-	if(encuestas.value === "NINGUNA"){
-		periodo_tipo.style.visibility="hidden";
-		periodo_año.style.visibility="hidden";
-	}else{
-		periodo_tipo.style.visibility="visible";
-		periodo_año.style.visibility="visible";
-		fetch('./obtener_periodos.php')
-			.then( res => res.json())
-			.then( function(respuesta){
-				if(respuesta.error){
-					lanzarToast(encuestas.error,"error");
-					return
-				}
-				respuesta.tipo.forEach(function(tipo){
-					const option = document.createElement('option');
-					option.value = tipo.Periodo_tipo;
-					option.textContent = tipo.Periodo_tipo;
-					periodo_tipo.appendChild(option);
-				});
-				console.log(respuesta.año);
-				respuesta.año.forEach(function(año){
-					const option = document.createElement('option');
-					option.value = año.Periodo_año;
-					option.textContent = año.Periodo_año;
-					periodo_año.appendChild(option);
-				})
-			});
-
-	}
-});
-
-/*
- * CARGAR TABLA
- */
-function cargar_datos(){
-	if(encuestas.value === "NINGUNA"){
-		lanzarToast("Debe seleccionar una encuesta para generar el reporte", "error");
-		return;
-	}
-	if(periodo_tipo.value === "NINGUNO" || periodo_año.value === "NINGUNO"){
-		lanzarToast("El periodo y el año deben rellenarse","error")
-		return;
-	}
-
-	cargarTabla();
-}
-function cargarTabla(){
-
-	// Se cargan los elemento a usar desde el HTML
-	const titulos = document.getElementById("Titulos");
-	const tabla = document.getElementById("Tabla");
-	const bExcel = document.getElementById("btnGenerarExcel");
-	const bPDF = document.getElementById("btnGenerarPDF");
-	const id_encuesta = document.getElementById("slctEncuestas").value;
-	const periodo_tipo = document.getElementById("slctPeriodoTipo").value;
-	const periodo_año = document.getElementById("slctPeriodoAño").value;
-
-	// Se limpian las tablas de caulquier contenido que tengan
-	titulos.innerHTML=""
-	tabla.innerHTML="";
-
-
-	fetch("./generar_tabla.php",{
-		method: "POST",
-		headers:{
-			"Content-Type":"application/json"
-		},
-		body: JSON.stringify({Id_encuesta: id_encuesta, Periodo_tipo: periodo_tipo, Periodo_año: periodo_año})
-	}) 
-		.then(function (respuesta){
-			//Se obtiene la respuesta del php
 			return respuesta.json();
 		})
-		.then(function (impresion){
-			if(impresion.error){
-				lanzarToast(impresion.error,"error");
-
-				bPDF.style.visibility="hidden";
-				bExcel.style.visibility="hidden";
-
+		.then(encuestas => {
+			if (encuestas.error) {
+				// Si hay un error al obtener las encuestas, se muestra un mensaje de error y se detiene la ejecución
+				lanzarToast(encuestas.error, "error");
 				return
 			}
+			encuestas.forEach(function (encuesta) {
 
-			//Si la impresión es de tamaño 0 significa que la respuesta es un mensaje
-			//por lo que no se encontraron resultados.
-			if(impresion.length==0){
-				lanzarToast("No se encontraron Resultados", "error");
-				bExcel.style.visibility="hidden";
-				bPDF.style.visibility="hidden";
-				return;
-			}
+				// Por cada encuesta obtenida, se crea una opción en el select de encuestas
+				const option = document.createElement('option');
 
-			console.log(impresion);	
-			//Renderizado de los titulos obtenidos
-			Object.keys(impresion[0]).forEach(function(titulo){
-				titulos.innerHTML=titulos.innerHTML+"<th>"+titulo+"</th>"
-			});
-			// Renderizado de el contenido de la tabla
-			impresion.forEach(function(fila){
-				//Variable para guardar la fila temporal
-				let table="";
+				// Se asigna el valor de la opción al ID de la encuesta y el texto al nombre de la encuesta
+				option.value = encuesta.Id_encuesta;
+				option.textContent = encuesta.Nombre;
 
-				table=table+"<tr>";
-				// Por cada titulo (celda) se agrega la celda a la estructura de la fila	
-				Object.keys(fila).forEach(function(dato){
-					//Se concatena el dato de la fila dentr
-					table=table+"<td>"+fila[dato]+"</td>";
-
-				});
-				table=table+"</tr>";
-				tabla.innerHTML+=table;
-			});
-			tabla.innerHTML+="<tr><td><h2>Promedio:</h2><label id='lblPromedio'></label></td><tr>"
-			bExcel.style.visibility="visible";
-			bPDF.style.visibility="visible";
-			cargarPromedio();
-		});
-}
-
-function cargarPromedio(){
-	const promedio=document.getElementById("lblPromedio");
-	const id_encuesta = document.getElementById("slctEncuestas").value;
-	const periodo_tipo = document.getElementById("slctPeriodoTipo").value;
-	const periodo_año = document.getElementById("slctPeriodoAño").value;
-
-
-	fetch("./generar_promedio.php",{
-		method: "POST",
-		headers:{
-			"Content-Type":"application/json"
-		},
-		body: JSON.stringify({Id_encuesta: id_encuesta, Periodo_tipo: periodo_tipo, Periodo_año: periodo_año})
-	}).then(function (respuesta){
-		return respuesta.json();
-	})
-		.then(function (impresion){
-			if(encuestas.error){
-				lanzarToast(encuestas.error,"error");
-				return
-			}
-
-			promedio.innerHTML=impresion;		
+				// Se agrega la opción al select de encuestas
+				document.getElementById('slctEncuestas').appendChild(option);
+			})
+			lanzarToast("Encuestas cargadas. Seleccione una encuesta para cargar los periodos disponibles", "exito");
 		})
-	lanzarToast("Resultados cargados correctamente", "exito");
-}	
+
+}

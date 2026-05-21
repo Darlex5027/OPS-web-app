@@ -212,6 +212,7 @@ CREATE TABLE `Encuestas` (
   `Descripcion` text DEFAULT NULL,
   `Id_servicio` int(11) NOT NULL,
   `Activo` tinyint(1) DEFAULT 1,
+  `Contestador` tinyint(1) DEFAULT 0,
   `Fecha_inicio` date DEFAULT NULL,
   `Fecha_fin` date DEFAULT NULL,
   `Fecha_registro` datetime DEFAULT current_timestamp(),
