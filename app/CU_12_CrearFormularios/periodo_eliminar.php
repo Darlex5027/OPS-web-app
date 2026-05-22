@@ -9,8 +9,8 @@
 */
 require_once '../php/db.php';
 
-$datos = json_decode(file_get_contents('php://input'), true);
-$id_periodo_encuesta = $datos['Id_periodo_encuesta'];
+$datos_periodo_encuesta = json_decode(file_get_contents('php://input'), true);
+$id_periodo_encuesta = $datos_periodo_encuesta['Id_periodo_encuesta'];
 
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
@@ -19,5 +19,5 @@ try {
     echo json_encode(['success' => true, 'mensaje' => 'Periodo eliminado']);
 } catch (\PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'error' => "periodo_eliminar.php | Error: " . $e->getMessage()]);
+    echo json_encode(['error' => "Error al eliminar el periodo"]);
 }

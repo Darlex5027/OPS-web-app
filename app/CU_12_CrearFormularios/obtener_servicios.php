@@ -13,8 +13,10 @@ try {
     $pdo = new PDO($dsn, $user, $pass, $options);
     $stmt = $pdo->prepare("SELECT Id_servicio, Servicio FROM Actividades");
     $stmt->execute();
-    echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+    $actividades = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo json_encode(['success' => true, 'data' => $actividades]);
+    //echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
 } catch (\PDOException $e) {
     http_response_code(500);
-    echo json_encode(['error' => "Error de conexión: " . $e->getMessage()]);
+    echo json_encode(['error' => "Error al mostrar los servicios"]);
 }
