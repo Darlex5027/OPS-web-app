@@ -1,0 +1,78 @@
+<!--
+ * Archivo     : vacantes.html
+ * Módulo      : Modulo 4 CU_04_VisualizarVacantes
+ * Autor       : Viridiana Tonix Zarate
+ * Fecha       : 2026
+ * Descripción : Vista tipo foro para visualizar las vacantes publicadas.
+ *               Permite buscar por palabra clave y filtrar por servicio.
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vacantes Disponibles</title>
+    <link rel="stylesheet" href="../css/styleCaso_4.css">
+</head>
+
+<body class="pagina-vacantes">
+
+    <!-- Sidebar igual que CU_06 -->
+    <div class="sidebar">
+        <div class="profile">
+            <img src="../Imagenes/prueba.png" alt="perfil">
+            <h3>Mtra. M. Guadalupe</h3>
+        </div>
+        <div class="menu"></div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="main">
+        <div class="header">
+            <div></div>
+            <h1>Vacantes Disponibles</h1>
+            <div class="header-logo-right">
+                <img src="../Imagenes/Logo.png" alt="Logo OPS">
+            </div>
+        </div>
+
+        <!-- Barra de filtros -->
+        <div class="foro-filtros">
+            <select id="filtro-servicio">
+                <option value="">Todos los servicios</option>
+            </select>
+        </div>
+
+        <!-- Contador de resultados -->
+        <p class="foro-contador" id="contador-resultados">Cargando vacantes...</p>
+
+        <!-- Lista de tarjetas tipo foro -->
+        <div class="foro-lista" id="lista-vacantes">
+            <!-- Las tarjetas se renderizan con JS -->
+        </div>
+
+        <!-- Mensaje cuando no hay resultados -->
+        <div class="foro-vacio oculto" id="sin-resultados">
+            <p>No se encontraron vacantes con esos criterios.</p>
+        </div>
+    </div>
+
+    <!-- Modal de detalle -->
+    <div class="modal-overlay oculto" id="modal-overlay">
+        <div class="modal-caja" id="modal-caja">
+            <!-- Contenido del modal se renderiza con JS -->
+        </div>
+    </div>
+
+    <!-- Toast de notificaciones -->
+    <div id="toast-mensaje" class="toast oculto"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script type="module" src="../js/redireccion.js"></script>
+    <script type="module" src="visualizar_vacantes.js"></script>
+
+</body>
+
+</html>
