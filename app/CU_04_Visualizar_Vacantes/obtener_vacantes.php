@@ -13,12 +13,12 @@ require_once '../php/db.php';
 header('Content-Type: application/json');
 
 // ================= VALIDACIÓN DE SESIÓN =================
-$id_carrera  = $_COOKIE['Id_carrera']  ?? null;
-$id_usuario  = $_COOKIE['Id_usuario']  ?? null;
+$id_carrera = $_COOKIE['Id_carrera'] ?? null;
+$id_usuario = $_COOKIE['Id_usuario'] ?? null;
 
 if (!$id_usuario || !$id_carrera) {
     http_response_code(401);
-    echo json_encode(['error' => 'Sesión no válida.']);
+    echo json_encode(['success' => false, 'error' => 'Sesión no válida.']);
     exit();
 }
 
@@ -54,5 +54,5 @@ try {
 
 } catch (\PDOException $e) {
     http_response_code(500);
-    echo json_encode(['error' => 'Error de conexión: ' . $e->getMessage()]);
+    echo json_encode(['success' => false, 'error' => 'Error de conexión: ' . $e->getMessage()]);
 }

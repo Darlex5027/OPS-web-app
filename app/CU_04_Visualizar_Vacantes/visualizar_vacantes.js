@@ -15,8 +15,9 @@ import { renderMenu } from '../js/menu.js';
 
 // ================= ESTADO GLOBAL =================
 let todasLasVacantes = [];
-const tipoUsuario = obtenerCookie('Id_tipo_usuario');
-const puedeEliminar = tipoUsuario === '1' || tipoUsuario === '3';
+let vacanteActual = null;
+const id_TipoUsuario = obtenerCookie('Id_tipo_usuario');
+const canEliminar = id_TipoUsuario === '1' || id_TipoUsuario === '3';
 
 // ================= INICIALIZACIÓN =================
 document.addEventListener('DOMContentLoaded', function () {
@@ -35,13 +36,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // ================= CONFIGURACIÓN DE EVENT LISTENERS =================
 function setupEventListeners() {
-    const modalOverlay = document.getElementById('modal-overlay');
-    modalOverlay?.addEventListener('click', function (e) {
+    const elModalOverlay = document.getElementById('modal-overlay');
+    elModalOverlay?.addEventListener('click', function (e) {
         if (e.target === this) cerrarModal();
     });
 
-    const filtroServicio = document.getElementById('filtro-servicio');
-    filtroServicio?.addEventListener('change', handleFiltrar);
+    const elFiltroServicio = document.getElementById('filtro-servicio');
+    elFiltroServicio?.addEventListener('change', onChangeFiltrarServicio);
 }
 
 // ================= OBTENCIÓN DE DATOS =================
@@ -61,12 +62,12 @@ function fetchVacantes() {
         .then(function (vacantes) {
             if (!vacantes) return;
             todasLasVacantes = vacantes;
-            renderizarVacantes(vacantes);
+            renderVacantes(vacantes);
         })
         .catch(function () {
             lanzarToast("No se pudieron cargar las vacantes", "error");
-            const contador = document.getElementById('contador-resultados');
-            if (contador) contador.textContent = 'Error al cargar.';
+            const elContador = document.getElementById('contador-resultados');
+            if (elContador) elContador.textContent = 'Error al cargar.';
         });
 }
 
@@ -74,14 +75,14 @@ function fetchServicios() {
     fetch('../CU_06_PublicarVacantes/obtener_servicios.php')
         .then(r => r.json())
         .then(function (servicios) {
-            const selectServicio = document.getElementById('filtro-servicio');
-            if (!selectServicio) return;
+            const elSelectServicio = document.getElementById('filtro-servicio');
+            if (!elSelectServicio) return;
 
             servicios.forEach(function (servicio) {
                 const opcion = document.createElement('option');
                 opcion.value = servicio.Id_servicio;
                 opcion.textContent = servicio.Servicio;
-                selectServicio.appendChild(opcion);
+                elSelectServicio.appendChild(opcion);
             });
         })
         .catch(function () {
@@ -90,28 +91,28 @@ function fetchServicios() {
 }
 
 // ================= RENDERIZACIÓN =================
-function renderizarVacantes(vacantes) {
-    const listVacantes = document.getElementById('lista-vacantes');
-    const sinResultados = document.getElementById('sin-resultados');
-    const contador = document.getElementById('contador-resultados');
+function renderVacantes(vacantes) {
+    const elListVacantes = document.getElementById('lista-vacantes');
+    const elSinResultados = document.getElementById('sin-resultados');
+    const elContador = document.getElementById('contador-resultados');
 
-    if (!listVacantes || !sinResultados || !contador) return;
+    if (!elListVacantes || !elSinResultados || !elContador) return;
 
-    listVacantes.innerHTML = '';
+    elListVacantes.innerHTML = '';
 
     if (vacantes.length === 0) {
-        sinResultados.classList.remove('oculto');
-        contador.textContent = 'Sin resultados';
+        elSinResultados.classList.remove('oculto');
+        elContador.textContent = 'Sin resultados';
         return;
     }
 
-    sinResultados.classList.add('oculto');
+    elSinResultados.classList.add('oculto');
     const sufijo = vacantes.length !== 1 ? 's' : '';
-    contador.textContent = `${vacantes.length} vacante${sufijo} encontrada${sufijo}`;
+    elContador.textContent = `${vacantes.length} vacante${sufijo} encontrada${sufijo}`;
 
     vacantes.forEach(function (vacante) {
         const tarjeta = crearTarjeta(vacante);
-        listVacantes.appendChild(tarjeta);
+        elListVacantes.appendChild(tarjeta);
     });
 }
 
@@ -125,7 +126,7 @@ function crearTarjeta(vacante) {
     const tarjetaDer = crearSeccionDerecha(vacante);
     tarjeta.appendChild(tarjetaDer);
 
-    if (puedeEliminar) {
+    if (canEliminar) {
         const btnEliminar = crearBotonEliminarTarjeta(vacante);
         tarjeta.appendChild(btnEliminar);
     }
@@ -246,14 +247,15 @@ function crearBotonEliminarTarjeta(vacante) {
 }
 
 // ================= FILTRADO =================
-function handleFiltrar() {
-    const servicioFiltro = document.getElementById('filtro-servicio').value;
+function onChangeFiltrarServicio() {
+    const elFiltroServicio = document.getElementById('filtro-servicio');
+    const servicioFiltro = elFiltroServicio.value;
 
     const filtradas = todasLasVacantes.filter(function (vacante) {
         return !servicioFiltro || String(vacante.Id_servicio) === String(servicioFiltro);
     });
 
-    renderizarVacantes(filtradas);
+    renderVacantes(filtradas);
 }
 
 // ================= OPERACIONES DE ELIMINAR =================
@@ -263,7 +265,7 @@ function confirmarEliminar(vacante) {
         function () {
             eliminarVacanteEnServidor(vacante, function () {
                 todasLasVacantes = todasLasVacantes.filter(x => x.Id_vacante !== vacante.Id_vacante);
-                renderizarVacantes(todasLasVacantes);
+                renderVacantes(todasLasVacantes);
             });
         }
     );
@@ -276,7 +278,7 @@ function confirmarEliminarDesdeModal(vacante) {
             eliminarVacanteEnServidor(vacante, function () {
                 cerrarModal();
                 todasLasVacantes = todasLasVacantes.filter(x => x.Id_vacante !== vacante.Id_vacante);
-                renderizarVacantes(todasLasVacantes);
+                renderVacantes(todasLasVacantes);
             });
         }
     );
@@ -293,7 +295,7 @@ function eliminarVacanteEnServidor(vacante, callback) {
             return respuesta.json();
         })
         .then(function (data) {
-            if (data.exito) {
+            if (data.success) {
                 lanzarToast('Vacante eliminada correctamente', 'exito');
                 callback();
             } else {
@@ -362,7 +364,7 @@ function abrirModal(vacante) {
 
     if (!overlay || !caja) return;
 
-    window.vacanteActual = vacante;
+    vacanteActual = vacante;
 
     const flyerSrc = normalizarFlyer(vacante.Flyer_Path);
     const tieneFlyer = flyerSrc !== '';
@@ -558,19 +560,19 @@ function crearFooterModal(vacante, tieneFlyer) {
     if (tieneFlyer) {
         btnDescargar.className = 'btn-descargar-flyer';
         btnDescargar.textContent = 'Descargar flyer';
-        btnDescargar.addEventListener('click', () => descargarFlyer(window.vacanteActual));
+        btnDescargar.addEventListener('click', () => descargarFlyer(vacanteActual));
     } else {
         btnDescargar.className = 'btn-descargar-pdf';
         btnDescargar.textContent = 'Descargar vacante en PDF';
-        btnDescargar.addEventListener('click', () => descargarVacantePDF(window.vacanteActual));
+        btnDescargar.addEventListener('click', () => descargarVacantePDF(vacanteActual));
     }
     footer.appendChild(btnDescargar);
 
-    if (puedeEliminar) {
+    if (canEliminar) {
         const btnEliminar = document.createElement('button');
         btnEliminar.className = 'btn-eliminar-modal';
         btnEliminar.textContent = 'Eliminar vacante';
-        btnEliminar.addEventListener('click', () => confirmarEliminarDesdeModal(window.vacanteActual));
+        btnEliminar.addEventListener('click', () => confirmarEliminarDesdeModal(vacanteActual));
         footer.appendChild(btnEliminar);
     }
 
@@ -688,7 +690,7 @@ function formatearFecha(fechaStr) {
 }
 
 // ================= EXPOSICIÓN GLOBAL =================
-window.handleFiltrar = handleFiltrar;
+window.onChangeFiltrarServicio = onChangeFiltrarServicio;
 window.cerrarModal = cerrarModal;
 window.abrirModal = abrirModal;
 window.descargarVacantePDF = descargarVacantePDF;
