@@ -21,7 +21,7 @@ const puedeEliminar = tipoUsuario === '1' || tipoUsuario === '3';
 // ================= INICIALIZACIÓN =================
 document.addEventListener('DOMContentLoaded', function () {
     renderMenu();
-    
+
     const idUsuario = obtenerCookie('Id_usuario');
     if (!idUsuario) {
         window.location.href = '../CU_01_Login/login.html';
@@ -34,11 +34,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // ================= CONFIGURACIÓN DE EVENT LISTENERS =================
-/**
- * Configura todos los event listeners necesarios para la interfaz:
- * - Cierre de modal al hacer clic en overlay
- * - Filtrado por servicio
- */
 function setupEventListeners() {
     const modalOverlay = document.getElementById('modal-overlay');
     modalOverlay?.addEventListener('click', function (e) {
@@ -50,10 +45,6 @@ function setupEventListeners() {
 }
 
 // ================= OBTENCIÓN DE DATOS =================
-/**
- * Obtiene las vacantes del servidor y las almacena globalmente
- * Maneja errores de sesión expirada y errores de conexión
- */
 function fetchVacantes() {
     fetch('obtener_vacantes.php')
         .then(function (respuesta) {
@@ -79,16 +70,13 @@ function fetchVacantes() {
         });
 }
 
-/**
- * Obtiene la lista de servicios y los carga en el dropdown de filtro
- */
 function fetchServicios() {
     fetch('../CU_06_PublicarVacantes/obtener_servicios.php')
         .then(r => r.json())
         .then(function (servicios) {
             const selectServicio = document.getElementById('filtro-servicio');
             if (!selectServicio) return;
-            
+
             servicios.forEach(function (servicio) {
                 const opcion = document.createElement('option');
                 opcion.value = servicio.Id_servicio;
@@ -102,11 +90,6 @@ function fetchServicios() {
 }
 
 // ================= RENDERIZACIÓN =================
-/**
- * Renderiza las tarjetas de vacantes en el contenedor principal
- * Maneja estados vacío y actualiza contador de resultados
- * @param {Array} vacantes - Array de objetos vacantes
- */
 function renderizarVacantes(vacantes) {
     const listVacantes = document.getElementById('lista-vacantes');
     const sinResultados = document.getElementById('sin-resultados');
@@ -132,34 +115,21 @@ function renderizarVacantes(vacantes) {
     });
 }
 
-/**
- * Crea el elemento DOM de una tarjeta de vacante
- * @param {Object} vacante - Objeto con datos de la vacante
- * @returns {HTMLElement} - Elemento div con estructura de tarjeta
- */
 function crearTarjeta(vacante) {
     const tarjeta = document.createElement('div');
     tarjeta.className = 'foro-tarjeta';
 
-    const flyerSrc = normalizarFlyer(vacante.Flyer_Path);
-    const tieneFlyer = flyerSrc !== '';
-    const esFlyerPDF = esPDF(vacante.Flyer_Path);
-
-    // Sección izquierda: flyer/icono
-    const tarjetaIzq = crearSeccionIzquierda(vacante, flyerSrc, tieneFlyer, esFlyerPDF);
+    const tarjetaIzq = crearSeccionIzquierda(vacante);
     tarjeta.appendChild(tarjetaIzq);
 
-    // Sección derecha: contenido
     const tarjetaDer = crearSeccionDerecha(vacante);
     tarjeta.appendChild(tarjetaDer);
 
-    // Botón eliminar
     if (puedeEliminar) {
         const btnEliminar = crearBotonEliminarTarjeta(vacante);
         tarjeta.appendChild(btnEliminar);
     }
 
-    // Event listener para abrir modal
     tarjeta.addEventListener('click', function (e) {
         if (!e.target.closest('.btn-eliminar-tarjeta')) {
             abrirModal(vacante);
@@ -169,33 +139,20 @@ function crearTarjeta(vacante) {
     return tarjeta;
 }
 
-/**
- * Crea la sección izquierda de la tarjeta (flyer/icono)
- * @param {Object} vacante - Objeto vacante
- * @param {string} flyerSrc - Ruta normalizada del flyer
- * @param {boolean} tieneFlyer - Si existe flyer
- * @param {boolean} esFlyerPDF - Si el flyer es PDF
- * @returns {HTMLElement} - Div con la sección izquierda
- */
-function crearSeccionIzquierda(vacante, flyerSrc, tieneFlyer, esFlyerPDF) {
+function crearSeccionIzquierda(vacante) {
     const seccion = document.createElement('div');
     seccion.className = 'tarjeta-izq';
 
     const icono = document.createElement('div');
-    icono.className = `tarjeta-icono ${tieneFlyer ? 'con-flyer' : ''}`;
+    icono.className = 'tarjeta-icono';
 
-    const flyerElement = crearElementoFlyer(vacante, flyerSrc, tieneFlyer, esFlyerPDF);
-    icono.appendChild(flyerElement);
+    const letra = crearIconoLetra(vacante);
+    icono.appendChild(letra);
     seccion.appendChild(icono);
 
     return seccion;
 }
 
-/**
- * Crea la sección derecha de la tarjeta (contenido)
- * @param {Object} vacante - Objeto vacante
- * @returns {HTMLElement} - Div con la sección derecha
- */
 function crearSeccionDerecha(vacante) {
     const seccion = document.createElement('div');
     seccion.className = 'tarjeta-der';
@@ -212,41 +169,13 @@ function crearSeccionDerecha(vacante) {
     return seccion;
 }
 
-/**
- * Crea el elemento visual del flyer (imagen, PDF o inicial)
- * @param {Object} vacante - Objeto vacante
- * @param {string} flyerSrc - Ruta normalizada del flyer
- * @param {boolean} tieneFlyer - Si existe flyer
- * @param {boolean} esFlyerPDF - Si el flyer es PDF
- * @returns {HTMLElement} - Elemento con el flyer
- */
-function crearElementoFlyer(vacante, flyerSrc, tieneFlyer, esFlyerPDF) {
-    if (!tieneFlyer) {
-        const span = document.createElement('span');
-        span.className = 'icono-letra';
-        span.textContent = (vacante.Titulo || 'V').charAt(0).toUpperCase();
-        return span;
-    }
-
-    if (esFlyerPDF) {
-        const div = document.createElement('div');
-        div.className = 'flyer-pdf-thumb';
-        div.innerHTML = '<span class="pdf-icono">📄</span><span class="pdf-label">PDF</span>';
-        return div;
-    }
-
-    const img = document.createElement('img');
-    img.src = flyerSrc;
-    img.alt = 'Flyer de vacante';
-    img.className = 'flyer-thumb';
-    return img;
+function crearIconoLetra(vacante) {
+    const span = document.createElement('span');
+    span.className = 'icono-letra';
+    span.textContent = (vacante.Titulo || 'V').charAt(0).toUpperCase();
+    return span;
 }
 
-/**
- * Crea la cabeza de la tarjeta (título y servicio)
- * @param {Object} vacante - Objeto vacante
- * @returns {HTMLElement} - Div con cabeza
- */
 function crearCabezaTarjeta(vacante) {
     const div = document.createElement('div');
     div.className = 'tarjeta-cabeza';
@@ -265,11 +194,6 @@ function crearCabezaTarjeta(vacante) {
     return div;
 }
 
-/**
- * Crea la sección de empresa en la tarjeta
- * @param {Object} vacante - Objeto vacante
- * @returns {HTMLElement} - Párrafo con datos de empresa
- */
 function crearEmpresaTarjeta(vacante) {
     const p = document.createElement('p');
     p.className = 'tarjeta-empresa';
@@ -282,11 +206,6 @@ function crearEmpresaTarjeta(vacante) {
     return p;
 }
 
-/**
- * Crea la sección de descripción en la tarjeta
- * @param {Object} vacante - Objeto vacante
- * @returns {HTMLElement} - Párrafo con descripción
- */
 function crearDescripcionTarjeta(vacante) {
     const p = document.createElement('p');
     p.className = 'tarjeta-desc';
@@ -294,11 +213,6 @@ function crearDescripcionTarjeta(vacante) {
     return p;
 }
 
-/**
- * Crea el footer de la tarjeta con fechas
- * @param {Object} vacante - Objeto vacante
- * @returns {HTMLElement} - Div con footer
- */
 function crearFooterTarjeta(vacante) {
     const div = document.createElement('div');
     div.className = 'tarjeta-footer';
@@ -317,11 +231,6 @@ function crearFooterTarjeta(vacante) {
     return div;
 }
 
-/**
- * Crea el botón de eliminar tarjeta
- * @param {Object} vacante - Objeto vacante
- * @returns {HTMLElement} - Botón eliminar
- */
 function crearBotonEliminarTarjeta(vacante) {
     const btn = document.createElement('button');
     btn.className = 'btn-eliminar-tarjeta';
@@ -336,11 +245,7 @@ function crearBotonEliminarTarjeta(vacante) {
     return btn;
 }
 
-// ================= FILTRADO Y BÚSQUEDA =================
-/**
- * Maneja el evento de filtrado por servicio
- * Filtra las vacantes según el servicio seleccionado
- */
+// ================= FILTRADO =================
 function handleFiltrar() {
     const servicioFiltro = document.getElementById('filtro-servicio').value;
 
@@ -352,42 +257,31 @@ function handleFiltrar() {
 }
 
 // ================= OPERACIONES DE ELIMINAR =================
-/**
- * Muestra confirmación y elimina una vacante
- * @param {Object} vacante - Objeto vacante a eliminar
- */
 function confirmarEliminar(vacante) {
-    if (!confirm('¿Seguro que deseas eliminar esta vacante? Esta acción no se puede deshacer.')) {
-        return;
-    }
-
-    eliminarVacanteEnServidor(vacante, function () {
-        todasLasVacantes = todasLasVacantes.filter(x => x.Id_vacante !== vacante.Id_vacante);
-        renderizarVacantes(todasLasVacantes);
-    });
+    mostrarConfirmacion(
+        '¿Seguro que deseas eliminar esta vacante? Esta acción no se puede deshacer.',
+        function () {
+            eliminarVacanteEnServidor(vacante, function () {
+                todasLasVacantes = todasLasVacantes.filter(x => x.Id_vacante !== vacante.Id_vacante);
+                renderizarVacantes(todasLasVacantes);
+            });
+        }
+    );
 }
 
-/**
- * Elimina una vacante desde el modal
- * @param {Object} vacante - Objeto vacante a eliminar
- */
 function confirmarEliminarDesdeModal(vacante) {
-    if (!confirm('¿Seguro que deseas eliminar esta vacante? Esta acción no se puede deshacer.')) {
-        return;
-    }
-
-    eliminarVacanteEnServidor(vacante, function () {
-        cerrarModal();
-        todasLasVacantes = todasLasVacantes.filter(x => x.Id_vacante !== vacante.Id_vacante);
-        renderizarVacantes(todasLasVacantes);
-    });
+    mostrarConfirmacion(
+        '¿Seguro que deseas eliminar esta vacante? Esta acción no se puede deshacer.',
+        function () {
+            eliminarVacanteEnServidor(vacante, function () {
+                cerrarModal();
+                todasLasVacantes = todasLasVacantes.filter(x => x.Id_vacante !== vacante.Id_vacante);
+                renderizarVacantes(todasLasVacantes);
+            });
+        }
+    );
 }
 
-/**
- * Realiza la solicitud HTTP para eliminar la vacante
- * @param {Object} vacante - Objeto vacante
- * @param {Function} callback - Función a ejecutar si la eliminación fue exitosa
- */
 function eliminarVacanteEnServidor(vacante, callback) {
     fetch('eliminar_vacante.php', {
         method: 'POST',
@@ -411,11 +305,57 @@ function eliminarVacanteEnServidor(vacante, callback) {
         });
 }
 
-// ================= MODAL =================
+// ================= MODAL CONFIRMACIÓN =================
 /**
- * Abre el modal con los detalles completos de la vacante
- * @param {Object} vacante - Objeto vacante
+ * Muestra un modal de confirmación personalizado.
+ * Reemplaza confirm() nativo para permitir que los toasts funcionen.
+ * @param {string} mensaje - Mensaje a mostrar
+ * @param {Function} onAceptar - Callback al confirmar
  */
+function mostrarConfirmacion(mensaje, onAceptar) {
+    const previo = document.getElementById('modal-confirmacion');
+    if (previo) previo.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'modal-confirmacion';
+    overlay.className = 'confirm-overlay';
+
+    const caja = document.createElement('div');
+    caja.className = 'confirm-caja';
+
+    const texto = document.createElement('p');
+    texto.className = 'confirm-texto';
+    texto.textContent = mensaje;
+
+    const botones = document.createElement('div');
+    botones.className = 'confirm-botones';
+
+    const btnCancelar = document.createElement('button');
+    btnCancelar.className = 'confirm-btn-cancelar';
+    btnCancelar.textContent = 'Cancelar';
+    btnCancelar.addEventListener('click', () => overlay.remove());
+
+    const btnAceptar = document.createElement('button');
+    btnAceptar.className = 'confirm-btn-aceptar';
+    btnAceptar.textContent = 'Eliminar';
+    btnAceptar.addEventListener('click', function () {
+        overlay.remove();
+        onAceptar();
+    });
+
+    botones.appendChild(btnCancelar);
+    botones.appendChild(btnAceptar);
+    caja.appendChild(texto);
+    caja.appendChild(botones);
+    overlay.appendChild(caja);
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) overlay.remove();
+    });
+}
+
+// ================= MODAL VACANTE =================
 function abrirModal(vacante) {
     const overlay = document.getElementById('modal-overlay');
     const caja = document.getElementById('modal-caja');
@@ -430,17 +370,14 @@ function abrirModal(vacante) {
 
     caja.innerHTML = '';
 
-    // Botón cerrar
     const btnCerrar = crearBotonCerrarModal();
     caja.appendChild(btnCerrar);
 
-    // Preview del flyer
     if (tieneFlyer) {
         const flyerDiv = crearPreviewFlyer(flyerSrc, esFlyerPDF);
         caja.appendChild(flyerDiv);
     }
 
-    // Contenido del modal
     caja.appendChild(crearHeaderModal(vacante));
     caja.appendChild(crearContenidoModal(vacante));
     caja.appendChild(crearFooterModal(vacante, tieneFlyer));
@@ -448,10 +385,6 @@ function abrirModal(vacante) {
     overlay.classList.remove('oculto');
 }
 
-/**
- * Crea el botón para cerrar el modal
- * @returns {HTMLElement} - Botón cerrar
- */
 function crearBotonCerrarModal() {
     const btn = document.createElement('button');
     btn.className = 'modal-cerrar';
@@ -460,20 +393,11 @@ function crearBotonCerrarModal() {
     return btn;
 }
 
-/**
- * Cierra el modal
- */
 function cerrarModal() {
     const overlay = document.getElementById('modal-overlay');
     if (overlay) overlay.classList.add('oculto');
 }
 
-/**
- * Crea el preview del flyer en el modal
- * @param {string} flyerSrc - Ruta normalizada del flyer
- * @param {boolean} esFlyerPDF - Si el flyer es PDF
- * @returns {HTMLElement} - Div con preview
- */
 function crearPreviewFlyer(flyerSrc, esFlyerPDF) {
     const div = document.createElement('div');
     div.className = 'modal-flyer';
@@ -482,13 +406,13 @@ function crearPreviewFlyer(flyerSrc, esFlyerPDF) {
         const iframe = document.createElement('iframe');
         iframe.src = `${flyerSrc}#page=1&toolbar=0&navpanes=0&scrollbar=0`;
         iframe.className = 'modal-flyer-pdf';
-        iframe.title = 'Vista previa del flyer';
+        iframe.title = '';
         iframe.loading = 'lazy';
         div.appendChild(iframe);
     } else {
         const img = document.createElement('img');
         img.src = flyerSrc;
-        img.alt = 'Flyer de la vacante';
+        img.alt = '';
         img.className = 'modal-flyer-img';
         div.appendChild(img);
     }
@@ -496,11 +420,6 @@ function crearPreviewFlyer(flyerSrc, esFlyerPDF) {
     return div;
 }
 
-/**
- * Crea el header del modal con título y servicio
- * @param {Object} vacante - Objeto vacante
- * @returns {HTMLElement} - Header del modal
- */
 function crearHeaderModal(vacante) {
     const header = document.createElement('div');
     header.className = 'modal-header';
@@ -523,44 +442,29 @@ function crearHeaderModal(vacante) {
     return header;
 }
 
-/**
- * Crea el contenido principal del modal
- * @param {Object} vacante - Objeto vacante
- * @returns {HTMLElement} - Contenido del modal
- */
 function crearContenidoModal(vacante) {
     const contenido = document.createElement('div');
     contenido.className = 'modal-contenido';
 
-    // Grid de información
     contenido.appendChild(crearInfoGrid(vacante));
 
-    // Descripción
     if (vacante.Descripcion) {
         contenido.appendChild(crearSeccionModal('Descripción', vacante.Descripcion));
     }
 
-    // Requisitos
     if (vacante.Requisitos) {
         contenido.appendChild(crearSeccionModal('Requisitos', vacante.Requisitos));
     }
 
-    // Contacto
     if (vacante.Contacto_nombre || vacante.Contacto_email || vacante.Contacto_telefono) {
         contenido.appendChild(crearSeccionContacto(vacante));
     }
 
-    // Fechas
     contenido.appendChild(crearFechasModal(vacante));
 
     return contenido;
 }
 
-/**
- * Crea el grid de información (empresa y servicio)
- * @param {Object} vacante - Objeto vacante
- * @returns {HTMLElement} - Grid de info
- */
 function crearInfoGrid(vacante) {
     const grid = document.createElement('div');
     grid.className = 'modal-info-grid';
@@ -585,12 +489,6 @@ function crearInfoGrid(vacante) {
     return grid;
 }
 
-/**
- * Crea una sección genérica del modal
- * @param {string} titulo - Título de la sección
- * @param {string} contenido - Contenido HTML
- * @returns {HTMLElement} - Sección
- */
 function crearSeccionModal(titulo, contenido) {
     const seccion = document.createElement('div');
     seccion.className = 'modal-seccion';
@@ -598,11 +496,6 @@ function crearSeccionModal(titulo, contenido) {
     return seccion;
 }
 
-/**
- * Crea la sección de contacto en el modal
- * @param {Object} vacante - Objeto vacante
- * @returns {HTMLElement} - Sección de contacto
- */
 function crearSeccionContacto(vacante) {
     const seccion = document.createElement('div');
     seccion.className = 'modal-seccion';
@@ -632,12 +525,6 @@ function crearSeccionContacto(vacante) {
     return seccion;
 }
 
-/**
- * Crea una fila de contacto
- * @param {string} icono - Emoji del icono
- * @param {string} texto - Texto a mostrar
- * @returns {HTMLElement} - Fila de contacto
- */
 function crearFilaContacto(icono, texto) {
     const fila = document.createElement('div');
     fila.className = 'contacto-fila';
@@ -645,36 +532,28 @@ function crearFilaContacto(icono, texto) {
     return fila;
 }
 
-/**
- * Crea la sección de fechas en el modal
- * @param {Object} vacante - Objeto vacante
- * @returns {HTMLElement} - Div con fechas
- */
 function crearFechasModal(vacante) {
     const fechas = document.createElement('div');
     fechas.className = 'modal-fechas';
+
     const spanPublicado = document.createElement('span');
     spanPublicado.className = 'fecha-chip';
     spanPublicado.textContent = `📅 Publicado: ${formatearFecha(vacante.Fecha_publicacion)}`;
+
     const spanExpira = document.createElement('span');
     spanExpira.className = 'fecha-chip';
     spanExpira.textContent = `⏳ Expira: ${formatearFecha(vacante.Fecha_expiracion)}`;
+
     fechas.appendChild(spanPublicado);
     fechas.appendChild(spanExpira);
+
     return fechas;
 }
 
-/**
- * Crea el footer del modal con botones de acción
- * @param {Object} vacante - Objeto vacante
- * @param {boolean} tieneFlyer - Si la vacante tiene flyer
- * @returns {HTMLElement} - Footer del modal
- */
 function crearFooterModal(vacante, tieneFlyer) {
     const footer = document.createElement('div');
     footer.className = 'modal-footer';
 
-    // Botón descargar
     const btnDescargar = document.createElement('button');
     if (tieneFlyer) {
         btnDescargar.className = 'btn-descargar-flyer';
@@ -687,7 +566,6 @@ function crearFooterModal(vacante, tieneFlyer) {
     }
     footer.appendChild(btnDescargar);
 
-    // Botón eliminar
     if (puedeEliminar) {
         const btnEliminar = document.createElement('button');
         btnEliminar.className = 'btn-eliminar-modal';
@@ -700,10 +578,6 @@ function crearFooterModal(vacante, tieneFlyer) {
 }
 
 // ================= DESCARGAS =================
-/**
- * Descarga el archivo original del flyer
- * @param {Object} vacante - Objeto vacante
- */
 function descargarFlyer(vacante) {
     const flyerSrc = normalizarFlyer(vacante.Flyer_Path);
     if (!flyerSrc) {
@@ -725,10 +599,6 @@ function descargarFlyer(vacante) {
     document.body.removeChild(enlace);
 }
 
-/**
- * Genera y descarga la vacante en formato PDF
- * @param {Object} vacante - Objeto vacante
- */
 function descargarVacantePDF(vacante) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -737,13 +607,11 @@ function descargarVacantePDF(vacante) {
     const anchoTexto = 180;
     let y = 20;
 
-    // Título
     doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
     doc.text(vacante.Titulo || 'Sin título', margenIzq, y);
     y += 10;
 
-    // Servicio
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(139, 0, 0);
@@ -751,7 +619,6 @@ function descargarVacantePDF(vacante) {
     doc.setTextColor(0, 0, 0);
     y += 12;
 
-    // Empresa
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.text('Empresa:', margenIzq, y);
@@ -759,7 +626,6 @@ function descargarVacantePDF(vacante) {
     doc.text(vacante.Empresa || 'No especificada', margenIzq + 25, y);
     y += 12;
 
-    // Descripción
     if (vacante.Descripcion) {
         doc.setFont('helvetica', 'bold');
         doc.text('Descripción:', margenIzq, y);
@@ -770,7 +636,6 @@ function descargarVacantePDF(vacante) {
         y += lineas.length * 7 + 5;
     }
 
-    // Requisitos
     if (vacante.Requisitos) {
         doc.setFont('helvetica', 'bold');
         doc.text('Requisitos:', margenIzq, y);
@@ -781,7 +646,6 @@ function descargarVacantePDF(vacante) {
         y += lineas.length * 7 + 5;
     }
 
-    // Contacto
     if (vacante.Contacto_nombre || vacante.Contacto_email || vacante.Contacto_telefono) {
         doc.setFont('helvetica', 'bold');
         doc.text('Contacto:', margenIzq, y);
@@ -793,7 +657,6 @@ function descargarVacantePDF(vacante) {
         y += 5;
     }
 
-    // Fechas
     doc.setFont('helvetica', 'bold');
     doc.text('Fechas:', margenIzq, y);
     y += 7;
@@ -802,39 +665,22 @@ function descargarVacantePDF(vacante) {
     y += 7;
     doc.text(`Expira: ${formatearFecha(vacante.Fecha_expiracion)}`, margenIzq, y);
 
-    // Guardar
     const nombreArchivo = (vacante.Titulo || 'vacante').replace(/[^a-z0-9]/gi, '_');
     doc.save(`${nombreArchivo}.pdf`);
 }
 
 // ================= UTILIDADES =================
-/**
- * Normaliza la ruta del flyer desde la BD a URL accesible
- * Convierte /home/uploads/archivo.jpg → /uploads/archivo.jpg
- * @param {string} path - Ruta del servidor
- * @returns {string} - Ruta normalizada
- */
 function normalizarFlyer(path) {
     if (!path || path.trim() === '') return '';
     if (path.startsWith('http')) return path;
     return path.replace('/home/uploads/', '/uploads/');
 }
 
-/**
- * Detecta si una ruta corresponde a un archivo PDF
- * @param {string} path - Ruta del archivo
- * @returns {boolean} - True si es PDF
- */
 function esPDF(path) {
     if (!path) return false;
     return path.trim().toLowerCase().endsWith('.pdf');
 }
 
-/**
- * Formatea una fecha del formato YYYY-MM-DD a DD/MM/YYYY
- * @param {string} fechaStr - Fecha en formato YYYY-MM-DD
- * @returns {string} - Fecha formateada
- */
 function formatearFecha(fechaStr) {
     if (!fechaStr) return '—';
     const [anio, mes, dia] = fechaStr.split('-');
@@ -842,7 +688,6 @@ function formatearFecha(fechaStr) {
 }
 
 // ================= EXPOSICIÓN GLOBAL =================
-// Funciones llamadas desde HTML
 window.handleFiltrar = handleFiltrar;
 window.cerrarModal = cerrarModal;
 window.abrirModal = abrirModal;
