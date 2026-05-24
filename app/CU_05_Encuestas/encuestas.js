@@ -12,7 +12,7 @@ const idTipoUsuario = parseInt(getCookie('Id_tipo_usuario')) || 2;       // 2 = 
 const idCarreraUsuario = getCookie('Id_carrera') || "1";
 
 // Estado global del flujo de la interfaz
-let idAlumnoContexto = (idTipoUsuario === 2) ? (getCookie('Id_alumno') || "43") : null;
+let idAlumnoContexto = (idTipoUsuario === 2) ? (getCookie('Id_alumno')) : null;
 let encuestaActualId = null;
 
 document.addEventListener('DOMContentLoaded', () => {
