@@ -348,20 +348,23 @@ async function subirFoto(archivo) {
     try {
         const fd = new FormData();
         fd.append("foto_perfil", archivo);
-
         const r    = await fetch("guardar_foto.php", { method: "POST", body: fd });
-        const resp = await r.json();
-
+        const texto = await r.text(); // ← Leer como texto primero
+        let resp;
+        try {
+            resp = JSON.parse(texto);
+        } catch {
+            // El PHP respondió algo que no es JSON, pero puede que la foto sí se subió
+            lanzarToast("Advertencia: respuesta inesperada del servidor", "error");
+            return false;
+        }
         if (!resp.success) {
             lanzarToast(resp.error || "Error al subir la foto", "error");
             return false;
         }
-
         const preview = document.getElementById("foto_perfil_preview");
         if (preview && resp.url) preview.src = resp.url;
-
         return true;
-
     } catch {
         lanzarToast("Error al subir la foto", "error");
         return false;
