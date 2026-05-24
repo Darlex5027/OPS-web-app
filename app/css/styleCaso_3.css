@@ -16,7 +16,8 @@
     padding: 0;
 }
 
-html, body {
+html,
+body {
     height: 100%;
 }
 
@@ -107,31 +108,46 @@ body {
     color: white;
     height: 120px;
     padding: 20px 40px;
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
     position: relative;
+    gap: 20px;
 }
 
 .header h1 {
     font-weight: 600;
-    font-size: 40px;
+    font-size: 50px;
     text-align: center;
+    flex: 1;
 }
 
-/* ===== LOGO ===== */
+/* Espaciador para equilibrar el logo y centrar el título */
+.header-spacer {
+    min-width: 100px;
+    flex-shrink: 0;
+}
+
+.header::after {
+    content: '';
+    min-width: 100px;
+    flex-shrink: 0;
+}
+
+/* ===== LOGO - LADO IZQUIERDO ===== */
 .header-logo-right {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    order: -1;
 }
 
 .header-logo-right img {
     height: 100px;
+    width: auto;
+    object-fit: contain;
 }
-
-
 
 /* ===== BODY FLEX ===== */
 body {
@@ -167,6 +183,46 @@ body {
 
 .profile .btn.editar:active {
     transform: scale(0.95);
+}
+
+/* ===================================================== */
+/* ===== BOTÓN CAMBIAR FOTO ===== */
+/* ===================================================== */
+#btn_cambiar_foto {
+    background: linear-gradient(135deg, #982b2b 0%, #b23a3a 100%);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(152, 43, 43, 0.3);
+    width: 100%;
+    margin-top: 8px;
+}
+
+#btn_cambiar_foto:hover {
+    background: linear-gradient(135deg, #7d1f1f 0%, #982b2b 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(152, 43, 43, 0.4);
+}
+
+#btn_cambiar_foto:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(152, 43, 43, 0.3);
+}
+
+#btn_cambiar_foto:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#btn_cambiar_foto:focus {
+    outline: 2px solid rgba(152, 43, 43, 0.5);
+    outline-offset: 2px;
 }
 
 .btn-foto {
@@ -560,8 +616,8 @@ thead th {
 /* ===== PERFIL ADMIN - FORMULARIO ÚNICO ===== */
 /* ===================================================== */
 #perfil_administrador {
-    display: grid;
-    grid-template-columns: 180px 1fr;
+    display: flex;
+    grid-template-columns: center;
     gap: 10px 16px;
     align-items: center;
     background-color: #f9f9f9;
@@ -650,8 +706,15 @@ thead th {
 }
 
 @keyframes aparecer {
-    from { transform: scale(0.9); opacity: 0; }
-    to   { transform: scale(1);   opacity: 1; }
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .modal-contenido h2 {
@@ -827,8 +890,15 @@ thead th {
 }
 
 @keyframes aparecerModal {
-    from { opacity: 0; transform: translate(-50%, -60%) scale(0.85); }
-    to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%) scale(0.85);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
 }
 
 /* ===================================================== */
@@ -868,22 +938,44 @@ thead th {
     }
 
     .header {
-        height: auto;
-        padding: 15px;
+        height: 120px;
+        padding: 20px 40px;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .header-spacer {
+    min-width: 100px;
+    flex-shrink: 0;
+}
+
+.header::after {
+        display: none;
+    }
+
+    .header-logo-right {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 100px;
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        order: -1;
+        flex-shrink: 0;
+    }
+
+    .header-logo-right img {
+        height: 80px;
     }
 
     .header h1 {
         font-size: 24px;
-    }
-
-    .header-logo-right {
-        position: static;
-        transform: none;
-        text-align: center;
-    }
-
-    .header-logo-right img {
-        height: 50px;
+        margin: 0;
+        flex: 1;
     }
 
     table {
@@ -891,7 +983,7 @@ thead th {
     }
 
     .contenedor-alumno {
-        flex-direction: column; 
+        flex-direction: column;
     }
 
     .contenedor-alumno form {

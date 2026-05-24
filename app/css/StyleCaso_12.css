@@ -5,9 +5,9 @@
     --gris-bg: #f5f6fa;
     --gris-claro: #f0f0f0;
     --radio: 8px;
-    --rojo-principal: #a12d2d;
-    --rojo-oscuro: #7f2121;
-    --rojo-hover: #c54242;
+    --rojo-principal: #982b2b;
+    --rojo-oscuro: #7d1f1f;
+    --rojo-hover: #b23a3a;
     --azul: #1f6fb2;
     --azul-hover: #12538a;
     --ambar: #d88913;
@@ -100,7 +100,7 @@ body {
 }
 
 .menu button:hover {
-    background-color: #9E1B32;
+    background-color: #982b2b;
     color: white;
 }
 
@@ -160,13 +160,13 @@ body {
     padding: 0 26px;
     border: none;
     border-radius: 14px;
-    background: linear-gradient(135deg, var(--rojo-principal), var(--rojo-oscuro));
+    background: linear-gradient(135deg, #982b2b, #7d1f1f);
     color: #fff;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     transition: .25s ease;
-    box-shadow: 0 8px 18px rgba(161,45,45,.25), inset 0 1px 0 rgba(255,255,255,.15);
+    box-shadow: 0 8px 18px rgba(152,43,43,.25), inset 0 1px 0 rgba(255,255,255,.15);
     position: relative;
     overflow: hidden;
 }
@@ -174,8 +174,8 @@ body {
 #btnNuevaEncuesta:hover,
 #btnNuevaPregunta:hover {
     transform: translateY(-3px);
-    background: linear-gradient(135deg, var(--rojo-hover), var(--rojo-oscuro));
-    box-shadow: 0 12px 26px rgba(161,45,45,.35), inset 0 1px 0 rgba(255,255,255,.15);
+    background: linear-gradient(135deg, #b23a3a, #7d1f1f);
+    box-shadow: 0 12px 26px rgba(152,43,43,.35), inset 0 1px 0 rgba(255,255,255,.15);
 }
 
 #btnNuevaEncuesta:active,
@@ -185,57 +185,95 @@ body {
 
 /* ============================================================
    FORMULARIO GENERAL
-   (encuesta_form, encuesta_editar, pregunta_form, pregunta_editar)
    ============================================================ */
 
+/* Wrapper externo del form para agregar el header rojo */
 form {
-    margin: 30px 36px 40px;
+    margin: 30px auto 40px;
     background: #fff;
-    border-radius: 20px;
-    padding: 32px 36px;
+    border-radius: 16px;
+    padding: 0;
     box-shadow: var(--sombra);
-    border: 1px solid #efefef;
+    border: 1px solid #e8e8e8;
+    overflow: hidden;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px 28px;
+    gap: 0 28px;
     align-items: start;
     max-width: 860px;
+    width: calc(100% - 72px);
 }
 
-/* Etiquetas */
+/* Header rojo encima del formulario */
+form::before {
+    content: "Datos del formulario";
+    grid-column: 1 / -1;
+    display: block;
+    background: #982b2b;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 14px 24px;
+    letter-spacing: .3px;
+}
+
+/* Todos los hijos directos con padding lateral */
+form > * {
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+form > label {
+    padding-top: 14px;
+    padding-bottom: 0;
+}
+
+form > input,
+form > select {
+    margin-bottom: 4px;
+}
+
 form label {
     font-size: 11px;
     font-weight: 700;
-    color: var(--rojo-principal);
+    color: #982b2b;
     text-transform: uppercase;
     letter-spacing: .7px;
     margin-bottom: 3px;
     display: block;
     align-self: end;
+    border-left: 2px solid #982b2b;
+    padding-left: 10px !important;
+    margin-left: 24px;
 }
 
-/* Inputs de texto y fecha */
 form input[type="text"],
 form input[type="date"] {
-    width: 100%;
-    height: 44px;
-    border: 1.5px solid #e8e8e8;
-    border-radius: 10px;
-    background: #fafafa;
+    width: calc(100% - 48px);
+    margin-left: 24px;
+    margin-right: 24px;
+    height: 38px;
+    border: 0.5px solid #e8e8e8;
+    border-radius: 8px;
+    background: #f9f9f9;
     color: #333;
-    padding: 0 14px;
+    padding: 0 12px;
     font-size: 14px;
     font-family: 'Segoe UI', Arial, sans-serif;
     outline: none;
     transition: .2s ease;
-    box-shadow: 0 1px 4px rgba(0,0,0,.04);
+}
+
+form input[type="text"]::placeholder,
+form input[type="date"]::placeholder {
+    color: #888;
 }
 
 form input[type="text"]:focus,
 form input[type="date"]:focus {
-    border-color: var(--rojo-principal);
+    border-color: #982b2b;
     background: #fff;
-    box-shadow: 0 0 0 3px rgba(152,43,43,.12);
+    box-shadow: 0 0 0 3px rgba(152,43,43,.10);
 }
 
 form input[type="text"]:hover,
@@ -243,25 +281,25 @@ form input[type="date"]:hover {
     border-color: #c0a0a0;
 }
 
-/* Selects */
 form select {
-    width: 100%;
-    height: 44px;
-    border: 1.5px solid #e8e8e8;
-    border-radius: 10px;
-    background: #fafafa;
+    width: calc(100% - 48px);
+    margin-left: 24px;
+    margin-right: 24px;
+    height: 38px;
+    border: 0.5px solid #e8e8e8;
+    border-radius: 8px;
+    background: #f9f9f9;
     color: #333;
-    padding: 0 36px 0 14px;
+    padding: 0 36px 0 12px;
     font-size: 14px;
     font-family: 'Segoe UI', Arial, sans-serif;
     outline: none;
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23982b2b' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 14px center;
+    background-position: right 12px center;
     cursor: pointer;
     transition: .2s ease;
-    box-shadow: 0 1px 4px rgba(0,0,0,.04);
 }
 
 form select:hover {
@@ -269,29 +307,32 @@ form select:hover {
 }
 
 form select:focus {
-    border-color: var(--rojo-principal);
+    border-color: #982b2b;
     background-color: #fff;
-    box-shadow: 0 0 0 3px rgba(152,43,43,.12);
+    box-shadow: 0 0 0 3px rgba(152,43,43,.10);
 }
 
-/* Contenedor de servicio (div interno con label+select) */
+form select option {
+    background: #f9f9f9;
+    color: #333;
+}
+
 #elContenedorServicio {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px 28px;
-    align-items: start;
+    display: contents;
 }
 
 #elContenedorServicio label {
     grid-column: 1;
+    align-self: end;
 }
 
 #elContenedorServicio select {
-    grid-column: 1;
+    grid-column: 2;
+    width: calc(100% - 48px);
+    margin-left: 24px;
+    margin-right: 24px;
 }
 
-/* Span de número de pregunta */
 form span#outputOrden {
     display: inline-flex;
     align-items: center;
@@ -306,18 +347,18 @@ form span#outputOrden {
     width: 100%;
 }
 
-/* h4 vacío que aparece en pregunta_editar — ocultar */
 form h4:empty {
     display: none;
 }
 
-/* Div de periodos existentes (encuesta_editar) */
 #divPeriodos {
     grid-column: 1 / -1;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     padding: 10px 0 4px;
+    justify-content: center;
+    align-items: center;
 }
 
 #divPeriodos span,
@@ -326,7 +367,7 @@ form h4:empty {
     align-items: center;
     gap: 6px;
     background: #fdeaea;
-    color: #7f2121;
+    color: #7d1f1f;
     border: 1.5px solid #f1a0a0;
     border-radius: 30px;
     padding: 5px 14px;
@@ -334,29 +375,53 @@ form h4:empty {
     font-weight: 700;
 }
 
+#divPeriodos button,
+.periodo-tag button,
+.btn-eliminar-periodo {
+    height: 28px;
+    padding: 0 12px;
+    border: none;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .25s ease;
+    color: #fff;
+    background: linear-gradient(135deg, #982b2b, #7d1f1f);
+    box-shadow: 0 3px 8px rgba(152,43,43,.25);
+}
+
+#divPeriodos button:hover,
+.periodo-tag button:hover,
+.btn-eliminar-periodo:hover {
+    background: linear-gradient(135deg, #b23a3a, #7d1f1f);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(152,43,43,.35);
+}
+
 /* Botón "Guardar periodo" */
 form button[onclick="agregarPeriodo()"] {
-    grid-column: 1 / -1;
-    justify-self: start;
+    grid-column: 2;
+    justify-self: center;
     height: 40px;
     padding: 0 20px;
     border: none;
     border-radius: 12px;
-    background: linear-gradient(135deg, var(--rojo-principal), var(--rojo-oscuro));
+    background: linear-gradient(135deg, #982b2b, #7d1f1f);
     color: #fff;
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     transition: .25s ease;
-    box-shadow: 0 6px 14px rgba(161,45,45,.22);
-    position: relative;
-    overflow: hidden;
+    box-shadow: 0 6px 14px rgba(152,43,43,.22);
+    align-self: start;
+    margin-top: 4px;
 }
 
 form button[onclick="agregarPeriodo()"]:hover {
     transform: translateY(-2px);
-    background: linear-gradient(135deg, var(--rojo-hover), var(--rojo-oscuro));
-    box-shadow: 0 10px 20px rgba(161,45,45,.32);
+    background: linear-gradient(135deg, #b23a3a, #7d1f1f);
+    box-shadow: 0 10px 20px rgba(152,43,43,.30);
 }
 
 /* Botones Guardar y Cancelar */
@@ -364,42 +429,43 @@ form button[type="button"]:not([onclick="agregarPeriodo()"]) {
     height: 46px;
     padding: 0 26px;
     border: none;
-    border-radius: 14px;
+    border-radius: 10px;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     transition: .25s ease;
     position: relative;
     overflow: hidden;
+    margin-left: 24px;
+    margin-bottom: 24px;
 }
 
 /* Botón Guardar (primero) */
 form button[type="button"]:not([onclick="agregarPeriodo()"]):nth-last-of-type(2) {
-    background: linear-gradient(135deg, var(--rojo-principal), var(--rojo-oscuro));
+    background: linear-gradient(135deg, #982b2b, #7d1f1f);
     color: #fff;
-    box-shadow: 0 8px 18px rgba(161,45,45,.25);
+    box-shadow: 0 8px 18px rgba(152,43,43,.25);
 }
 
 form button[type="button"]:not([onclick="agregarPeriodo()"]):nth-last-of-type(2):hover {
     transform: translateY(-2px);
-    background: linear-gradient(135deg, var(--rojo-hover), var(--rojo-oscuro));
-    box-shadow: 0 12px 24px rgba(161,45,45,.35);
+    background: linear-gradient(135deg, #b23a3a, #7d1f1f);
+    box-shadow: 0 12px 24px rgba(152,43,43,.35);
 }
 
 /* Botón Cancelar (último) */
 form button[type="button"]:last-of-type {
-    background: var(--gris);
-    color: #555;
-    box-shadow: 0 4px 10px rgba(0,0,0,.07);
+    background: linear-gradient(135deg, #982b2b, #7d1f1f);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(152,43,43,.20);
 }
 
 form button[type="button"]:last-of-type:hover {
-    background: var(--gris-hover);
+    background: linear-gradient(135deg, #b23a3a, #7d1f1f);
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0,0,0,.11);
+    box-shadow: 0 8px 18px rgba(152,43,43,.35);
 }
 
-/* Efecto brillo en botones del form */
 form button[type="button"]::before {
     content: "";
     position: absolute;
@@ -407,7 +473,7 @@ form button[type="button"]::before {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: rgba(255,255,255,.18);
+    background: rgba(255,255,255,.1);
     transition: .5s ease;
 }
 
@@ -415,7 +481,6 @@ form button[type="button"]:hover::before {
     left: 100%;
 }
 
-/* Botones al final del form ocupan su propia fila */
 form > button[type="button"] {
     align-self: center;
 }
@@ -485,7 +550,6 @@ form > button[type="button"]:nth-last-of-type(-n+2) {
    TABLA
    ============================================================ */
 
-/* Neutraliza border="1" del atributo HTML */
 table[border] {
     border: none !important;
 }
@@ -512,7 +576,7 @@ table:hover {
 }
 
 table thead {
-    background: linear-gradient(135deg, var(--rojo-principal), var(--rojo-oscuro));
+    background: linear-gradient(135deg, #982b2b, #7d1f1f);
 }
 
 table thead th {
@@ -567,6 +631,9 @@ table tbody td {
     margin-top: 4px;
     position: relative;
     overflow: hidden;
+    background: linear-gradient(135deg, #982b2b, #7d1f1f);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(152,43,43,.20);
 }
 
 .btn-accion::after {
@@ -584,49 +651,28 @@ table tbody td {
     left: 140%;
 }
 
-.btn-editar {
-    background: #e7f1fb;
-    color: var(--azul);
-    border: 1.5px solid #8bbce9;
-    box-shadow: 0 4px 10px rgba(31,111,178,.12);
-}
-
-.btn-editar:hover {
-    background: var(--azul);
-    color: #fff;
-    border-color: var(--azul);
+.btn-accion:hover {
+    background: linear-gradient(135deg, #b23a3a, #7d1f1f);
     transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(31,111,178,.28);
+    box-shadow: 0 8px 18px rgba(152,43,43,.35);
 }
 
-.btn-ver {
-    background: #fff3df;
-    color: #8b5600;
-    border: 1.5px solid #efb04b;
-    box-shadow: 0 4px 10px rgba(216,137,19,.12);
-}
-
-.btn-ver:hover {
-    background: var(--ambar);
-    color: #fff;
-    border-color: var(--ambar);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(216,137,19,.28);
-}
-
+/* Mantener alias por compatibilidad pero con el mismo color */
+.btn-editar,
+.btn-ver,
 .btn-eliminar {
-    background: #fdecec;
-    color: #8a2020;
-    border: 1.5px solid #f1a0a0;
-    box-shadow: 0 4px 10px rgba(161,45,45,.10);
+    background: linear-gradient(135deg, #982b2b, #7d1f1f);
+    color: #fff;
+    border: none;
+    box-shadow: 0 4px 10px rgba(152,43,43,.20);
 }
 
+.btn-editar:hover,
+.btn-ver:hover,
 .btn-eliminar:hover {
-    background: var(--rojo-principal);
-    color: #fff;
-    border-color: var(--rojo-principal);
+    background: linear-gradient(135deg, #b23a3a, #7d1f1f);
     transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(161,45,45,.28);
+    box-shadow: 0 8px 18px rgba(152,43,43,.35);
 }
 
 /* ============================================================
@@ -751,9 +797,8 @@ table tbody td {
     }
 }
 
-
 /* ============================================================
-   BOTONES EN TABLA — todos iguales, rojo sólido
+   BOTONES EN TABLA — rojo #ff6b6b
    ============================================================ */
 
 table tbody td button {
@@ -772,13 +817,12 @@ table tbody td button {
     cursor: pointer;
     transition: .25s ease;
     color: #fff;
-    background: linear-gradient(135deg, var(--rojo-principal), var(--rojo-oscuro));
-    box-shadow: 0 8px 18px rgba(161,45,45,.28);
+    background: linear-gradient(135deg, #982b2b, #7d1f1f);
+    box-shadow: 0 8px 18px rgba(152,43,43,.28);
     position: relative;
     overflow: hidden;
 }
 
-/* Efecto brillo */
 table tbody td button::after {
     content: "";
     position: absolute;
@@ -796,15 +840,14 @@ table tbody td button:hover::after {
 
 table tbody td button:hover {
     transform: translateY(-2px);
-    background: linear-gradient(135deg, var(--rojo-hover), var(--rojo-oscuro));
-    box-shadow: 0 12px 24px rgba(161,45,45,.38);
+    background: linear-gradient(135deg, #b23a3a, #7d1f1f);
+    box-shadow: 0 12px 24px rgba(152,43,43,.38);
 }
 
 table tbody td button:active {
     transform: scale(.96);
 }
 
-/* Celda de acción centrada */
 table tbody td:last-child {
     text-align: center;
     vertical-align: middle;
