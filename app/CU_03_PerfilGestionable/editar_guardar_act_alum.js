@@ -46,6 +46,41 @@ const tipoUsuario = document.cookie.split("; ")
     ?.split("=")[1].trim();
 
 // =========================
+// VALIDACIÓN DE ACTIVIDADES
+// Solo exige campos completos si el estado es COMPLETADO
+// =========================
+function validarActividades() {
+    const estado = getVal("estado");
+
+    if (estado !== "COMPLETADO") return true;
+
+    const campos = [
+        { id: "estado",          label: "Estado" },
+        { id: "area",            label: "Área" },
+        { id: "programa",        label: "Programa" },
+        { id: "fecha_inicio",    label: "Fecha de inicio" },
+        { id: "fecha_fin",       label: "Fecha de fin" },
+        { id: "grupo_alumno",    label: "Semestre y Grupo" },
+        { id: "horario_entrada", label: "Horario de entrada" },
+        { id: "horario_salida",  label: "Horario de salida" },
+        { id: "id_empresa",      label: "Empresa" }
+    ];
+
+    const faltantes = campos.filter(c => {
+        const el = getEl(c.id);
+        return el && !getVal(c.id).trim();
+    });
+
+    if (faltantes.length > 0) {
+        getEl(faltantes[0].id)?.focus();
+        lanzarToast(`Campos incompletos: ${faltantes.map(c => c.label).join(", ")}`, "error");
+        return false;
+    }
+
+    return true;
+}
+
+// =========================
 // MODAL
 // =========================
 function abrirModal() {
@@ -120,7 +155,7 @@ async function cargarEmpresas() {
 function validarCompletado() {
     const camposVacios = CAMPOS_COMPLETADO.filter(campo => !getVal(campo.id).trim());
     if (camposVacios.length > 0) {
-        lanzarToast(`Faltan campos obligatorios: ${camposVacios.map(c => c.label).join(", ")}`, "error");
+        lanzarToast(`Campos incompletos: ${camposVacios.map(c => c.label).join(", ")}`, "error");
         return false;
     }
     return true;
@@ -134,7 +169,6 @@ function manejarCambioEstado(e, obtenerEstadoAnterior, guardarEstadoAnterior) {
     if (nuevoEstado === "COMPLETADO") {
         if (!validarCompletado()) {
             e.target.value = obtenerEstadoAnterior();
-            lanzarToast("Debes llenar todos los campos vacíos antes de marcar su Estado como COMPLETADO.", "error");
             return;
         }
         lanzarToast("Todos los campos están completos.", "exito");
@@ -172,18 +206,41 @@ window.habilitarActividades = async (habilitar) => {
 // GUARDAR ACTIVIDADES
 // =========================
 window.guardarActividades = () => {
+    if (!validarActividades()) return;
+
     const estado = getVal("estado");
     if (estado === "COMPLETADO" && !validarCompletado()) return;
 
+    // Validar y formatear grupo SOLO si tiene valor
+    const grupoInput = getVal("grupo_alumno").trim().toUpperCase();
+    const regexGrupo = /^[1-9][A-Z]$/;
+    if (grupoInput && !regexGrupo.test(grupoInput)) {
+        return lanzarToast("El semestre y grupo debe tener el formato: número (1-9) seguido de una letra. Ejemplo: 1A, 2B, 3C", "error");
+    }
+
+    const horarioEntrada = getVal("horario_entrada").trim();
+    const horarioSalida  = getVal("horario_salida").trim();
+
+    if ((horarioEntrada || horarioSalida) && (!horarioEntrada || !horarioSalida)) {
+        return lanzarToast("Debes completar ambos horarios o dejar ambos vacíos", "error");
+    }
+
+    let horarioCompleto = "";
+    if (horarioEntrada && horarioSalida) {
+        if (horarioSalida <= horarioEntrada) {
+            return lanzarToast("La hora de salida debe ser posterior a la de entrada", "error");
+        }
+        horarioCompleto = `${horarioEntrada} - ${horarioSalida}`;
+    }
+
     const datos = {
         estado,
-        area:             getVal("area"),
-        programa:         getVal("programa"),
-        fecha_inicio:     getVal("fecha_inicio"),
-        fecha_fin:        getVal("fecha_fin"),
-        grupo:            getVal("grupo_alumno"),
-        horario_entrada:  getVal("horario_entrada"),
-        horario_salida:   getVal("horario_salida")
+        area:         getVal("area"),
+        programa:     getVal("programa"),
+        fecha_inicio: getVal("fecha_inicio"),
+        fecha_fin:    getVal("fecha_fin"),
+        grupo:        grupoInput,
+        horario:      horarioCompleto
     };
 
     if (estado === "PENDIENTE") {
@@ -203,8 +260,18 @@ window.guardarActividades = () => {
         body: JSON.stringify(datos)
     })
         .then(r => r.json())
-        .then(r => lanzarToast(r.success ? "Actividades guardadas" : "Error al guardar", r.success ? "exito" : "error"))
-        .catch(e => console.error(e));
+        .then(r => {
+            if (r.success) {
+                lanzarToast("Actividades guardadas correctamente", "exito");
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                lanzarToast(r.error || "Error al guardar", "error");
+            }
+        })
+        .catch(e => {
+            console.error(e);
+            lanzarToast("Error de conexión al guardar", "error");
+        });
 };
 
 // =========================
@@ -241,61 +308,81 @@ function modoEditar(btnEditar, btnGuardar, btnCancelar) {
 }
 
 // =========================
-// GUARDAR
+// GUARDAR (PERFIL ALUMNO)
 // =========================
 function modoGuardar() {
-    const data = new FormData();
+    if (!validarActividades()) return;
 
-    const inputFoto = getEl("foto_perfil_input");
-    if (inputFoto?.files.length > 0) data.append("foto_perfil", inputFoto.files[0]);
-
-    if (tipoUsuario === "1" || tipoUsuario === "3") {
-        const correo   = getEl("correo_administrador")?.value.trim();
-        const telefono = getEl("telefono_administrador")?.value.trim();
-
-        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(correo))
-            return lanzarToast("Correo inválido", "error");
-        if (!/^\d{3}-\d{3}-\d{2}-\d{2}$/.test(telefono))
-            return lanzarToast("Formato: 246-470-78-88", "error");
-
-        data.append("correo",   correo);
-        data.append("telefono", telefono);
-
-    } else {
-        const fechaInicio = getEl("fecha_inicio")?.value;
-        const fechaFin    = getEl("fecha_fin")?.value;
-
-        if (fechaInicio && fechaFin && fechaFin <= fechaInicio)
-            return lanzarToast("La fecha fin debe ser posterior a la fecha inicio", "error");
-
-        data.append("grupo",        getEl("grupo_alumno")?.value);
-        data.append("horario",      `${getEl("horario_entrada")?.value}-${getEl("horario_salida")?.value}`);
-        data.append("area",         getEl("area")?.value);
-        data.append("programa",     getEl("programa")?.value);
-        data.append("estado",       getEl("estado")?.value);
-        data.append("fecha_inicio", fechaInicio);
-        data.append("fecha_fin",    fechaFin);
-
-        const selectEmpresa = getEl("id_empresa");
-        if (selectEmpresa?.value === "nueva") {
-            data.append("nueva_empresa", getEl("nueva_empresa")?.value || "");
-        } else {
-            data.append("id_empresa", selectEmpresa?.value || "");
-        }
+    // Validar y formatear grupo SOLO si tiene valor
+    const grupoInput = getVal("grupo_alumno").trim().toUpperCase();
+    const regexGrupo = /^[1-9][A-Z]$/;
+    if (grupoInput && !regexGrupo.test(grupoInput)) {
+        return lanzarToast("El semestre y grupo debe tener el formato: número (1-9) seguido de una letra. Ejemplo: 1A, 2B, 3C", "error");
     }
 
-    fetch("guardar_datos.php", { method: "POST", body: data })
+    const horarioEntrada = getVal("horario_entrada").trim();
+    const horarioSalida  = getVal("horario_salida").trim();
+
+    if ((horarioEntrada || horarioSalida) && (!horarioEntrada || !horarioSalida)) {
+        return lanzarToast("Debes completar ambos horarios", "error");
+    }
+
+    if (horarioEntrada && horarioSalida && horarioSalida <= horarioEntrada) {
+        return lanzarToast("La salida debe ser posterior a la entrada", "error");
+    }
+
+    const fechaInicio = getEl("fecha_inicio")?.value;
+    const fechaFin    = getEl("fecha_fin")?.value;
+    if (fechaInicio && fechaFin && fechaFin <= fechaInicio) {
+        return lanzarToast("La fecha fin debe ser posterior a la fecha inicio", "error");
+    }
+
+    const datos = {};
+
+    if (grupoInput) datos.grupo = grupoInput;
+
+    if (horarioEntrada && horarioSalida) {
+        datos.horario = `${horarioEntrada} - ${horarioSalida}`;
+    }
+
+    if (getVal("area").trim())     datos.area        = getVal("area").trim();
+    if (getVal("programa").trim()) datos.programa     = getVal("programa").trim();
+    if (getVal("estado"))          datos.estado       = getVal("estado");
+    if (fechaInicio)               datos.fecha_inicio = fechaInicio;
+    if (fechaFin)                  datos.fecha_fin    = fechaFin;
+
+    const selectEmpresa = getEl("id_empresa");
+    if (selectEmpresa?.value) datos.id_empresa = selectEmpresa.value;
+
+    fetch("guardar_datos.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(datos)
+    })
         .then(async r => {
             const texto = await r.text();
             try { return JSON.parse(texto); }
             catch { throw new Error("La respuesta no es JSON válido"); }
         })
         .then(resp => {
-            lanzarToast(
-                resp.success ? "Datos guardados correctamente" : resp.error || "Error al guardar",
-                resp.success ? "exito" : "error"
-            );
-            if (resp.success) setTimeout(() => location.reload(), 1500);
+            if (resp.success) {
+                lanzarToast("Datos guardados correctamente", "exito");
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                let mensajeUsuario = "Error al guardar los datos";
+                if (resp.error) {
+                    if (resp.error.includes("Grupo") || resp.error.includes("grupo")) {
+                        mensajeUsuario = "Por favor, completa el campo 'Semestre y Grupo'";
+                    } else if (resp.error.includes("Empresa") || resp.error.includes("empresa")) {
+                        mensajeUsuario = "Por favor, selecciona una empresa";
+                    } else if (resp.error.includes("constraint") || resp.error.includes("Integrity")) {
+                        mensajeUsuario = "Hay datos requeridos incompletos. Verifica todos los campos.";
+                    } else {
+                        mensajeUsuario = resp.error;
+                    }
+                }
+                lanzarToast(mensajeUsuario, "error");
+            }
         })
         .catch(() => lanzarToast("Error de conexión", "error"));
 }
@@ -303,7 +390,6 @@ function modoGuardar() {
 // =========================
 // BLOQUEO POR ESTADO COMPLETADO
 // =========================
-
 function estaCompletado() {
     return getVal("estado") === "COMPLETADO";
 }
@@ -311,13 +397,11 @@ function estaCompletado() {
 function bloquearSiCompletado() {
     if (!estaCompletado()) return false;
 
-    // Deshabilitar todos los campos
     setDis(PENDIENTE, true);
     setVis("id_empresa",      false);
     setVis("btnCrearEmpresa", false);
     setVis("empresa_texto",   true);
 
-    // Ocultar y deshabilitar los tres botones de acción
     const btnEditar   = document.querySelector(".btn.editar");
     const btnGuardar  = document.querySelector(".btn.guardar");
     const btnCancelar = document.querySelector(".btn.cancelar");
@@ -338,7 +422,18 @@ function intentarEditar(btnEditar, btnGuardar, btnCancelar) {
 }
 
 // =========================
-// DOMContentLoaded — solo inicialización
+// FORMATEO AUTOMÁTICO A MAYÚSCULAS
+// =========================
+function inicializarFormateoGrupo() {
+    const grupoEl = getEl("grupo_alumno");
+    if (!grupoEl) return;
+    grupoEl.addEventListener("input", (e) => {
+        e.target.value = e.target.value.toUpperCase();
+    });
+}
+
+// =========================
+// DOMContentLoaded
 // =========================
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -351,35 +446,44 @@ document.addEventListener("DOMContentLoaded", () => {
     btnGuardar.style.display  = "none";
     btnCancelar.style.display = "none";
 
-    // Bloquear UI si ya está COMPLETADO al cargar
     if (!bloquearSiCompletado()) {
         setVis("id_empresa",      false);
         setVis("btnCrearEmpresa", false);
     }
 
-    // Eventos de botones
-    btnEditar?.addEventListener("click",  () => intentarEditar(btnEditar, btnGuardar, btnCancelar));
-    btnGuardar?.addEventListener("click", () => modoGuardar());
+    inicializarFormateoGrupo();
+
+    btnEditar?.addEventListener("click",   () => intentarEditar(btnEditar, btnGuardar, btnCancelar));
+    btnGuardar?.addEventListener("click",  () => modoGuardar());
     btnCancelar?.addEventListener("click", () => location.reload());
 
-    // Modal
-    getEl("btnCrearEmpresa").addEventListener("click", abrirModal);
-    getEl("cerrarModalEmpresa").addEventListener("click", cerrarModal);
-    getEl("modalNuevaEmpresa").addEventListener("click", e => {
-        if (e.target === getEl("modalNuevaEmpresa")) cerrarModal();
-    });
+    const btnCrearEmpresa        = getEl("btnCrearEmpresa");
+    const cerrarModalBtn         = getEl("cerrarModalEmpresa");
+    const modalNuevaEmpresa      = getEl("modalNuevaEmpresa");
+    const guardarNuevaEmpresaBtn = getEl("guardarNuevaEmpresa");
 
-    // Crear empresa
-    getEl("guardarNuevaEmpresa").addEventListener("click", guardarNuevaEmpresa);
+    if (btnCrearEmpresa)        btnCrearEmpresa.addEventListener("click", abrirModal);
+    if (cerrarModalBtn)         cerrarModalBtn.addEventListener("click", cerrarModal);
+    if (modalNuevaEmpresa) {
+        modalNuevaEmpresa.addEventListener("click", e => {
+            if (e.target === modalNuevaEmpresa) cerrarModal();
+        });
+    }
+    if (guardarNuevaEmpresaBtn) guardarNuevaEmpresaBtn.addEventListener("click", guardarNuevaEmpresa);
 
-    // Cambio de estado
-    getEl("estado").addEventListener("focus",  () => { estadoAnterior = getVal("estado"); });
-    getEl("estado").addEventListener("change", e =>
-        manejarCambioEstado(e, () => estadoAnterior, v => { estadoAnterior = v; })
-    );
+    const estadoEl = getEl("estado");
+    if (estadoEl) {
+        estadoEl.addEventListener("focus",  () => { estadoAnterior = getVal("estado"); });
+        estadoEl.addEventListener("change", e =>
+            manejarCambioEstado(e, () => estadoAnterior, v => { estadoAnterior = v; })
+        );
+    }
 
-    // Validar fechas
-    getEl("fecha_inicio").addEventListener("change", e => {
-        getEl("fecha_fin").min = e.target.value;
-    });
+    const fechaInicioEl = getEl("fecha_inicio");
+    if (fechaInicioEl) {
+        fechaInicioEl.addEventListener("change", e => {
+            const fechaFinEl = getEl("fecha_fin");
+            if (fechaFinEl) fechaFinEl.min = e.target.value;
+        });
+    }
 });

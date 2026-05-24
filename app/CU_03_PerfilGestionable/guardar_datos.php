@@ -10,56 +10,102 @@ if (!isset($_COOKIE['Id_tipo_usuario']) || !isset($_COOKIE['Id_usuario'])) {
 }
 
 $tipo_usuario = trim($_COOKIE['Id_tipo_usuario']);
-$id_usuario = trim($_COOKIE['Id_usuario']);
-$datos = json_decode(file_get_contents("php://input"), true);
+$id_usuario   = trim($_COOKIE['Id_usuario']);
+$datos        = json_decode(file_get_contents("php://input"), true);
 
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 
+    // ========================= ADMIN / COORDINADOR =========================
     if ($tipo_usuario == "1" || $tipo_usuario == "3") {
 
-        $sql = "UPDATE Administradores SET Telefono = :telefono, Correo = :correo WHERE Id_usuario = :id_usuario";
+        $setCampos = [];
+        $params    = [':id_usuario' => $id_usuario];
 
-        $pdo->prepare($sql)->execute([
-            ':telefono' => $datos['telefono_administrador'],
-            ':correo' => $datos['correo_administrador'],
-            ':id_usuario' => $id_usuario
-        ]);
+        if (!empty($datos['telefono_administrador'])) {
+            $setCampos[]          = "Telefono = :telefono";
+            $params[':telefono']  = $datos['telefono_administrador'];
+        }
 
+        if (!empty($datos['correo_administrador'])) {
+            $setCampos[]        = "Correo = :correo";
+            $params[':correo']  = $datos['correo_administrador'];
+        }
+
+        if (!empty($setCampos)) {
+            $sql = "UPDATE Administradores SET " . implode(", ", $setCampos) . " WHERE Id_usuario = :id_usuario";
+            $pdo->prepare($sql)->execute($params);
+        }
+
+    // ========================= ALUMNO =========================
     } elseif ($tipo_usuario == "2") {
 
-        $sql = "UPDATE Alumnos SET Grupo = :grupo, Horario = :horario WHERE Id_usuario = :id_usuario";
+        // ✅ PASO 1: Actualizar tabla ALUMNOS (grupo, horario)
+        // Preparar campos dinámicos de la tabla Alumnos
+        $setCamposAlumnos = [];
+        $paramsAlumnos    = [':id_usuario' => $id_usuario];
 
-        $pdo->prepare($sql)->execute([
-            ':grupo' => $datos['grupo'],
-            ':horario' => $datos['horario'],
-            ':id_usuario' => $id_usuario
-        ]);
+        if (!empty($datos['grupo'])) {
+            $setCamposAlumnos[]        = "Grupo = :grupo";
+            $paramsAlumnos[':grupo']   = strtoupper($datos['grupo']);
+        }
+
+        if (!empty($datos['horario'])) {
+            $setCamposAlumnos[]         = "Horario = :horario";
+            $paramsAlumnos[':horario']  = $datos['horario'];
+        }
+
+        // ✅ Ejecutar UPDATE de Alumnos SI hay campos para actualizar
+        // ✅ CORRECCIÓN CRUCIAL: Usar Id_alumno en lugar de Id_usuario
+        if (!empty($setCamposAlumnos)) {
+            $sqlAlumnos = "UPDATE Alumnos SET " 
+                . implode(", ", $setCamposAlumnos) 
+                . " WHERE Id_alumno = (SELECT Id_alumno FROM Alumnos WHERE Id_usuario = :id_usuario)";
+            $pdo->prepare($sqlAlumnos)->execute($paramsAlumnos);
+        }
+
+        // ✅ PASO 2: Actualizar tabla ACTIVIDADES_ALUMNOS (estado, area, programa, fechas, empresa)
+        // Preparar campos dinámicos de la tabla Actividades_Alumnos
+        $setCamposActividades = [];
+        $paramsActividades    = [':id_usuario' => $id_usuario];
 
         if (!empty($datos['estado'])) {
-            $sqlAct = "UPDATE Actividades_Alumnos SET"
-                . " Area         = :area,"
-                . " Programa     = :programa,"
-                . " Estado       = :estado,"
-                . " Fecha_inicio = :fecha_inicio,"
-                . " Fecha_fin    = :fecha_fin"
-                . (!empty($datos['id_empresa']) ? ", Id_empresa = :id_empresa" : "")
+            $setCamposActividades[]        = "Estado = :estado";
+            $paramsActividades[':estado']  = $datos['estado'];
+        }
+
+        if (!empty($datos['area'])) {
+            $setCamposActividades[]      = "Area = :area";
+            $paramsActividades[':area']  = $datos['area'];
+        }
+
+        if (!empty($datos['programa'])) {
+            $setCamposActividades[]          = "Programa = :programa";
+            $paramsActividades[':programa']  = $datos['programa'];
+        }
+
+        if (!empty($datos['fecha_inicio'])) {
+            $setCamposActividades[]              = "Fecha_inicio = :fecha_inicio";
+            $paramsActividades[':fecha_inicio']  = $datos['fecha_inicio'];
+        }
+
+        if (!empty($datos['fecha_fin'])) {
+            $setCamposActividades[]           = "Fecha_fin = :fecha_fin";
+            $paramsActividades[':fecha_fin']  = $datos['fecha_fin'];
+        }
+
+        if (!empty($datos['id_empresa'])) {
+            $setCamposActividades[]              = "Id_empresa = :id_empresa";
+            $paramsActividades[':id_empresa']    = $datos['id_empresa'];
+        }
+
+        // ✅ Ejecutar UPDATE de Actividades_Alumnos SI hay campos para actualizar
+        if (!empty($setCamposActividades)) {
+            $sqlActividades = "UPDATE Actividades_Alumnos SET "
+                . implode(", ", $setCamposActividades)
                 . " WHERE Id_alumno = (SELECT Id_alumno FROM Alumnos WHERE Id_usuario = :id_usuario)";
 
-            $params = [
-                ':area' => $datos['area'],
-                ':programa' => $datos['programa'],
-                ':estado' => $datos['estado'],
-                ':fecha_inicio' => $datos['fecha_inicio'],
-                ':fecha_fin' => $datos['fecha_fin'],
-                ':id_usuario' => $id_usuario
-            ];
-
-            if (!empty($datos['id_empresa'])) {
-                $params[':id_empresa'] = $datos['id_empresa'];
-            }
-
-            $pdo->prepare($sqlAct)->execute($params);
+            $pdo->prepare($sqlActividades)->execute($paramsActividades);
         }
     }
 
