@@ -3,8 +3,7 @@
  * Archivo     : obtener_alumnos_pendientes.php
  * Módulo      : CU_05_ResponderEncuestas
  * Descripción : Obtiene alumnos con encuestas pendientes para COORDINADOR/ADMIN (Contestador=1)
- * 
- * Según documento:
+ * * Según documento:
  * - Obtener todos los alumnos con Id_carrera = Id_carrera del usuario en sesión
  * - Para cada alumno, calcular encuestas pendientes con Encuesta.Contestador = 1
  * - Mostrar únicamente alumnos con al menos una encuesta pendiente
@@ -27,11 +26,13 @@ if (!$id_carrera) {
 
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // Obtener todos los alumnos de la carrera
-    $sqlAlumnos = "SELECT Id_alumno, CONCAT(Nombre, ' ', Apellido_Paterno, ' ', Apellido_Materno) AS NombreCompleto 
+    // CORRECCIÓN 1: Ajuste de nombres de columnas según estructura real (Apellido_P, Apellido_M)
+    $sqlAlumnos = "SELECT Id_alumno, CONCAT(Nombre, ' ', Apellido_P, ' ', IFNULL(Apellido_M, '')) AS NombreCompleto 
                    FROM Alumnos 
-                   WHERE Id_carrera = :id_carrera";
+                   WHERE Id_carrera = :id_carrera 
+                     AND Activo = 1";
     
     $stmtAlumnos = $pdo->prepare($sqlAlumnos);
     $stmtAlumnos->execute(['id_carrera' => $id_carrera]);
@@ -40,18 +41,18 @@ try {
     $resultado = [];
     
     foreach ($alumnos as $alumno) {
-        // Buscar encuestas pendientes con Contestador = 1
+        // CORRECCIÓN 2, 3 y 4: Encuestas (plural), Actividades (tabla servicios), periodo_tipo/año (minúsculas)
         $sqlEncuestas = "SELECT DISTINCT 
-                            e.Id_encuesta, 
-                            e.Nombre, 
-                            e.Descripcion,
-                            e.Id_servicio,
+                            e.Id_encuesta AS Id_encuesta, 
+                            e.Nombre AS Nombre, 
+                            e.Descripcion AS Descripcion,
+                            e.Id_servicio AS Id_servicio,
                             s.Servicio AS NombreServicio
-                        FROM Encuesta e
+                        FROM Encuestas e
                         INNER JOIN Periodo_Encuesta pe ON e.Id_encuesta = pe.Id_encuesta
-                        INNER JOIN Actividades_Alumnos aa ON pe.Periodo_tipo = aa.Periodo_tipo 
-                                                          AND pe.Periodo_año = aa.Periodo_año
-                        INNER JOIN Servicios s ON e.Id_servicio = s.Id_servicio
+                        INNER JOIN Actividades_Alumnos aa ON pe.Periodo_tipo = aa.periodo_tipo 
+                                                          AND pe.Periodo_año = aa.periodo_año
+                        INNER JOIN Actividades s ON e.Id_servicio = s.Id_servicio
                         WHERE e.Contestador = 1 
                           AND e.Activo = 1
                           AND aa.Id_alumno = :id_alumno
@@ -74,11 +75,11 @@ try {
         $encuestasPendientes = $stmtEncuestas->fetchAll(PDO::FETCH_ASSOC);
         $totalPendientes = count($encuestasPendientes);
         
-        // Solo alumnos con al menos una encuesta pendiente
+        // Se cumple la regla de negocio: "Mostrar únicamente a los alumnos que tengan al menos una encuesta pendiente"
         if ($totalPendientes > 0) {
             $resultado[] = [
-                "Id_alumno" => $alumno['Id_alumno'],
-                "NombreCompleto" => $alumno['NombreCompleto'],
+                "Id_alumno" => (int)$alumno['Id_alumno'],
+                "NombreCompleto" => trim($alumno['NombreCompleto']),
                 "total_pendientes" => $totalPendientes,
                 "encuestas" => $encuestasPendientes
             ];
@@ -89,7 +90,7 @@ try {
         "success" => true,
         "alumnos" => $resultado,
         "total_alumnos_con_pendientes" => count($resultado)
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
     
 } catch (PDOException $e) {
     echo json_encode([

@@ -25,7 +25,7 @@ try {
     
     $sql = "SELECT Id_pregunta, Pregunta, Tipo_respuesta, Obligatoria, Orden, Seccion 
             FROM Preguntas 
-            WHERE Id_encuesta = :id_encuesta 
+            WHERE Id_encuesta = :id_encuesta AND Activo = 1
             ORDER BY Orden ASC";
     
     $stmt = $pdo->prepare($sql);

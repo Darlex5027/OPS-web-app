@@ -2,7 +2,7 @@
 /**
  * Archivo     : procesar_encuesta.php
  * Módulo      : CU_05_ResponderEncuestas
- * Descripción : Guarda las respuestas de una encuesta en la base de datos
+ * Descripción : Guarda las respuestas de una encuesta en la base de datos con bloqueo de duplicados y mapeo de servicio
  */
 
 require_once("../php/db.php");
@@ -30,19 +30,57 @@ if (!$id_alumno || !$id_encuesta || empty($respuestas)) {
 
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
     $pdo->beginTransaction();
     
-    $sql = "INSERT INTO Respuestas (Id_encuesta, Id_alumno, Id_pregunta, Respuesta, Fecha_respuesta) 
-            VALUES (:id_encuesta, :id_alumno, :id_pregunta, :respuesta, NOW())";
+    // BLINDAJE CRÍTICO 1: Verificar si el alumno ya respondió a esta encuesta previamente
+    $sqlCheck = "SELECT 1 FROM Respuestas WHERE Id_encuesta = :id_encuesta AND Id_alumno = :id_alumno LIMIT 1";
+    $stmtCheck = $pdo->prepare($sqlCheck);
+    $stmtCheck->execute([
+        'id_encuesta' => $id_encuesta,
+        'id_alumno'   => $id_alumno
+    ]);
     
-    $stmt = $pdo->prepare($sql);
+    if ($stmtCheck->fetch()) {
+        $pdo->rollBack();
+        echo json_encode([
+            "success" => false,
+            "message" => "Esta encuesta ya ha sido respondida previamente por el alumno."
+        ]);
+        exit;
+    }
+
+    // CORRECCIÓN NOTA ADICIONAL: Obtener el Id_servicio directamente de la encuesta para cumplir la regla relacional
+    $sqlServicio = "SELECT Id_servicio FROM Encuestas WHERE Id_encuesta = :id_encuesta LIMIT 1";
+    $stmtServicio = $pdo->prepare($sqlServicio);
+    $stmtServicio->execute(['id_encuesta' => $id_encuesta]);
+    $encuestaData = $stmtServicio->fetch(PDO::FETCH_ASSOC);
+
+    if (!$encuestaData) {
+        $pdo->rollBack();
+        echo json_encode(["success" => false, "message" => "La encuesta especificada no existe."]);
+        exit;
+    }
+    $id_servicio = $encuestaData['Id_servicio'];
+    
+    // Preparación del Insert para el bucle incluyendo el Id_servicio recuperado
+    $sqlInsert = "INSERT INTO Respuestas (Id_encuesta, Id_alumno, Id_servicio, Id_pregunta, Respuesta, Fecha_respuesta) 
+                  VALUES (:id_encuesta, :id_alumno, :id_servicio, :id_pregunta, :respuesta, NOW())";
+    $stmtInsert = $pdo->prepare($sqlInsert);
     
     foreach ($respuestas as $resp) {
-        $stmt->execute([
+        $textoRespuesta = isset($resp['Respuesta']) ? trim($resp['Respuesta']) : "No contestó";
+        if ($textoRespuesta === "") {
+            $textoRespuesta = "No contestó";
+        }
+
+        $stmtInsert->execute([
             'id_encuesta' => $id_encuesta,
-            'id_alumno' => $id_alumno,
+            'id_alumno'   => $id_alumno,
+            'id_servicio' => $id_servicio,
             'id_pregunta' => $resp['Id_pregunta'],
-            'respuesta' => $resp['Respuesta']
+            'respuesta'   => $textoRespuesta
         ]);
     }
     
@@ -54,10 +92,12 @@ try {
     ]);
     
 } catch (PDOException $e) {
-    $pdo->rollBack();
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
     echo json_encode([
         "success" => false, 
-        "message" => "Error al guardar: " . $e->getMessage()
+        "message" => "Error al guardar en la base de datos: " . $e->getMessage()
     ]);
 }
 ?>
