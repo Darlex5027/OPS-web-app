@@ -1,3 +1,13 @@
+// ================================
+// Archivo : editar_guardar_act_alum.js
+// Autor   : Viridiana Tonix Zarate
+// Fecha   : 2026-05-24
+// Desc.   : Gestiona la edición y
+//           guardado de actividades
+//           del alumno (empresa,
+//           área, programa, estado, etc).
+// ================================
+
 import { lanzarToast } from '../js/lanzar_toast.js';
 
 // =========================
@@ -41,7 +51,7 @@ const regexEmpresa = {
     sitio_web:    /^https?:\/\/(www\.)?[a-zA-Z0-9\-]+(\.[a-zA-Z]{2,})+([\/\w\-._~:?#[\]@!$&'()*+,;=]*)?$/
 };
 
-const tipoUsuario = document.cookie.split("; ")
+const cookieTipoUsuario = document.cookie.split("; ")
     .find(r => r.startsWith("Id_tipo_usuario="))
     ?.split("=")[1].trim();
 
@@ -84,11 +94,11 @@ function validarActividades() {
 // MODAL
 // =========================
 function abrirModal() {
-    getEl("modalNuevaEmpresa").style.display = "flex";
+    getEl("modal_nueva_empresa").style.display = "flex";
 }
 
 function cerrarModal() {
-    getEl("modalNuevaEmpresa").style.display = "none";
+    getEl("modal_nueva_empresa").style.display = "none";
     ["nueva_empresa_nombre", "nueva_empresa_descripcion", "nueva_empresa_razon_social",
         "nueva_empresa_rfc", "nueva_empresa_direccion", "nueva_empresa_web"]
         .forEach(id => { getEl(id).value = ""; });
@@ -184,9 +194,9 @@ window.habilitarActividades = async (habilitar) => {
 
     if (estado === "COMPLETADO") {
         setDis(PENDIENTE, true);
-        setVis("id_empresa",      false);
-        setVis("btnCrearEmpresa", false);
-        setVis("empresa_texto",   true);
+        setVis("id_empresa",        false);
+        setVis("btn_crear_empresa", false);
+        setVis("empresa_texto",     true);
         if (habilitar) lanzarToast("Este registro está completado y no puede editarse.", "error");
         return;
     }
@@ -194,11 +204,11 @@ window.habilitarActividades = async (habilitar) => {
     setDis(PENDIENTE, true);
     if (habilitar) setDis(POR_ESTADO[estado] ?? [], false);
 
-    setVis("id_empresa",      habilitar);
-    setVis("btnCrearEmpresa", habilitar && estado === "PENDIENTE");
-    setVis("empresa_texto",   !habilitar);
+    setVis("id_empresa",        habilitar);
+    setVis("btn_crear_empresa", habilitar && estado === "PENDIENTE");
+    setVis("empresa_texto",     !habilitar);
 
-    if (habilitar && estado === "EN_CURSO") setDis(["id_empresa", "btnCrearEmpresa"], true);
+    if (habilitar && estado === "EN_CURSO") setDis(["id_empresa", "btn_crear_empresa"], true);
     if (habilitar) await cargarEmpresas();
 };
 
@@ -285,7 +295,7 @@ function modoEditar(btnEditar, btnGuardar, btnCancelar) {
     const inputFoto = getEl("foto_perfil_input");
     if (inputFoto) inputFoto.disabled = false;
 
-    if (tipoUsuario === "1" || tipoUsuario === "3") {
+    if (cookieTipoUsuario === "1" || cookieTipoUsuario === "3") {
         ["telefono_administrador", "correo_administrador"].forEach(id => {
             const el = getEl(id);
             if (el) { el.disabled = false; el.readOnly = false; }
@@ -390,16 +400,16 @@ function modoGuardar() {
 // =========================
 // BLOQUEO POR ESTADO COMPLETADO
 // =========================
-function estaCompletado() {
+function isCompletado() {
     return getVal("estado") === "COMPLETADO";
 }
 
 function bloquearSiCompletado() {
-    if (!estaCompletado()) return false;
+    if (!isCompletado()) return false;
 
     setDis(PENDIENTE, true);
     setVis("id_empresa",      false);
-    setVis("btnCrearEmpresa", false);
+    setVis("modal_nueva_empresa", false);
     setVis("empresa_texto",   true);
 
     const btnEditar   = document.querySelector(".btn.editar");
@@ -414,7 +424,7 @@ function bloquearSiCompletado() {
 }
 
 function intentarEditar(btnEditar, btnGuardar, btnCancelar) {
-    if (estaCompletado()) {
+    if (isCompletado()) {
         lanzarToast("Este registro está completado y no puede editarse.", "error");
         return;
     }
@@ -447,8 +457,8 @@ document.addEventListener("DOMContentLoaded", () => {
     btnCancelar.style.display = "none";
 
     if (!bloquearSiCompletado()) {
-        setVis("id_empresa",      false);
-        setVis("btnCrearEmpresa", false);
+        setVis("id_empresa",        false);
+        setVis("btn_crear_empresa", false);
     }
 
     inicializarFormateoGrupo();
@@ -457,10 +467,10 @@ document.addEventListener("DOMContentLoaded", () => {
     btnGuardar?.addEventListener("click",  () => modoGuardar());
     btnCancelar?.addEventListener("click", () => location.reload());
 
-    const btnCrearEmpresa        = getEl("btnCrearEmpresa");
-    const cerrarModalBtn         = getEl("cerrarModalEmpresa");
-    const modalNuevaEmpresa      = getEl("modalNuevaEmpresa");
-    const guardarNuevaEmpresaBtn = getEl("guardarNuevaEmpresa");
+    const btnCrearEmpresa        = getEl("btn_crear_empresa");
+    const cerrarModalBtn         = getEl("cerrar_modal_empresa");
+    const modalNuevaEmpresa      = getEl("modal_nueva_empresa");
+    const guardarNuevaEmpresaBtn = getEl("guardar_nueva_empresa");
 
     if (btnCrearEmpresa)        btnCrearEmpresa.addEventListener("click", abrirModal);
     if (cerrarModalBtn)         cerrarModalBtn.addEventListener("click", cerrarModal);

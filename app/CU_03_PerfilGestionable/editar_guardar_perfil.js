@@ -1,3 +1,12 @@
+// ================================
+// Archivo : editar_guardar_perfil.js
+// Autor   : Viridiana Tonix Zarate
+// Fecha   : 2026-05-24
+// Desc.   : Gestiona la edición y
+//           guardado del perfil
+//           del usuario (datos
+//           personales y foto de perfil).
+// ================================
 import { lanzarToast } from '../js/lanzar_toast.js';
 
 // =========================

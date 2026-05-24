@@ -1,10 +1,24 @@
 <?php
+/**
+ * ================================
+ * Archivo : obtener_datos.php
+ * Autor   : Viridiana Tonix Zarate 
+ * Fecha   : 2026-05-24
+ * Desc.   : Obtiene los datos del
+ *           usuario logueado desde
+ *           las cookies de sesión.
+ * ================================
+ */
+
 require_once '../php/db.php';
 
 header('Content-Type: application/json');
 if (!isset($_COOKIE['Id_tipo_usuario']) || !isset($_COOKIE['Id_usuario'])) {
     http_response_code(401);
-    echo json_encode(['error' => 'No hay sesión activa']);
+    echo json_encode([
+        'success' => false,
+        'error'   => 'No hay sesión activa'
+    ]);
     exit;
 }
 
@@ -40,9 +54,9 @@ try {
             . " WHERE a.Id_usuario = ?";
     }
 
-    $consulta = $pdo->prepare($sql);
-    $consulta->execute([$id_usuario]);
-    $datos = $consulta->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$id_usuario]);
+    $datos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $campos_fecha = ['Fecha_registro', 'Fecha_registro_act', 'Fecha_inicio', 'Fecha_fin', 'Fecha_modificacion'];
     foreach ($datos as &$fila) {
@@ -57,6 +71,9 @@ try {
 
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['error' => $e->getMessage()]);
+    echo json_encode([
+        'success' => false,
+        'error'   => $e->getMessage()
+    ]);
 }
 ?>

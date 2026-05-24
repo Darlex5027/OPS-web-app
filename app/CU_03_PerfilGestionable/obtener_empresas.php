@@ -1,4 +1,14 @@
 <?php
+/**
+ * ================================
+ * Archivo : obtener_empresas.php
+ * Autor   : Viridiana Tonix Zarate
+ * Fecha   : 2026-05-24
+ * Desc.   : Obtiene la lista de
+ *           empresas disponibles
+ *           para asignar a alumno.
+ * ================================
+ */
 require_once '../php/db.php';
 
 header('Content-Type: application/json');

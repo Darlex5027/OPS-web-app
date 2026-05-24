@@ -1,4 +1,15 @@
+
 <?php
+/**
+ * ================================
+ * Archivo : crear_empresa.php
+ * Autor   : Viridiana Tonix Zarate
+ * Fecha   : 2026-05-24
+ * Desc.   : Procesa la creación
+ *           de nuevas empresas en
+ *           la base de datos.
+ * ================================
+ */
 require_once '../php/db.php';
 
 header('Content-Type: application/json');

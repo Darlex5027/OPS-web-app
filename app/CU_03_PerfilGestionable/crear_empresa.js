@@ -1,3 +1,11 @@
+// ================================
+// Archivo : crear_empresa.js
+// Autor   : Viridiana Tonix Zarate
+// Fecha   : 2026-05-24
+// Desc.   : Gestiona la creación
+//           de nuevas empresas en
+//           el modal del perfil.
+// ================================
 import { lanzarToast } from '../js/lanzar_toast.js';
 
 // =========================
