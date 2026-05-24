@@ -99,10 +99,6 @@ listaDiv.innerHTML = encuestas.map(e => {
 // ==========================================
 async function cargarAlumnosCoordinador() {
     try {
-        // El backend debe:
-        // 1. Obtener alumnos con Id_carrera = sesión
-        // 2. Para cada alumno, calcular encuestas pendientes con Contestador = 1
-        // 3. Aplicar mismos filtros: período, estado actividad, sin respuesta previa
         const resp = await fetch(`obtener_alumnos_pendientes.php?carrera=${idCarreraUsuario}`);
         const data = await resp.json();
         const alumnos = data.alumnos || [];
@@ -110,8 +106,6 @@ async function cargarAlumnosCoordinador() {
         const listaDiv = document.getElementById('lista-alumnos-pendientes');
         const estadoVacio = document.getElementById('estado-vacio-coordinador');
 
-        // El backend ya retorna SOLO alumnos con pendientes según documento
-        // "Mostrar únicamente a los alumnos que tengan al menos una encuesta pendiente"
         const alumnosConPendientes = alumnos.filter(a => a.total_pendientes > 0);
 
         if (alumnosConPendientes.length === 0) {
@@ -120,28 +114,30 @@ async function cargarAlumnosCoordinador() {
         } else {
             estadoVacio.style.display = 'none';
 
-            // Según documento por cada alumno: Mostrar nombre completo, contador y botón desplegable
+            // Inserción estética del expediente en la tarjeta del alumno, y la empresa en la subcard de la encuesta
             listaDiv.innerHTML = alumnosConPendientes.map(a => `
                 <div class="tarjeta-alumno">
-                    <div class="info-alumno">
-                        <span class="alumno-nombre"><strong>${a.NombreCompleto}</strong></span>
-                        <span class="alumno-contador">Encuestas pendientes: <b>${a.total_pendientes}</b></span>
-                        <button type="button" class="btn-toggle-acordeon" onclick="toggleAcordeonAlumno(${a.Id_alumno})">
+                    <div class="info-alumno" style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px;">
+                        <span class="alumno-nombre" style="font-size: 1.1rem;">
+                            <strong>${a.NombreCompleto}</strong> 
+                            <small style="color: #666; margin-left: 8px;">(Exp: ${a.No_Expediente})</small>
+                        </span>
+                        <span class="alumno-contador">Encuestas pendientes: <b style="color: #dc3545;">${a.total_pendientes}</b></span>
+                        <button type="button" class="btn-toggle-acordeon" style="align-self: flex-start; margin-top: 5px;" onclick="toggleAcordeonAlumno(${a.Id_alumno})">
                             Ver encuestas pendientes
                         </button>
                     </div>
-                    <div id="acordeon-${a.Id_alumno}" class="lista-encuestas-desplegable" style="display: none;">
+                    <div id="acordeon-${a.Id_alumno}" class="lista-encuestas-desplegable" style="display: none; padding-left: 15px; border-left: 2px solid #ccc; margin-top: 10px;">
                         ${a.encuestas.map(e => {
-                            // CORRECCIÓN CRÍTICA: Sanitización de comillas para evitar la ruptura del onclick en el DOM
                             const nombreSanitizado = e.Nombre.replace(/'/g, "\\'");
                             const descSanitizada = e.Descripcion.replace(/'/g, "\\'");
 
-                            // Renderizado estructurado con el contexto exacto del alumno del bucle (a.Id_alumno)
                             return `
-                                <div class="subcard-encuesta">
-                                    <h4>Servicio: ${e.NombreServicio || e.servicio_nombre || 'N/A'}</h4>
-                                    <h5>${e.Nombre}</h5>
-                                    <p>${e.Descripcion}</p>
+                                <div class="subcard-encuesta" style="background-color: #f9f9f9; padding: 12px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #e0e0e0;">
+                                    <h4 style="margin: 0 0 4px 0; color: #333;">Servicio: ${e.NombreServicio || 'N/A'}</h4>
+                                    <h6 style="margin: 0 0 8px 0; color: #0066cc; font-weight: bold;">Empresa: ${e.NombreEmpresa}</h6>
+                                    <h5 style="margin: 0 0 6px 0;">${e.Nombre}</h5>
+                                    <p style="margin: 0 0 10px 0; font-size: 0.9rem; color: #555;">${e.Descripcion}</p>
                                     <button type="button" class="btn-responder-admin" onclick="abrirEncuesta(${e.Id_encuesta}, '${nombreSanitizado}', '${descSanitizada}', ${a.Id_alumno})">
                                         Responder encuesta
                                     </button>
