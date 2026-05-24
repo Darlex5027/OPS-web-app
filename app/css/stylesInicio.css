@@ -176,6 +176,31 @@ main > form,
     flex-direction: column;
     gap: 0;
 }
+/* ===================================================== */
+/* ===== TOAST ===== */
+/* ===================================================== */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: 0.4s;
+}
+
+.toast.exito {
+    background-color: #2ecc71;
+}
+
+.toast.error {
+    background-color: #e74c3c;
+}
+
+.toast.oculto {
+    opacity: 0;
+    transform: translateY(20px);
+}
 
 /* ===================================================== */
 /* ===== SECCIONES DEL FORMULARIO ===== */

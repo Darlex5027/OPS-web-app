@@ -832,7 +832,7 @@ table tbody td button::after {
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
     transition: left .5s ease;
-}
+} 
 
 table tbody td button:hover::after {
     left: 140%;
