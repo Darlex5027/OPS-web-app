@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -11,10 +12,14 @@
 <body>
     <div class="sidebar">
         <div class="profile">
+            <!-- ✅ Foto de perfil vive aquí, en el sidebar -->
             <img id="foto_perfil_preview" src="../Imagenes/prueba.png" alt="perfil">
+            <input type="file" id="foto_perfil_input" accept="image/jpeg,image/png,image/webp" hidden disabled>
+            <button id="btn_cambiar_foto" class="oculto" type="button">📷 Cambiar foto</button>
         </div>
         <div class="menu"></div>
     </div>
+
     <div class="main">
         <div class="header">
             <div></div>
@@ -23,6 +28,7 @@
                 <img src="../Imagenes/Logo.png" alt="Logo OPS">
             </div>
         </div>
+
         <div class="table">
             <!-- ================= ADMIN ================= -->
             <form id="perfil_administrador">
@@ -43,6 +49,7 @@
                 <label for="fecha_registro_administrador">Fecha Registro</label>
                 <input type="date" id="fecha_registro_administrador" disabled readonly>
             </form>
+
             <!-- ================= ALUMNO ================= -->
             <div class="contenedor-alumno">
                 <!-- PERFIL -->
@@ -57,19 +64,19 @@
                     <label for="id_carrera_alumno">Carrera</label>
                     <input type="text" id="id_carrera_alumno" disabled readonly>
                     <label for="grupo_alumno">Semestre y Grupo</label>
-                    <input type="text" id="grupo_alumno" maxlength="2"
-                        title="Formato válido: 1A, 2B, 3C..." disabled >
+                    <input type="text" id="grupo_alumno" maxlength="2" title="Formato válido: 1A, 2B, 3C..." disabled>
                     <label for="no_expediente_alumno">No. Expediente</label>
                     <input type="text" id="no_expediente_alumno" disabled readonly>
                     <label>Horario</label>
                     <div class="horario-container">
-                        <input type="time" id="horario_entrada" disabled>
+                        <input type="time" id="horario_entrada">
                         <span>-</span>
-                        <input type="time" id="horario_salida" disabled>
+                        <input type="time" id="horario_salida">
                     </div>
                     <label for="fecha_registro_alumno">Fecha Registro</label>
                     <input type="date" id="fecha_registro_alumno" disabled readonly>
                 </form>
+
                 <!-- ACTIVIDADES -->
                 <form id="actividades_alumnos">
                     <h3>Actividades</h3>
@@ -107,15 +114,18 @@
                 </form>
             </div>
         </div>
+
         <!-- BOTONES -->
         <div class="form-actions">
             <button type="button" class="btn editar">Editar</button>
             <button type="button" class="btn guardar">Guardar</button>
             <button type="button" class="btn cancelar">Cancelar</button>
         </div>
+
         <!-- TOAST -->
         <div id="toast-mensaje" class="toast oculto"></div>
     </div>
+
     <!-- ======MODAL NUEVA EMPRESA====== -->
     <div class="modal" id="modalNuevaEmpresa">
         <div class="modal-contenido">
@@ -138,6 +148,7 @@
             </div>
         </div>
     </div>
+
     <script type="module" src="mostrar_contenido.js"></script>
     <script type="module" src="editar_guardar_perfil.js"></script>
     <script type="module" src="editar_guardar_act_alum.js"></script>
