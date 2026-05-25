@@ -1,3 +1,5 @@
+import { renderMenu } from "../js/menu.js";
+
 // --- Control de Sesión y Roles ---
 const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -8,29 +10,128 @@ const getCookie = (name) => {
 
 // Captura de datos de sesión corporativa
 const idUsuarioAutenticado = getCookie('Id_usuario') || "ID_PRUEBA_LOCAL";
-const idTipoUsuario = parseInt(getCookie('Id_tipo_usuario')) || 2;       // 2 = Alumno, 1 o 3 = Coordinador/Admin
+const idTipoUsuario = parseInt(getCookie('Id_tipo_usuario')) || 2;
 const idCarreraUsuario = getCookie('Id_carrera') || "1";
 
 // Estado global del flujo de la interfaz
 let idAlumnoContexto = (idTipoUsuario === 2) ? (getCookie('Id_alumno')) : null;
 let encuestaActualId = null;
 
+// ==========================================
+// INICIALIZACIÓN
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
+    renderMenu();
     if (!idUsuarioAutenticado) {
         window.location.href = '../CU_01_Login/login.html';
         return;
     }
     inicializarModulo();
+
+    // ✅ Listener del formulario dentro del DOMContentLoaded
+    document.getElementById('form-encuesta').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!confirm("¿Estás seguro de que deseas enviar tus respuestas? Una vez enviadas, no podrán ser editadas.")) {
+            return;
+        }
+
+        const wrappers = document.querySelectorAll('.pregunta-wrapper');
+        let respuestas = [];
+        let errores = false;
+        let primerErrorDiv = null;
+
+        wrappers.forEach(div => {
+            const idPregunta = div.id.replace('wrapper_', '');
+            const esObligatoria = div.getAttribute('data-required') === 'true';
+            let valor = null;
+
+            const radioChecked = div.querySelector('input[type="radio"]:checked');
+            const textarea = div.querySelector('textarea');
+            const select = div.querySelector('select');
+            const textInput = div.querySelector('input[type="text"]');
+
+            if (radioChecked) {
+                valor = radioChecked.value;
+            } else if (textarea) {
+                valor = textarea.value.trim();
+            } else if (select) {
+                valor = select.value;
+            } else if (textInput) {
+                valor = textInput.value.trim();
+            }
+
+            if (esObligatoria && (!valor || valor === "")) {
+                div.classList.add('pregunta-error');
+                div.style.borderLeft = "4px solid #dc3545";
+                div.style.backgroundColor = "#fff8f8";
+                errores = true;
+                if (!primerErrorDiv) primerErrorDiv = div;
+            } else {
+                div.classList.remove('pregunta-error');
+                div.style.borderLeft = "none";
+                div.style.backgroundColor = "transparent";
+                if (!valor || valor === "") valor = "No contestó";
+                respuestas.push({
+                    Id_pregunta: parseInt(idPregunta),
+                    Respuesta: valor
+                });
+            }
+        });
+
+        if (errores) {
+            alert("Por favor, responda las preguntas obligatorias marcadas antes de continuar.");
+            if (primerErrorDiv) primerErrorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        try {
+            const payload = {
+                respuestas: respuestas,
+                Id_alumno: parseInt(idAlumnoContexto),
+                Id_encuesta: parseInt(encuestaActualId)
+            };
+
+            const response = await fetch('procesar_encuesta.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert('¡Encuesta completada con éxito! ✅');
+                if (idTipoUsuario === 2) {
+                    idAlumnoContexto = getCookie('Id_alumno') || "1";
+                } else {
+                    idAlumnoContexto = null;
+                }
+                document.getElementById('contenedor-preguntas').style.display = 'none';
+                document.getElementById('seccion-lista').style.display = 'block';
+                inicializarModulo();
+            } else {
+                const msgFeedback = document.getElementById('mensaje-feedback');
+                msgFeedback.innerText = "Error: " + (data.message || "No se pudo guardar la encuesta");
+                msgFeedback.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        } catch (err) {
+            console.error("Error al enviar:", err);
+            alert('Error de red con el servidor.');
+        }
+    });
 });
 
+// ==========================================
+// MÓDULO PRINCIPAL
+// ==========================================
 function inicializarModulo() {
-    // Ocultar ambas vistas primero
     document.getElementById('vista-alumno').style.display = 'none';
     document.getElementById('vista-coordinador').style.display = 'none';
     document.getElementById('estado-vacio-alumno').style.display = 'none';
     document.getElementById('estado-vacio-coordinador').style.display = 'none';
 
-    // Según el documento: Id_tipo_usuario = 2 para Alumno, 1 o 3 para Coordinador/Admin
     if (idTipoUsuario === 2) {
         document.getElementById('vista-alumno').style.display = 'block';
         cargarEncuestasAlumno();
@@ -42,16 +143,9 @@ function inicializarModulo() {
 
 // ==========================================
 // FLUJO 1: VISTA ALUMNO (Id_tipo_usuario = 2)
-// Según documento: Encuesta.Contestador = 0
 // ==========================================
 async function cargarEncuestasAlumno() {
     try {
-        // El backend debe aplicar todos los filtros del documento:
-        // 1. Encuesta.Contestador = 0
-        // 2. Encuesta.Activo = 1
-        // 3. Encuesta.Id_encuesta existe en Periodo_Encuesta
-        // 4. Periodo_Encuesta coincide con Actividades_Alumnos (EN_CURSO o COMPLETADO)
-        // 5. No existe respuesta previa en Respuestas
         const resp = await fetch(`obtener_encuestas_alumno.php?alumno=${idAlumnoContexto}`);
         const data = await resp.json();
         const encuestas = data.pendientes || [];
@@ -64,21 +158,17 @@ async function cargarEncuestasAlumno() {
             estadoVacio.style.display = 'block';
         } else {
             estadoVacio.style.display = 'none';
-
-            // Según documento: mostrar Nombre del servicio, Nombre de encuesta, Descripción, Botón "Responder encuesta"
-listaDiv.innerHTML = encuestas.map(e => {
-                // 1. Sanitización de comillas para evitar rupturas de sintaxis en el atributo onclick del DOM HTML
+            listaDiv.innerHTML = encuestas.map(e => {
                 const nombreSanitizado = e.Nombre.replace(/'/g, "\\'");
                 const descSanitizada = e.Descripcion.replace(/'/g, "\\'");
-
-                // 2. Retornamos el HTML estructurado cumpliendo la especificación funcional (Servicio, Nombre, Descripción)
                 return `
                     <div class="card-encuesta">
                         <div class="card-body">
                             <h4>Servicio: ${e.NombreServicio || e.servicio_nombre || 'N/A'}</h4>
                             <h5>${e.Nombre}</h5>
                             <p>${e.Descripcion}</p>
-                            <button type="button" class="btn-responder" onclick="abrirEncuesta(${e.Id_encuesta}, '${nombreSanitizado}', '${descSanitizada}', '${idAlumnoContexto}')">
+                            <button type="button" class="btn-responder"
+                                onclick="abrirEncuesta(${e.Id_encuesta}, '${nombreSanitizado}', '${descSanitizada}', '${idAlumnoContexto}')">
                                 Responder encuesta
                             </button>
                         </div>
@@ -86,7 +176,7 @@ listaDiv.innerHTML = encuestas.map(e => {
                 `;
             }).join('');
         }
-    }catch (err) {
+    } catch (err) {
         console.error("Error al cargar encuestas del alumno:", err);
         document.getElementById('lista-encuestas-alumno').innerHTML = '<p class="error">Error al cargar encuestas</p>';
     }
@@ -94,8 +184,6 @@ listaDiv.innerHTML = encuestas.map(e => {
 
 // ==========================================
 // FLUJO 2: VISTA COORDINADOR / ADMINISTRADOR (Id_tipo_usuario = 1 o 3)
-// Según documento: Encuesta.Contestador = 1
-// Mostrar SOLO alumnos con al menos una encuesta pendiente
 // ==========================================
 async function cargarAlumnosCoordinador() {
     try {
@@ -113,32 +201,35 @@ async function cargarAlumnosCoordinador() {
             estadoVacio.style.display = 'block';
         } else {
             estadoVacio.style.display = 'none';
-
-            // Inserción estética del expediente en la tarjeta del alumno, y la empresa en la subcard de la encuesta
             listaDiv.innerHTML = alumnosConPendientes.map(a => `
                 <div class="tarjeta-alumno">
                     <div class="info-alumno" style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px;">
                         <span class="alumno-nombre" style="font-size: 1.1rem;">
-                            <strong>${a.NombreCompleto}</strong> 
+                            <strong>${a.NombreCompleto}</strong>
                             <small style="color: #666; margin-left: 8px;">(Exp: ${a.No_Expediente})</small>
                         </span>
-                        <span class="alumno-contador">Encuestas pendientes: <b style="color: #dc3545;">${a.total_pendientes}</b></span>
-                        <button type="button" class="btn-toggle-acordeon" style="align-self: flex-start; margin-top: 5px;" onclick="toggleAcordeonAlumno(${a.Id_alumno})">
+                        <span class="alumno-contador">
+                            Encuestas pendientes: <b style="color: #dc3545;">${a.total_pendientes}</b>
+                        </span>
+                        <button type="button" class="btn-toggle-acordeon"
+                            style="align-self: flex-start; margin-top: 5px;"
+                            onclick="toggleAcordeonAlumno(${a.Id_alumno})">
                             Ver encuestas pendientes
                         </button>
                     </div>
-                    <div id="acordeon-${a.Id_alumno}" class="lista-encuestas-desplegable" style="display: none; padding-left: 15px; border-left: 2px solid #ccc; margin-top: 10px;">
+                    <div id="acordeon-${a.Id_alumno}" class="lista-encuestas-desplegable"
+                        style="display: none; padding-left: 15px; border-left: 2px solid #ccc; margin-top: 10px;">
                         ${a.encuestas.map(e => {
                             const nombreSanitizado = e.Nombre.replace(/'/g, "\\'");
                             const descSanitizada = e.Descripcion.replace(/'/g, "\\'");
-
                             return `
                                 <div class="subcard-encuesta" style="background-color: #f9f9f9; padding: 12px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #e0e0e0;">
                                     <h4 style="margin: 0 0 4px 0; color: #333;">Servicio: ${e.NombreServicio || 'N/A'}</h4>
                                     <h6 style="margin: 0 0 8px 0; color: #0066cc; font-weight: bold;">Empresa: ${e.NombreEmpresa}</h6>
                                     <h5 style="margin: 0 0 6px 0;">${e.Nombre}</h5>
                                     <p style="margin: 0 0 10px 0; font-size: 0.9rem; color: #555;">${e.Descripcion}</p>
-                                    <button type="button" class="btn-responder-admin" onclick="abrirEncuesta(${e.Id_encuesta}, '${nombreSanitizado}', '${descSanitizada}', ${a.Id_alumno})">
+                                    <button type="button" class="btn-responder-admin"
+                                        onclick="abrirEncuesta(${e.Id_encuesta}, '${nombreSanitizado}', '${descSanitizada}', ${a.Id_alumno})">
                                         Responder encuesta
                                     </button>
                                 </div>
@@ -154,18 +245,8 @@ async function cargarAlumnosCoordinador() {
     }
 }
 
-function toggleAcordeonAlumno(idAlumno) {
-    const el = document.getElementById(`acordeon-${idAlumno}`);
-    if (el.style.display === 'none' || el.style.display === '') {
-        el.style.display = 'block';
-    } else {
-        el.style.display = 'none';
-    }
-}
-
 // ==========================================
-// FORMULARIO DE RESPUESTA (compartido)
-// Según documento: Mostrar nombre encuesta como título y descripción debajo
+// FORMULARIO DE RESPUESTA
 // ==========================================
 async function abrirEncuesta(idEncuesta, nombre, desc, idAlumnoDestino) {
     encuestaActualId = idEncuesta;
@@ -178,25 +259,21 @@ async function abrirEncuesta(idEncuesta, nombre, desc, idAlumnoDestino) {
 
         preguntas.sort((a, b) => (a.Orden || 0) - (b.Orden || 0));
 
-        // Ocultar lista, mostrar formulario (Manejo de estados lógicos compartidos)
         document.getElementById('seccion-lista').style.display = 'none';
         document.getElementById('contenedor-preguntas').style.display = 'block';
 
-        // Encabezado según documento: Título principal y descripción debajo sin alteraciones de caracteres
         document.getElementById('titulo-encuesta').innerText = nombre;
         document.getElementById('descripcion-encuesta').innerText = desc;
 
         const contenedor = document.getElementById('preguntas-dinamicas');
         contenedor.innerHTML = preguntas.map(p => renderizarPregunta(p)).join('');
 
-        // Ocultar mensaje feedback previo
         const msgFeedback = document.getElementById('mensaje-feedback');
         msgFeedback.style.display = 'none';
         msgFeedback.innerText = '';
-        
-        // Desplazar la pantalla automáticamente al inicio del formulario para mejorar la experiencia de usuario
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        
+
     } catch (err) {
         console.error("Error al obtener preguntas:", err);
         alert("Error al cargar las preguntas de la encuesta");
@@ -208,10 +285,10 @@ function renderizarPregunta(p) {
     const obligatoriaAttr = esObligatoria ? 'data-required="true"' : 'data-required="false"';
     const asterisco = esObligatoria ? '<span class="obligatorio" style="color: red; margin-left: 4px;">*</span>' : '';
     const requiredProp = esObligatoria ? 'required' : '';
-    
-    // Formatear los metadatos obligatorios solicitados en la especificación
     const numeroOrden = p.Orden ? `${p.Orden}. ` : '';
-    const tagSeccion = p.Seccion ? `<span class="badge-seccion" style="font-size: 0.8rem; color: #555; background-color: #eee; padding: 2px 6px; border-radius: 4px; margin-right: 8px; font-weight: normal;">${p.Seccion}</span>` : '';
+    const tagSeccion = p.Seccion
+        ? `<span class="badge-seccion" style="font-size: 0.8rem; color: #555; background-color: #eee; padding: 2px 6px; border-radius: 4px; margin-right: 8px; font-weight: normal;">${p.Seccion}</span>`
+        : '';
 
     let htmlInput = '';
 
@@ -231,12 +308,12 @@ function renderizarPregunta(p) {
 
         case 'TEXTO':
             htmlInput = `
-                <textarea name="q_${p.Id_pregunta}" 
-                          maxlength="2000" 
-                          placeholder="Escribe tu respuesta aquí..." 
-                          class="form-control" 
+                <textarea name="q_${p.Id_pregunta}"
+                          maxlength="2000"
+                          placeholder="Escribe tu respuesta aquí..."
+                          class="form-control"
                           rows="4"
-                          style="width: 100; box-sizing: border-box;"
+                          style="width: 100%; box-sizing: border-box;"
                           oninput="actualizarContadorCaracteres(this)"
                           ${requiredProp}></textarea>
                 <small class="contador-caracteres" style="display: block; margin-top: 4px; color: #666;">
@@ -263,7 +340,8 @@ function renderizarPregunta(p) {
     }
 
     return `
-        <div class="pregunta-wrapper" id="wrapper_${p.Id_pregunta}" ${obligatoriaAttr} style="margin-bottom: 25px; padding: 15px; border-bottom: 1px solid #f0f0f0;">
+        <div class="pregunta-wrapper" id="wrapper_${p.Id_pregunta}" ${obligatoriaAttr}
+            style="margin-bottom: 25px; padding: 15px; border-bottom: 1px solid #f0f0f0;">
             <p class="pregunta-header" style="margin-top: 0; margin-bottom: 10px; font-size: 1.05rem;">
                 ${tagSeccion}<strong>${numeroOrden}${p.Pregunta}</strong>${asterisco}
             </p>
@@ -281,114 +359,6 @@ function actualizarContadorCaracteres(textarea) {
         spanContador.innerText = 2000 - textarea.value.length;
     }
 }
-
-// ==========================================
-// ENVÍO DEL FORMULARIO (Validado según Rúbrica)
-// ==========================================
-document.getElementById('form-encuesta').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    // Confirmación exacta según texto obligatorio de la especificación
-    if (!confirm("¿Estás seguro de que deseas enviar tus respuestas? Una vez enviadas, no podrán ser editadas.")) {
-        return;
-    }
-
-    const wrappers = document.querySelectorAll('.pregunta-wrapper');
-    let respuestas = [];
-    let errores = false;
-    let primerErrorDiv = null;
-
-    wrappers.forEach(div => {
-        const idPregunta = div.id.replace('wrapper_', '');
-        const esObligatoria = div.getAttribute('data-required') === 'true';
-        let valor = null;
-
-        const radioChecked = div.querySelector('input[type="radio"]:checked');
-        const textarea = div.querySelector('textarea');
-        const select = div.querySelector('select');
-        const textInput = div.querySelector('input[type="text"]');
-
-        if (radioChecked) {
-            valor = radioChecked.value;
-        } else if (textarea) {
-            valor = textarea.value.trim();
-        } else if (select) {
-            valor = select.value;
-        } else if (textInput) {
-            valor = textInput.value.trim();
-        }
-
-        // Regla de obligatoriedad estricta
-        if (esObligatoria && (!valor || valor === "")) {
-            div.classList.add('pregunta-error');
-            // Añadir borde rojo dinámico temporal si no manejas CSS externo fijo
-            div.style.borderLeft = "4px solid #dc3545"; 
-            div.style.backgroundColor = "#fff8f8";
-            errores = true;
-            if (!primerErrorDiv) {
-                primerErrorDiv = div;
-            }
-        } else {
-            div.classList.remove('pregunta-error');
-            div.style.borderLeft = "none";
-            div.style.backgroundColor = "transparent";
-            
-            // Regla de opción por defecto para opcionales vacías
-            if (!valor || valor === "") {
-                valor = "No contestó";
-            }
-            respuestas.push({
-                Id_pregunta: parseInt(idPregunta),
-                Respuesta: valor
-            });
-        }
-    });
-
-    if (errores) {
-        alert("Por favor, responda las preguntas obligatorias marcadas antes de continuar.");
-        if (primerErrorDiv) {
-            primerErrorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        return;
-    }
-
-    try {
-        const payload = {
-            respuestas: respuestas,
-            Id_alumno: parseInt(idAlumnoContexto),
-            Id_encuesta: parseInt(encuestaActualId)
-        };
-
-        const response = await fetch('procesar_encuesta.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            alert('¡Encuesta completada con éxito! ✅');
-            // Restablecer los flujos de visualización y refrescar paneles
-            if (idTipoUsuario === 2) {
-                idAlumnoContexto = getCookie('Id_alumno') || "1";
-            } else {
-                idAlumnoContexto = null;
-            }
-            document.getElementById('contenedor-preguntas').style.display = 'none';
-            document.getElementById('seccion-lista').style.display = 'block';
-            inicializarModulo();
-        } else {
-            const msgFeedback = document.getElementById('mensaje-feedback');
-            msgFeedback.innerText = "Error: " + (data.message || "No se pudo guardar la encuesta");
-            msgFeedback.style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    } catch (err) {
-        console.error("Error al enviar:", err);
-        alert('Error de red con el servidor.');
-    }
-});
 
 // ==========================================
 // CANCELACIÓN Y VOLVER
@@ -418,3 +388,21 @@ function volverALista() {
         inicializarModulo();
     }
 }
+
+function toggleAcordeonAlumno(idAlumno) {
+    const el = document.getElementById(`acordeon-${idAlumno}`);
+    if (el.style.display === 'none' || el.style.display === '') {
+        el.style.display = 'block';
+    } else {
+        el.style.display = 'none';
+    }
+}
+
+// ==========================================
+// ✅ EXPOSICIÓN GLOBAL — al final, después de todas las funciones
+// ==========================================
+window.abrirEncuesta = abrirEncuesta;
+window.volverALista = volverALista;
+window.cancelarEncuesta = cancelarEncuesta;
+window.toggleAcordeonAlumno = toggleAcordeonAlumno;
+window.actualizarContadorCaracteres = actualizarContadorCaracteres;
