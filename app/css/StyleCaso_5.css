@@ -194,7 +194,7 @@ body {
     z-index: 1;
 }
 
-.header-logo-left img { height: 100px; }
+.header-logo-left img { height: 110px; }
 
 .header-text {
     flex-grow: 1;
