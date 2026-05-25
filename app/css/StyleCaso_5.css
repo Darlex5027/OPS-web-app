@@ -1,0 +1,869 @@
+/* ===================================================== */
+/* ===== VARIABLES ===== */
+/* ===================================================== */
+:root {
+    --guinda:        #982b2b;
+    --guinda-dark:   #7d1f1f;
+    --guinda-light:  #f9efef;
+    --guinda-mid:    #c45050;
+    --guinda-glow:   rgba(152, 43, 43, 0.15);
+
+    --gris-fondo:    #f0f2f5;
+    --blanco:        #ffffff;
+    --texto:         #2d2d2d;
+    --texto-suave:   #6b7280;
+    --texto-hint:    #9ca3af;
+    --borde:         #e5e7eb;
+    --borde-hover:   #d1d5db;
+    --superficie:    #f9fafb;
+    --error:         #dc3545;
+    --exito:         #16a34a;
+
+    --radio-sm:      8px;
+    --radio:         10px;
+    --radio-lg:      16px;
+    --radio-xl:      20px;
+
+    --sombra-xs:     0 1px 3px rgba(0,0,0,0.06);
+    --sombra-card:   0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+    --sombra-hover:  0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+    --sombra-btn:    0 3px 12px rgba(152,43,43,0.30);
+    --sombra-btn-h:  0 6px 20px rgba(152,43,43,0.40);
+
+    --transicion:    0.2s ease;
+    --transicion-lg: 0.3s ease;
+
+    --sidebar-width: 250px;
+}
+
+/* ===================================================== */
+/* ===== RESET ===== */
+/* ===================================================== */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+/* ===================================================== */
+/* ===== BODY ===== */
+/* ===================================================== */
+body {
+    font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+    background-color: var(--gris-fondo);
+    background-image:
+        radial-gradient(ellipse at 15% 0%,   rgba(152,43,43,0.07) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 100%, rgba(152,43,43,0.05) 0%, transparent 50%);
+    min-height: 100vh;
+    color: var(--texto);
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+/* ===================================================== */
+/* ===== SIDEBAR ===== */
+/* ===================================================== */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--blanco);
+    padding: 30px 20px;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.08);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    overflow-y: auto;
+}
+
+/* ===================================================== */
+/* ===== PERFIL (sidebar) ===== */
+/* ===================================================== */
+.profile {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--gris-fondo);
+}
+
+.profile h3 {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--texto);
+}
+
+/* ===================================================== */
+/* ===== MENÚ (sidebar) ===== */
+/* ===================================================== */
+.menu a {
+    text-decoration: none;
+}
+
+.menu button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: var(--radio-sm);
+    background-color: var(--gris-fondo);
+    cursor: pointer;
+    text-align: left;
+    font-size: 14px;
+    font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+    transition: var(--transicion);
+    color: var(--texto);
+}
+
+.menu button:hover {
+    background-color: var(--guinda);
+    color: var(--blanco);
+}
+
+.menu button.active {
+    background-color: var(--guinda-light);
+    color: var(--guinda-dark);
+    font-weight: 600;
+}
+
+/* ===================================================== */
+/* ===== LAYOUT PRINCIPAL ===== */
+/* ===================================================== */
+.main {
+    margin-left: var(--sidebar-width);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ===================================================== */
+/* ===== HEADER ===== */
+/* ===================================================== */
+.header {
+    background-color: var(--guinda);
+    background-image: linear-gradient(135deg, var(--guinda-dark) 0%, var(--guinda) 55%, #b03535 100%);
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 40px;
+    color: white;
+    box-shadow: 0 4px 20px rgba(80,10,10,0.35);
+    position: relative;
+    overflow: hidden;
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    left: -60px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    pointer-events: none;
+}
+
+.header::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(255,255,255,0.05) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.header-logo-left {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.header-logo-left img { height: 100px; }
+
+.header-text {
+    flex-grow: 1;
+    padding: 0 40px;
+    font-family: 'Times New Roman', serif;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.header-text h1 {
+    font-size: 15px;
+    line-height: 1.55;
+    letter-spacing: 2px;
+}
+
+.header-text h1 span { font-size: 40px; }
+
+.linea-1,
+.linea-2,
+.linea-3 {
+    white-space: nowrap;
+}
+
+/* ===================================================== */
+/* ===== MAIN CARD ===== */
+/* ===================================================== */
+main {
+    width: 95%;
+    max-width: 760px;
+    margin: 40px auto 60px;
+    padding: 0;
+    background: var(--blanco);
+    border-radius: var(--radio-xl);
+    box-shadow: var(--sombra-card);
+    border: 1px solid rgba(0,0,0,0.06);
+    overflow: hidden;
+    transition: box-shadow var(--transicion-lg);
+}
+
+main:hover {
+    box-shadow: var(--sombra-hover);
+}
+
+/* ===================================================== */
+/* ===== TÍTULOS DE PÁGINA ===== */
+/* ===================================================== */
+main > h2:first-child {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--guinda-dark);
+    letter-spacing: 0.2px;
+    padding: 32px 40px 28px;
+    position: relative;
+    border-bottom: 1px solid var(--borde);
+    background: linear-gradient(to bottom, #fdf5f5, var(--blanco));
+}
+
+main > h2:first-child::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 56px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--guinda), var(--guinda-mid));
+    border-radius: 99px;
+}
+
+/* ===================================================== */
+/* ===== CONTENEDOR PRINCIPAL (ENCUESTAS) ===== */
+/* ===================================================== */
+.contenedor-principal-estilos {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 30px;
+    background-color: var(--blanco);
+    border-radius: 12px;
+    font-family: inherit;
+}
+
+.contenedor-principal-estilos h2 {
+    color: var(--guinda-dark);
+    border-left: 6px solid var(--guinda);
+    padding-left: 15px;
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.contenedor-principal-estilos h3 {
+    color: var(--guinda);
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+/* ===================================================== */
+/* ===== VISTA COORDINADOR: TARJETAS DE ALUMNOS ===== */
+/* ===================================================== */
+.tarjeta-alumno {
+    background-color: var(--superficie);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-lg);
+    padding: 18px 22px;
+    margin-bottom: 20px;
+    transition: all var(--transicion);
+    box-shadow: var(--sombra-xs);
+}
+
+.tarjeta-alumno:hover {
+    background-color: var(--blanco);
+    border-color: var(--borde-hover);
+    box-shadow: var(--sombra-card);
+}
+
+.info-alumno {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.alumno-nombre {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--texto);
+}
+
+.alumno-nombre small {
+    font-size: 0.8rem;
+    font-weight: normal;
+    color: var(--texto-suave);
+    background-color: var(--guinda-light);
+    padding: 2px 10px;
+    border-radius: 30px;
+}
+
+.alumno-contador {
+    font-size: 0.9rem;
+    color: var(--texto);
+    background-color: #fff1f0;
+    padding: 4px 14px;
+    border-radius: 30px;
+}
+
+.alumno-contador b {
+    color: var(--guinda);
+    font-size: 1rem;
+}
+
+.btn-toggle-acordeon {
+    background-color: transparent;
+    border: 1px solid var(--guinda-mid);
+    border-radius: 40px;
+    padding: 6px 18px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--guinda);
+    cursor: pointer;
+    transition: var(--transicion);
+    margin-top: 6px;
+}
+
+.btn-toggle-acordeon:hover {
+    background-color: var(--guinda-light);
+    border-color: var(--guinda);
+    transform: translateY(-1px);
+}
+
+/* Área desplegable */
+.lista-encuestas-desplegable {
+    margin-top: 18px;
+    padding-left: 20px;
+    border-left: 3px solid var(--guinda-mid);
+    animation: fadeSlideDown 0.25s ease-out;
+}
+
+@keyframes fadeSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===================================================== */
+/* ===== TARJETAS DE ENCUESTA (ambas vistas) ===== */
+/* ===================================================== */
+.subcard-encuesta,
+.card-encuesta {
+    background-color: var(--blanco);
+    border-radius: var(--radio);
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    border: 1px solid var(--borde);
+    transition: all var(--transicion);
+    box-shadow: var(--sombra-xs);
+}
+
+.subcard-encuesta:hover,
+.card-encuesta:hover {
+    border-color: var(--guinda-mid);
+    box-shadow: var(--sombra-xs);
+}
+
+.subcard-encuesta h4,
+.card-encuesta h4 {
+    font-size: 0.9rem;
+    color: var(--guinda);
+    margin: 0 0 6px 0;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.subcard-encuesta h5,
+.card-encuesta h5 {
+    font-size: 1rem;
+    margin: 8px 0 6px 0;
+    color: var(--texto);
+    font-weight: 600;
+}
+
+.subcard-encuesta h6 {
+    font-size: 0.8rem;
+    margin: 0 0 8px 0;
+    color: var(--texto-suave);
+    font-weight: 500;
+}
+
+.subcard-encuesta p,
+.card-encuesta p {
+    color: var(--texto-suave);
+    font-size: 0.85rem;
+    line-height: 1.45;
+    margin: 8px 0 12px 0;
+}
+
+/* Botón responder */
+.btn-responder,
+.btn-responder-admin {
+    background: linear-gradient(135deg, var(--guinda) 0%, var(--guinda-dark) 100%);
+    border: none;
+    border-radius: 40px;
+    padding: 8px 22px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: var(--transicion);
+    box-shadow: var(--sombra-btn);
+}
+
+.btn-responder:hover,
+.btn-responder-admin:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, var(--guinda-mid) 0%, var(--guinda) 100%);
+    box-shadow: var(--sombra-btn-h);
+}
+
+/* Mensajes vacíos */
+#estado-vacio-alumno p,
+#estado-vacio-coordinador p {
+    text-align: center;
+    background-color: var(--superficie);
+    padding: 30px;
+    border-radius: var(--radio-lg);
+    color: var(--texto-suave);
+    font-size: 0.95rem;
+    margin: 20px 0;
+}
+
+/* ===================================================== */
+/* ===== FORMULARIO DE PREGUNTAS ===== */
+/* ===================================================== */
+#contenedor-preguntas {
+    padding: 20px 30px;
+}
+
+#contenedor-preguntas h3 {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    color: var(--guinda-dark);
+    border-bottom: 2px solid var(--guinda-light);
+    padding-bottom: 8px;
+}
+
+#descripcion-encuesta {
+    color: var(--guinda-dark);
+    background-color: var(--guinda-light);
+    padding: 12px 16px;
+    border-radius: var(--radio);
+    margin-bottom: 25px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+#contenedor-preguntas hr {
+    border: none;
+    border-top: 2px solid var(--borde);
+    margin-bottom: 25px;
+}
+
+/* Wrapper de cada pregunta */
+.pregunta-wrapper {
+    margin-bottom: 28px;
+    padding: 12px 16px 16px 16px;
+    border-radius: var(--radio);
+    transition: background var(--transicion);
+    background-color: var(--blanco);
+    border: 1px solid var(--borde);
+}
+
+.pregunta-wrapper:hover {
+    background-color: var(--superficie);
+}
+
+.pregunta-header {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--texto);
+    margin-bottom: 12px;
+}
+
+.badge-seccion {
+    background-color: var(--guinda-light);
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 30px;
+    margin-right: 12px;
+    color: var(--guinda);
+}
+
+.obligatorio {
+    color: var(--error);
+    font-weight: bold;
+}
+
+/* Inputs y selects */
+.form-control {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: var(--transicion);
+    background-color: var(--blanco);
+}
+
+.form-control:focus {
+    border-color: var(--guinda);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--guinda-glow);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Radio group */
+.radio-group {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    background: var(--blanco);
+    padding: 6px 0;
+    flex-wrap: wrap;
+}
+
+.radio-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.radio-label input[type="radio"] {
+    accent-color: var(--guinda);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* Contador de caracteres */
+.contador-caracteres {
+    font-size: 0.7rem;
+    margin-top: 5px;
+    color: var(--texto-hint);
+}
+
+/* Botones de acción */
+.form-actions {
+    display: flex;
+    gap: 18px;
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 2px solid var(--guinda-light);
+}
+
+#btn-enviar {
+    background: linear-gradient(135deg, var(--guinda) 0%, var(--guinda-dark) 100%);
+    border: none;
+    padding: 10px 28px;
+    border-radius: 40px;
+    color: white;
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transicion);
+    box-shadow: var(--sombra-btn);
+}
+
+#btn-enviar:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, var(--guinda-mid) 0%, var(--guinda) 100%);
+    box-shadow: var(--sombra-btn-h);
+}
+
+#btn-enviar:active {
+    transform: translateY(0);
+}
+
+#btn-cancelar {
+    background-color: transparent;
+    border: 1px solid var(--borde-hover);
+    padding: 10px 28px;
+    border-radius: 40px;
+    color: var(--texto-suave);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transicion);
+}
+
+#btn-cancelar:hover {
+    background-color: var(--superficie);
+    border-color: var(--guinda-mid);
+    color: var(--guinda);
+    transform: translateY(-1px);
+}
+
+/* Botón volver */
+.btn-volver {
+    background: none;
+    border: none;
+    color: var(--guinda);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 20px;
+    padding: 5px 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: var(--transicion);
+}
+
+.btn-volver:hover {
+    color: var(--guinda-dark);
+    transform: translateX(-4px);
+}
+
+/* Mensaje feedback */
+#mensaje-feedback {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border-radius: var(--radio);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+/* Error en preguntas obligatorias */
+.pregunta-error {
+    border-left: 4px solid var(--error);
+    background-color: #fff5f5;
+    transition: var(--transicion);
+}
+
+/* ===================================================== */
+/* ===== TOAST ===== */
+/* ===================================================== */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: 0.4s;
+    z-index: 9999;
+    box-shadow: var(--sombra-card);
+}
+
+.toast.exito  { background-color: #2ecc71; }
+.toast.error  { background-color: #e74c3c; }
+
+.toast.oculto {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+/* ===================================================== */
+/* ===== RESPONSIVE ===== */
+/* ===================================================== */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 200px;
+    }
+    .main {
+        margin-left: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        box-shadow: none;
+        border-bottom: 1px solid var(--borde);
+        padding: 16px 20px;
+    }
+
+    .main {
+        margin-left: 0;
+    }
+
+    .header {
+        padding: 0 20px;
+        height: 130px;
+    }
+
+    .header-logo-left img { height: 80px; }
+    .header-logo-left img { height: 55px; }
+
+    .header-text {
+        padding: 0 15px;
+    }
+
+    .header-text h1 {
+        font-size: 12px;
+    }
+
+    .header-text h1 span {
+        font-size: 28px;
+    }
+
+    main {
+        width: 98%;
+        margin: 20px auto;
+    }
+
+    .contenedor-principal-estilos {
+        padding: 15px 18px;
+    }
+
+    .contenedor-principal-estilos h2 {
+        font-size: 1.3rem;
+    }
+
+    #contenedor-preguntas h3 {
+        font-size: 1.3rem;
+    }
+
+    .info-alumno {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .radio-group {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    #btn-enviar,
+    #btn-cancelar {
+        width: 100%;
+    }
+
+    .btn-toggle-acordeon {
+        width: 100%;
+        text-align: center;
+    }
+
+    .alumno-nombre {
+        font-size: 1rem;
+    }
+
+    .toast {
+        bottom: 15px;
+        right: 15px;
+        left: 15px;
+        width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        height: 110px;
+        padding: 0 15px;
+    }
+
+    .header-logo-left img {
+        height: 60px;
+    }
+
+    .header-logo-left img {
+        height: 45px;
+    }
+
+    .header-text h1 {
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+    .header-text h1 span {
+        font-size: 22px;
+    }
+
+    .contenedor-principal-estilos h2 {
+        font-size: 1.2rem;
+        padding-left: 10px;
+    }
+
+    .subcard-encuesta,
+    .card-encuesta {
+        padding: 12px 15px;
+    }
+
+    #contenedor-preguntas h3 {
+        font-size: 1.1rem;
+    }
+
+    #contenedor-preguntas {
+        padding: 15px 18px;
+    }
+
+    .pregunta-wrapper {
+        padding: 10px 12px 12px 12px;
+    }
+
+    .form-actions {
+        gap: 10px;
+    }
+
+    .btn-volver {
+        font-size: 0.85rem;
+    }
+
+    .badge-seccion {
+        font-size: 0.65rem;
+    }
+}
