@@ -1,3 +1,12 @@
+// ================================
+// Archivo : editar_guardar_perfil.js
+// Autor   : Viridiana Tonix Zarate
+// Fecha   : 2026-05-24
+// Desc.   : Gestiona la edición y
+//           guardado del perfil
+//           del usuario (datos
+//           personales y foto de perfil).
+// ================================
 import { lanzarToast } from '../js/lanzar_toast.js';
 
 // =========================
@@ -5,9 +14,11 @@ import { lanzarToast } from '../js/lanzar_toast.js';
 // =========================
 const getEl = (id) => document.getElementById(id);
 
-const tipoUsuario = document.cookie.split("; ")
+const tipoUsuario = document.cookie
+    .split("; ")
     .find(r => r.startsWith("Id_tipo_usuario="))
-    ?.split("=")[1].trim();
+    ?.split("=")[1]
+    ?.trim();
 
 // =========================
 // VALIDACIÓN DE ADMINISTRADOR
@@ -71,11 +82,11 @@ function validarAlumno() {
 // MODAL
 // =========================
 function abrirModal() {
-    getEl("modalNuevaEmpresa").style.display = "flex";
+    getEl("modal_nueva_empresa").style.display = "flex";
 }
 
 function cerrarModal() {
-    getEl("modalNuevaEmpresa").style.display = "none";
+    getEl("modal_nueva_empresa").style.display = "none";
     limpiarModal();
 }
 
@@ -178,12 +189,12 @@ function iniciarPreviewFoto() {
 // =========================
 // BLOQUEO POR ESTADO COMPLETADO
 // =========================
-function estaCompletado() {
+function isCompletado() {
     return getEl("estado")?.value?.toUpperCase() === "COMPLETADO";
 }
 
 function intentarEditar(btnEditar, btnGuardar, btnCancelar) {
-    if (estaCompletado()) {
+    if (isCompletado()) {
         lanzarToast("Este registro está completado y no puede editarse.", "error");
         return;
     }
@@ -219,7 +230,7 @@ function modoEditar(btnEditar, btnGuardar, btnCancelar) {
 
         const empresaTexto  = getEl("empresa_texto");
         const selectEmpresa = getEl("id_empresa");
-        const btnCrear      = getEl("btnCrearEmpresa");
+        const btnCrear      = getEl("btn_crear_empresa");
 
         if (empresaTexto)  empresaTexto.style.display  = "none";
         if (selectEmpresa) {
@@ -394,7 +405,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Bloquear botones si ya está COMPLETADO al cargar
-    if (estaCompletado()) {
+    if (isCompletado()) {
         btnEditar.style.display   = "none";
         btnEditar.disabled        = true;
         btnGuardar.style.display  = "none";
@@ -413,12 +424,12 @@ document.addEventListener("DOMContentLoaded", () => {
     btnGuardar?.addEventListener("click",  () => modoGuardar());
     btnCancelar?.addEventListener("click", () => location.reload());
 
-    getEl("btnCrearEmpresa")?.addEventListener("click",     abrirModal);
-    getEl("cerrarModalEmpresa")?.addEventListener("click",  cerrarModal);
-    getEl("guardarNuevaEmpresa")?.addEventListener("click", guardarNuevaEmpresa);
+    getEl("btn_crear_empresa")?.addEventListener("click",     abrirModal);
+    getEl("cerrar_modal_empresa")?.addEventListener("click",  cerrarModal);
+    getEl("guardar_nueva_empresa")?.addEventListener("click", guardarNuevaEmpresa);
 
-    getEl("modalNuevaEmpresa")?.addEventListener("click", e => {
-        if (e.target === getEl("modalNuevaEmpresa")) cerrarModal();
+    getEl("modal_nueva_empresa")?.addEventListener("click", e => {
+        if (e.target === getEl("modal_nueva_empresa")) cerrarModal();
     });
 
     // Formatear teléfono automáticamente

@@ -1,4 +1,13 @@
-
+<!--
+================================
+Archivo : perfil.html
+Autor   : Viridiana Tonix Zarate
+Fecha   : 2026-05-24
+Desc.   : Estructura HTML del módulo
+         de perfil de usuario con
+         secciones de admin y alumno.
+================================
+-->
 <!DOCTYPE html>
 <html lang="es">
 
@@ -22,11 +31,11 @@
 
     <div class="main">
         <div class="header">
-            <div></div>
-            <h1>Perfil</h1>
             <div class="header-logo-right">
                 <img src="../Imagenes/Logo.png" alt="Logo OPS">
             </div>
+            <h1>Perfil</h1>
+            <div class="header-spacer"></div>
         </div>
 
         <div class="table">
@@ -87,7 +96,7 @@
                     <select id="id_empresa" class="oculto">
                         <option value="">-- Selecciona una empresa --</option>
                     </select>
-                    <button type="button" id="btnCrearEmpresa" class="btn crear oculto">+ Crear Nueva Empresa</button>
+                    <button type="button" id="btn_crear_empresa" class="btn crear oculto">+ Crear Nueva Empresa</button>
                     <label for="area">Área</label>
                     <input type="text" id="area" disabled>
                     <label for="programa">Programa</label>
@@ -127,7 +136,7 @@
     </div>
 
     <!-- ======MODAL NUEVA EMPRESA====== -->
-    <div class="modal" id="modalNuevaEmpresa">
+    <div class="modal" id="modal_nueva_empresa">
         <div class="modal-contenido">
             <h2>Nueva Empresa</h2>
             <label for="nueva_empresa_nombre">Nombre</label>
@@ -143,8 +152,8 @@
             <label for="nueva_empresa_web">Sitio Web</label>
             <input type="url" id="nueva_empresa_web" placeholder="https://ejemplo.com">
             <div class="acciones-modal">
-                <button type="button" class="btn cancelar" id="cerrarModalEmpresa">Cancelar</button>
-                <button type="button" class="btn guardar" id="guardarNuevaEmpresa">Guardar Empresa</button>
+                <button type="button" class="btn cancelar" id="cerrar_modal_empresa">Cancelar</button>
+                <button type="button" class="btn guardar" id="guardar_nueva_empresa">Guardar Empresa</button>
             </div>
         </div>
     </div>

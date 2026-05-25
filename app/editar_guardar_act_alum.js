@@ -163,53 +163,28 @@ function guardarNuevaEmpresa() {
         .catch(e => console.error(e));
 }
 
+// =========================
+// CARGAR EMPRESAS
+// =========================
 async function cargarEmpresas() {
     try {
-        const respuesta = await fetch("obtener_empresas.php");
-        
-        if (!respuesta.ok) {
-            throw new Error(`Error HTTP: ${respuesta.status}`);
-        }
-        
-        const data = await respuesta.json();
-        
-        // Verificar si la respuesta es un array (formato actual del PHP)
-        let listaEmpresas;
-        if (Array.isArray(data)) {
-            // Formato actual: array directo
-            listaEmpresas = data;
-        } else if (data.success && Array.isArray(data.data)) {
-            // Formato esperado: {success: true, data: [...]}
-            listaEmpresas = data.data;
-        } else if (data.error) {
-            throw new Error(data.error);
-        } else {
-            throw new Error("Formato de respuesta inválido");
-        }
-        
+        const respuesta = await fetch("obtener_empresas.php").then(r => r.json());
+
+        if (!respuesta.success) return lanzarToast("Error al cargar empresas", "error");
+
+        const listaEmpresas = respuesta.data;
+
         const selectEmpresa = obtenerElemento("id_empresa");
-        if (!selectEmpresa) return;
-        
         selectEmpresa.innerHTML = '<option value="">-- Selecciona una empresa --</option>';
-        
-        listaEmpresas.forEach(empresa => {
-            const option = new Option(empresa.Nombre, empresa.Id_empresa);
-            selectEmpresa.appendChild(option);
-        });
-        
-        const idActual = obtenerElemento("empresa_texto")?.dataset.idEmpresa;
-        if (idActual && selectEmpresa.querySelector(`option[value="${idActual}"]`)) {
-            selectEmpresa.value = idActual;
-        }
-        
+        listaEmpresas.forEach(empresa =>
+            selectEmpresa.appendChild(new Option(empresa.Nombre, empresa.Id_empresa))
+        );
+
+        const idActual = obtenerElemento("empresa_texto").dataset.idEmpresa;
+        if (idActual) selectEmpresa.value = idActual;
+
     } catch (error) {
-        console.error("Error en cargarEmpresas:", error);
-        lanzarToast(error.message || "Error de conexión al cargar empresas", "error");
-        
-        const selectEmpresa = obtenerElemento("id_empresa");
-        if (selectEmpresa) {
-            selectEmpresa.innerHTML = '<option value="">-- Error al cargar empresas --</option>';
-        }
+        lanzarToast("Error de conexión al cargar empresas", "error");
     }
 }
 

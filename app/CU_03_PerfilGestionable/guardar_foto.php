@@ -1,4 +1,14 @@
 <?php
+/**
+ * ================================
+ * Archivo : guardar_foto.php
+ * Autor   : Viridiana Tonix Zarate
+ * Fecha   : 2026-05-24
+ * Desc.   : Procesa la carga y
+ *           guardado de fotos de
+ *           perfil del usuario.
+ * ================================
+ */
 error_reporting(0);
 ini_set('display_errors', 0);
 ob_start(); 
