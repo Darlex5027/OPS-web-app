@@ -16,16 +16,16 @@ const getEl = (id) => document.getElementById(id);
 // =========================
 // MODAL
 // =========================
-function abrirModal() {
-    getEl("modalNuevaEmpresa").style.display = "flex";
+function abrir_modal() {
+    getEl("modal_nueva_empresa").style.display = "flex";
 }
 
-function cerrarModal() {
-    getEl("modalNuevaEmpresa").style.display = "none";
-    limpiarModal();
+function cerrar_modal() {
+    getEl("modal_nueva_empresa").style.display = "none";
+    limpiar_modal();
 }
 
-function limpiarModal() {
+function limpiar_modal() {
     [
         "nueva_empresa_nombre",
         "nueva_empresa_descripcion",
@@ -39,7 +39,7 @@ function limpiarModal() {
 // =========================
 // CREAR EMPRESA
 // =========================
-function guardarNuevaEmpresa() {
+function guardar_nueva_empresa() {
     const nombre = getEl("nueva_empresa_nombre").value.trim();
 
     if (!nombre) {
@@ -79,7 +79,7 @@ function guardarNuevaEmpresa() {
             getEl("empresa_texto").value = nombre;
 
             lanzarToast("Empresa creada correctamente", "exito");
-            cerrarModal();
+            cerrar_modal();
         })
         .catch(error => {
             console.error("Error:", error);
@@ -92,12 +92,12 @@ function guardarNuevaEmpresa() {
 // =============================================
 document.addEventListener("DOMContentLoaded", () => {
 
-    getEl("btnCrearEmpresa").addEventListener("click", abrirModal);
-    getEl("cerrarModalEmpresa").addEventListener("click", cerrarModal);
-    getEl("guardarNuevaEmpresa").addEventListener("click", guardarNuevaEmpresa);
+    getEl("btn_crear_empresa").addEventListener("click", abrir_modal);
+    getEl("cerrar_modal_empresa").addEventListener("click", cerrar_modal);
+    getEl("guardar_nueva_empresa").addEventListener("click", guardar_nueva_empresa);
 
-    getEl("modalNuevaEmpresa").addEventListener("click", (e) => {
-        if (e.target === getEl("modalNuevaEmpresa")) cerrarModal();
+    getEl("modal_nueva_empresa").addEventListener("click", (e) => {
+        if (e.target === getEl("modal_nueva_empresa")) cerrar_modal();
     });
 
 });

@@ -80,11 +80,11 @@ function validarAlumno() {
 // MODAL
 // =========================
 function abrirModal() {
-    getEl("modalNuevaEmpresa").style.display = "flex";
+    getEl("modal_nueva_empresa").style.display = "flex";
 }
 
 function cerrarModal() {
-    getEl("modalNuevaEmpresa").style.display = "none";
+    getEl("modal_nueva_empresa").style.display = "none";
     limpiarModal();
 }
 
@@ -228,7 +228,7 @@ function modoEditar(btnEditar, btnGuardar, btnCancelar) {
 
         const empresaTexto  = getEl("empresa_texto");
         const selectEmpresa = getEl("id_empresa");
-        const btnCrear      = getEl("btnCrearEmpresa");
+        const btnCrear      = getEl("btn_crear_empresa");
 
         if (empresaTexto)  empresaTexto.style.display  = "none";
         if (selectEmpresa) {
@@ -422,12 +422,12 @@ document.addEventListener("DOMContentLoaded", () => {
     btnGuardar?.addEventListener("click",  () => modoGuardar());
     btnCancelar?.addEventListener("click", () => location.reload());
 
-    getEl("btnCrearEmpresa")?.addEventListener("click",     abrirModal);
-    getEl("cerrarModalEmpresa")?.addEventListener("click",  cerrarModal);
-    getEl("guardarNuevaEmpresa")?.addEventListener("click", guardarNuevaEmpresa);
+    getEl("btn_crear_empresa")?.addEventListener("click",     abrirModal);
+    getEl("cerrar_modal_empresa")?.addEventListener("click",  cerrarModal);
+    getEl("guardar_nueva_empresa")?.addEventListener("click", guardarNuevaEmpresa);
 
-    getEl("modalNuevaEmpresa")?.addEventListener("click", e => {
-        if (e.target === getEl("modalNuevaEmpresa")) cerrarModal();
+    getEl("modal_nueva_empresa")?.addEventListener("click", e => {
+        if (e.target === getEl("modal_nueva_empresa")) cerrarModal();
     });
 
     // Formatear teléfono automáticamente

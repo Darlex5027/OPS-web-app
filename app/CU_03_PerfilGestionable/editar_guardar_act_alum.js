@@ -467,19 +467,19 @@ document.addEventListener("DOMContentLoaded", () => {
     btnGuardar?.addEventListener("click",  () => modoGuardar());
     btnCancelar?.addEventListener("click", () => location.reload());
 
-    const btnCrearEmpresa        = getEl("btn_crear_empresa");
-    const cerrarModalBtn         = getEl("cerrar_modal_empresa");
-    const modalNuevaEmpresa      = getEl("modal_nueva_empresa");
-    const guardarNuevaEmpresaBtn = getEl("guardar_nueva_empresa");
+    const btn_crear_empresa        = getEl("btn_crear_empresa");
+    const cerrar_modal_empresa     = getEl("cerrar_modal_empresa");
+    const modal_nueva_empresa      = getEl("modal_nueva_empresa");
+    const guardar_nueva_empresa    = getEl("guardar_nueva_empresa");
 
-    if (btnCrearEmpresa)        btnCrearEmpresa.addEventListener("click", abrirModal);
-    if (cerrarModalBtn)         cerrarModalBtn.addEventListener("click", cerrarModal);
-    if (modalNuevaEmpresa) {
-        modalNuevaEmpresa.addEventListener("click", e => {
-            if (e.target === modalNuevaEmpresa) cerrarModal();
+    if (btn_crear_empresa)        btn_crear_empresa.addEventListener("click", abrirModal);
+    if (cerrar_modal_empresa)     cerrar_modal_empresa.addEventListener("click", cerrarModal);
+    if (modal_nueva_empresa) {
+        modal_nueva_empresa.addEventListener("click", e => {
+            if (e.target === modal_nueva_empresa) cerrarModal();
         });
     }
-    if (guardarNuevaEmpresaBtn) guardarNuevaEmpresaBtn.addEventListener("click", guardarNuevaEmpresa);
+    if (guardar_nueva_empresa) guardar_nueva_empresa.addEventListener("click", guardarNuevaEmpresa);
 
     const estadoEl = getEl("estado");
     if (estadoEl) {
