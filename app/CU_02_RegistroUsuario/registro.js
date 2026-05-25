@@ -13,50 +13,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const PATH_PHP = "";
 
-    const form = document.getElementById("formRegistro");
-    const confirmarInput = document.getElementById("confirmar_password");
+    const elFormRegistro = document.getElementById("elFormRegistro");
+    const elInputConfirmarPassword = document.getElementById("elInputConfirmarPassword");
+    const docPMensaje = document.getElementById("docPMensaje");
+    const elDivGrupoAlumno = document.getElementById("elDivGrupoAlumno");
+    const elDivGrupoCoordinador = document.getElementById("elDivGrupoCoordinador");
 
-    confirmarInput.addEventListener("input", function () {
-        const pass = document.getElementById("password").value;
-        const confirm = this.value;
-        const errorSpan = document.getElementById("error-password");
-        const btnSubmit = document.querySelector("button[type='submit']");
+    const elSelectCarreraAlumno = document.getElementById("elSelectCarreraAlumno");
+    const elSelectCarreraCoordinador = document.getElementById("elSelectCarreraCoordinador");
+    const elSelectFacultadAlumno = document.getElementById("elSelectFacultadAlumno");
+    const elSelectFacultadCoordinador = document.getElementById("elSelectFacultadCoordinador");
+    const elSelectOrganizacion = document.getElementById("elSelectOrganizacion");
+    const elSelectActividad = document.getElementById("elSelectActividad");
+    const elSelectPeriodo = document.getElementById("elSelectPeriodo");
 
-        if (confirm === "") {
-            errorSpan.style.display = "none";
-            this.style.borderColor = "";
-            btnSubmit.disabled = false;
-        } else if (confirm === pass) {
-            this.style.borderColor = "green";
-            errorSpan.style.display = "none";
-            btnSubmit.disabled = false;
-        } else {
-            this.style.borderColor = "red";
-            errorSpan.style.display = "block";
-            btnSubmit.disabled = true;
-        }
-    });
-    
-    const mensaje = document.getElementById("mensaje");
-
-    const radiosTipo = document.querySelectorAll("input[name='tipo_usuario']");
-    const grupoAlumno = document.getElementById("grupoAlumno");
-    const grupoCoordinador = document.getElementById("grupoCoordinador");
-
-    const selectCarreraAlumno = document.getElementById("carrera_alumno");
-    const selectCarreraCoordinador = document.getElementById("carrera_coordinador");
-    const selectFacultadAlumno = document.getElementById("facultad_alumno");
-    const selectFacultadCoordinador = document.getElementById("facultad_coordinador");
-    const selectOrganizacion = document.getElementById("organizacion");
-    const selectActividad = document.getElementById("actividad");
-    const selectPeriodo = document.getElementById("periodo_tipo");
-
-    const modalEmpresa = document.getElementById("modalEmpresa");
-    const passwordInput = document.getElementById("password");
+    const elModalEmpresa = document.getElementById("elModalEmpresa");
+    const elInputPassword = document.getElementById("elInputPassword");
+    const elBtnNuevaEmpresa = document.getElementById("elBtnNuevaEmpresa");
+    const elBtnGuardarEmpresa = document.getElementById("elBtnGuardarEmpresa");
+    const elBtnCerrarModal = document.getElementById("elBtnCerrarModal");
+    const elInputEmpresaRFC = document.getElementById("elInputEmpresaRFC");
 
     // Función para aplicar mayúsculas automáticas
     function aplicarMayusculasAlInstante() {
-        const camposMayusculas = ['matricula', 'grupo'];
+        const camposMayusculas = ['elInputMatricula', 'elInputGrupo'];
         
         camposMayusculas.forEach(campoId => {
             const campo = document.getElementById(campoId);
@@ -70,22 +50,35 @@ document.addEventListener("DOMContentLoaded", function () {
     
     aplicarMayusculasAlInstante();
 
-    passwordInput.addEventListener("input", function () {
-        const valor = this.value;
-        document.getElementById("req-long").style.color = valor.length >= 8 ? "green" : "red";
-        document.getElementById("req-mayus").style.color = /[A-Z]/.test(valor) ? "green" : "red";
-        document.getElementById("req-minus").style.color = /[a-z]/.test(valor) ? "green" : "red";
-        document.getElementById("req-num").style.color = /\d/.test(valor) ? "green" : "red";
-        document.getElementById("req-esp").style.color = /[\W_]/.test(valor) ? "green" : "red";
+    // Validación de confirmación de contraseña con lanzarToast
+    let timeoutConfirmacion = null;
+
+    elInputConfirmarPassword.addEventListener("input", function () {
+        const contrasena = elInputPassword.value;
+        const confirmacion = this.value;
+        const btnSubmit = document.querySelector("button[type='submit']");
+
+        if (timeoutConfirmacion) {
+            clearTimeout(timeoutConfirmacion);
+        }
+
+        if (confirmacion === "") {
+            this.style.borderColor = "";
+            btnSubmit.disabled = false;
+        } else if (confirmacion === contrasena) {
+            this.style.borderColor = "green";
+            btnSubmit.disabled = false;
+        } else {
+            this.style.borderColor = "red";
+            btnSubmit.disabled = true;
+            lanzarToast("Las contraseñas no coinciden", "error");
+        }
     });
-    
-    const btnNuevaEmpresa = document.getElementById("btnNuevaEmpresa");
-    const btnGuardarEmpresa = document.getElementById("guardarEmpresa");
-    const btnCerrarModal = document.getElementById("cerrarModal");
-    const inputRFC = document.getElementById("emp_rfc");
-    
-    if (inputRFC) {
-        inputRFC.addEventListener("input", function () {
+
+    const radiosTipo = document.querySelectorAll("input[name='tipo_usuario']");
+
+    if (elInputEmpresaRFC) {
+        elInputEmpresaRFC.addEventListener("input", function () {
             this.value = this.value.toUpperCase();
         });
     }
@@ -97,17 +90,21 @@ document.addEventListener("DOMContentLoaded", function () {
     let carreras = [];
 
     fetch(`${PATH_PHP}obtener_catalogos.php`)
-        .then(res => res.json())
-        .then(data => {
-            carreras = data.carreras;
-            data.facultades.forEach(fac => {
+        .then(respuesta => respuesta.json())
+        .then(respuesta => {
+            if (respuesta.success === false) {
+                lanzarToast(respuesta.error || "Error al cargar los catálogos", "error");
+                return;
+            }
+            carreras = respuesta.carreras;
+            respuesta.facultades.forEach(facultad => {
                 const option = document.createElement("option");
-                option.value = fac.Id_facultad;
-                option.textContent = fac.Nombre;
-                if (selectFacultadAlumno)
-                    selectFacultadAlumno.appendChild(option.cloneNode(true));
-                if (selectFacultadCoordinador)
-                    selectFacultadCoordinador.appendChild(option.cloneNode(true));
+                option.value = facultad.Id_facultad;
+                option.textContent = facultad.Nombre;
+                if (elSelectFacultadAlumno)
+                    elSelectFacultadAlumno.appendChild(option.cloneNode(true));
+                if (elSelectFacultadCoordinador)
+                    elSelectFacultadCoordinador.appendChild(option.cloneNode(true));
             });
         })
         .catch(() => lanzarToast("Error al cargar los catálogos", "error"));
@@ -115,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function cargarCarrerasPorFacultad(idFacultad, selectCarrera) {
         selectCarrera.innerHTML = '<option value="">Seleccione una carrera</option>';
         carreras
-            .filter(c => c.Id_facultad == idFacultad)
+            .filter(carrera => carrera.Id_facultad == idFacultad)
             .forEach(carrera => {
                 const option = document.createElement("option");
                 option.value = carrera.Id_carrera;
@@ -124,15 +121,15 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-    if (selectFacultadAlumno) {
-        selectFacultadAlumno.addEventListener("change", function () {
-            cargarCarrerasPorFacultad(this.value, selectCarreraAlumno);
+    if (elSelectFacultadAlumno) {
+        elSelectFacultadAlumno.addEventListener("change", function () {
+            cargarCarrerasPorFacultad(this.value, elSelectCarreraAlumno);
         });
     }
 
-    if (selectFacultadCoordinador) {
-        selectFacultadCoordinador.addEventListener("change", function () {
-            cargarCarrerasPorFacultad(this.value, selectCarreraCoordinador);
+    if (elSelectFacultadCoordinador) {
+        elSelectFacultadCoordinador.addEventListener("change", function () {
+            cargarCarrerasPorFacultad(this.value, elSelectCarreraCoordinador);
         });
     }
 
@@ -142,15 +139,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function cargarActividades() {
         fetch(`${PATH_PHP}obtener_actividades.php`)
-            .then(res => res.json())
-            .then(data => {
-                if (!data.actividades || !selectActividad) return;
-                selectActividad.innerHTML = '<option value="">Seleccione una actividad</option>';
-                data.actividades.forEach(act => {
+            .then(respuesta => respuesta.json())
+            .then(respuesta => {
+                if (respuesta.success === false) {
+                    lanzarToast(respuesta.error || "Error al cargar actividades", "error");
+                    return;
+                }
+                if (!respuesta.actividades || !elSelectActividad) return;
+                elSelectActividad.innerHTML = '<option value="">Seleccione una actividad</option>';
+                respuesta.actividades.forEach(actividad => {
                     const option = document.createElement("option");
-                    option.value = act.Id_actividad;
-                    option.textContent = act.Nombre;
-                    selectActividad.appendChild(option);
+                    option.value = actividad.Id_actividad;
+                    option.textContent = actividad.Nombre;
+                    elSelectActividad.appendChild(option);
                 });
             })
             .catch(() => lanzarToast("Error al cargar actividades", "error"));
@@ -164,18 +165,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function cargarEmpresas(idASeleccionar = null) {
         fetch(`${PATH_PHP}obtener_empresas.php`)
-            .then(res => res.json())
-            .then(data => {
-                if (!data.empresas || !selectOrganizacion) return;
-                selectOrganizacion.innerHTML = '<option value="">Seleccione una empresa (opcional)</option>';
-                data.empresas.forEach(emp => {
+            .then(respuesta => respuesta.json())
+            .then(respuesta => {
+                if (respuesta.success === false) {
+                    lanzarToast(respuesta.error || "Error al cargar las empresas", "error");
+                    return;
+                }
+                if (!respuesta.empresas || !elSelectOrganizacion) return;
+                elSelectOrganizacion.innerHTML = '<option value="">Seleccione una empresa (opcional)</option>';
+                respuesta.empresas.forEach(empresa => {
                     const option = document.createElement("option");
-                    option.value = emp.Id_empresa;
-                    option.textContent = emp.Nombre;
-                    if (idASeleccionar && emp.Id_empresa == idASeleccionar) {
+                    option.value = empresa.Id_empresa;
+                    option.textContent = empresa.Nombre;
+                    if (idASeleccionar && empresa.Id_empresa == idASeleccionar) {
                         option.selected = true;
                     }
-                    selectOrganizacion.appendChild(option);
+                    elSelectOrganizacion.appendChild(option);
                 });
             })
             .catch(() => lanzarToast("Error al cargar las empresas", "error"));
@@ -190,15 +195,15 @@ document.addEventListener("DOMContentLoaded", function () {
     radiosTipo.forEach(radio => {
         radio.addEventListener("change", function () {
             const esAlumno = this.value === "alumno";
-            if (grupoAlumno) grupoAlumno.hidden = !esAlumno;
-            if (grupoCoordinador) grupoCoordinador.hidden = esAlumno;
-            if (grupoAlumno) {
-                grupoAlumno.querySelectorAll("input, select").forEach(el => el.disabled = !esAlumno);
+            if (elDivGrupoAlumno) elDivGrupoAlumno.hidden = !esAlumno;
+            if (elDivGrupoCoordinador) elDivGrupoCoordinador.hidden = esAlumno;
+            if (elDivGrupoAlumno) {
+                elDivGrupoAlumno.querySelectorAll("input, select").forEach(elemento => elemento.disabled = !esAlumno);
             }
-            if (grupoCoordinador) {
-                grupoCoordinador.querySelectorAll("input, select").forEach(el => el.disabled = esAlumno);
+            if (elDivGrupoCoordinador) {
+                elDivGrupoCoordinador.querySelectorAll("input, select").forEach(elemento => elemento.disabled = esAlumno);
             }
-            if (mensaje) mensaje.style.display = "none";
+            if (docPMensaje) docPMensaje.style.display = "none";
         });
     });
 
@@ -208,37 +213,49 @@ document.addEventListener("DOMContentLoaded", function () {
        MODAL EMPRESA
     ========================= */
 
-    if (btnNuevaEmpresa) {
-        btnNuevaEmpresa.addEventListener("click", () => {
-            modalEmpresa.style.display = "block";
+    if (elBtnNuevaEmpresa) {
+        elBtnNuevaEmpresa.addEventListener("click", () => {
+            elModalEmpresa.style.display = "block";
         });
     }
 
-    if (btnCerrarModal) {
-        btnCerrarModal.addEventListener("click", () => {
-            modalEmpresa.style.display = "none";
+    if (elBtnCerrarModal) {
+        elBtnCerrarModal.addEventListener("click", () => {
+            elModalEmpresa.style.display = "none";
             limpiarModalEmpresa();
         });
     }
 
-    if (btnGuardarEmpresa) {
-        btnGuardarEmpresa.addEventListener("click", function () {
+    if (elBtnGuardarEmpresa) {
+        elBtnGuardarEmpresa.addEventListener("click", function () {
             const regexRFC = /^[A-Z0-9]{12,13}$/i;
             const nuevaEmpresa = {
-                nombre_comercial: document.getElementById("emp_nombre").value.trim(),
-                razon_social: document.getElementById("emp_razon").value.trim(),
-                rfc: document.getElementById("emp_rfc").value.trim(),
-                direccion: document.getElementById("emp_direccion").value.trim(),
-                sitio_web: document.getElementById("emp_web").value.trim(),
-                descripcion: document.getElementById("emp_desc").value.trim()
+                nombre_comercial: document.getElementById("elInputEmpresaNombre").value.trim(),
+                razon_social: document.getElementById("elInputEmpresaRazon").value.trim(),
+                rfc: document.getElementById("elInputEmpresaRFC").value.trim(),
+                direccion: document.getElementById("elInputEmpresaDireccion").value.trim(),
+                sitio_web: document.getElementById("elInputEmpresaSitioWeb").value.trim(),
+                descripcion: document.getElementById("elTextareaEmpresaDescripcion").value.trim()
             };
 
-            if (!nuevaEmpresa.nombre_comercial || !nuevaEmpresa.razon_social || !nuevaEmpresa.rfc) {
-                lanzarToast("Complete los campos obligatorios de la empresa", "error");
+            if (!nuevaEmpresa.nombre_comercial) {
+                lanzarToast("Complete el nombre comercial de la empresa", "error");
+                return;
+            }
+            if (!nuevaEmpresa.razon_social) {
+                lanzarToast("Complete la razón social de la empresa", "error");
+                return;
+            }
+            if (!nuevaEmpresa.rfc) {
+                lanzarToast("Complete el RFC de la empresa", "error");
                 return;
             }
             if (!regexRFC.test(nuevaEmpresa.rfc)) {
                 lanzarToast("RFC inválido. Debe tener entre 12 y 13 caracteres.", "error");
+                return;
+            }
+            if (!nuevaEmpresa.direccion) {
+                lanzarToast("Complete la dirección de la empresa", "error");
                 return;
             }
 
@@ -247,20 +264,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(nuevaEmpresa)
             })
-                .then(res => {
-                    if (!res.ok) {
+                .then(respuesta => {
+                    if (!respuesta.ok) {
                         throw new Error("Error del servidor");
                     }
-                    return res.json();
+                    return respuesta.json();
                 })
-                .then(data => {
-                    if (data.success) {
+                .then(respuesta => {
+                    if (respuesta.success) {
                         lanzarToast("¡Empresa registrada exitosamente!", "exito");
-                        modalEmpresa.style.display = "none";
+                        elModalEmpresa.style.display = "none";
                         limpiarModalEmpresa();
-                        cargarEmpresas(data.id_empresa);
+                        cargarEmpresas(respuesta.id_empresa);
                     } else {
-                        lanzarToast(data.error || "No se pudo registrar la empresa", "error");
+                        lanzarToast(respuesta.error || "No se pudo registrar la empresa", "error");
                     }
                 })
                 .catch(error => {
@@ -270,62 +287,125 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function limpiarModalEmpresa() {
-        document.querySelectorAll("#modalEmpresa input, #modalEmpresa textarea").forEach(i => i.value = "");
+        const camposModal = document.querySelectorAll("#elModalEmpresa input, #elModalEmpresa textarea");
+        camposModal.forEach(campo => campo.value = "");
     }
 
     /* =========================
        ENVÍO FORMULARIO
     ========================= */
 
-    form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        if (mensaje) mensaje.style.display = "none";
+    elFormRegistro.addEventListener("submit", function (evento) {
+        evento.preventDefault();
+        if (docPMensaje) docPMensaje.style.display = "none";
 
         const tipo = document.querySelector("input[name='tipo_usuario']:checked").value;
-        const datos = {
-            tipo_usuario: tipo,
-            matricula: document.getElementById("matricula").value.trim(),
-            password: document.getElementById("password").value,
-            confirmar: document.getElementById("confirmar_password").value
-        };
+        
+        // Validaciones comunes
+        const matricula = document.getElementById("elInputMatricula").value.trim();
+        const password = elInputPassword.value;
+        const confirmar = elInputConfirmarPassword.value;
+
+        if (!matricula) {
+            lanzarToast("La matrícula es obligatoria.", "error");
+            return;
+        }
 
         const regexAlumno = /^[0-9]{8}$/;
         const regexCoordinador = /^[0-9]{4}$/;
-        const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-        const regexTelefono = /^[0-9]{3}-[0-9]{4}-[0-9]{3}$/;
-        const regexGrupo = /^[0-9][A-Z]$/;
-
-        if (tipo === "alumno" && !regexAlumno.test(datos.matricula)) {
+        
+        if (tipo === "alumno" && !regexAlumno.test(matricula)) {
             lanzarToast("La matrícula del alumno debe tener 8 dígitos.", "error");
             return;
         }
 
-        if (tipo === "coordinador" && !regexCoordinador.test(datos.matricula)) {
+        if (tipo === "coordinador" && !regexCoordinador.test(matricula)) {
             lanzarToast("La matrícula del coordinador debe tener 4 dígitos.", "error");
             return;
         }
 
-        if (datos.password !== datos.confirmar) {
+        if (!password) {
+            lanzarToast("La contraseña es obligatoria.", "error");
+            return;
+        }
+
+        if (password !== confirmar) {
             lanzarToast("Las contraseñas no coinciden", "error");
             return;
         }
 
-        if (!regexPassword.test(datos.password)) {
-            lanzarToast("La contraseña debe tener mayúscula, minúscula, número y símbolo.", "error");
+        const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+        if (!regexPassword.test(password)) {
+            lanzarToast("La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.", "error");
             return;
         }
 
-        if (tipo === "alumno") {
-            datos.nombre = document.getElementById("nombre_alumno").value.trim();
-            datos.apellido_p = document.getElementById("apellido_p_alumno").value.trim();
-            datos.apellido_m = document.getElementById("apellido_m_alumno").value.trim();
-            datos.id_carrera = selectCarreraAlumno.value;
-            datos.grupo = document.getElementById("grupo").value.trim();
+        const datos = {
+            tipo_usuario: tipo,
+            matricula: matricula,
+            password: password,
+            confirmar: confirmar
+        };
 
-            const horaInicio = document.getElementById("hora_inicio").value;
-            const horaFin = document.getElementById("hora_fin").value;
+        if (tipo === "alumno") {
+            const nombre = document.getElementById("elInputNombreAlumno").value.trim();
+            const apellido_p = document.getElementById("elInputApellidoPAlumno").value.trim();
+            const apellido_m = document.getElementById("elInputApellidoMAlumno").value.trim();
+            const id_carrera = elSelectCarreraAlumno.value;
+            const grupo = document.getElementById("elInputGrupo").value.trim();
+            const email = document.getElementById("elInputEmailAlumno").value.trim();
+            const telefono = document.getElementById("elInputTelefonoAlumno").value.trim();
+            const actividad = elSelectActividad.value;
+            const periodo_tipo = elSelectPeriodo.value;
+
+            if (!nombre) {
+                lanzarToast("El nombre del alumno es obligatorio.", "error");
+                return;
+            }
+            if (!elSelectFacultadAlumno.value) {
+                lanzarToast("Debe seleccionar una facultad.", "error");
+                return;
+            }
+            if (!id_carrera) {
+                lanzarToast("Debe seleccionar una carrera.", "error");
+                return;
+            }
+            if (!grupo) {
+                lanzarToast("El grupo es obligatorio.", "error");
+                return;
+            }
+            if (!email) {
+                lanzarToast("El correo electrónico es obligatorio.", "error");
+                return;
+            }
+            if (!telefono) {
+                lanzarToast("El teléfono es obligatorio.", "error");
+                return;
+            }
+            if (!actividad) {
+                lanzarToast("Debe seleccionar una actividad.", "error");
+                return;
+            }
+            if (!periodo_tipo) {
+                lanzarToast("Debe seleccionar un periodo.", "error");
+                return;
+            }
+
+            const regexGrupo = /^[0-9][A-Z]$/;
+            if (!regexGrupo.test(grupo.toUpperCase())) {
+                lanzarToast("El grupo debe tener formato: número y letra mayúscula (ejemplo: 7A).", "error");
+                return;
+            }
+
+            const regexTelefono = /^[0-9]{3}-[0-9]{4}-[0-9]{3}$/;
+            if (!regexTelefono.test(telefono)) {
+                lanzarToast("El teléfono debe tener el formato xxx-xxxx-xxx.", "error");
+                return;
+            }
+
+            const horaInicio = document.getElementById("elInputHoraInicio").value;
+            const horaFin = document.getElementById("elInputHoraFin").value;
             
-            // Horario opcional
             let horario = null;
             if (horaInicio && horaFin) {
                 if (horaInicio >= horaFin) {
@@ -334,41 +414,59 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
                 horario = `${horaInicio} - ${horaFin}`;
             }
+
+            datos.nombre = nombre;
+            datos.apellido_p = apellido_p;
+            datos.apellido_m = apellido_m;
+            datos.id_carrera = id_carrera;
+            datos.grupo = grupo;
             datos.horario = horario;
-
-            datos.email = document.getElementById("email_alumno").value.trim();
-            datos.telefono = document.getElementById("telefono_alumno").value.trim();
-            datos.organizacion = selectOrganizacion.value || null;
-            datos.actividad = selectActividad.value;
-            
-            if (!datos.actividad) {
-                lanzarToast("Debe seleccionar una actividad.", "error");
-                return;
-            }
-
-            datos.periodo_tipo = selectPeriodo.value;
-            if (!datos.periodo_tipo) {
-                lanzarToast("Debe seleccionar un periodo.", "error");
-                return;
-            }
-
-            if (!regexGrupo.test(datos.grupo.toUpperCase())) {
-                lanzarToast("El grupo debe tener formato 7A.", "error");
-                return;
-            }
-
-            if (!regexTelefono.test(datos.telefono)) {
-                lanzarToast("El teléfono debe tener el formato xxx-xxxx-xxx.", "error");
-                return;
-            }
+            datos.email = email;
+            datos.telefono = telefono;
+            datos.organizacion = elSelectOrganizacion.value || null;
+            datos.actividad = actividad;
+            datos.periodo_tipo = periodo_tipo;
 
         } else {
-            datos.nombre = document.getElementById("nombre_coordinador").value.trim();
-            datos.apellido_p = document.getElementById("apellido_p_coordinador").value.trim();
-            datos.apellido_m = document.getElementById("apellido_m_coordinador").value.trim();
-            datos.id_carrera = selectCarreraCoordinador.value;
-            datos.telefono = document.getElementById("telefono_coordinador").value.trim();
-            datos.correo = document.getElementById("correo_coordinador").value.trim();
+            // Coordinador
+            const nombre = document.getElementById("elInputNombreCoordinador").value.trim();
+            const apellido_p = document.getElementById("elInputApellidoPCoordinador").value.trim();
+            const apellido_m = document.getElementById("elInputApellidoMCoordinador").value.trim();
+            const id_carrera = elSelectCarreraCoordinador.value;
+            const telefono = document.getElementById("elInputTelefonoCoordinador").value.trim();
+            const correo = document.getElementById("elInputCorreoCoordinador").value.trim();
+
+            if (!nombre) {
+                lanzarToast("El nombre del coordinador es obligatorio.", "error");
+                return;
+            }
+            if (!apellido_p) {
+                lanzarToast("El apellido paterno del coordinador es obligatorio.", "error");
+                return;
+            }
+            if (!elSelectFacultadCoordinador.value) {
+                lanzarToast("Debe seleccionar una facultad.", "error");
+                return;
+            }
+            if (!id_carrera) {
+                lanzarToast("Debe seleccionar una carrera a cargo.", "error");
+                return;
+            }
+            if (!telefono) {
+                lanzarToast("El teléfono del coordinador es obligatorio.", "error");
+                return;
+            }
+            if (!correo) {
+                lanzarToast("El correo del coordinador es obligatorio.", "error");
+                return;
+            }
+
+            datos.nombre = nombre;
+            datos.apellido_p = apellido_p;
+            datos.apellido_m = apellido_m;
+            datos.id_carrera = id_carrera;
+            datos.telefono = telefono;
+            datos.correo = correo;
         }
 
         fetch(`${PATH_PHP}registro.php`, {
@@ -376,20 +474,20 @@ document.addEventListener("DOMContentLoaded", function () {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(datos)
         })
-            .then(res => {
-                if (!res.ok) {
+            .then(respuesta => {
+                if (!respuesta.ok) {
                     throw new Error("Error del servidor");
                 }
-                return res.json();
+                return respuesta.json();
             })
-            .then(data => {
-                if (data.success) {
+            .then(respuesta => {
+                if (respuesta.success) {
                     lanzarToast("¡Registro exitoso! Redirigiendo...", "exito");
                     setTimeout(() => {
                         window.location.href = "../CU_01_Login/login.html";
                     }, 2000);
                 } else {
-                    lanzarToast(data.error || "Error en el registro", "error");
+                    lanzarToast(respuesta.error || "Error en el registro", "error");
                 }
             })
             .catch(error => {
