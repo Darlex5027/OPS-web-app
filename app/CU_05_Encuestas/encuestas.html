@@ -1,0 +1,111 @@
+<!--
+  Archivo     : encuestas.html
+  Módulo      : CU_05_ResponderEncuestas
+  Autor       : Francisco Angel Membrila Alarcón
+  Fecha       : 11/05/2026
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuestas Pendientes - OPS</title>
+    <link rel="stylesheet" href="../css/StyleCaso_5.css">
+</head>
+
+<body class="pagina-vacantes">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="profile">
+            <img id="foto_perfil_preview" src="../Imagenes/prueba.png" alt="perfil">
+        </div>
+        <div class="menu"></div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div></div>
+            <h1>Encuestas Pendientes</h1>
+            <div class="header-logo-right">
+                <img src="../Imagenes/Logo.png" alt="Logo FCBIyT">
+            </div>
+        </div>
+
+        <main>
+
+            <!-- VISTA PRINCIPAL: LISTA DE ENCUESTAS (ALUMNO / COORDINADOR) -->
+            <div id="seccion-lista" class="contenedor-principal-estilos">
+
+                <!-- VISTA ALUMNO (Id_tipo_usuario = 2) -->
+                <div id="vista-alumno" style="display: none;">
+                    <h2>Mis Encuestas Pendientes</h2>
+                    <div id="lista-encuestas-alumno">
+                        <!--
+                            Por cada encuesta pendiente se mostrará:
+                            - Nombre del servicio asociado
+                            - Nombre de la encuesta
+                            - Descripción de la encuesta
+                            - Botón "Responder encuesta"
+                        -->
+                    </div>
+                    <div id="estado-vacio-alumno" style="display: none;">
+                        <p>¡No tienes encuestas pendientes!</p>
+                    </div>
+                </div>
+
+                <!-- VISTA COORDINADOR O ADMINISTRADOR (Id_tipo_usuario = 1 o 3) -->
+                <div id="vista-coordinador" style="display: none;">
+                    <h2>Alumnos con Encuestas Pendientes</h2>
+                    <div id="lista-alumnos-pendientes">
+                        <!--
+                            Por cada alumno con al menos una encuesta pendiente:
+                            - Nombre completo del alumno
+                            - Contador de encuestas pendientes (solo Contestador=1)
+                            - Botón para desplegar/contraer lista de encuestas
+                            - Al desplegar, por cada encuesta:
+                                - Nombre del servicio asociado
+                                - Nombre de la encuesta
+                                - Descripción de la encuesta
+                                - Botón "Responder encuesta"
+                        -->
+                    </div>
+                    <div id="estado-vacio-coordinador" style="display: none;">
+                        <p>No hay alumnos con encuestas pendientes.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORMULARIO DE RESPUESTA -->
+            <div id="contenedor-preguntas" class="contenedor-principal-estilos" style="display: none;">
+                <!-- Botón para volver a la lista -->
+                <button type="button" class="btn-volver" onclick="volverALista()">← Volver a la lista</button>
+
+                <!-- Encabezado del formulario -->
+                <h3 id="titulo-encuesta"></h3>
+                <p id="descripcion-encuesta"></p>
+                <hr>
+
+                <!-- Formulario de preguntas -->
+                <form id="form-encuesta" novalidate>
+                    <div id="preguntas-dinamicas"></div>
+                    <div class="form-actions">
+                        <button type="submit" id="btn-enviar">Enviar respuesta</button>
+                        <button type="button" id="btn-cancelar" onclick="cancelarEncuesta()">Cancelar</button>
+                    </div>
+                </form>
+                <p id="mensaje-feedback" style="display:none;"></p>
+            </div>
+
+        </main>
+
+    </div><!-- /.main -->
+
+    <script type="module" src="encuestas.js"></script>
+</body>
+
+</html>
