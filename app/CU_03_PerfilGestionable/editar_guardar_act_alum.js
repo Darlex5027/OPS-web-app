@@ -43,12 +43,13 @@ const CAMPOS_COMPLETADO = [
     { id: "empresa_texto",    label: "Empresa" }
 ];
 
+// ✅ CORRECCIÓN 1: Variables en camelCase
 const regexEmpresa = {
     nombre:       /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-]{2,100}$/,
-    razon_social: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-&]{2,150}$/,
+    razonSocial:  /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-&]{2,150}$/,
     rfc:          /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/,
     direccion:    /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-#]{5,200}$/,
-    sitio_web:    /^https?:\/\/(www\.)?[a-zA-Z0-9\-]+(\.[a-zA-Z]{2,})+([\/\w\-._~:?#[\]@!$&'()*+,;=]*)?$/
+    sitioWeb:     /^https?:\/\/(www\.)?[a-zA-Z0-9\-]+(\.[a-zA-Z]{2,})+([\/\w\-._~:?#[\]@!$&'()*+,;=]*)?$/
 };
 
 const cookieTipoUsuario = document.cookie.split("; ")
@@ -110,23 +111,23 @@ function cerrarModal() {
 function guardarNuevaEmpresa() {
     const nombre       = getVal("nueva_empresa_nombre").trim();
     const descripcion  = getVal("nueva_empresa_descripcion").trim();
-    const razon_social = getVal("nueva_empresa_razon_social").trim();
+    const razonSocial  = getVal("nueva_empresa_razon_social").trim();
     const rfc          = getVal("nueva_empresa_rfc").trim().toUpperCase();
     const direccion    = getVal("nueva_empresa_direccion").trim();
-    const sitio_web    = getVal("nueva_empresa_web").trim();
+    const sitioWeb     = getVal("nueva_empresa_web").trim();
 
     if (!nombre)                                                               return lanzarToast("El nombre es obligatorio", "error");
     if (!regexEmpresa.nombre.test(nombre))                                     return lanzarToast("Nombre inválido", "error");
     if (!descripcion)                                                           return lanzarToast("La descripción es obligatoria", "error");
-    if (razon_social && !regexEmpresa.razon_social.test(razon_social))         return lanzarToast("Razón social inválida", "error");
-    if (rfc          && !regexEmpresa.rfc.test(rfc))                           return lanzarToast("RFC inválido", "error");
-    if (direccion    && !regexEmpresa.direccion.test(direccion))               return lanzarToast("Dirección inválida", "error");
-    if (sitio_web    && !regexEmpresa.sitio_web.test(sitio_web))               return lanzarToast("Sitio web inválido", "error");
+    if (razonSocial && !regexEmpresa.razonSocial.test(razonSocial))            return lanzarToast("Razón social inválida", "error");
+    if (rfc         && !regexEmpresa.rfc.test(rfc))                           return lanzarToast("RFC inválido", "error");
+    if (direccion   && !regexEmpresa.direccion.test(direccion))               return lanzarToast("Dirección inválida", "error");
+    if (sitioWeb    && !regexEmpresa.sitioWeb.test(sitioWeb))                 return lanzarToast("Sitio web inválido", "error");
 
     fetch("crear_empresa.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, descripcion, razon_social, rfc, direccion, sitio_web })
+        body: JSON.stringify({ nombre, descripcion, razonSocial, rfc, direccion, sitioWeb })
     })
         .then(r => r.json())
         .then(r => {

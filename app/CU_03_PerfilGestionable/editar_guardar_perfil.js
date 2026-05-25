@@ -14,9 +14,11 @@ import { lanzarToast } from '../js/lanzar_toast.js';
 // =========================
 const getEl = (id) => document.getElementById(id);
 
-const tipoUsuario = document.cookie.split("; ")
+const tipoUsuario = document.cookie
+    .split("; ")
     .find(r => r.startsWith("Id_tipo_usuario="))
-    ?.split("=")[1].trim();
+    ?.split("=")[1]
+    ?.trim();
 
 // =========================
 // VALIDACIÓN DE ADMINISTRADOR
@@ -187,12 +189,12 @@ function iniciarPreviewFoto() {
 // =========================
 // BLOQUEO POR ESTADO COMPLETADO
 // =========================
-function estaCompletado() {
+function isCompletado() {
     return getEl("estado")?.value?.toUpperCase() === "COMPLETADO";
 }
 
 function intentarEditar(btnEditar, btnGuardar, btnCancelar) {
-    if (estaCompletado()) {
+    if (isCompletado()) {
         lanzarToast("Este registro está completado y no puede editarse.", "error");
         return;
     }
@@ -403,7 +405,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Bloquear botones si ya está COMPLETADO al cargar
-    if (estaCompletado()) {
+    if (isCompletado()) {
         btnEditar.style.display   = "none";
         btnEditar.disabled        = true;
         btnGuardar.style.display  = "none";
