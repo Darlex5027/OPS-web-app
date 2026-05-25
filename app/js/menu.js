@@ -13,13 +13,14 @@ export function renderMenu() {
     if (!elMenu) return;
 
     // Agrega la imagen al inicio del menú
-    let fotoHTML = `<img class="menu-foto-perfil" src="" alt="Foto de perfil" />`;
+    let fotoHTML = `<img class="menu-foto-perfil" src="" />`;
 
     if (tipoUsuario == '1' || tipoUsuario == '3') {
         elMenu.innerHTML = fotoHTML + `
             <a href="../CU_03_PerfilGestionable/perfil.html"><button>Perfil</button></a>
             <a href="../CU_04_Visualizar_Vacantes/visualizar_vacantes.html"><button>Vacantes</button></a>
             <a href="../CU_06_PublicarVacantes/admin_vacantes.html"><button>Publicar vacantes</button></a>
+            <a href="../CU_05_Encuestas/encuestas.html"><button>Responder formularios</button></a>
             <a href="../CU_07_AdministrarAlumnos/admin_usuarios.html"><button>Administrar usuarios</button></a>
             <a href="../CU_08_Reporte_Alumnado/reporte_alumnos.html"><button>Generar reporte de alumnos</button></a>
             <a href="../CU_09_ReporteEstadistico/reporte_estadistico.html"><button>Generar reporte estadistico</button></a>
@@ -28,7 +29,7 @@ export function renderMenu() {
     } else if (tipoUsuario == '2') {
         elMenu.innerHTML = fotoHTML + `
             <a href="../CU_04_Visualizar_Vacantes/visualizar_vacantes.html"><button>Vacantes</button></a>
-            <a href="admin_encuestas.html"><button>Responder formularios</button></a>
+            <a href="../CU_05_Encuestas/encuestas.html"><button>Responder formularios</button></a>
             <a href="../CU_03_PerfilGestionable/perfil.html"><button>Perfil</button></a>
         `;
     }
