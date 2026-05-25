@@ -13,17 +13,40 @@ import { lanzarToast } from '../js/lanzar_toast.js';
 // =========================
 // UTILIDADES
 // =========================
-const getVal = (id) => document.getElementById(id)?.value ?? "";
-const getEl  = (id) => document.getElementById(id);
 
-const setDis = (ids, val) =>
-    ids.forEach(id => {
-        const el = getEl(id);
-        if (el) el.disabled = val;
+/**
+ * Obtiene el valor del campo con el id dado.
+ * Si el elemento no existe, devuelve cadena vacía.
+ * @param {string} idCampo - ID del elemento HTML
+ * @returns {string} Valor del campo o ""
+ */
+const obtenerValorCampo = (idCampo) => document.getElementById(idCampo)?.value ?? "";
+
+/**
+ * Obtiene la referencia al elemento HTML con el id dado.
+ * @param {string} idCampo - ID del elemento HTML
+ * @returns {HTMLElement|null} Elemento encontrado o null
+ */
+const obtenerElemento = (idCampo) => document.getElementById(idCampo);
+
+/**
+ * Habilita o deshabilita una lista de campos por su ID.
+ * @param {string[]} listaIds  - Array de IDs de los campos a afectar
+ * @param {boolean}  deshabilitar - true = deshabilitar, false = habilitar
+ */
+const cambiarEstadoCampos = (listaIds, deshabilitar) =>
+    listaIds.forEach(id => {
+        const el = obtenerElemento(id);
+        if (el) el.disabled = deshabilitar;
     });
 
-const setVis = (id, vis) =>
-    getEl(id)?.classList.toggle("oculto", !vis);
+/**
+ * Muestra u oculta un elemento añadiendo/quitando la clase CSS "oculto".
+ * @param {string}  idElemento - ID del elemento a mostrar/ocultar
+ * @param {boolean} mostrar    - true = mostrar, false = ocultar
+ */
+const alternarVisibilidad = (idElemento, mostrar) =>
+    obtenerElemento(idElemento)?.classList.toggle("oculto", !mostrar);
 
 // =========================
 // CONSTANTES / CONFIGURACIÓN
@@ -43,7 +66,6 @@ const CAMPOS_COMPLETADO = [
     { id: "empresa_texto",    label: "Empresa" }
 ];
 
-// ✅ CORRECCIÓN 1: Variables en camelCase
 const regexEmpresa = {
     nombre:       /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-]{2,100}$/,
     razonSocial:  /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-&]{2,150}$/,
@@ -61,7 +83,7 @@ const cookieTipoUsuario = document.cookie.split("; ")
 // Solo exige campos completos si el estado es COMPLETADO
 // =========================
 function validarActividades() {
-    const estado = getVal("estado");
+    const estado = obtenerValorCampo("estado");
 
     if (estado !== "COMPLETADO") return true;
 
@@ -78,12 +100,12 @@ function validarActividades() {
     ];
 
     const faltantes = campos.filter(c => {
-        const el = getEl(c.id);
-        return el && !getVal(c.id).trim();
+        const el = obtenerElemento(c.id);
+        return el && !obtenerValorCampo(c.id).trim();
     });
 
     if (faltantes.length > 0) {
-        getEl(faltantes[0].id)?.focus();
+        obtenerElemento(faltantes[0].id)?.focus();
         lanzarToast(`Campos incompletos: ${faltantes.map(c => c.label).join(", ")}`, "error");
         return false;
     }
@@ -95,34 +117,34 @@ function validarActividades() {
 // MODAL
 // =========================
 function abrirModal() {
-    getEl("modal_nueva_empresa").style.display = "flex";
+    obtenerElemento("modal_nueva_empresa").style.display = "flex";
 }
 
 function cerrarModal() {
-    getEl("modal_nueva_empresa").style.display = "none";
+    obtenerElemento("modal_nueva_empresa").style.display = "none";
     ["nueva_empresa_nombre", "nueva_empresa_descripcion", "nueva_empresa_razon_social",
         "nueva_empresa_rfc", "nueva_empresa_direccion", "nueva_empresa_web"]
-        .forEach(id => { getEl(id).value = ""; });
+        .forEach(id => { obtenerElemento(id).value = ""; });
 }
 
 // =========================
 // CREAR EMPRESA
 // =========================
 function guardarNuevaEmpresa() {
-    const nombre       = getVal("nueva_empresa_nombre").trim();
-    const descripcion  = getVal("nueva_empresa_descripcion").trim();
-    const razonSocial  = getVal("nueva_empresa_razon_social").trim();
-    const rfc          = getVal("nueva_empresa_rfc").trim().toUpperCase();
-    const direccion    = getVal("nueva_empresa_direccion").trim();
-    const sitioWeb     = getVal("nueva_empresa_web").trim();
+    const nombre       = obtenerValorCampo("nueva_empresa_nombre").trim();
+    const descripcion  = obtenerValorCampo("nueva_empresa_descripcion").trim();
+    const razonSocial  = obtenerValorCampo("nueva_empresa_razon_social").trim();
+    const rfc          = obtenerValorCampo("nueva_empresa_rfc").trim().toUpperCase();
+    const direccion    = obtenerValorCampo("nueva_empresa_direccion").trim();
+    const sitioWeb     = obtenerValorCampo("nueva_empresa_web").trim();
 
-    if (!nombre)                                                               return lanzarToast("El nombre es obligatorio", "error");
-    if (!regexEmpresa.nombre.test(nombre))                                     return lanzarToast("Nombre inválido", "error");
-    if (!descripcion)                                                           return lanzarToast("La descripción es obligatoria", "error");
-    if (razonSocial && !regexEmpresa.razonSocial.test(razonSocial))            return lanzarToast("Razón social inválida", "error");
-    if (rfc         && !regexEmpresa.rfc.test(rfc))                           return lanzarToast("RFC inválido", "error");
-    if (direccion   && !regexEmpresa.direccion.test(direccion))               return lanzarToast("Dirección inválida", "error");
-    if (sitioWeb    && !regexEmpresa.sitioWeb.test(sitioWeb))                 return lanzarToast("Sitio web inválido", "error");
+    if (!nombre)                                                    return lanzarToast("El nombre es obligatorio", "error");
+    if (!regexEmpresa.nombre.test(nombre))                          return lanzarToast("Nombre inválido", "error");
+    if (!descripcion)                                               return lanzarToast("La descripción es obligatoria", "error");
+    if (razonSocial && !regexEmpresa.razonSocial.test(razonSocial)) return lanzarToast("Razón social inválida", "error");
+    if (rfc         && !regexEmpresa.rfc.test(rfc))                 return lanzarToast("RFC inválido", "error");
+    if (direccion   && !regexEmpresa.direccion.test(direccion))     return lanzarToast("Dirección inválida", "error");
+    if (sitioWeb    && !regexEmpresa.sitioWeb.test(sitioWeb))       return lanzarToast("Sitio web inválido", "error");
 
     fetch("crear_empresa.php", {
         method: "POST",
@@ -132,9 +154,9 @@ function guardarNuevaEmpresa() {
         .then(r => r.json())
         .then(r => {
             if (!r.success) return lanzarToast("Error al crear empresa", "error");
-            getEl("id_empresa").appendChild(new Option(nombre, r.id_empresa, true, true));
-            getEl("empresa_texto").value = nombre;
-            getEl("empresa_texto").dataset.idEmpresa = r.id_empresa;
+            obtenerElemento("id_empresa").appendChild(new Option(nombre, r.id_empresa, true, true));
+            obtenerElemento("empresa_texto").value = nombre;
+            obtenerElemento("empresa_texto").dataset.idEmpresa = r.id_empresa;
             lanzarToast("Empresa creada correctamente", "exito");
             cerrarModal();
         })
@@ -149,11 +171,11 @@ async function cargarEmpresas() {
         const data = await fetch("obtener_empresas.php").then(r => r.json());
         if (data.error) return lanzarToast("Error al cargar empresas", "error");
 
-        const sel = getEl("id_empresa");
+        const sel = obtenerElemento("id_empresa");
         sel.innerHTML = '<option value="">-- Selecciona una empresa --</option>';
         data.forEach(e => sel.appendChild(new Option(e.Nombre, e.Id_empresa)));
 
-        const idActual = getEl("empresa_texto").dataset.idEmpresa;
+        const idActual = obtenerElemento("empresa_texto").dataset.idEmpresa;
         if (idActual) sel.value = idActual;
     } catch (e) {
         lanzarToast("Error de conexión al cargar empresas", "error");
@@ -164,7 +186,7 @@ async function cargarEmpresas() {
 // VALIDAR COMPLETADO
 // =========================
 function validarCompletado() {
-    const camposVacios = CAMPOS_COMPLETADO.filter(campo => !getVal(campo.id).trim());
+    const camposVacios = CAMPOS_COMPLETADO.filter(campo => !obtenerValorCampo(campo.id).trim());
     if (camposVacios.length > 0) {
         lanzarToast(`Campos incompletos: ${camposVacios.map(c => c.label).join(", ")}`, "error");
         return false;
@@ -191,25 +213,25 @@ function manejarCambioEstado(e, obtenerEstadoAnterior, guardarEstadoAnterior) {
 // HABILITAR ACTIVIDADES
 // =========================
 window.habilitarActividades = async (habilitar) => {
-    const estado = getEl("estado").value || "";
+    const estado = obtenerElemento("estado").value || "";
 
     if (estado === "COMPLETADO") {
-        setDis(PENDIENTE, true);
-        setVis("id_empresa",        false);
-        setVis("btn_crear_empresa", false);
-        setVis("empresa_texto",     true);
+        cambiarEstadoCampos(PENDIENTE, true);
+        alternarVisibilidad("id_empresa",        false);
+        alternarVisibilidad("btn_crear_empresa", false);
+        alternarVisibilidad("empresa_texto",     true);
         if (habilitar) lanzarToast("Este registro está completado y no puede editarse.", "error");
         return;
     }
 
-    setDis(PENDIENTE, true);
-    if (habilitar) setDis(POR_ESTADO[estado] ?? [], false);
+    cambiarEstadoCampos(PENDIENTE, true);
+    if (habilitar) cambiarEstadoCampos(POR_ESTADO[estado] ?? [], false);
 
-    setVis("id_empresa",        habilitar);
-    setVis("btn_crear_empresa", habilitar && estado === "PENDIENTE");
-    setVis("empresa_texto",     !habilitar);
+    alternarVisibilidad("id_empresa",        habilitar);
+    alternarVisibilidad("btn_crear_empresa", habilitar && estado === "PENDIENTE");
+    alternarVisibilidad("empresa_texto",     !habilitar);
 
-    if (habilitar && estado === "EN_CURSO") setDis(["id_empresa", "btn_crear_empresa"], true);
+    if (habilitar && estado === "EN_CURSO") cambiarEstadoCampos(["id_empresa", "btn_crear_empresa"], true);
     if (habilitar) await cargarEmpresas();
 };
 
@@ -219,18 +241,18 @@ window.habilitarActividades = async (habilitar) => {
 window.guardarActividades = () => {
     if (!validarActividades()) return;
 
-    const estado = getVal("estado");
+    const estado = obtenerValorCampo("estado");
     if (estado === "COMPLETADO" && !validarCompletado()) return;
 
     // Validar y formatear grupo SOLO si tiene valor
-    const grupoInput = getVal("grupo_alumno").trim().toUpperCase();
+    const grupoInput = obtenerValorCampo("grupo_alumno").trim().toUpperCase();
     const regexGrupo = /^[1-9][A-Z]$/;
     if (grupoInput && !regexGrupo.test(grupoInput)) {
         return lanzarToast("El semestre y grupo debe tener el formato: número (1-9) seguido de una letra. Ejemplo: 1A, 2B, 3C", "error");
     }
 
-    const horarioEntrada = getVal("horario_entrada").trim();
-    const horarioSalida  = getVal("horario_salida").trim();
+    const horarioEntrada = obtenerValorCampo("horario_entrada").trim();
+    const horarioSalida  = obtenerValorCampo("horario_salida").trim();
 
     if ((horarioEntrada || horarioSalida) && (!horarioEntrada || !horarioSalida)) {
         return lanzarToast("Debes completar ambos horarios o dejar ambos vacíos", "error");
@@ -246,21 +268,21 @@ window.guardarActividades = () => {
 
     const datos = {
         estado,
-        area:         getVal("area"),
-        programa:     getVal("programa"),
-        fecha_inicio: getVal("fecha_inicio"),
-        fecha_fin:    getVal("fecha_fin"),
+        area:         obtenerValorCampo("area"),
+        programa:     obtenerValorCampo("programa"),
+        fecha_inicio: obtenerValorCampo("fecha_inicio"),
+        fecha_fin:    obtenerValorCampo("fecha_fin"),
         grupo:        grupoInput,
         horario:      horarioCompleto
     };
 
     if (estado === "PENDIENTE") {
-        const idEmpresa = getVal("id_empresa");
+        const idEmpresa = obtenerValorCampo("id_empresa");
         if (!idEmpresa) return lanzarToast("Debes seleccionar una empresa.", "error");
         datos.id_empresa = idEmpresa;
 
-        const sel = getEl("id_empresa");
-        const txt = getEl("empresa_texto");
+        const sel = obtenerElemento("id_empresa");
+        const txt = obtenerElemento("empresa_texto");
         txt.value = sel.options[sel.selectedIndex]?.text || "";
         txt.dataset.idEmpresa = sel.value;
     }
@@ -293,24 +315,24 @@ function modoEditar(btnEditar, btnGuardar, btnCancelar) {
     btnGuardar.style.display  = "inline-block";
     btnCancelar.style.display = "inline-block";
 
-    const inputFoto = getEl("foto_perfil_input");
+    const inputFoto = obtenerElemento("foto_perfil_input");
     if (inputFoto) inputFoto.disabled = false;
 
     if (cookieTipoUsuario === "1" || cookieTipoUsuario === "3") {
         ["telefono_administrador", "correo_administrador"].forEach(id => {
-            const el = getEl(id);
+            const el = obtenerElemento(id);
             if (el) { el.disabled = false; el.readOnly = false; }
         });
     } else {
         ["grupo_alumno", "horario_entrada", "horario_salida", "id_empresa",
             "nueva_empresa", "area", "programa", "estado", "fecha_inicio", "fecha_fin"]
             .forEach(id => {
-                const el = getEl(id);
+                const el = obtenerElemento(id);
                 if (el) { el.disabled = false; el.readOnly = false; }
             });
 
-        const empresaTexto  = getEl("empresa_texto");
-        const selectEmpresa = getEl("id_empresa");
+        const empresaTexto  = obtenerElemento("empresa_texto");
+        const selectEmpresa = obtenerElemento("id_empresa");
         if (empresaTexto)  empresaTexto.style.display  = "none";
         if (selectEmpresa) selectEmpresa.style.display = "block";
 
@@ -325,14 +347,14 @@ function modoGuardar() {
     if (!validarActividades()) return;
 
     // Validar y formatear grupo SOLO si tiene valor
-    const grupoInput = getVal("grupo_alumno").trim().toUpperCase();
+    const grupoInput = obtenerValorCampo("grupo_alumno").trim().toUpperCase();
     const regexGrupo = /^[1-9][A-Z]$/;
     if (grupoInput && !regexGrupo.test(grupoInput)) {
         return lanzarToast("El semestre y grupo debe tener el formato: número (1-9) seguido de una letra. Ejemplo: 1A, 2B, 3C", "error");
     }
 
-    const horarioEntrada = getVal("horario_entrada").trim();
-    const horarioSalida  = getVal("horario_salida").trim();
+    const horarioEntrada = obtenerValorCampo("horario_entrada").trim();
+    const horarioSalida  = obtenerValorCampo("horario_salida").trim();
 
     if ((horarioEntrada || horarioSalida) && (!horarioEntrada || !horarioSalida)) {
         return lanzarToast("Debes completar ambos horarios", "error");
@@ -342,8 +364,8 @@ function modoGuardar() {
         return lanzarToast("La salida debe ser posterior a la entrada", "error");
     }
 
-    const fechaInicio = getEl("fecha_inicio")?.value;
-    const fechaFin    = getEl("fecha_fin")?.value;
+    const fechaInicio = obtenerElemento("fecha_inicio")?.value;
+    const fechaFin    = obtenerElemento("fecha_fin")?.value;
     if (fechaInicio && fechaFin && fechaFin <= fechaInicio) {
         return lanzarToast("La fecha fin debe ser posterior a la fecha inicio", "error");
     }
@@ -356,13 +378,13 @@ function modoGuardar() {
         datos.horario = `${horarioEntrada} - ${horarioSalida}`;
     }
 
-    if (getVal("area").trim())     datos.area        = getVal("area").trim();
-    if (getVal("programa").trim()) datos.programa     = getVal("programa").trim();
-    if (getVal("estado"))          datos.estado       = getVal("estado");
-    if (fechaInicio)               datos.fecha_inicio = fechaInicio;
-    if (fechaFin)                  datos.fecha_fin    = fechaFin;
+    if (obtenerValorCampo("area").trim())     datos.area        = obtenerValorCampo("area").trim();
+    if (obtenerValorCampo("programa").trim()) datos.programa     = obtenerValorCampo("programa").trim();
+    if (obtenerValorCampo("estado"))          datos.estado       = obtenerValorCampo("estado");
+    if (fechaInicio)                          datos.fecha_inicio = fechaInicio;
+    if (fechaFin)                             datos.fecha_fin    = fechaFin;
 
-    const selectEmpresa = getEl("id_empresa");
+    const selectEmpresa = obtenerElemento("id_empresa");
     if (selectEmpresa?.value) datos.id_empresa = selectEmpresa.value;
 
     fetch("guardar_datos.php", {
@@ -402,16 +424,16 @@ function modoGuardar() {
 // BLOQUEO POR ESTADO COMPLETADO
 // =========================
 function isCompletado() {
-    return getVal("estado") === "COMPLETADO";
+    return obtenerValorCampo("estado") === "COMPLETADO";
 }
 
 function bloquearSiCompletado() {
     if (!isCompletado()) return false;
 
-    setDis(PENDIENTE, true);
-    setVis("id_empresa",      false);
-    setVis("modal_nueva_empresa", false);
-    setVis("empresa_texto",   true);
+    cambiarEstadoCampos(PENDIENTE, true);
+    alternarVisibilidad("id_empresa",         false);
+    alternarVisibilidad("modal_nueva_empresa", false);
+    alternarVisibilidad("empresa_texto",       true);
 
     const btnEditar   = document.querySelector(".btn.editar");
     const btnGuardar  = document.querySelector(".btn.guardar");
@@ -436,7 +458,7 @@ function intentarEditar(btnEditar, btnGuardar, btnCancelar) {
 // FORMATEO AUTOMÁTICO A MAYÚSCULAS
 // =========================
 function inicializarFormateoGrupo() {
-    const grupoEl = getEl("grupo_alumno");
+    const grupoEl = obtenerElemento("grupo_alumno");
     if (!grupoEl) return;
     grupoEl.addEventListener("input", (e) => {
         e.target.value = e.target.value.toUpperCase();
@@ -448,7 +470,7 @@ function inicializarFormateoGrupo() {
 // =========================
 document.addEventListener("DOMContentLoaded", () => {
 
-    let estadoAnterior = getVal("estado");
+    let estadoAnterior = obtenerValorCampo("estado");
 
     const btnEditar   = document.querySelector(".btn.editar");
     const btnGuardar  = document.querySelector(".btn.guardar");
@@ -458,8 +480,8 @@ document.addEventListener("DOMContentLoaded", () => {
     btnCancelar.style.display = "none";
 
     if (!bloquearSiCompletado()) {
-        setVis("id_empresa",        false);
-        setVis("btn_crear_empresa", false);
+        alternarVisibilidad("id_empresa",        false);
+        alternarVisibilidad("btn_crear_empresa", false);
     }
 
     inicializarFormateoGrupo();
@@ -468,13 +490,13 @@ document.addEventListener("DOMContentLoaded", () => {
     btnGuardar?.addEventListener("click",  () => modoGuardar());
     btnCancelar?.addEventListener("click", () => location.reload());
 
-    const btn_crear_empresa        = getEl("btn_crear_empresa");
-    const cerrar_modal_empresa     = getEl("cerrar_modal_empresa");
-    const modal_nueva_empresa      = getEl("modal_nueva_empresa");
-    const guardar_nueva_empresa    = getEl("guardar_nueva_empresa");
+    const btn_crear_empresa     = obtenerElemento("btn_crear_empresa");
+    const cerrar_modal_empresa  = obtenerElemento("cerrar_modal_empresa");
+    const modal_nueva_empresa   = obtenerElemento("modal_nueva_empresa");
+    const guardar_nueva_empresa = obtenerElemento("guardar_nueva_empresa");
 
-    if (btn_crear_empresa)        btn_crear_empresa.addEventListener("click", abrirModal);
-    if (cerrar_modal_empresa)     cerrar_modal_empresa.addEventListener("click", cerrarModal);
+    if (btn_crear_empresa)    btn_crear_empresa.addEventListener("click", abrirModal);
+    if (cerrar_modal_empresa) cerrar_modal_empresa.addEventListener("click", cerrarModal);
     if (modal_nueva_empresa) {
         modal_nueva_empresa.addEventListener("click", e => {
             if (e.target === modal_nueva_empresa) cerrarModal();
@@ -482,18 +504,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (guardar_nueva_empresa) guardar_nueva_empresa.addEventListener("click", guardarNuevaEmpresa);
 
-    const estadoEl = getEl("estado");
+    const estadoEl = obtenerElemento("estado");
     if (estadoEl) {
-        estadoEl.addEventListener("focus",  () => { estadoAnterior = getVal("estado"); });
+        estadoEl.addEventListener("focus",  () => { estadoAnterior = obtenerValorCampo("estado"); });
         estadoEl.addEventListener("change", e =>
             manejarCambioEstado(e, () => estadoAnterior, v => { estadoAnterior = v; })
         );
     }
 
-    const fechaInicioEl = getEl("fecha_inicio");
+    const fechaInicioEl = obtenerElemento("fecha_inicio");
     if (fechaInicioEl) {
         fechaInicioEl.addEventListener("change", e => {
-            const fechaFinEl = getEl("fecha_fin");
+            const fechaFinEl = obtenerElemento("fecha_fin");
             if (fechaFinEl) fechaFinEl.min = e.target.value;
         });
     }

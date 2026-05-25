@@ -1,5 +1,5 @@
 // ================================
-// Archivo : editar_guardar_perfil.js
+// Archivo : menu.js
 // Autor   : Viridiana Tonix Zarate
 // Fecha   : 2026-05-24
 // Desc.   : Importa y renderiza el menú
