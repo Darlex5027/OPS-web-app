@@ -154,21 +154,27 @@ $stmt->execute([$datos_usuario['Id_tipo_usuario']]);
 $permisos = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
 /* =========================
-   ID CARRERA
+   ID CARRERA Y CONTEXTO ALUMNO
 ========================= */
 $carrera = null;
+$id_alumno = null; // Variable nueva para capturar la identidad del alumno
 
 if ($datos_usuario['Id_tipo_usuario'] == 2) {
 
+    // Modificamos la query para traer tanto la Carrera como el Id_alumno de la tabla Alumnos
     $stmt = $pdo->prepare("
-        SELECT Id_carrera
+        SELECT Id_carrera, Id_alumno
         FROM Alumnos
         WHERE Id_usuario = ?
     ");
 
     $stmt->execute([$datos_usuario['Id_usuario']]);
+    $alumno_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $carrera = $stmt->fetchColumn();
+    if ($alumno_data) {
+        $carrera = $alumno_data['Id_carrera'];
+        $id_alumno = $alumno_data['Id_alumno']; // <--- Capturamos el Id_alumno real
+    }
 
 } elseif (in_array($datos_usuario['Id_tipo_usuario'], [1, 3])) {
 
@@ -179,11 +185,12 @@ if ($datos_usuario['Id_tipo_usuario'] == 2) {
     ");
 
     $stmt->execute([$datos_usuario['Id_usuario']]);
-
     $carrera = $stmt->fetchColumn();
 }
 
+// Inyectamos ambos valores de forma estructurada en el arreglo del usuario
 $datos_usuario['Id_carrera'] = $carrera ?: null;
+$datos_usuario['Id_alumno'] = $id_alumno ?: null; // <--- Ahora viaja en el JSON de respuesta
 
 /* =========================
    SEGURIDAD
