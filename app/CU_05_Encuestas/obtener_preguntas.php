@@ -2,7 +2,10 @@
 /**
  * Archivo     : obtener_preguntas.php
  * Módulo      : CU_05_ResponderEncuestas
- * Descripción : Obtiene las preguntas de una encuesta específica
+ * Autor       : Francisco Angel Membrila Alarcón
+ * Fecha       : 22/04/2026
+ * Descripción : Servicio encargado de obtener las preguntas asociadas
+ * a una encuesta específica dentro del sistema OPS.
  */
 
 require_once("../php/db.php");

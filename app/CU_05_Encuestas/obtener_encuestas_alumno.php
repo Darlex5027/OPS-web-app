@@ -2,7 +2,23 @@
 /**
  * Archivo     : obtener_encuestas_alumno.php
  * Módulo      : CU_05_ResponderEncuestas
- * Descripción : Obtiene encuestas pendientes para ALUMNO (Contestador=0)
+ * Autor       : Francisco Angel Membrila Alarcón
+ * Fecha       : 22/04/2026
+ * Descripción : Servicio encargado de obtener las encuestas pendientes
+ * para usuarios con rol ALUMNO dentro del sistema OPS.
+ *
+ * Funcionalidades:
+ * - Validar la recepción del Id del alumno.
+ * - Consultar encuestas activas asociadas al alumno.
+ * - Relacionar encuestas con servicios y periodos académicos.
+ * - Filtrar actividades válidas según su estado.
+ * - Excluir encuestas previamente respondidas.
+ * - Retornar información en formato JSON.
+ *
+ * Estados de actividad considerados:
+ * - EN_CURSO
+ * - COMPLETADO
+ * - PENDIENTE
  */
 
 require_once("../php/db.php");

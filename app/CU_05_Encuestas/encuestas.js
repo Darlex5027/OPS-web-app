@@ -1,3 +1,14 @@
+/**
+ * Archivo      : encuestas.js
+ * Módulo       : CU_05_Encuestas
+ * Autor        : Francisco Angel Membrila Alarcón
+ * Fecha        : 22/04/2026
+ * Descripción  : Controlador principal del módulo de encuestas del
+ * sistema OPS. Gestiona la carga de encuestas pendientes,
+ * visualización dinámica de preguntas y envío de respuestas
+ * mediante peticiones fetch al backend.
+ */
+
 import { lanzarToast } from '../js/lanzar_toast.js';
 import { renderMenu } from "../js/menu.js";
 
