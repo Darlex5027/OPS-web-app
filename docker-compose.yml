@@ -4,7 +4,7 @@ services:
     depends_on:
       - database
     ports:
-      - "8080:80"
+      - "80:80"
     volumes:
       - ./uploads:/home/uploads
       - ./app:/var/www/html
