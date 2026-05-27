@@ -4,7 +4,7 @@ services:
     depends_on:
       - database
     ports:
-      - "8080:80"
+      - "80:80"
     volumes:
       - ./uploads:/home/uploads
       - ./app:/var/www/html
@@ -18,9 +18,8 @@ services:
       TZ: "America/Mexico_City"
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASS}"
     volumes:
-      - db_data:/var/lib/mysql
+      - ./db_data:/var/lib/mysql
       - ./database/1_init.sql:/docker-entrypoint-initdb.d/1_init.sql
       - ./database/2_dummydata.sql:/docker-entrypoint-initdb.d/2_dummydata.sql
 volumes:
-  db_data:
   
