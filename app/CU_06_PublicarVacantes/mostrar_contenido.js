@@ -155,16 +155,11 @@ export function validarFormulario() {
         "empresa_flayer": "Empresa",
         "servicio_flayer": "Servicio",
         "expiracion_flayer": "Fecha de expiración",
-        "nombre_empresa": "Nombre de la empresa",
-        "descripcion_empresa": "Descripción de la empresa",
-        "razon_empresa": "Razón social",
-        "rfc_empresa": "RFC",
-        "direccion_empresa": "Dirección",
-        "web_empresa": "Sitio web"
+        "nombre_empresa": "Nombre de la empresa"
     };
 
     // Campos requeridos para nueva empresa
-    const camposNuevaEmpresa = ["nombre_empresa", "descripcion_empresa", "razon_empresa", "rfc_empresa", "direccion_empresa", "web_empresa"];
+    const camposNuevaEmpresa = ["nombre_empresa"];
 
     // -------- VALIDACIÓN MODO MANUAL --------
     if (modoRegistro === "manual") {
