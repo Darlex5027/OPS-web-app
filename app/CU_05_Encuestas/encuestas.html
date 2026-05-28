@@ -65,12 +65,9 @@
                             - Botón "Responder encuesta"
                         -->
                     </div>
-                    <div id="mensaje-estado-pendiente"
-                        style="display: none; padding: 20px; text-align: center; background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 5px; color: #856404;">
-                        <p>No se muestran encuestas para actividades con estado PENDIENTE</p>
-                    </div>
                     <div id="estado-vacio-alumno" style="display: none;">
-                        <p>¡No tienes encuestas pendientes!</p>
+                        <p>No hay encuestas para mostrar. Ten en cuenta que si alguna actividad está aún ‘PENDIENTE’, 
+                            las encuestas de esa actividad no aparecerán hasta que cambie su estado</p>
                     </div>
                 </div>
 
@@ -120,8 +117,8 @@
         </main>
 
     </div><!-- /.main -->
-    <div id="toast-mensaje" class="toast oculto"></div>
     <script type="module" src="menu.js"></script>
+    <div id="toast-mensaje" class="toast oculto"></div>
     <script type="module" src="encuestas.js"></script>
 </body>
 

@@ -2,23 +2,7 @@
 /**
  * Archivo     : obtener_encuestas_alumno.php
  * Módulo      : CU_05_ResponderEncuestas
- * Autor       : Francisco Angel Membrila Alarcón
- * Fecha       : 22/04/2026
- * Descripción : Servicio encargado de obtener las encuestas pendientes
- * para usuarios con rol ALUMNO dentro del sistema OPS.
- *
- * Funcionalidades:
- * - Validar la recepción del Id del alumno.
- * - Consultar encuestas activas asociadas al alumno.
- * - Relacionar encuestas con servicios y periodos académicos.
- * - Filtrar actividades válidas según su estado.
- * - Excluir encuestas previamente respondidas.
- * - Retornar información en formato JSON.
- *
- * Estados de actividad considerados:
- * - EN_CURSO
- * - COMPLETADO
- * - PENDIENTE
+ * Descripción : Obtiene encuestas pendientes para ALUMNO (Contestador=0)
  */
 
 require_once("../php/db.php");
@@ -42,29 +26,28 @@ try {
     
     /// Consulta SQL corregida: Amarre estricto de servicio y periodo simultáneamente
     $sql = "SELECT 
-            e.Id_encuesta AS Id_encuesta, 
-            e.Nombre AS Nombre, 
-            e.Descripcion AS Descripcion,
-            e.Id_servicio AS Id_servicio,
-            s.Servicio AS NombreServicio,
-            aa.Estado AS EstadoActividad -- <--- AGREGA ESTA LÍNEA
-        FROM Encuestas e
-        INNER JOIN Actividades s ON e.Id_servicio = s.Id_servicio
-        INNER JOIN Periodo_Encuesta pe ON e.Id_encuesta = pe.Id_encuesta
-        INNER JOIN Actividades_Alumnos aa ON aa.Id_alumno = :id_alumno 
-                                          AND aa.Id_servicio = e.Id_servicio
-                                          AND aa.periodo_tipo = pe.Periodo_tipo
-                                          AND aa.periodo_año = pe.Periodo_año
-        WHERE e.Contestador = 0 
-          AND e.Activo = 1
-          AND aa.Estado IN ('EN_CURSO', 'COMPLETADO', 'PENDIENTE') -- <--- AGREGA 'PENDIENTE' AQUÍ
-          AND NOT EXISTS (
-              SELECT 1 
-              FROM Respuestas r 
-              WHERE r.Id_encuesta = e.Id_encuesta 
-                AND r.Id_alumno = :id_alumno_repetido
-          )
-        ORDER BY e.Id_encuesta ASC";
+                e.Id_encuesta AS Id_encuesta, 
+                e.Nombre AS Nombre, 
+                e.Descripcion AS Descripcion,
+                e.Id_servicio AS Id_servicio,
+                s.Servicio AS NombreServicio
+            FROM Encuestas e
+            INNER JOIN Actividades s ON e.Id_servicio = s.Id_servicio
+            INNER JOIN Periodo_Encuesta pe ON e.Id_encuesta = pe.Id_encuesta
+            INNER JOIN Actividades_Alumnos aa ON aa.Id_alumno = :id_alumno 
+                                              AND aa.Id_servicio = e.Id_servicio
+                                              AND aa.periodo_tipo = pe.Periodo_tipo
+                                              AND aa.periodo_año = pe.Periodo_año
+            WHERE e.Contestador = 0 
+              AND e.Activo = 1
+              AND aa.Estado IN ('EN_CURSO', 'COMPLETADO')
+              AND NOT EXISTS (
+                  SELECT 1 
+                  FROM Respuestas r 
+                  WHERE r.Id_encuesta = e.Id_encuesta 
+                    AND r.Id_alumno = :id_alumno_repetido
+              )
+            ORDER BY e.Id_encuesta ASC";
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute([

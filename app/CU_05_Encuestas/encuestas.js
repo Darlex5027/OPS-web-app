@@ -1,14 +1,3 @@
-/**
- * Archivo      : encuestas.js
- * Módulo       : CU_05_Encuestas
- * Autor        : Francisco Angel Membrila Alarcón
- * Fecha        : 22/04/2026
- * Descripción  : Controlador principal del módulo de encuestas del
- * sistema OPS. Gestiona la carga de encuestas pendientes,
- * visualización dinámica de preguntas y envío de respuestas
- * mediante peticiones fetch al backend.
- */
-
 import { lanzarToast } from '../js/lanzar_toast.js';
 import { renderMenu } from "../js/menu.js";
 
@@ -30,110 +19,49 @@ let idAlumnoContexto = (idTipoUsuario === 2) ? (getCookie('Id_alumno')) : null;
 let encuestaActualId = null;
 
 // ==========================================
-// INICIALIZACIÓN
+// FUNCIÓN PARA MODAL DE CONFIRMACIÓN PERSONALIZADO
 // ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-    renderMenu();
-    if (!idUsuarioAutenticado) {
-        window.location.href = '../CU_01_Login/login.html';
-        return;
-    }
-    inicializarModulo();
+function renderModalConfirmacion(mensaje, onConfirmar, onCancelar = null) {
+    const elModalPrevio = document.getElementById('modal-confirmacion');
+    if (elModalPrevio) elModalPrevio.remove();
 
-    // ✅ Listener del formulario dentro del DOMContentLoaded
-    document.getElementById('form-encuesta').addEventListener('submit', async (e) => {
-        e.preventDefault();
+    const elFondo = document.createElement('div');
+    elFondo.id = 'modal-confirmacion';
 
-        // Usar alerta personalizada del sistema (modal de confirmación)
-        mostrarConfirmacionPersonalizada(
-            "Confirmar envío",
-            "¿Estás seguro de que deseas enviar tus respuestas? Una vez enviadas, no podrán ser editadas.",
-            async () => {
-                await procesarEnvioEncuesta();
-            }
-        );
+    const elContenido = document.createElement('div');
+
+    const elParrafo = document.createElement('p');
+    elParrafo.textContent = mensaje;
+
+    const elBtnCancelar = document.createElement('button');
+    elBtnCancelar.textContent = 'Cancelar';
+    elBtnCancelar.addEventListener('click', function () {
+        elFondo.remove();
+        if (onCancelar && typeof onCancelar === 'function') {
+            onCancelar();
+        }
     });
-});
 
-// Función para mostrar confirmación personalizada (estilo módulo-7)
-function mostrarConfirmacionPersonalizada(titulo, mensaje, onConfirm) {
-    // Verificar si ya existe un modal
-    let modalExistente = document.getElementById('modal-confirmacion-personalizado');
-    if (modalExistente) {
-        modalExistente.remove();
-    }
+    const elBtnConfirmar = document.createElement('button');
+    elBtnConfirmar.textContent = 'Enviar respuestas';
+    elBtnConfirmar.addEventListener('click', function () {
+        elFondo.remove();
+        if (onConfirmar && typeof onConfirmar === 'function') {
+            onConfirmar();
+        }
+    });
 
-    // Crear el modal
-    const modalHTML = `
-        <div id="modal-confirmacion-personalizado" style="
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        ">
-            <div style="
-                background: white;
-                border-radius: 8px;
-                padding: 20px;
-                width: 400px;
-                max-width: 90%;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            ">
-                <h3 style="margin: 0 0 15px 0; color: #333;">${titulo}</h3>
-                <p style="margin: 0 0 20px 0; color: #666;">${mensaje}</p>
-                <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                    <button id="btn-cancelar-modal" style="
-                        padding: 8px 16px;
-                        background-color: #6c757d;
-                        color: white;
-                        border: none;
-                        border-radius: 4px;
-                        cursor: pointer;
-                    ">Cancelar</button>
-                    <button id="btn-confirmar-modal" style="
-                        padding: 8px 16px;
-                        background-color: #dc3545;
-                        color: white;
-                        border: none;
-                        border-radius: 4px;
-                        cursor: pointer;
-                    ">Confirmar</button>
-                </div>
-            </div>
-        </div>
-    `;
-
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-
-    const modal = document.getElementById('modal-confirmacion-personalizado');
-    const btnConfirmar = document.getElementById('btn-confirmar-modal');
-    const btnCancelar = document.getElementById('btn-cancelar-modal');
-
-    const cerrarModal = () => {
-        modal.remove();
-    };
-
-    btnConfirmar.onclick = () => {
-        cerrarModal();
-        if (onConfirm) onConfirm();
-    };
-
-    btnCancelar.onclick = cerrarModal;
-
-    // Cerrar al hacer clic fuera del contenido
-    modal.onclick = (e) => {
-        if (e.target === modal) cerrarModal();
-    };
+    elContenido.appendChild(elParrafo);
+    elContenido.appendChild(elBtnCancelar);
+    elContenido.appendChild(elBtnConfirmar);
+    elFondo.appendChild(elContenido);
+    document.body.appendChild(elFondo);
 }
 
-// Función para procesar el envío de la encuesta
-async function procesarEnvioEncuesta() {
+// ==========================================
+// FUNCIÓN PARA ENVIAR RESPUESTAS CON CONFIRMACIÓN
+// ==========================================
+async function enviarRespuestasConConfirmacion() {
     const wrappers = document.querySelectorAll('.pregunta-wrapper');
     let respuestas = [];
     let errores = false;
@@ -178,46 +106,75 @@ async function procesarEnvioEncuesta() {
     });
 
     if (errores) {
-        lanzarToast("Por favor, responda las preguntas obligatorias antes de continuar.", "error");
+        lanzarToast("Por favor, completa las preguntas obligatorias marcadas.", "advertencia");
         if (primerErrorDiv) primerErrorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
 
-    try {
-        const payload = {
-            respuestas: respuestas,
-            Id_alumno: parseInt(idAlumnoContexto),
-            Id_encuesta: parseInt(encuestaActualId)
-        };
+    // Mostrar modal de confirmación personalizado
+    renderModalConfirmacion(
+        "¿Estás seguro de que deseas enviar tus respuestas? Una vez enviadas, no podrán ser editadas.",
+        async function() {
+            // Función que se ejecuta al confirmar
+            try {
+                const payload = {
+                    respuestas: respuestas,
+                    Id_alumno: parseInt(idAlumnoContexto),
+                    Id_encuesta: parseInt(encuestaActualId)
+                };
 
-        const response = await fetch('procesar_encuesta.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+                const response = await fetch('procesar_encuesta.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
-        const data = await response.json();
+                const data = await response.json();
 
-        if (data.success) {
-            lanzarToast('¡Encuesta completada con éxito! ✅', "success");
-            if (idTipoUsuario === 2) {
-                idAlumnoContexto = getCookie('Id_alumno') || "1";
-            } else {
-                idAlumnoContexto = null;
+                if (data.success) {
+                    lanzarToast('¡Encuesta completada con éxito!', 'exito');
+                    if (idTipoUsuario === 2) {
+                        idAlumnoContexto = getCookie('Id_alumno') || "1";
+                    } else {
+                        idAlumnoContexto = null;
+                    }
+                    document.getElementById('contenedor-preguntas').style.display = 'none';
+                    document.getElementById('seccion-lista').style.display = 'block';
+                    inicializarModulo();
+                } else {
+                    const msgFeedback = document.getElementById('mensaje-feedback');
+                    lanzarToast("Error: " + (data.message || "No se pudo guardar la encuesta"), "error");
+                    msgFeedback.style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            } catch (err) {
+                lanzarToast("Error al conectar con el servidor. Por favor, intenta nuevamente.", "error");
+                document.getElementById('lista-encuestas-alumno').innerHTML = '<p class="error">Error al cargar</p>';
             }
-            document.getElementById('contenedor-preguntas').style.display = 'none';
-            document.getElementById('seccion-lista').style.display = 'block';
-            inicializarModulo();
-        } else {
-            const msgFeedback = document.getElementById('mensaje-feedback');
-            msgFeedback.innerText = "Error: " + (data.message || "No se pudo guardar la encuesta");
-            msgFeedback.style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-    } catch (err) {
-        lanzarToast('Error de red con el servidor.', "error");
-    }
+    );
 }
+
+// ==========================================
+// INICIALIZACIÓN
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    renderMenu();
+    if (!idUsuarioAutenticado) {
+        lanzarToast("Sesión no válida. Redirigiendo al login...", "error");
+        setTimeout(() => {
+            window.location.href = '../CU_01_Login/login.html';
+        }, 1500);
+        return;
+    }
+    inicializarModulo();
+
+    // ✅ Listener del formulario - AHORA USA LA CONFIRMACIÓN PERSONALIZADA
+    document.getElementById('form-encuesta').addEventListener('submit', (e) => {
+        e.preventDefault();
+        enviarRespuestasConConfirmacion();
+    });
+});
 
 // ==========================================
 // MÓDULO PRINCIPAL
@@ -227,7 +184,6 @@ function inicializarModulo() {
     document.getElementById('vista-coordinador').style.display = 'none';
     document.getElementById('estado-vacio-alumno').style.display = 'none';
     document.getElementById('estado-vacio-coordinador').style.display = 'none';
-    document.getElementById('mensaje-estado-pendiente').style.display = 'none';
 
     if (idTipoUsuario === 2) {
         document.getElementById('vista-alumno').style.display = 'block';
@@ -249,34 +205,13 @@ async function cargarEncuestasAlumno() {
 
         const listaDiv = document.getElementById('lista-encuestas-alumno');
         const estadoVacio = document.getElementById('estado-vacio-alumno');
-        const mensajePendiente = document.getElementById('mensaje-estado-pendiente');
 
-        // Resetear visibilidad
-        mensajePendiente.style.display = 'none';
-        estadoVacio.style.display = 'none';
-        listaDiv.innerHTML = '';
-        listaDiv.style.display = 'block';
-
-        // 1. Verificar si hay encuestas en estado PENDIENTE
-        const tienePendientes = encuestas.some(e => e.EstadoActividad === 'PENDIENTE');
-
-        if (tienePendientes) {
-            // Mostrar mensaje y ocultar lista
-            mensajePendiente.style.display = 'block';
-            listaDiv.style.display = 'none';
-            return;
-        }
-        
-        // 2. Filtrar encuestas que NO están en estado PENDIENTE
-        const encuestasValidas = encuestas.filter(e => e.EstadoActividad !== 'PENDIENTE');
-        
-        // 3. Si no hay encuestas válidas, mostrar estado vacío
-        if (encuestasValidas.length === 0) {
+        if (encuestas.length === 0) {
+            listaDiv.innerHTML = '';
             estadoVacio.style.display = 'block';
-        } 
-        // 4. Renderizar la lista de encuestas válidas
-        else {
-            listaDiv.innerHTML = encuestasValidas.map(e => {
+        } else {
+            estadoVacio.style.display = 'none';
+            listaDiv.innerHTML = encuestas.map(e => {
                 const nombreSanitizado = e.Nombre.replace(/'/g, "\\'");
                 const descSanitizada = e.Descripcion.replace(/'/g, "\\'");
                 return `
@@ -286,7 +221,7 @@ async function cargarEncuestasAlumno() {
                             <h5>${e.Nombre}</h5>
                             <p>${e.Descripcion}</p>
                             <button type="button" class="btn-responder"
-                                onclick="window.abrirEncuesta(${e.Id_encuesta}, '${nombreSanitizado}', '${descSanitizada}', '${idAlumnoContexto}')">
+                                onclick="abrirEncuesta(${e.Id_encuesta}, '${nombreSanitizado}', '${descSanitizada}', '${idAlumnoContexto}')">
                                 Responder encuesta
                             </button>
                         </div>
@@ -295,8 +230,7 @@ async function cargarEncuestasAlumno() {
             }).join('');
         }
     } catch (err) {
-        console.error("Error al cargar encuestas del alumno:", err);
-        lanzarToast("Error al cargar encuestas", "error");
+        lanzarToast("Error al cargar las encuestas disponibles.", "error");
         document.getElementById('lista-encuestas-alumno').innerHTML = '<p class="error">Error al cargar encuestas</p>';
     }
 }
@@ -313,7 +247,6 @@ async function cargarAlumnosCoordinador() {
         const listaDiv = document.getElementById('lista-alumnos-pendientes');
         const estadoVacio = document.getElementById('estado-vacio-coordinador');
 
-        // Filtrar alumnos con encuestas pendientes (que no sean PENDIENTE)
         const alumnosConPendientes = alumnos.filter(a => a.total_pendientes > 0);
 
         if (alumnosConPendientes.length === 0) {
@@ -333,13 +266,13 @@ async function cargarAlumnosCoordinador() {
                         </span>
                         <button type="button" class="btn-toggle-acordeon"
                             style="align-self: flex-start; margin-top: 5px;"
-                            onclick="window.toggleAcordeonAlumno(${a.Id_alumno})">
+                            onclick="toggleAcordeonAlumno(${a.Id_alumno})">
                             Ver encuestas pendientes
                         </button>
                     </div>
                     <div id="acordeon-${a.Id_alumno}" class="lista-encuestas-desplegable"
                         style="display: none; padding-left: 15px; border-left: 2px solid #ccc; margin-top: 10px;">
-                        ${a.encuestas.filter(e => e.EstadoActividad !== 'PENDIENTE').map(e => {
+                        ${a.encuestas.map(e => {
                 const nombreSanitizado = e.Nombre.replace(/'/g, "\\'");
                 const descSanitizada = e.Descripcion.replace(/'/g, "\\'");
                 return `
@@ -349,7 +282,7 @@ async function cargarAlumnosCoordinador() {
                                     <h5 style="margin: 0 0 6px 0;">${e.Nombre}</h5>
                                     <p style="margin: 0 0 10px 0; font-size: 0.9rem; color: #555;">${e.Descripcion}</p>
                                     <button type="button" class="btn-responder-admin"
-                                        onclick="window.abrirEncuesta(${e.Id_encuesta}, '${nombreSanitizado}', '${descSanitizada}', ${a.Id_alumno})">
+                                        onclick="abrirEncuesta(${e.Id_encuesta}, '${nombreSanitizado}', '${descSanitizada}', ${a.Id_alumno})">
                                         Responder encuesta
                                     </button>
                                 </div>
@@ -360,8 +293,7 @@ async function cargarAlumnosCoordinador() {
             `).join('');
         }
     } catch (err) {
-        console.error("Error al cargar lista de alumnos:", err);
-        lanzarToast("Error al cargar alumnos", "error");
+        lanzarToast("Error al cargar la lista de alumnos con encuestas pendientes.", "error");
         document.getElementById('lista-alumnos-pendientes').innerHTML = '<p class="error">Error al cargar alumnos</p>';
     }
 }
@@ -396,8 +328,7 @@ async function abrirEncuesta(idEncuesta, nombre, desc, idAlumnoDestino) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (err) {
-        console.error("Error al obtener preguntas:", err);
-        lanzarToast("Error al cargar las preguntas de la encuesta", "error");
+        lanzarToast("Error al cargar las preguntas de la encuesta.", "error");
     }
 }
 
@@ -435,7 +366,7 @@ function renderizarPregunta(p) {
                           class="form-control"
                           rows="4"
                           style="width: 100%; box-sizing: border-box;"
-                          oninput="window.actualizarContadorCaracteres(this)"
+                          oninput="actualizarContadorCaracteres(this)"
                           ${requiredProp}></textarea>
                 <small class="contador-caracteres" style="display: block; margin-top: 4px; color: #666;">
                     Caracteres restantes: <span id="chars_q_${p.Id_pregunta}">2000</span>
@@ -485,10 +416,9 @@ function actualizarContadorCaracteres(textarea) {
 // CANCELACIÓN Y VOLVER
 // ==========================================
 function cancelarEncuesta() {
-    mostrarConfirmacionPersonalizada(
-        "Cancelar encuesta",
+    renderModalConfirmacion(
         "¿Seguro que deseas cancelar? Las respuestas no se guardarán como borrador.",
-        () => {
+        function() {
             if (idTipoUsuario === 2) {
                 idAlumnoContexto = getCookie('Id_alumno') || "1";
             } else {
@@ -502,10 +432,9 @@ function cancelarEncuesta() {
 }
 
 function volverALista() {
-    mostrarConfirmacionPersonalizada(
-        "Volver a la lista",
+    renderModalConfirmacion(
         "¿Seguro que deseas volver? Las respuestas no se guardarán.",
-        () => {
+        function() {
             if (idTipoUsuario === 2) {
                 idAlumnoContexto = getCookie('Id_alumno') || "1";
             } else {
