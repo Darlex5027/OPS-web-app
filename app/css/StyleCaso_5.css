@@ -690,25 +690,50 @@ textarea.form-control {
 /* ===================================================== */
 .toast {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    transition: 0.4s;
+    bottom: 28px;
+    right: 28px;
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 13px 16px;
+    border-radius: 12px;
+    font-size: .875rem;
+    font-family: var(--fuente);
+    font-weight: 500;
+    line-height: 1.45;
+    max-width: 380px;
+    z-index: 9999;
+    border: 1px solid transparent;
+    opacity: 1;
+    transition: opacity .35s ease;
+    box-shadow: 0 6px 16px rgba(0,0,0,.12);
 }
 
+.toast.oculto   { display: none !important; }
+.toast.saliendo { opacity: 0; }
+
 .toast.exito {
-    background-color: #2ecc71;
+    background: #EAF3DE;
+    border-color: #97C459;
+    color: #27500A;
 }
 
 .toast.error {
-    background-color: #e74c3c;
+    background: #FCEBEB;
+    border-color: #F09595;
+    color: #501313;
 }
 
-.toast.oculto {
-    opacity: 0;
-    transform: translateY(20px);
+.toast.info {
+    background: #E6F1FB;
+    border-color: #85B7EB;
+    color: #042C53;
+}
+
+.toast.advertencia {
+    background: #FAEEDA;
+    border-color: #EF9F27;
+    color: #412402;
 }
 
 /* ===================================================== */
