@@ -685,9 +685,7 @@ textarea.form-control {
     transition: var(--transicion);
 }
 
-/* ===================================================== */
 /* ===== TOAST ===== */
-/* ===================================================== */
 .toast {
     position: fixed;
     bottom: 28px;
@@ -735,6 +733,7 @@ textarea.form-control {
     border-color: #EF9F27;
     color: #412402;
 }
+
 
 /* ===================================================== */
 /* ===== RESPONSIVE ===== */
