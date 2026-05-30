@@ -696,17 +696,19 @@ textarea.form-control {
     padding: 12px 24px;
     border-radius: 8px;
     transition: 0.4s;
-    z-index: 9999;
-    box-shadow: var(--sombra-card);
 }
 
-.toast.exito  { background-color: #2ecc71; }
-.toast.error  { background-color: #e74c3c; }
+.toast.exito {
+    background-color: #2ecc71;
+}
+
+.toast.error {
+    background-color: #e74c3c;
+}
 
 .toast.oculto {
     opacity: 0;
     transform: translateY(20px);
-    pointer-events: none;
 }
 
 /* ===================================================== */
