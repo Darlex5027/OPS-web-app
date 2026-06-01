@@ -22,6 +22,7 @@ window.imprimirPDF = imprimirPDF;
 
 // Se cargan los elemento a usar desde el HTML
 const elActividad = document.getElementById("actividad");
+const elGrupo = document.getElementById("grupo");
 const elEstado = document.getElementById("estado");
 const elPeriodoTipo = document.getElementById("periodo_tipo");
 const elPeriodoAnio = document.getElementById("periodo_anio");
@@ -90,6 +91,15 @@ function cargar_catalogos() {
 				elActividad.appendChild(option)
 			});
 
+			catalogos.grupos.forEach(function (grupo) {
+				//Se crea una opción con value como el Id_servicio de la actividad a cargar
+				const option = document.createElement('option');
+				option.value = grupo.grupo;
+				//A la opción se le da el texto de Servicio (nombre del servicio)
+				option.textContent = grupo.grupo;
+				elGrupo.appendChild(option)
+			});
+
 			// Se cargan los estados disponibles para el filtro de estado de la actividad.
 			catalogos.estados.forEach(function (estado) {
 				// Se cargan los estados disponibles que puede tener un servicio.
@@ -134,7 +144,8 @@ function fetchDatosTabla() {
 			actividad: elActividad.value,
 			estado: elEstado.value,
 			periodo_tipo: elPeriodoTipo.value,
-			periodo_anio: elPeriodoAnio.value
+			periodo_anio: elPeriodoAnio.value,
+			grupo: elGrupo.value
 		})
 		// No es necesario enviar el Id_usuario o Id_carrera porque ese se obtiene dentro del php
 

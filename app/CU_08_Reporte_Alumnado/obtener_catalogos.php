@@ -22,13 +22,15 @@ try{
 	$catalog_estado = $pdo->query("SELECT DISTINCT Estado FROM Actividades_Alumnos");
 	$catalog_periodo_tipo = $pdo->query("SELECT DISTINCT Actividades_Alumnos.periodo_tipo FROM Actividades_Alumnos");
 	$catalog_periodo_anio = $pdo->query("SELECT DISTINCT Actividades_Alumnos.periodo_año FROM Actividades_Alumnos");
+	$catalog_grupos = $pdo->query("SELECT UNIQUE(RIGHT(grupo,1)) as grupo FROM Alumnos");
 
 	// Se construye un arreglo con los resultados de las consultas para enviarlo como JSON al frontend
 	$resultado = [
 		"servicios" => $catalog_servicio->fetchAll(),
 		"estados" => $catalog_estado->fetchAll(),
 		"periodo_tipo" => $catalog_periodo_tipo->fetchAll(),
-		"periodo_anio" => $catalog_periodo_anio->fetchAll()
+		"periodo_anio" => $catalog_periodo_anio->fetchAll(),
+		"grupos" => $catalog_grupos->fetchAll()
 	];
 	
 	// Se envía el resultado como JSON al frontend
