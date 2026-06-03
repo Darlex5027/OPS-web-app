@@ -13,6 +13,10 @@ require_once '../php/db.php';
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
     $stmt = $pdo->prepare("SELECT 
+    Encuestas.Codigo,
+    Encuestas.Version,
+    Encuestas.Revision,
+    Encuestas.Fecha,
     Periodo_Encuesta.Periodo_tipo,
     Periodo_Encuesta.Periodo_año,
     Encuestas.Id_encuesta, 
@@ -35,6 +39,10 @@ try {
         $id_encuesta = $fila['Id_encuesta'];
         if (!isset($encuestas[$id_encuesta])) {
             $encuestas[$id_encuesta] = [
+                'Codigo' => $fila['Codigo'],
+                'Version' => $fila['Version'],
+                'Revision' => $fila['Revision'],
+                'Fecha' => $fila['Fecha'],
                 'Id_encuesta' => $fila['Id_encuesta'],
                 'Nombre' => $fila['Nombre'],
                 'Activo' => $fila['Activo'],

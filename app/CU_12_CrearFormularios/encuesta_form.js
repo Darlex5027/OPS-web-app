@@ -48,6 +48,11 @@ function renderServicios(servicios) {
 }
 // Valida el formulario y envía los datos de la nueva encuesta al servidor
 function guardarEncuesta() {
+    const valorCodigo = document.getElementById('inputCodigo').value;
+    const valorRevision = document.getElementById('inputRevision').value;
+    const valorFecha = document.getElementById('inputFecha').value;
+    const valorVersion = document.getElementById('inputVersion').value;
+
     const valorNombre = document.getElementById('inputNombre').value;
     const valorDescripcion = document.getElementById('inputDescripcion').value;
     const valorServicio = document.getElementById('selectServicio').value;
@@ -65,6 +70,10 @@ function guardarEncuesta() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+            codigo: valorCodigo,
+            revision: valorRevision,
+            fecha: valorFecha,
+            version: valorVersion,
             nombre: valorNombre,
             descripcion: valorDescripcion,
             servicio: valorServicio,
@@ -100,6 +109,10 @@ function guardarEncuesta() {
 // y que la fecha de expiración sea mayor a hoy
 function validarFormulario() {
     const nombres = {
+        "inputCodigo": "Codigo",
+        "inputRevision": "Revision",
+        "inputFecha": "Fecha",
+        "inputVersion": "Version",
         "inputNombre": "Nombre",
         "inputDescripcion": "Descripcion",
         "selectServicio": "Servicio",
@@ -110,7 +123,7 @@ function validarFormulario() {
         "inputFechaFin": "Fecha de expiración"
     };
 
-    const campos = ["inputNombre", "inputDescripcion", "selectServicio", "selectActivo", "selectContestador", "selectPeriodoTipo", "inputPeriodoAnio", "inputFechaFin"];
+    const campos = ["inputCodigo","inputRevision","inputFecha","inputVersion","inputNombre", "inputDescripcion", "selectServicio", "selectActivo", "selectContestador", "selectPeriodoTipo", "inputPeriodoAnio", "inputFechaFin"];
     // Verifica que ningún campo esté vacío
     for (const idCampo of campos) {
         const elCampo = document.getElementById(idCampo);
