@@ -99,7 +99,7 @@ async function dibujarEncabezado(doc, cfg) {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     cfg.titulo.split('\n').forEach((linea, i) => {
-        doc.text(linea.trim(), cx, top + 15 + i * 5, { align: 'center' });
+        doc.text(linea.trim(), cx, top + 30 + i * 5, { align: 'center' });
     });
 
     // ── Metadatos ───────────────────────────────────────────────────────────────
