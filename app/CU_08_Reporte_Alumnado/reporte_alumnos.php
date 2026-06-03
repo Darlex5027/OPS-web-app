@@ -3,6 +3,7 @@
 /**
  * Archivo:     reporte_alumnos.php
  * Autor:     	Alejandro Resendiz Reyes
+ * Módulo:      CU_08_Reporte_Alumnado
  * Fecha:       15-03-2026
  * Descripción: Endpoint PHP del modulo CU08 - Reporte de Alumnado.
  *              Recibe por POST un objeto JSON con los filtros seleccionados

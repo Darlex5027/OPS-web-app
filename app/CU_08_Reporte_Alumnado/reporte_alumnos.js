@@ -1,6 +1,7 @@
 /**
  * Archivo:     reporte_alumnos.js
  * Autor:      	Alejandro Resendiz Reyes
+ * Módulo:      CU_08_Reporte_Alumnado
  * Fecha:       15-03-2026
  * Descripción: Logica del cliente para el modulo CU08 - Reporte de Alumnado.
  * 				Carga los catalogos de filtros (actividad, estado, periodo) en los
@@ -14,7 +15,7 @@
 import { obtenerCookie } from '../js/cookie.js';
 import { lanzarToast } from '../js/lanzar_toast.js';
 import { renderMenu } from '../js/menu.js';
-
+import { handleImprimirPDF } from './generar_pdf_encabezado.js';
 // Se exponen las funciones cargar_tabla, exportarExcel e imprimirPDF al ámbito global para que puedan ser llamadas desde el HTML
 window.cargar_tabla = cargar_tabla;
 window.exportarExcel = exportarExcel;
@@ -61,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
 /*
 * CARGAR CATALOGOS EN LOS SELECT
 */
-
+var grupos = "";
 function cargar_catalogos() {
 
 	fetch("./obtener_catalogos.php")
@@ -95,6 +96,7 @@ function cargar_catalogos() {
 				//Se crea una opción con value como el Id_servicio de la actividad a cargar
 				const option = document.createElement('option');
 				option.value = grupo.grupo;
+				grupos = grupos + grupo.grupo + ",";
 				//A la opción se le da el texto de Servicio (nombre del servicio)
 				option.textContent = grupo.grupo;
 				elGrupo.appendChild(option)
@@ -250,19 +252,39 @@ function exportarExcel() {
 	}
 }
 
-function imprimirPDF() {
-	try {
-		// Se obtiene la tabla de resultados y se convierte a un PDF usando jsPDF y jsPDF-AutoTable
-		const { jsPDF } = window.jspdf;
-		const doc = new jsPDF({
-			orientation: 'landscape',
-			unit: 'mm',
-			format: 'letter' // o 'a4' según prefieras
-		});
-		doc.autoTable({ html: '#tabla-resultados' });
-		doc.save('reporte_alumnos.pdf');
-	} catch (error) {
-		lanzarToast("Error al exportar a PDF", "error");
-	}
+var facultad = "";
+var carrera = "";
+var nombreDocente = "";
+
+async function obtenerDatosEncabezado() {
+    const res  = await fetch('./obtener_datos_encabezado.php');
+    const data = await res.json();
+
+    if (data.error) {
+        lanzarToast('No se pudo obtener la información del encabezado', 'error');
+        return;
+    }
+
+    facultad      = data.facultad;
+    carrera       = data.carrera;
+    nombreDocente = data.nombre_completo;
 }
 
+async function imprimirPDF() {
+    await obtenerDatosEncabezado();   // ← espera a que el fetch termine
+
+    console.log("facultad:", facultad);
+    console.log("carrera:", carrera);
+    console.log("nombreDocente:", nombreDocente);
+
+    handleImprimirPDF(
+        'tabla-resultados', 0,
+        "INFORME DE ACTIVIDADES REALIZADAS DE\n SERVICIO SOCIAL\nCONTROL DE EXPEDIENTE DE SERVICIO SOCIAL",
+        "108a-RG-08", "9001:2015", "Noviembre \n2024", "02",
+        facultad,
+        carrera,
+        `${elPeriodoTipo.value} ${elPeriodoAnio.value}`,
+        `${elGrupo.value === 'TODOS' ? grupos : elGrupo.value}`,
+        nombreDocente
+    );
+}

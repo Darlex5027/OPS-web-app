@@ -2,6 +2,7 @@
 
 /**
  * Archivo:     obtener_catalogos.php
+ * Módulo:      CU_08_Reporte_Alumnado
  * Autor:      	Alejandro Resendiz 
  * Fecha:       15-03-2026
  * Descripción: Endpoint PHP del modulo CU08 - Reporte de Alumnado.
