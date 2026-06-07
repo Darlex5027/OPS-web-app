@@ -1,6 +1,7 @@
 <!--
 	Archivo:        reporte_alumnos.html
 	Autor:          Alejandro Resendiz Reyes
+	Módulo:         CU_08_Reporte_Alumnado
 	Fecha:          15-03-2026
 	Descripción:    Vista del modulo CU08 - Reporte de Alumnado.
 	Presenta el formulario de filtros (actividad, estado, periodo) y
@@ -50,6 +51,11 @@
 				</select>
 				<select id="periodo_anio">
 					<option value ="TODOS">--Todos los años--</option>
+				</select>
+				
+				<h3>Grupo</h3>
+				<select id="grupo">
+					<option value ="TODOS">--Todos los grupos--</option>
 				</select>
 				<div class="buttons-group">
 					<button onClick="cargar_tabla()" id="btnGenerarTabla">Generar Tabla</button>
