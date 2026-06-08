@@ -21,7 +21,7 @@ let encuestaActualId = null;
 // ==========================================
 // FUNCIÓN PARA MODAL DE CONFIRMACIÓN PERSONALIZADO
 // ==========================================
-function renderModalConfirmacion(mensaje, onConfirmar, onCancelar = null) {
+function renderModalConfirmacion(mensaje, onConfirmar, onCancelar = null, textoConfirmar = "Enviar respuestas") {
     const elModalPrevio = document.getElementById('modal-confirmacion');
     if (elModalPrevio) elModalPrevio.remove();
 
@@ -43,7 +43,8 @@ function renderModalConfirmacion(mensaje, onConfirmar, onCancelar = null) {
     });
 
     const elBtnConfirmar = document.createElement('button');
-    elBtnConfirmar.textContent = 'Enviar respuestas';
+    // Usamos la variable textoConfirmar aquí
+    elBtnConfirmar.textContent = textoConfirmar; 
     elBtnConfirmar.addEventListener('click', function () {
         elFondo.remove();
         if (onConfirmar && typeof onConfirmar === 'function') {
@@ -418,7 +419,7 @@ function actualizarContadorCaracteres(textarea) {
 function cancelarEncuesta() {
     renderModalConfirmacion(
         "¿Seguro que deseas cancelar? Las respuestas no se guardarán como borrador.",
-        function() {
+        function () {
             if (idTipoUsuario === 2) {
                 idAlumnoContexto = getCookie('Id_alumno') || "1";
             } else {
@@ -427,7 +428,9 @@ function cancelarEncuesta() {
             document.getElementById('contenedor-preguntas').style.display = 'none';
             document.getElementById('seccion-lista').style.display = 'block';
             inicializarModulo();
-        }
+        },
+        null,                     // onCancelar (opcional)
+        "No enviar respuestas"          
     );
 }
 
