@@ -213,15 +213,15 @@
             <h3>Registrar nueva empresa</h3>
 
             <label>Nombre comercial <span class="required">*</span></label>
-            <input type="text" id="elInputEmpresaNombre" maxlength="200">
+            <input type="text" id="elInputEmpresaNombre" maxlength="200" required>
 
-            <label>Razón social <span class="required">*</span></label>
+            <label>Razón social</label>
             <input type="text" id="elInputEmpresaRazon" maxlength="200">
 
-            <label>RFC <span class="required">*</span></label>
+            <label>RFC</label>
             <input type="text" id="elInputEmpresaRFC" maxlength="13" oninput="this.value = this.value.toUpperCase()">
 
-            <label>Dirección <span class="required">*</span></label>
+            <label>Dirección</label>
             <input type="text" id="elInputEmpresaDireccion" maxlength="16000">
 
             <label>Sitio web</label>
@@ -236,7 +236,6 @@
             <button type="button" id="elBtnCerrarModal">Cancelar</button>
 
         </div>
-
     </div>
     <div id="toast-mensaje" class="toast oculto"></div>
 

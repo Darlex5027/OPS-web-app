@@ -3,8 +3,9 @@
  * Archivo       : registrar_empresa.php
  * Módulo        : CU_02_RegistroUsuario
  * Autor         : Francisco Angel Membrila Alarcón
- * Fecha         : 21/04/2026
+ * Fecha         : 22/04/2026
  * Descripción   : Endpoint que procesa el registro de empresas.
+ * Solo el nombre comercial es obligatorio.
  */
 
 require_once("../php/db.php");
@@ -28,9 +29,9 @@ $datos_empresa = [
     'descripcion' => trim($datos_input['descripcion'] ?? '')
 ];
 
-// Validación de campos obligatorios
-if (!$datos_empresa['nombre'] || !$datos_empresa['razon'] || !$datos_empresa['rfc'] || !$datos_empresa['direccion']) {
-    echo json_encode(["success" => false, "error" => "Campos obligatorios incompletos (*)"]);
+// Validación de campo obligatorio (solo nombre comercial)
+if (empty($datos_empresa['nombre'])) {
+    echo json_encode(["success" => false, "error" => "El nombre comercial es obligatorio."]);
     exit;
 }
 
@@ -39,9 +40,10 @@ try {
         $pdo = new PDO($dsn, $user, $pass, $options);
     }
 
+    // Usamos NULLIF para convertir cadenas vacías en NULL automáticamente al insertar
     $stmtInsertEmpresa = $pdo->prepare("
         INSERT INTO Empresas (Nombre, Razon_social, RFC, Direccion, Sitio_web, Descripcion, Activo, Fecha_registro)
-        VALUES (?, ?, ?, ?, ?, ?, 1, NOW())
+        VALUES (?, NULLIF(?, ''), NULLIF(?, ''), NULLIF(?, ''), NULLIF(?, ''), NULLIF(?, ''), 1, NOW())
     ");
 
     $stmtInsertEmpresa->execute([
@@ -66,7 +68,7 @@ try {
     error_log("Error DB al registrar empresa: " . $error_registro_empresa->getMessage());
 
     if ($error_registro_empresa->getCode() == 23000) {
-        $error_mensaje = "El nombre de la empresa o el RFC ya se encuentran registrados.";
+        $error_mensaje = "El nombre de la empresa ya se encuentra registrado.";
     } else {
         $error_mensaje = "Error al registrar la empresa. Por favor, intente más tarde.";
     }

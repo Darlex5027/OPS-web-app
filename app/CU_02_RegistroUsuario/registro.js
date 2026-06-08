@@ -37,17 +37,17 @@ document.addEventListener("DOMContentLoaded", function () {
     // Función para aplicar mayúsculas automáticas
     function aplicarMayusculasAlInstante() {
         const camposMayusculas = ['elInputMatricula', 'elInputGrupo'];
-        
+
         camposMayusculas.forEach(campoId => {
             const campo = document.getElementById(campoId);
             if (campo) {
-                campo.addEventListener('input', function() {
+                campo.addEventListener('input', function () {
                     this.value = this.value.toUpperCase();
                 });
             }
         });
     }
-    
+
     aplicarMayusculasAlInstante();
 
     // Validación de confirmación de contraseña con lanzarToast
@@ -242,20 +242,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 lanzarToast("Complete el nombre comercial de la empresa", "error");
                 return;
             }
-            if (!nuevaEmpresa.razon_social) {
-                lanzarToast("Complete la razón social de la empresa", "error");
-                return;
-            }
-            if (!nuevaEmpresa.rfc) {
-                lanzarToast("Complete el RFC de la empresa", "error");
-                return;
-            }
-            if (!regexRFC.test(nuevaEmpresa.rfc)) {
+            if (nuevaEmpresa.rfc && !regexRFC.test(nuevaEmpresa.rfc)) {
                 lanzarToast("RFC inválido. Debe tener entre 12 y 13 caracteres.", "error");
-                return;
-            }
-            if (!nuevaEmpresa.direccion) {
-                lanzarToast("Complete la dirección de la empresa", "error");
                 return;
             }
 
@@ -300,7 +288,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (docPMensaje) docPMensaje.style.display = "none";
 
         const tipo = document.querySelector("input[name='tipo_usuario']:checked").value;
-        
+
         // Validaciones comunes
         const matricula = document.getElementById("elInputMatricula").value.trim();
         const password = elInputPassword.value;
@@ -313,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const regexAlumno = /^[0-9]{8}$/;
         const regexCoordinador = /^[0-9]{4}$/;
-        
+
         if (tipo === "alumno" && !regexAlumno.test(matricula)) {
             lanzarToast("La matrícula del alumno debe tener 8 dígitos.", "error");
             return;
@@ -405,7 +393,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const horaInicio = document.getElementById("elInputHoraInicio").value;
             const horaFin = document.getElementById("elInputHoraFin").value;
-            
+
             let horario = null;
             if (horaInicio && horaFin) {
                 if (horaInicio >= horaFin) {
