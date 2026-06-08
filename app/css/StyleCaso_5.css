@@ -685,29 +685,55 @@ textarea.form-control {
     transition: var(--transicion);
 }
 
-/* ===================================================== */
 /* ===== TOAST ===== */
-/* ===================================================== */
 .toast {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    transition: 0.4s;
+    bottom: 28px;
+    right: 28px;
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 13px 16px;
+    border-radius: 12px;
+    font-size: .875rem;
+    font-family: var(--fuente);
+    font-weight: 500;
+    line-height: 1.45;
+    max-width: 380px;
     z-index: 9999;
-    box-shadow: var(--sombra-card);
+    border: 1px solid transparent;
+    opacity: 1;
+    transition: opacity .35s ease;
+    box-shadow: 0 6px 16px rgba(0,0,0,.12);
 }
 
-.toast.exito  { background-color: #2ecc71; }
-.toast.error  { background-color: #e74c3c; }
+.toast.oculto   { display: none !important; }
+.toast.saliendo { opacity: 0; }
 
-.toast.oculto {
-    opacity: 0;
-    transform: translateY(20px);
-    pointer-events: none;
+.toast.exito {
+    background: #EAF3DE;
+    border-color: #97C459;
+    color: #27500A;
 }
+
+.toast.error {
+    background: #FCEBEB;
+    border-color: #F09595;
+    color: #501313;
+}
+
+.toast.info {
+    background: #E6F1FB;
+    border-color: #85B7EB;
+    color: #042C53;
+}
+
+.toast.advertencia {
+    background: #FAEEDA;
+    border-color: #EF9F27;
+    color: #412402;
+}
+
 
 /* ===================================================== */
 /* ===== RESPONSIVE ===== */
@@ -866,4 +892,76 @@ textarea.form-control {
     .badge-seccion {
         font-size: 0.65rem;
     }
+}
+#modal-confirmacion {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+#modal-confirmacion > div {
+    background-color: white;
+    border-radius: 12px;
+    padding: 24px;
+    min-width: 320px;
+    max-width: 450px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+#modal-confirmacion p {
+    margin-bottom: 24px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+}
+
+#modal-confirmacion button {
+    padding: 10px 20px;
+    margin: 0 8px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#modal-confirmacion button:first-of-type {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+#modal-confirmacion button:first-of-type:hover {
+    background-color: #c0c0c0;
+}
+
+#modal-confirmacion button:last-of-type {
+    background-color: #dc3545;
+    color: white;
+}
+
+#modal-confirmacion button:last-of-type:hover {
+    background-color: #c82333;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#modal-confirmacion > div {
+    animation: modalFadeIn 0.2s ease-out;
 }
