@@ -2,8 +2,20 @@
 /**
  * Archivo     : obtener_alumnos_pendientes.php
  * Módulo      : CU_05_ResponderEncuestas
- * Descripción : Obtiene alumnos con encuestas pendientes para COORDINADOR/ADMIN (Contestador=1)
- * Incluye el No_Expediente del alumno y la Empresa asignada a su actividad.
+ * Autor       : Francisco Angel Membrila Alarcón
+ * Fecha       : 22/04/2026
+ * Descripción : Servicio encargado de obtener alumnos con encuestas
+ * pendientes para usuarios con rol COORDINADOR o ADMINISTRADOR
+ * dentro del sistema OPS.
+ *
+ * Funcionalidades:
+ * - Validar la recepción del Id de carrera.
+ * - Obtener alumnos activos pertenecientes a una carrera.
+ * - Consultar encuestas pendientes asignadas a cada alumno.
+ * - Relacionar encuestas con actividades, periodos y empresas.
+ * - Excluir encuestas previamente respondidas.
+ * - Obtener información académica y empresarial asociada.
+ * - Retornar resultados en formato JSON.
  */
 
 require_once("../php/db.php");

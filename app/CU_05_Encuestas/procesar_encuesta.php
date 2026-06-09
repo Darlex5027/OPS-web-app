@@ -2,7 +2,10 @@
 /**
  * Archivo     : procesar_encuesta.php
  * Módulo      : CU_05_ResponderEncuestas
- * Descripción : Guarda las respuestas de una encuesta en la base de datos con bloqueo de duplicados y mapeo de servicio
+ * Autor       : Francisco Angel Membrila Alarcón
+ * Fecha       : 22/04/2026
+ * Descripción : Servicio encargado de procesar y almacenar las
+ * respuestas de encuestas dentro del sistema OPS.
  */
 
 require_once("../php/db.php");

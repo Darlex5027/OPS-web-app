@@ -1,8 +1,20 @@
 <!--
   Archivo     : encuestas.html
-  Módulo      : CU_05_ResponderEncuestas
+  Módulo      : CU_05_Encuestas
   Autor       : Francisco Angel Membrila Alarcón
-  Fecha       : 11/05/2026
+  Fecha       : 22/04/2026
+  Descripción : Vista principal del módulo de encuestas del sistema OPS.
+                Permite visualizar las encuestas pendientes según el
+                tipo de usuario autenticado.
+
+                Funcionalidades:
+                - Mostrar encuestas pendientes para alumnos.
+                - Mostrar alumnos con encuestas pendientes para
+                  coordinadores y administradores.
+                - Cargar dinámicamente preguntas de cada encuesta.
+                - Enviar respuestas mediante fetch hacia encuestas.php.
+                - Gestionar cambios de vista entre listado y formulario
+                  sin recargar la página.
 -->
 <!DOCTYPE html>
 <html lang="es">
@@ -54,7 +66,8 @@
                         -->
                     </div>
                     <div id="estado-vacio-alumno" style="display: none;">
-                        <p>¡No tienes encuestas pendientes!</p>
+                        <p>No hay encuestas para mostrar. Ten en cuenta que si alguna actividad está aún ‘PENDIENTE’, 
+                            las encuestas de esa actividad no aparecerán hasta que cambie su estado</p>
                     </div>
                 </div>
 
@@ -104,7 +117,8 @@
         </main>
 
     </div><!-- /.main -->
-
+    <script type="module" src="menu.js"></script>
+    <div id="toast-mensaje" class="toast oculto"></div>
     <script type="module" src="encuestas.js"></script>
 </body>
 

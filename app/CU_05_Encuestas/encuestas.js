@@ -1,3 +1,4 @@
+import { lanzarToast } from '../js/lanzar_toast.js';
 import { renderMenu } from "../js/menu.js";
 
 // --- Control de Sesión y Roles ---
@@ -18,108 +19,161 @@ let idAlumnoContexto = (idTipoUsuario === 2) ? (getCookie('Id_alumno')) : null;
 let encuestaActualId = null;
 
 // ==========================================
+// FUNCIÓN PARA MODAL DE CONFIRMACIÓN PERSONALIZADO
+// ==========================================
+function renderModalConfirmacion(mensaje, onConfirmar, onCancelar = null, textoConfirmar = "Enviar respuestas") {
+    const elModalPrevio = document.getElementById('modal-confirmacion');
+    if (elModalPrevio) elModalPrevio.remove();
+
+    const elFondo = document.createElement('div');
+    elFondo.id = 'modal-confirmacion';
+
+    const elContenido = document.createElement('div');
+
+    const elParrafo = document.createElement('p');
+    elParrafo.textContent = mensaje;
+
+    const elBtnCancelar = document.createElement('button');
+    elBtnCancelar.textContent = 'Cancelar';
+    elBtnCancelar.addEventListener('click', function () {
+        elFondo.remove();
+        if (onCancelar && typeof onCancelar === 'function') {
+            onCancelar();
+        }
+    });
+
+    const elBtnConfirmar = document.createElement('button');
+    // Usamos la variable textoConfirmar aquí
+    elBtnConfirmar.textContent = textoConfirmar; 
+    elBtnConfirmar.addEventListener('click', function () {
+        elFondo.remove();
+        if (onConfirmar && typeof onConfirmar === 'function') {
+            onConfirmar();
+        }
+    });
+
+    elContenido.appendChild(elParrafo);
+    elContenido.appendChild(elBtnCancelar);
+    elContenido.appendChild(elBtnConfirmar);
+    elFondo.appendChild(elContenido);
+    document.body.appendChild(elFondo);
+}
+
+// ==========================================
+// FUNCIÓN PARA ENVIAR RESPUESTAS CON CONFIRMACIÓN
+// ==========================================
+async function enviarRespuestasConConfirmacion() {
+    const wrappers = document.querySelectorAll('.pregunta-wrapper');
+    let respuestas = [];
+    let errores = false;
+    let primerErrorDiv = null;
+
+    wrappers.forEach(div => {
+        const idPregunta = div.id.replace('wrapper_', '');
+        const esObligatoria = div.getAttribute('data-required') === 'true';
+        let valor = null;
+
+        const radioChecked = div.querySelector('input[type="radio"]:checked');
+        const textarea = div.querySelector('textarea');
+        const select = div.querySelector('select');
+        const textInput = div.querySelector('input[type="text"]');
+
+        if (radioChecked) {
+            valor = radioChecked.value;
+        } else if (textarea) {
+            valor = textarea.value.trim();
+        } else if (select) {
+            valor = select.value;
+        } else if (textInput) {
+            valor = textInput.value.trim();
+        }
+
+        if (esObligatoria && (!valor || valor === "")) {
+            div.classList.add('pregunta-error');
+            div.style.borderLeft = "4px solid #dc3545";
+            div.style.backgroundColor = "#fff8f8";
+            errores = true;
+            if (!primerErrorDiv) primerErrorDiv = div;
+        } else {
+            div.classList.remove('pregunta-error');
+            div.style.borderLeft = "none";
+            div.style.backgroundColor = "transparent";
+            if (!valor || valor === "") valor = "No contestó";
+            respuestas.push({
+                Id_pregunta: parseInt(idPregunta),
+                Respuesta: valor
+            });
+        }
+    });
+
+    if (errores) {
+        lanzarToast("Por favor, completa las preguntas obligatorias marcadas.", "advertencia");
+        if (primerErrorDiv) primerErrorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+
+    // Mostrar modal de confirmación personalizado
+    renderModalConfirmacion(
+        "¿Estás seguro de que deseas enviar tus respuestas? Una vez enviadas, no podrán ser editadas.",
+        async function() {
+            // Función que se ejecuta al confirmar
+            try {
+                const payload = {
+                    respuestas: respuestas,
+                    Id_alumno: parseInt(idAlumnoContexto),
+                    Id_encuesta: parseInt(encuestaActualId)
+                };
+
+                const response = await fetch('procesar_encuesta.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    lanzarToast('¡Encuesta completada con éxito!', 'exito');
+                    if (idTipoUsuario === 2) {
+                        idAlumnoContexto = getCookie('Id_alumno') || "1";
+                    } else {
+                        idAlumnoContexto = null;
+                    }
+                    document.getElementById('contenedor-preguntas').style.display = 'none';
+                    document.getElementById('seccion-lista').style.display = 'block';
+                    inicializarModulo();
+                } else {
+                    const msgFeedback = document.getElementById('mensaje-feedback');
+                    lanzarToast("Error: " + (data.message || "No se pudo guardar la encuesta"), "error");
+                    msgFeedback.style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            } catch (err) {
+                lanzarToast("Error al conectar con el servidor. Por favor, intenta nuevamente.", "error");
+                document.getElementById('lista-encuestas-alumno').innerHTML = '<p class="error">Error al cargar</p>';
+            }
+        }
+    );
+}
+
+// ==========================================
 // INICIALIZACIÓN
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     renderMenu();
     if (!idUsuarioAutenticado) {
-        window.location.href = '../CU_01_Login/login.html';
+        lanzarToast("Sesión no válida. Redirigiendo al login...", "error");
+        setTimeout(() => {
+            window.location.href = '../CU_01_Login/login.html';
+        }, 1500);
         return;
     }
     inicializarModulo();
 
-    // ✅ Listener del formulario dentro del DOMContentLoaded
-    document.getElementById('form-encuesta').addEventListener('submit', async (e) => {
+    // ✅ Listener del formulario - AHORA USA LA CONFIRMACIÓN PERSONALIZADA
+    document.getElementById('form-encuesta').addEventListener('submit', (e) => {
         e.preventDefault();
-
-        if (!confirm("¿Estás seguro de que deseas enviar tus respuestas? Una vez enviadas, no podrán ser editadas.")) {
-            return;
-        }
-
-        const wrappers = document.querySelectorAll('.pregunta-wrapper');
-        let respuestas = [];
-        let errores = false;
-        let primerErrorDiv = null;
-
-        wrappers.forEach(div => {
-            const idPregunta = div.id.replace('wrapper_', '');
-            const esObligatoria = div.getAttribute('data-required') === 'true';
-            let valor = null;
-
-            const radioChecked = div.querySelector('input[type="radio"]:checked');
-            const textarea = div.querySelector('textarea');
-            const select = div.querySelector('select');
-            const textInput = div.querySelector('input[type="text"]');
-
-            if (radioChecked) {
-                valor = radioChecked.value;
-            } else if (textarea) {
-                valor = textarea.value.trim();
-            } else if (select) {
-                valor = select.value;
-            } else if (textInput) {
-                valor = textInput.value.trim();
-            }
-
-            if (esObligatoria && (!valor || valor === "")) {
-                div.classList.add('pregunta-error');
-                div.style.borderLeft = "4px solid #dc3545";
-                div.style.backgroundColor = "#fff8f8";
-                errores = true;
-                if (!primerErrorDiv) primerErrorDiv = div;
-            } else {
-                div.classList.remove('pregunta-error');
-                div.style.borderLeft = "none";
-                div.style.backgroundColor = "transparent";
-                if (!valor || valor === "") valor = "No contestó";
-                respuestas.push({
-                    Id_pregunta: parseInt(idPregunta),
-                    Respuesta: valor
-                });
-            }
-        });
-
-        if (errores) {
-            alert("Por favor, responda las preguntas obligatorias marcadas antes de continuar.");
-            if (primerErrorDiv) primerErrorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return;
-        }
-
-        try {
-            const payload = {
-                respuestas: respuestas,
-                Id_alumno: parseInt(idAlumnoContexto),
-                Id_encuesta: parseInt(encuestaActualId)
-            };
-
-            const response = await fetch('procesar_encuesta.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                alert('¡Encuesta completada con éxito! ✅');
-                if (idTipoUsuario === 2) {
-                    idAlumnoContexto = getCookie('Id_alumno') || "1";
-                } else {
-                    idAlumnoContexto = null;
-                }
-                document.getElementById('contenedor-preguntas').style.display = 'none';
-                document.getElementById('seccion-lista').style.display = 'block';
-                inicializarModulo();
-            } else {
-                const msgFeedback = document.getElementById('mensaje-feedback');
-                msgFeedback.innerText = "Error: " + (data.message || "No se pudo guardar la encuesta");
-                msgFeedback.style.display = 'block';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        } catch (err) {
-            console.error("Error al enviar:", err);
-            alert('Error de red con el servidor.');
-        }
+        enviarRespuestasConConfirmacion();
     });
 });
 
@@ -177,7 +231,7 @@ async function cargarEncuestasAlumno() {
             }).join('');
         }
     } catch (err) {
-        console.error("Error al cargar encuestas del alumno:", err);
+        lanzarToast("Error al cargar las encuestas disponibles.", "error");
         document.getElementById('lista-encuestas-alumno').innerHTML = '<p class="error">Error al cargar encuestas</p>';
     }
 }
@@ -220,9 +274,9 @@ async function cargarAlumnosCoordinador() {
                     <div id="acordeon-${a.Id_alumno}" class="lista-encuestas-desplegable"
                         style="display: none; padding-left: 15px; border-left: 2px solid #ccc; margin-top: 10px;">
                         ${a.encuestas.map(e => {
-                            const nombreSanitizado = e.Nombre.replace(/'/g, "\\'");
-                            const descSanitizada = e.Descripcion.replace(/'/g, "\\'");
-                            return `
+                const nombreSanitizado = e.Nombre.replace(/'/g, "\\'");
+                const descSanitizada = e.Descripcion.replace(/'/g, "\\'");
+                return `
                                 <div class="subcard-encuesta" style="background-color: #f9f9f9; padding: 12px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #e0e0e0;">
                                     <h4 style="margin: 0 0 4px 0; color: #333;">Servicio: ${e.NombreServicio || 'N/A'}</h4>
                                     <h6 style="margin: 0 0 8px 0; color: #0066cc; font-weight: bold;">Empresa: ${e.NombreEmpresa}</h6>
@@ -234,13 +288,13 @@ async function cargarAlumnosCoordinador() {
                                     </button>
                                 </div>
                             `;
-                        }).join('')}
+            }).join('')}
                     </div>
                 </div>
             `).join('');
         }
     } catch (err) {
-        console.error("Error al cargar lista de alumnos:", err);
+        lanzarToast("Error al cargar la lista de alumnos con encuestas pendientes.", "error");
         document.getElementById('lista-alumnos-pendientes').innerHTML = '<p class="error">Error al cargar alumnos</p>';
     }
 }
@@ -275,8 +329,7 @@ async function abrirEncuesta(idEncuesta, nombre, desc, idAlumnoDestino) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (err) {
-        console.error("Error al obtener preguntas:", err);
-        alert("Error al cargar las preguntas de la encuesta");
+        lanzarToast("Error al cargar las preguntas de la encuesta.", "error");
     }
 }
 
@@ -364,29 +417,37 @@ function actualizarContadorCaracteres(textarea) {
 // CANCELACIÓN Y VOLVER
 // ==========================================
 function cancelarEncuesta() {
-    if (confirm("¿Seguro que deseas cancelar? Las respuestas no se guardarán como borrador.")) {
-        if (idTipoUsuario === 2) {
-            idAlumnoContexto = getCookie('Id_alumno') || "1";
-        } else {
-            idAlumnoContexto = null;
-        }
-        document.getElementById('contenedor-preguntas').style.display = 'none';
-        document.getElementById('seccion-lista').style.display = 'block';
-        inicializarModulo();
-    }
+    renderModalConfirmacion(
+        "¿Seguro que deseas cancelar? Las respuestas no se guardarán como borrador.",
+        function () {
+            if (idTipoUsuario === 2) {
+                idAlumnoContexto = getCookie('Id_alumno') || "1";
+            } else {
+                idAlumnoContexto = null;
+            }
+            document.getElementById('contenedor-preguntas').style.display = 'none';
+            document.getElementById('seccion-lista').style.display = 'block';
+            inicializarModulo();
+        },
+        null,                     // onCancelar (opcional)
+        "No enviar respuestas"          
+    );
 }
 
 function volverALista() {
-    if (confirm("¿Seguro que deseas volver? Las respuestas no se guardarán.")) {
-        if (idTipoUsuario === 2) {
-            idAlumnoContexto = getCookie('Id_alumno') || "1";
-        } else {
-            idAlumnoContexto = null;
+    renderModalConfirmacion(
+        "¿Seguro que deseas volver? Las respuestas no se guardarán.",
+        function() {
+            if (idTipoUsuario === 2) {
+                idAlumnoContexto = getCookie('Id_alumno') || "1";
+            } else {
+                idAlumnoContexto = null;
+            }
+            document.getElementById('contenedor-preguntas').style.display = 'none';
+            document.getElementById('seccion-lista').style.display = 'block';
+            inicializarModulo();
         }
-        document.getElementById('contenedor-preguntas').style.display = 'none';
-        document.getElementById('seccion-lista').style.display = 'block';
-        inicializarModulo();
-    }
+    );
 }
 
 function toggleAcordeonAlumno(idAlumno) {
@@ -399,7 +460,7 @@ function toggleAcordeonAlumno(idAlumno) {
 }
 
 // ==========================================
-// ✅ EXPOSICIÓN GLOBAL — al final, después de todas las funciones
+// ✅ EXPOSICIÓN GLOBAL
 // ==========================================
 window.abrirEncuesta = abrirEncuesta;
 window.volverALista = volverALista;
