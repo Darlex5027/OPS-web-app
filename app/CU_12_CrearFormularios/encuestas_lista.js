@@ -112,6 +112,7 @@ function renderEncuestas(encuestas) {
         const btnEliminar = cookieTipoUsuario == 1 ? `<button onclick="eliminarEncuesta(${encuesta.Id_encuesta})">Eliminar</button>` : '';
         const elFila = document.createElement("tr");
         elFila.innerHTML = `
+        <td><strong>Código: </strong>${encuesta.Codigo} <br> <strong>Fecha: </strong>${encuesta.Fecha} <br> <strong>Version: </strong>${encuesta.Version} <br> <strong>Revision: </strong>${encuesta.Revision}</td>
         <td>${encuesta.Id_encuesta}</td>
         <td>${encuesta.Nombre}</td>
         <td>${encuesta.Descripcion}</td>

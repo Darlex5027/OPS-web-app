@@ -11,6 +11,10 @@
 require_once '../php/db.php';
 
 $datos_encuesta = json_decode(file_get_contents('php://input'), true);
+$codigo = $datos_encuesta['codigo'];
+$revision = $datos_encuesta['revision'];
+$fecha = $datos_encuesta['fecha'];
+$version = $datos_encuesta['version'];
 $nombre = $datos_encuesta['nombre'];
 $descripcion = $datos_encuesta['descripcion'];
 $id_servicio = $datos_encuesta['servicio'];
@@ -23,10 +27,10 @@ $fecha_fin = $datos_encuesta['fecha_fin'];
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
     $stmt = $pdo->prepare("INSERT INTO 
-    Encuestas (Nombre, Descripcion, Id_servicio, Activo, Contestador,Fecha_fin, Fecha_registro, 
+    Encuestas (Codigo, Revision, Fecha, Version, Nombre, Descripcion, Id_servicio, Activo, Contestador,Fecha_fin, Fecha_registro, 
     Fecha_modificacion) 
-    VALUES (?,?,?,?,?,?, NOW(), NOW())");
-    $stmt->execute([$nombre, $descripcion, $id_servicio, $activo, $contestador, $fecha_fin]);
+    VALUES (?,?,?,?,?,?,?,?,?,?, NOW(), NOW())");
+    $stmt->execute([$codigo, $revision, $fecha, $version, $nombre, $descripcion, $id_servicio, $activo, $contestador, $fecha_fin]);
     $id_encuesta = $pdo->lastInsertId();
     $stmt = $pdo->prepare("INSERT INTO Periodo_Encuesta (Id_encuesta, Periodo_tipo, Periodo_año) 
     VALUES (?,?,?)");
