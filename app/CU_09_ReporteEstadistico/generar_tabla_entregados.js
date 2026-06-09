@@ -99,8 +99,8 @@ function fetchRenderTabla() {
 
 		// Se procesa la respuesta del servidor, primero convirtiéndola a formato JSON
 		.then(function (respuesta) {
-			if (!respuesta.ok) {  // Captura errores HTTP (404, 500, etc.)
-				lanzarToast(`Fallo en la solicitud de la tabla solicitada`, "error");
+			if (respuesta.error) {  // Captura errores HTTP (404, 500, etc.)
+				lanzarToast(respuesta.error, "error");
 				return Promise.reject(new Error('HTTP error'));
 			}
 			return respuesta.json();

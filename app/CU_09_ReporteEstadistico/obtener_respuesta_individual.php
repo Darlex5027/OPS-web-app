@@ -33,11 +33,16 @@ try {
 
 try {
     $stmt = $pdo->prepare('SELECT 
-        Encuestas.Nombre AS Nombre_encuesta
-        FROM Encuestas
-        WHERE Encuestas.Id_encuesta=?');
-    $stmt->execute([$filtro_id_encuesta]);           // Ejecuto la consulta
-    $nombre_encuesta = $stmt->fetchColumn();  // Obtengo el resultado
+    Encuestas.Nombre,
+    Encuestas.Codigo,
+    Encuestas.Revision,
+    Encuestas.Fecha,
+    Encuestas.Version
+    FROM Encuestas
+    WHERE Encuestas.Id_encuesta = ?');
+    $stmt->execute([$filtro_id_encuesta]);
+    $datos_encuesta = $stmt->fetch(); // fetch() en lugar de fetchColumn()
+    $nombre_encuesta = $datos_encuesta['Nombre'];
 } catch (Exception $error_pdo) {
     http_response_code(500);
     echo json_encode(['error' => 'Hubo un error obteniendo el nombre de la encuesta.']);
@@ -78,10 +83,10 @@ try {
             AND Respuestas.Id_encuesta = ?
         ORDER BY Preguntas.Orden ASC
     ');
-    
+
     $stmt->execute([$filtro_matricula_alumno, $filtro_id_encuesta]);
     $respuestas_raw = $stmt->fetchAll();
-    
+
     // Transformar los datos al formato de tabla deseado
     $respuesta_individual = [];
     foreach ($respuestas_raw as $fila) {
@@ -94,10 +99,10 @@ try {
             'Muy bien' => '',
             'Excelente' => ''
         ];
-        
+
         $tipo = $fila['Tipo_respuesta'];
         $respuesta = $fila['Respuesta'];
-        
+
         if ($tipo == 'ESCALA_1_5' || $tipo == 'ESCALA_1_10') {
             // Respuesta numérica - poner en la columna correspondiente
             switch ($respuesta) {
@@ -124,16 +129,20 @@ try {
             // Respuesta de texto - va en la columna Deficiente
             $fila_transformada['Deficiente'] = $respuesta;
         }
-        
+
         $respuesta_individual[] = $fila_transformada;
     }
-    
+
     echo json_encode([
-        'nombre_alumno' => $nombre_alumno, 
-        'nombre_encuesta' => $nombre_encuesta, 
+        'nombre_alumno' => $nombre_alumno,
+        'nombre_encuesta' => $nombre_encuesta,
+        'encuesta_codigo' => $datos_encuesta['Codigo'],
+        'encuesta_revision' => $datos_encuesta['Revision'],
+        'encuesta_fecha' => $datos_encuesta['Fecha'],
+        'encuesta_version' => $datos_encuesta['Version'],
         'respuesta_individual' => $respuesta_individual
     ]);
-    
+
 } catch (Exception $error_pdo) {
     http_response_code(500);
     echo json_encode(['error' => 'Hubo un error obteniendo la respuesta individual.']);
