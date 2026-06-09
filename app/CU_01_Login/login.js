@@ -34,12 +34,15 @@ document.addEventListener('DOMContentLoaded', function () {
             const nuevoTipo = tipoActual === "password" ? "text" : "password";
             contrasenaInput.type = nuevoTipo;
 
-            // Cambiar el ícono/emoji para indicar el estado actual
+            // Cambiar el ícono para indicar el estado actual
+            const icon = togglePasswordBtn.querySelector('i');
             if (nuevoTipo === "text") {
-                togglePasswordBtn.textContent = "🙈"; // Ojo cerrado/cruzado
+                // Ojo tachado (ocultar)
+                icon.className = "fa-regular fa-eye-slash";
                 togglePasswordBtn.setAttribute("title", "Ocultar contraseña");
             } else {
-                togglePasswordBtn.textContent = "👁️"; // Ojo abierto
+                // Ojo abierto (mostrar)
+                icon.className = "fa-regular fa-eye";
                 togglePasswordBtn.setAttribute("title", "Mostrar contraseña");
             }
         });
