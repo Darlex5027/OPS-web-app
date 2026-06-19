@@ -12,30 +12,12 @@ require_once("../php/db.php");
 header("Content-Type: application/json");
 
 /* =========================
-   CONEXIÓN A BD
-========================= */
-try {
-
-    if (!isset($pdo)) {
-        $pdo = new PDO($dsn, $user, $pass, $options);
-    }
-
-} catch (PDOException $e) {
-
-    http_response_code(500);
-
-    echo json_encode([
-        "success" => false,
-        "error"   => "error_conexion_db",
-        "detalle" => $e->getMessage()
-    ]);
-    exit;
-}
-
-/* =========================
    CONSULTA ACTIVIDADES
 ========================= */
 try {
+    if (!isset($pdo)) {
+        $pdo = new PDO($dsn, $user, $pass, $options);
+    }
 
     $stmt = $pdo->prepare("
         SELECT 
@@ -53,13 +35,21 @@ try {
         "actividades" => $stmt->fetchAll(PDO::FETCH_ASSOC)
     ]);
 
-} catch (Exception $e) {
-
+} catch (PDOException $error_conexion) {
+    error_log("Error en obtener_actividades.php: " . $error_conexion->getMessage());
+    
     http_response_code(500);
-
     echo json_encode([
         "success" => false,
-        "error"   => "error_consulta_actividades",
-        "detalle" => $e->getMessage()
+        "error" => "Error al cargar las actividades. Por favor, recargue la página."
+    ]);
+} catch (Exception $error_general) {
+    error_log("Error general en obtener_actividades.php: " . $error_general->getMessage());
+    
+    http_response_code(500);
+    echo json_encode([
+        "success" => false,
+        "error" => "Error al cargar las actividades. Por favor, recargue la página."
     ]);
 }
+?>
