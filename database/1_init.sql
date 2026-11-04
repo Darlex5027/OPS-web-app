@@ -45,6 +45,7 @@ CREATE TABLE `Actividades` (
 
 CREATE TABLE `Actividades_Alumnos` (
   `Id_alumno_servicio` int(11) NOT NULL,
+  `No_expediente` VARCHAR(15) UNIQUE,
   `Id_alumno` int(11) NOT NULL,
   `Id_servicio` int(11) NOT NULL,
   `Id_empresa` int(11) DEFAULT NULL,
