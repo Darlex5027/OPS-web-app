@@ -33,7 +33,10 @@ try {
     $id_usuario_alumno = $stmt->fetchColumn();
 
     if ($id_usuario_alumno != null) {
-        $stmt = $pdo->prepare("UPDATE Alumnos SET No_expediente=? WHERE Id_usuario=?");
+        $stmt = $pdo->prepare("UPDATE Actividades_Alumnos 
+                            INNER JOIN Alumnos ON Actividades_Alumnos.Id_alumno = Alumnos.Id_alumno 
+                            SET Actividades_Alumnos.No_expediente = ? 
+                            WHERE Alumnos.Id_usuario = ?;");
         $stmt->execute([$no_expediente, $id_usuario_alumno]);
     }
     echo json_encode(['success' => true]);
