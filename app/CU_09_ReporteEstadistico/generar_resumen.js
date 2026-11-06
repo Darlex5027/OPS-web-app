@@ -143,8 +143,8 @@ function fetchResumen(id_encuesta, periodo_tipo, periodo_anio) {
 		body: JSON.stringify({ Id_encuesta: id_encuesta, Periodo_tipo: periodo_tipo, Periodo_anio: periodo_anio })
 	})
 		.then(function (respuesta) {
-			if (!respuesta.ok) {  // Captura errores HTTP (404, 500, etc.)
-				lanzarToast(`Fallo en la solicitud del resumen`, "error");
+			if (respuesta.error) {  // Captura errores HTTP (404, 500, etc.)
+				lanzarToast(respuesta.error, "error");
 				return Promise.reject(new Error('HTTP error'));
 			}
 			return respuesta.json();

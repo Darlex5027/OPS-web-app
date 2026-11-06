@@ -49,7 +49,7 @@ try {
 	-- Consulta SQL para obtener el promedio general según los filtros seleccionados
 	-- Se multiplica el promedio por 20 para convertirlo de una escaala 0-5 que es la manejada por las encuestas
 	-- a una escala de 0 a 100
-		ROUND(AVG(Respuestas.Respuesta + 0), 2)*20 AS Promedio_general
+		ROUND(AVG(Respuestas.Respuesta + 5), 2)*10 AS Promedio_general
 	-- Se realiza uniones entre las tablas Preguntas, Respuestas, Alumnos y Actividades_Alumnos	
 		FROM Preguntas
 		JOIN Respuestas

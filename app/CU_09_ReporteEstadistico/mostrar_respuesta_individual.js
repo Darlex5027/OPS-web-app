@@ -10,9 +10,10 @@
 */
 
 import { lanzarToast } from "../js/lanzar_toast.js";
+import { handleImprimirPDF } from "./generar_pdf_encabezado.js";
 
 window.handleRespuestaIndividual = handleRespuestaIndividual;
-
+window.imprimirPDF = imprimirPDF;
 const elTablaRespuestaIndividual = document.getElementById('Tabla-respuesta-individual');
 const elTitulosRespuestaIndividual = document.getElementById('Titulos-respuesta-individual');
 const elCuerpoRespuestaIndividual = document.getElementById('Cuerpo-respuesta-individual');
@@ -28,29 +29,37 @@ const elBtnPDFIndividual = document.getElementById("btnGenerarPDFIndividual");
 const elPeriodo_tipo = document.getElementById('slctPeriodoTipo');
 const elPeriodo_anio = document.getElementById('slctPeriodoAnio');
 
-const elBtnCargarPendientes = document.getElementById('btnCargarPendientes');   
+const elBtnCargarPendientes = document.getElementById('btnCargarPendientes');
 const elBtnCargarResumen = document.getElementById('btnCargarResumen');
 const elBtnCargarEntregados = document.getElementById('btnCargarEntregados');
 
-elBtnCargarEntregados.addEventListener("click", function() {
+var nombre_Encuesta = "";
+var nombre_Encuesta = "";
+var codigo_Encuesta = "";
+var revision_Encuesta = "";
+var fecha_Encuesta = "";
+var version_Encuesta = "";
+
+
+elBtnCargarEntregados.addEventListener("click", function () {
     elDivTablaRespuestaIndividual.style.display = "none";
-    limpiarTablaRespuestaIndividual();  
+    limpiarTablaRespuestaIndividual();
 });
 
-elBtnCargarResumen.addEventListener("click", function() {
+elBtnCargarResumen.addEventListener("click", function () {
     elDivTablaRespuestaIndividual.style.display = "none";
-    limpiarTablaRespuestaIndividual();  
+    limpiarTablaRespuestaIndividual();
 });
 
 
-elBtnCargarPendientes.addEventListener("click", function() {
+elBtnCargarPendientes.addEventListener("click", function () {
     elDivTablaRespuestaIndividual.style.display = "none";
-    limpiarTablaRespuestaIndividual();  
+    limpiarTablaRespuestaIndividual();
 });
 
-elEncuestas.addEventListener("change", function() {
+elEncuestas.addEventListener("change", function () {
     elDivTablaRespuestaIndividual.style.display = "none";
-    limpiarTablaRespuestaIndividual();  
+    limpiarTablaRespuestaIndividual();
 });
 
 
@@ -66,9 +75,9 @@ function fetchRespuestaIndividual(matricula_alumno) {
     })
         .then(function (respuesta) {
             if (!respuesta.ok) {  // Captura errores HTTP (404, 500, etc.)
-				lanzarToast(`Fallo en la solicitud de la respuesta individual`, "error");
-    return Promise.reject(new Error('HTTP error')); 
-			}
+                lanzarToast(`Fallo en la solicitud de la respuesta individual`, "error");
+                return Promise.reject(new Error('HTTP error'));
+            }
             return respuesta.json();
         });
 };
@@ -80,6 +89,7 @@ function limpiarTablaRespuestaIndividual() {
 }
 
 function renderTabla(nombre_alumno, nombre_encuesta, respuesta) {
+    nombre_Encuesta = nombre_encuesta;
     mostrarBotones();
     elTituloRespuestaIndividual.innerHTML = "<h2>Nombre de la encuesta: " + nombre_encuesta + "</h2>";
     elTituloRespuestaIndividual.innerHTML = elTituloRespuestaIndividual.innerHTML + "<h2>Respuesta individual del alumno: " + nombre_alumno + "</h2>";
@@ -105,13 +115,13 @@ function renderTabla(nombre_alumno, nombre_encuesta, respuesta) {
     respuesta.forEach(function (fila) {
         // Verificar si es una respuesta de texto (tiene el texto en Deficiente y las demás columnas vacías)
         const esRespuestaTexto = fila.Deficiente && !fila.Suficiente && !fila.Bien && !fila["Muy bien"] && !fila.Excelente;
-        
+
         if (esRespuestaTexto && fila.Deficiente !== "Deficiente") {
             // Para respuestas de texto: una sola celda que abarca las 5 columnas de respuestas
             let htmlFila = "<tr>";
             htmlFila += "<td>" + fila.seccion + "</td>";
             htmlFila += "<td>" + fila.pregunta + "</td>";
-            
+
             // Celda combinada para las 5 columnas de calificaciones
             htmlFila += "<td colspan='5'>" + fila.Deficiente + "</td>";
             htmlFila += "</tr>";
@@ -151,23 +161,63 @@ function mostrarTabla() {
 
 
 function handleRespuestaIndividual(matricula_alumno) {
-    limpiarTablaRespuestaIndividual();  
+    limpiarTablaRespuestaIndividual();
     fetchRespuestaIndividual(matricula_alumno)
         // Se obtiene un arreglo de objetos con los resultados de la consulta
         .then(function (respuesta) {
             if (respuesta.error) {
-                // Si hay un error al obtener los datos del reporte, 
-                // se muestra un mensaje de error y se ocultan los botones de Excel y PDF
                 lanzarToast(respuesta.error, "error");
-
                 ocultarBotones();
-                return
+                return;
             }
-    
+
+            // Guardar datos de la encuesta
+            nombre_Encuesta = respuesta.nombre_encuesta;
+            codigo_Encuesta = respuesta.encuesta_codigo;
+            revision_Encuesta = respuesta.encuesta_revision;
+            fecha_Encuesta = respuesta.encuesta_fecha;
+            version_Encuesta = respuesta.encuesta_version;
+
             renderTabla(respuesta.nombre_alumno, respuesta.nombre_encuesta, respuesta.respuesta_individual);
         });
     // Procesar la respuesta y renderizar la tabla
 
 
     mostrarTabla();
+}
+
+
+var facultad = "";
+var carrera = "";
+var nombreDocente = "";
+
+async function obtenerDatosEncabezado() {
+    const res = await fetch('./obtener_datos_encabezado.php');
+    const data = await res.json();
+
+    if (data.error) {
+        lanzarToast('No se pudo obtener la información del encabezado', 'error');
+        return;
+    }
+
+    facultad = data.facultad;
+    carrera = data.carrera;
+    nombreDocente = data.nombre_completo;
+}
+
+async function imprimirPDF() {
+    await obtenerDatosEncabezado();
+
+    handleImprimirPDF(
+        'Tabla-respuesta-individual', 0,
+        nombre_Encuesta,
+        codigo_Encuesta,
+        revision_Encuesta,
+        fecha_Encuesta,
+        version_Encuesta,
+        facultad,
+        carrera,
+        `${elPeriodo_tipo.value} ${elPeriodo_anio.value}`,
+        nombreDocente
+    );
 }
