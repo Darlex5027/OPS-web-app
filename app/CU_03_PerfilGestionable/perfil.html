@@ -6,6 +6,15 @@ Fecha   : 2026-05-24
 Desc.   : Estructura HTML del módulo
          de perfil de usuario con
          secciones de admin y alumno.
+
+Cambios:
+ - Ya no se carga editar_guardar_act_alum.js por separado (lo importa
+   editar_guardar_perfil.js); así cada botón tiene un solo listener.
+ - Nuevo aviso + botón "Nueva actividad" (su modal lo crea modal_dinamico.js).
+ - Horario e id_empresa empiezan deshabilitados.
+ - El pattern del correo acepta .edu (igual que la validación JS).
+ - ?v=... en CSS y JS: al cambiar un archivo, sube ese número para que el
+   navegador no use la copia vieja en caché (también en los import de los JS).
 ================================
 -->
 <!DOCTYPE html>
@@ -15,7 +24,7 @@ Desc.   : Estructura HTML del módulo
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil gestionable</title>
-    <link rel="stylesheet" href="../css/styleCaso_3.css">
+    <link rel="stylesheet" href="../css/styleCaso_3.css?v=20261106">
 </head>
 
 <body>
@@ -39,7 +48,7 @@ Desc.   : Estructura HTML del módulo
 
         <div class="table">
             <!-- ================= ADMIN ================= -->
-            <form id="perfil_administrador">
+            <form id="perfil_administrador" class="oculto">
                 <label for="nombre_administrador">Nombre</label>
                 <input type="text" id="nombre_administrador" disabled readonly>
                 <label for="apellido_paterno_administrador">Apellido Paterno</label>
@@ -53,13 +62,13 @@ Desc.   : Estructura HTML del módulo
                     pattern="[0-9]{3}-[0-9]{4}-[0-9]{3}" title="Formato: 555-4807-588" disabled>
                 <label for="correo_administrador">Correo</label>
                 <input type="email" id="correo_administrador" placeholder="correo@ejemplo.com"
-                    pattern="^[^\s@]+@[^\s@]+\.(com|mx)$" title="Debe contener @ y terminar en .com o .mx" disabled>
+                    pattern="^[^\s@]+@[^\s@]+\.(com|mx|edu)$" title="Debe contener @ y terminar en .com, .mx o .edu" disabled>
                 <label for="fecha_registro_administrador">Fecha Registro</label>
                 <input type="date" id="fecha_registro_administrador" disabled readonly>
             </form>
 
             <!-- ================= ALUMNO ================= -->
-            <div class="contenedor-alumno">
+            <div class="contenedor-alumno oculto">
                 <!-- PERFIL -->
                 <form id="perfil_alumno">
                     <h3>Perfil Alumno</h3>
@@ -73,13 +82,11 @@ Desc.   : Estructura HTML del módulo
                     <input type="text" id="id_carrera_alumno" disabled readonly>
                     <label for="grupo_alumno">Semestre y Grupo</label>
                     <input type="text" id="grupo_alumno" maxlength="2" title="Formato válido: 1A, 2B, 3C..." disabled>
-                    <label for="no_expediente_alumno">No. Expediente</label>
-                    <input type="text" id="no_expediente_alumno" disabled readonly>
-                    <label>Horario</label>
+                    <label for="horario_entrada">Horario</label>
                     <div class="horario-container">
-                        <input type="time" id="horario_entrada">
+                        <input type="time" id="horario_entrada" disabled>
                         <span>-</span>
-                        <input type="time" id="horario_salida">
+                        <input type="time" id="horario_salida" disabled aria-label="Horario de salida">
                     </div>
                     <label for="fecha_registro_alumno">Fecha Registro</label>
                     <input type="date" id="fecha_registro_alumno" disabled readonly>
@@ -88,11 +95,17 @@ Desc.   : Estructura HTML del módulo
                 <!-- ACTIVIDADES -->
                 <form id="actividades_alumnos">
                     <h3>Actividades</h3>
+
+                    <p id="aviso_actividad" class="aviso oculto"></p>
+                    <button type="button" id="btn_nueva_actividad" class="btn crear oculto">+ Nueva Actividad</button>
+
+                    <label for="no_expediente">No. Expediente</label>
+                    <input type="text" id="no_expediente" disabled readonly>
                     <label for="servicio">Servicio</label>
-                    <input type="text" id="servicio" disabled>
+                    <input type="text" id="servicio" disabled readonly>
                     <label for="empresa_texto">Empresa</label>
                     <input type="text" id="empresa_texto" disabled readonly>
-                    <select id="id_empresa" class="oculto">
+                    <select id="id_empresa" class="oculto" disabled aria-label="Empresa">
                         <option value="">-- Selecciona una empresa --</option>
                     </select>
                     <button type="button" id="btn_crear_empresa" class="btn crear oculto">+ Crear Nueva Empresa</button>
@@ -104,13 +117,14 @@ Desc.   : Estructura HTML del módulo
                     <select id="estado" disabled>
                         <option value="">-- Seleccionar --</option>
                         <option value="PENDIENTE">Pendiente</option>
-                        <option value="EN_CURSO">En_Curso</option>
+                        <option value="EN_CURSO">En curso</option>
                         <option value="COMPLETADO">Completado</option>
+                        <option value="CANCELADO" disabled>Cancelado</option>
                     </select>
                     <label for="periodo_tipo">Periodo Tipo</label>
                     <input type="text" id="periodo_tipo" disabled readonly>
                     <label for="periodo_año">Periodo Año</label>
-                    <input type="text" id="periodo_año" disabled>
+                    <input type="text" id="periodo_año" disabled readonly>
                     <label for="fecha_inicio">Fecha Inicio</label>
                     <input type="date" id="fecha_inicio" disabled>
                     <label for="fecha_fin">Fecha Fin</label>
@@ -126,8 +140,8 @@ Desc.   : Estructura HTML del módulo
         <!-- BOTONES -->
         <div class="form-actions">
             <button type="button" class="btn editar">Editar</button>
-            <button type="button" class="btn guardar">Guardar</button>
-            <button type="button" class="btn cancelar">Cancelar</button>
+            <button type="button" class="btn guardar oculto">Guardar</button>
+            <button type="button" class="btn cancelar oculto">Cancelar</button>
         </div>
 
         <!-- TOAST -->
@@ -139,15 +153,15 @@ Desc.   : Estructura HTML del módulo
         <div class="modal-contenido">
             <h2>Nueva Empresa</h2>
             <label for="nueva_empresa_nombre">Nombre</label>
-            <input type="text" id="nueva_empresa_nombre">
+            <input type="text" id="nueva_empresa_nombre" maxlength="100">
             <label for="nueva_empresa_descripcion">Descripción</label>
-            <textarea id="nueva_empresa_descripcion"></textarea>
+            <textarea id="nueva_empresa_descripcion" maxlength="500"></textarea>
             <label for="nueva_empresa_razon_social">Razón Social</label>
-            <input type="text" id="nueva_empresa_razon_social">
+            <input type="text" id="nueva_empresa_razon_social" maxlength="150">
             <label for="nueva_empresa_rfc">RFC</label>
-            <input type="text" id="nueva_empresa_rfc">
+            <input type="text" id="nueva_empresa_rfc" maxlength="13">
             <label for="nueva_empresa_direccion">Dirección</label>
-            <textarea id="nueva_empresa_direccion"></textarea>
+            <textarea id="nueva_empresa_direccion" maxlength="200"></textarea>
             <label for="nueva_empresa_web">Sitio Web</label>
             <input type="url" id="nueva_empresa_web" placeholder="https://ejemplo.com">
             <div class="acciones-modal">
@@ -157,10 +171,12 @@ Desc.   : Estructura HTML del módulo
         </div>
     </div>
 
-    <script type="module" src="mostrar_contenido.js"></script>
-    <script type="module" src="editar_guardar_perfil.js"></script>
-    <script type="module" src="editar_guardar_act_alum.js"></script>
-    <script type="module" src="menu.js"></script>
+    <!-- El modal de NUEVA ACTIVIDAD y la confirmación de COMPLETADO
+         se crean con JS (modal_dinamico.js) -->
+
+    <script type="module" src="mostrar_contenido.js?v=20261106"></script>
+    <script type="module" src="editar_guardar_perfil.js?v=20261106"></script>
+<script type="module" src="menu.js?v=20261106"></script>
     <script type="module" src="../js/redireccion.js"></script>
 </body>
 
