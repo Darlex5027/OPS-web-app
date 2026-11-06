@@ -1,274 +1,275 @@
 <?php
-/*
-    Archivo     : guardar_datos.php
-    Módulo      : CU_03_PerfilGestionable
-    Autor       : Viridiana Tonix Zarate
-    Fecha       : 2026-05-24
-    Descripción : Guarda y actualiza los datos del perfil del usuario (administrador o alumno).
-                  Valida la sesión activa mediante cookies, obtiene el tipo de usuario y el ID
-                  del usuario, y según el tipo de solicitud (PERFIL, ACTIVIDADES, ACTIVIDADES_2,
-                  PRACTICAS), realiza las operaciones correspondientes en la base de datos.
-                  Incluye validaciones condicionales según el estado de las actividades
-                  (PENDIENTE, EN_CURSO, COMPLETADO) para garantizar integridad de datos.
-                  Devuelve respuestas en formato JSON indicando éxito o error de las operaciones.
-*/
+/**
+ * ================================
+ * Archivo : guardar_datos.php
+ * Autor   : Viridiana Tonix Zarate
+ * Fecha   : 2026-05-24
+ * Desc.   : Guarda cambios en los
+ *           datos del perfil del
+ *           usuario (admin o alumno).
+ *
+ * Cambios:
+ *  - Antes el UPDATE de Actividades_Alumnos usaba solo Id_alumno, así que
+ *    modificaba TODAS las actividades del alumno, incluidas las COMPLETADAS.
+ *    Ahora solo toca la actividad abierta (PENDIENTE / EN_CURSO), por su
+ *    llave Id_alumno_servicio.
+ *  - Una actividad COMPLETADA o CANCELADA ya no se puede modificar desde aquí.
+ *  - El estado solo avanza: PENDIENTE → EN_CURSO → COMPLETADO.
+ *  - La empresa solo se cambia mientras la actividad está PENDIENTE.
+ *  - Para marcar COMPLETADO se valida en el servidor que no falte nada
+ *    (antes solo se validaba en JS y se podía saltar).
+ *  - Validación de grupo, horario, fechas, correo y teléfono en servidor.
+ *  - Todo se guarda en una transacción.
+ *  - Los errores de BD ya no se envían al navegador.
+ * ================================
+ */
 
+// Primero: garantiza respuesta JSON. Si no se puede cargar, se avisa en JSON.
+if (!is_readable(__DIR__ . '/utilidades_json.php')) {
+    http_response_code(500);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['success' => false, 'error' => file_exists(__DIR__ . '/utilidades_json.php')
+        ? 'El servidor no tiene permiso de leer utilidades_json.php (chmod 644)'
+        : 'No se encontró utilidades_json.php en ' . __DIR__]);
+    exit;
+}
+require_once __DIR__ . '/utilidades_json.php';
 require_once '../php/db.php';
 
-// Se establece el tipo de contenido de la respuesta como JSON
-header('Content-Type: application/json');
-
-// Se valida que existan las cookies necesarias para confirmar que hay una sesión activa
-if (!isset($_COOKIE['Id_tipo_usuario']) || !isset($_COOKIE['Id_usuario'])) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'No hay sesión activa']);
-    exit;
+function fechaValida($fecha) {
+    $d = DateTime::createFromFormat('Y-m-d', $fecha);
+    return $d && $d->format('Y-m-d') === $fecha;
 }
 
-// Se obtienen y limpian los valores de las cookies
+if (!isset($_COOKIE['Id_tipo_usuario'], $_COOKIE['Id_usuario'])) {
+    responder(401, ['success' => false, 'error' => 'No hay sesión activa']);
+}
+
 $tipo_usuario = trim($_COOKIE['Id_tipo_usuario']);
 $id_usuario   = trim($_COOKIE['Id_usuario']);
+$datos        = json_decode(file_get_contents('php://input'), true);
 
-// Se decodifica el cuerpo de la solicitud JSON para obtener los datos enviados
-$datos = json_decode(file_get_contents("php://input"), true);
-
-// Se valida que los datos recibidos sean válidos
-if (!$datos) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Datos inválidos']);
-    exit;
+if (!is_array($datos)) {
+    responder(400, ['success' => false, 'error' => 'Datos inválidos']);
 }
 
-// Se obtiene el tipo de operación (PERFIL, ACTIVIDADES, ACTIVIDADES_2 o PRACTICAS)
-$tipo = $datos['tipo'] ?? '';
+$valor = function ($clave) use ($datos) {
+    return isset($datos[$clave]) ? trim((string) $datos[$clave]) : '';
+};
 
-// Se intenta establecer una conexión a la base de datos utilizando PDO
+const NIVEL_ESTADO = ['PENDIENTE' => 1, 'EN_CURSO' => 2, 'COMPLETADO' => 3];
+
+$pdo = null;
+
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
-} catch (Exception $error_pdo) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Error conectando a la base de datos']);
-    exit;
-}
-
-// ================================
-// FUNCIÓN AUXILIAR — Actualiza o inserta un registro en Actividades_Alumnos
-// ================================
-
-// Busca si ya existe un registro para el alumno y servicio indicados.
-// Si existe, lo actualiza con los campos provistos; si no, lo inserta.
-function guardarActividad(PDO $pdo, int $id_alumno, int $id_servicio, array $datos): void {
-    $stmtCheck = $pdo->prepare(
-        "SELECT Id_alumno_servicio FROM Actividades_Alumnos
-          WHERE Id_alumno = :id_alumno AND Id_servicio = :id_servicio
-          LIMIT 1"
-    );
-    $stmtCheck->execute([':id_alumno' => $id_alumno, ':id_servicio' => $id_servicio]);
-    $registro = $stmtCheck->fetch(PDO::FETCH_ASSOC);
-
-    if ($registro) {
-        // ── UPDATE: actualiza los campos que vienen en la solicitud ──
-        $campos = [];
-        $params = [':id_alumno_servicio' => $registro['Id_alumno_servicio']];
-
-        if (!empty($datos['estado']))       { $campos[] = "Estado = :estado";             $params[':estado']       = $datos['estado']; }
-        if (!empty($datos['area']))         { $campos[] = "Area = :area";                 $params[':area']         = $datos['area']; }
-        if (!empty($datos['programa']))     { $campos[] = "Programa = :programa";         $params[':programa']     = $datos['programa']; }
-        if (!empty($datos['periodo_tipo'])) { $campos[] = "periodo_tipo = :periodo_tipo"; $params[':periodo_tipo'] = $datos['periodo_tipo']; }
-        if (!empty($datos['periodo_año']))  { $campos[] = "periodo_año = :periodo_ano";   $params[':periodo_ano']  = $datos['periodo_año']; }
-        if (!empty($datos['fecha_inicio'])) { $campos[] = "Fecha_inicio = :fecha_inicio"; $params[':fecha_inicio'] = $datos['fecha_inicio']; }
-        if (!empty($datos['fecha_fin']))    { $campos[] = "Fecha_fin = :fecha_fin";       $params[':fecha_fin']    = $datos['fecha_fin']; }
-        if (!empty($datos['id_empresa']))   { $campos[] = "Id_empresa = :id_empresa";     $params[':id_empresa']   = $datos['id_empresa']; }
-
-        if (!empty($campos)) {
-            $sql  = "UPDATE Actividades_Alumnos SET "
-                  . implode(", ", $campos)
-                  . " WHERE Id_alumno_servicio = :id_alumno_servicio";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute($params);
-        }
-
-    } else {
-        // ── INSERT: crea un nuevo registro de actividad ──
-        $sql  = "INSERT INTO Actividades_Alumnos
-                    (Id_alumno, Id_servicio, Id_empresa, Area, Programa,
-                     Estado, periodo_tipo, periodo_año,
-                     Fecha_inicio, Fecha_fin)
-                 VALUES
-                    (:id_alumno, :id_servicio, :id_empresa, :area, :programa,
-                     :estado, :periodo_tipo, :periodo_ano,
-                     :fecha_inicio, :fecha_fin)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            ':id_alumno'    => $id_alumno,
-            ':id_servicio'  => $id_servicio,
-            ':id_empresa'   => !empty($datos['id_empresa'])   ? $datos['id_empresa']   : null,
-            ':area'         => !empty($datos['area'])         ? $datos['area']         : null,
-            ':programa'     => !empty($datos['programa'])     ? $datos['programa']     : null,
-            ':estado'       => !empty($datos['estado'])       ? $datos['estado']       : 'PENDIENTE',
-            ':periodo_tipo' => !empty($datos['periodo_tipo']) ? $datos['periodo_tipo'] : 'primavera',
-            ':periodo_ano'  => !empty($datos['periodo_año'])  ? $datos['periodo_año']  : date('Y'),
-            ':fecha_inicio' => !empty($datos['fecha_inicio']) ? $datos['fecha_inicio'] : null,
-            ':fecha_fin'    => !empty($datos['fecha_fin'])    ? $datos['fecha_fin']    : null,
-        ]);
-    }
-}
-
-// Se verifica el tipo de usuario para ejecutar las operaciones correspondientes
-try {
 
     // ========================= ADMIN / COORDINADOR =========================
-    if ($tipo_usuario == "1" || $tipo_usuario == "3") {
-        $campos = [];
-        $params = [':id_usuario' => $id_usuario];
+    if ($tipo_usuario === '1' || $tipo_usuario === '3') {
+        $campos     = [];
+        $parametros = [':id_usuario' => $id_usuario];
 
-        if (!empty($datos['telefono_administrador'])) {
-            $campos[] = "Telefono = :telefono";
-            $params[':telefono'] = $datos['telefono_administrador'];
-        }
-        if (!empty($datos['correo_administrador'])) {
-            $campos[] = "Correo = :correo";
-            $params[':correo'] = $datos['correo_administrador'];
-        }
-
-        if (!empty($campos)) {
-            $sql  = "UPDATE Administradores SET " . implode(", ", $campos) . " WHERE Id_usuario = :id_usuario";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute($params);
+        $telefono = $valor('telefono_administrador');
+        if ($telefono !== '') {
+            if (!preg_match('/^\d{3}-\d{4}-\d{3}$/', $telefono)) {
+                fallar(422, 'Formato de teléfono inválido. Ejemplo: 246-5444-885');
+            }
+            $campos[]                 = 'Telefono = :telefono';
+            $parametros[':telefono']  = $telefono;
         }
 
-        echo json_encode(['success' => true]);
+        $correo = $valor('correo_administrador');
+        if ($correo !== '') {
+            if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+                fallar(422, 'Correo inválido');
+            }
+            $campos[]               = 'Correo = :correo';
+            $parametros[':correo']  = $correo;
+        }
+
+        if ($campos) {
+            $stmt = $pdo->prepare('UPDATE Administradores SET ' . implode(', ', $campos) . ' WHERE Id_usuario = :id_usuario');
+            $stmt->execute($parametros);
+        }
+
+        responder(200, ['success' => true]);
+    }
+
+    if ($tipo_usuario !== '2') {
+        fallar(403, 'Tipo de usuario no válido');
+    }
 
     // ========================= ALUMNO =========================
-    } elseif ($tipo_usuario == "2") {
+    $pdo->beginTransaction();
 
-        // Se obtiene el ID del alumno a partir del ID del usuario
-        $stmtId = $pdo->prepare("SELECT Id_alumno FROM Alumnos WHERE Id_usuario = :id_usuario");
-        $stmtId->execute([':id_usuario' => $id_usuario]);
-        $alumno = $stmtId->fetch(PDO::FETCH_ASSOC);
+    $stmt = $pdo->prepare('SELECT Id_alumno, Grupo, Horario FROM Alumnos WHERE Id_usuario = ? FOR UPDATE');
+    $stmt->execute([$id_usuario]);
+    $alumno = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$alumno) {
-            echo json_encode(['success' => false, 'error' => 'Alumno no encontrado']);
-            exit;
-        }
-
-        $id_alumno = $alumno['Id_alumno'];
-
-        // ── PERFIL: Actualiza tabla Alumnos (grupo, horario) ──
-        if ($tipo === 'PERFIL') {
-            $campos = [];
-            $params = [':id_alumno' => $id_alumno];
-
-            if (!empty($datos['grupo'])) {
-                $campos[] = "Grupo = :grupo";
-                $params[':grupo'] = strtoupper($datos['grupo']);
-            }
-            if (!empty($datos['horario'])) {
-                $campos[] = "Horario = :horario";
-                $params[':horario'] = $datos['horario'];
-            }
-
-            if (!empty($campos)) {
-                $sql  = "UPDATE Alumnos SET " . implode(", ", $campos)
-                      . ", Fecha_modificacion = NOW()"
-                      . " WHERE Id_alumno = :id_alumno";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute($params);
-            }
-
-            echo json_encode(['success' => true]);
-
-        // ── ACTIVIDADES: Servicio Social (Id_servicio = 1) ──
-        } elseif ($tipo === 'ACTIVIDADES') {
-            guardarActividad($pdo, $id_alumno, 1, $datos);
-            echo json_encode(['success' => true]);
-
-        // ── ACTIVIDADES_2: Segunda inscripción (Id_servicio = 3) ──
-        } elseif ($tipo === 'ACTIVIDADES_2') {
-            guardarActividad($pdo, $id_alumno, 3, $datos);
-            echo json_encode(['success' => true]);
-
-        // ── PRACTICAS: Prácticas Profesionales (Id_servicio = 2) ──
-        } elseif ($tipo === 'PRACTICAS') {
-            $estado = $datos['estado'] ?? '';
-
-            // Se valida que el estado sea obligatorio
-            if (empty($estado)) {
-                http_response_code(400);
-                echo json_encode(['success' => false, 'error' => 'El Estado es obligatorio']);
-                exit;
-            }
-
-            // EN_CURSO requiere Área, Programa y Fecha Inicio
-            if ($estado === 'EN_CURSO') {
-                if (empty($datos['area'])) {
-                    http_response_code(400);
-                    echo json_encode(['success' => false, 'error' => 'En EN_CURSO, el Área es obligatoria']);
-                    exit;
-                }
-                if (empty($datos['programa'])) {
-                    http_response_code(400);
-                    echo json_encode(['success' => false, 'error' => 'En EN_CURSO, el Programa es obligatorio']);
-                    exit;
-                }
-                if (empty($datos['fecha_inicio'])) {
-                    http_response_code(400);
-                    echo json_encode(['success' => false, 'error' => 'En EN_CURSO, la Fecha Inicio es obligatoria']);
-                    exit;
-                }
-            }
-
-            // COMPLETADO requiere Área, Programa y ambas fechas
-            if ($estado === 'COMPLETADO') {
-                if (empty($datos['area'])) {
-                    http_response_code(400);
-                    echo json_encode(['success' => false, 'error' => 'Para COMPLETADO, el Área es obligatoria']);
-                    exit;
-                }
-                if (empty($datos['programa'])) {
-                    http_response_code(400);
-                    echo json_encode(['success' => false, 'error' => 'Para COMPLETADO, el Programa es obligatorio']);
-                    exit;
-                }
-                if (empty($datos['fecha_inicio'])) {
-                    http_response_code(400);
-                    echo json_encode(['success' => false, 'error' => 'Para COMPLETADO, la Fecha Inicio es obligatoria']);
-                    exit;
-                }
-                if (empty($datos['fecha_fin'])) {
-                    http_response_code(400);
-                    echo json_encode(['success' => false, 'error' => 'Para COMPLETADO, la Fecha Fin es obligatoria']);
-                    exit;
-                }
-            }
-
-            guardarActividad($pdo, $id_alumno, 2, $datos);
-            echo json_encode(['success' => true]);
-
-        } else {
-            echo json_encode(['success' => false, 'error' => 'Tipo de operación no reconocido']);
-        }
-
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Tipo de usuario no autorizado']);
+    if (!$alumno) {
+        fallar(404, 'No se encontró el alumno');
     }
 
-} catch (Exception $error_consulta) {
-    // Se intercepta el error real y se devuelve un mensaje genérico al cliente
-    $mensaje_error = $error_consulta->getMessage();
+    // ---------- PASO 1: datos personales (tabla Alumnos) ----------
+    $camposAlumno     = [];
+    $parametrosAlumno = [':id_alumno' => $alumno['Id_alumno']];
 
-    if (str_contains($mensaje_error, 'Duplicate entry')) {
-        // El registro ya existe; no es un error crítico, se responde con éxito
-        // ya que guardarActividad usa UPDATE cuando el registro existe,
-        // pero por si acaso la restricción unique dispara en otro contexto
-        http_response_code(409);
-        echo json_encode(['success' => false, 'error' => 'Este registro ya existe para el alumno']);
-    } elseif (str_contains($mensaje_error, 'foreign key')) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'La empresa o servicio seleccionado no es válido']);
-    } else {
-        http_response_code(500);
-        echo json_encode(['success' => false, 'error' => 'Ocurrió un error al guardar. Intenta de nuevo']);
+    $grupo = strtoupper($valor('grupo'));
+    if ($grupo !== '') {
+        if (!preg_match('/^[1-9][A-Z]$/', $grupo)) {
+            fallar(422, 'El semestre y grupo debe tener el formato: número (1-9) seguido de una letra. Ejemplo: 1A, 2B');
+        }
+        $camposAlumno[]              = 'Grupo = :grupo';
+        $parametrosAlumno[':grupo']  = $grupo;
+        $alumno['Grupo']             = $grupo;
     }
+
+    $horario = $valor('horario');
+    if ($horario !== '') {
+        if (!preg_match('/^([01]\d|2[0-3]):[0-5]\d - ([01]\d|2[0-3]):[0-5]\d$/', $horario)) {
+            fallar(422, 'Formato de horario inválido');
+        }
+        [$entrada, $salida] = explode(' - ', $horario);
+        if ($salida <= $entrada) {
+            fallar(422, 'La hora de salida debe ser posterior a la de entrada');
+        }
+        $camposAlumno[]                = 'Horario = :horario';
+        $parametrosAlumno[':horario']  = $horario;
+        $alumno['Horario']             = $horario;
+    }
+
+    if ($camposAlumno) {
+        $stmt = $pdo->prepare('UPDATE Alumnos SET ' . implode(', ', $camposAlumno) . ' WHERE Id_alumno = :id_alumno');
+        $stmt->execute($parametrosAlumno);
+    }
+
+    // ---------- PASO 2: actividad abierta (tabla Actividades_Alumnos) ----------
+    $clavesActividad = ['estado', 'area', 'programa', 'fecha_inicio', 'fecha_fin', 'id_empresa'];
+    $hayDatosActividad = false;
+    foreach ($clavesActividad as $clave) {
+        if ($valor($clave) !== '') { $hayDatosActividad = true; break; }
+    }
+
+    if ($hayDatosActividad) {
+        $stmt = $pdo->prepare("
+            SELECT Id_alumno_servicio, Estado, Area, Programa, Fecha_inicio, Fecha_fin, Id_empresa
+            FROM Actividades_Alumnos
+            WHERE Id_alumno = ? AND Estado IN ('PENDIENTE', 'EN_CURSO')
+            ORDER BY Fecha_registro DESC, Id_alumno_servicio DESC
+            LIMIT 1
+            FOR UPDATE
+        ");
+        $stmt->execute([$alumno['Id_alumno']]);
+        $actividad = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$actividad) {
+            fallar(409, 'No tienes una actividad abierta. Si la anterior ya está completada o cancelada, crea una nueva actividad.');
+        }
+
+        $idActividad = $actividad['Id_alumno_servicio'];
+        unset($actividad['Id_alumno_servicio']);
+        $nivelActual = NIVEL_ESTADO[$actividad['Estado']] ?? 1;
+        $nuevos      = [];
+
+        $estado = strtoupper($valor('estado'));
+        if ($estado !== '') {
+            // CANCELADO no está en la lista: el alumno no puede cancelar desde aquí
+            if (!isset(NIVEL_ESTADO[$estado])) {
+                fallar(422, 'Estado inválido');
+            }
+            if (NIVEL_ESTADO[$estado] < $nivelActual) {
+                fallar(422, 'No puedes regresar la actividad a un estado anterior');
+            }
+            $nuevos['Estado'] = $estado;
+        }
+
+        foreach (['area' => 'Area', 'programa' => 'Programa'] as $clave => $columna) {
+            $v = $valor($clave);
+            if ($v === '') continue;
+            if (largo($v) > 300) fallar(422, "El campo $columna es demasiado largo (máx. 300)");
+            $nuevos[$columna] = $v;
+        }
+
+        foreach (['fecha_inicio' => 'Fecha_inicio', 'fecha_fin' => 'Fecha_fin'] as $clave => $columna) {
+            $v = $valor($clave);
+            if ($v === '') continue;
+            if (!fechaValida($v)) fallar(422, 'Fecha inválida');
+            $nuevos[$columna] = $v;
+        }
+
+        $idEmpresa = $valor('id_empresa');
+        if ($idEmpresa !== '' && $idEmpresa !== (string) $actividad['Id_empresa']) {
+            if ($nivelActual !== 1) {
+                fallar(409, 'La empresa solo puede cambiarse mientras la actividad está PENDIENTE');
+            }
+            if (!esEntero($idEmpresa)) {
+                fallar(422, 'Empresa inválida');
+            }
+            $stmt = $pdo->prepare('SELECT 1 FROM Empresas WHERE Id_empresa = ? AND Activo = 1');
+            $stmt->execute([$idEmpresa]);
+            if (!$stmt->fetchColumn()) {
+                fallar(422, 'La empresa seleccionada no existe o no está activa');
+            }
+            $nuevos['Id_empresa'] = (int) $idEmpresa;
+        }
+
+        // No_expediente NO se edita aquí: solo se captura al crear la actividad
+        // (crear_actividad.php). Si llega en la petición, se ignora.
+
+        // Cómo quedaría la actividad después del cambio
+        $final  = array_merge($actividad, $nuevos);
+        $inicio = substr((string) $final['Fecha_inicio'], 0, 10);
+        $fin    = substr((string) $final['Fecha_fin'], 0, 10);
+        if ($inicio !== '' && $fin !== '' && $fin <= $inicio) {
+            fallar(422, 'La fecha fin debe ser posterior a la fecha inicio');
+        }
+
+        if (($final['Estado'] ?? '') === 'COMPLETADO') {
+            $requeridos = [
+                'Area'         => 'Área',
+                'Programa'     => 'Programa',
+                'Fecha_inicio' => 'Fecha de inicio',
+                'Fecha_fin'    => 'Fecha de fin',
+                'Id_empresa'   => 'Empresa',
+            ];
+            $faltantes = [];
+            foreach ($requeridos as $columna => $etiqueta) {
+                if (trim((string) ($final[$columna] ?? '')) === '') $faltantes[] = $etiqueta;
+            }
+            if (trim((string) $alumno['Grupo'])   === '') $faltantes[] = 'Semestre y Grupo';
+            if (trim((string) $alumno['Horario']) === '') $faltantes[] = 'Horario';
+
+            if ($faltantes) {
+                fallar(422, 'Para completar la actividad faltan: ' . implode(', ', $faltantes));
+            }
+        }
+
+        if ($nuevos) {
+            $sets       = [];
+            $parametros = [':id_actividad' => $idActividad];
+            foreach ($nuevos as $columna => $v) {   // columnas de lista blanca, no del usuario
+                $sets[]                 = "$columna = :$columna";
+                $parametros[":$columna"] = $v;
+            }
+            // Fecha_modificacion se actualiza sola (ON UPDATE current_timestamp)
+
+            $stmt = $pdo->prepare('
+                UPDATE Actividades_Alumnos SET ' . implode(', ', $sets) . "
+                WHERE Id_alumno_servicio = :id_actividad
+                  AND Estado IN ('PENDIENTE', 'EN_CURSO')
+            ");
+            $stmt->execute($parametros);
+        }
+    }
+
+    $pdo->commit();
+    responder(200, ['success' => true]);
+
+} catch (ErrorPeticion $e) {
+    if ($pdo && $pdo->inTransaction()) $pdo->rollBack();
+    responder($e->getCode(), ['success' => false, 'error' => $e->getMessage()]);
+
+} catch (Throwable $e) {
+    if ($pdo && $pdo->inTransaction()) $pdo->rollBack();
+    responderExcepcion($e, 'guardar_datos.php');
 }
-?>

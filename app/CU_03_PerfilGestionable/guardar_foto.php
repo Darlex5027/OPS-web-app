@@ -7,123 +7,105 @@
  * Desc.   : Procesa la carga y
  *           guardado de fotos de
  *           perfil del usuario.
+ *
+ * Cambios:
+ *  - Antes se borraban las fotos anteriores ANTES de actualizar la BD;
+ *    si la BD fallaba, el usuario se quedaba sin foto. Ahora se sube a un
+ *    archivo temporal, se actualiza la BD y solo entonces se reemplaza.
+ *  - La URL devuelta lleva ?v=timestamp para que el navegador no muestre
+ *    la foto vieja en caché (el nombre del archivo no cambia).
+ *  - Se limpia el buffer de salida antes de responder.
  * ================================
  */
-error_reporting(0);
-ini_set('display_errors', 0);
-ob_start(); 
-require_once '../php/db.php';
-
-header('Content-Type: application/json');
-
-// =========================
-// VERIFICAR COOKIES (igual que el resto de PHPs)
-// =========================
-if (!isset($_COOKIE['Id_tipo_usuario']) || !isset($_COOKIE['Id_usuario'])) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'No hay sesión activa']);
+// Primero: garantiza respuesta JSON. Si no se puede cargar, se avisa en JSON.
+if (!is_readable(__DIR__ . '/utilidades_json.php')) {
+    http_response_code(500);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['success' => false, 'error' => file_exists(__DIR__ . '/utilidades_json.php')
+        ? 'El servidor no tiene permiso de leer utilidades_json.php (chmod 644)'
+        : 'No se encontró utilidades_json.php en ' . __DIR__]);
     exit;
 }
+require_once __DIR__ . '/utilidades_json.php';
+require_once '../php/db.php';
 
-$id_usuario = trim($_COOKIE['Id_usuario']);
+if (!isset($_COOKIE['Id_tipo_usuario'], $_COOKIE['Id_usuario'])) {
+    responder(401, ['success' => false, 'error' => 'No hay sesión activa']);
+}
 
-// =========================
-// VERIFICAR QUE SE RECIBIÓ EL ARCHIVO
-// =========================
+$id_usuario   = trim($_COOKIE['Id_usuario']);
+$tipo_usuario = trim($_COOKIE['Id_tipo_usuario']);
+
+if (!esEntero($id_usuario) || !esEntero($tipo_usuario)) {
+    responder(400, ['success' => false, 'error' => 'Sesión inválida']);
+}
+
 if (!isset($_FILES['foto_perfil']) || $_FILES['foto_perfil']['error'] !== UPLOAD_ERR_OK) {
-    echo json_encode(['success' => false, 'error' => 'No se recibió ningún archivo']);
-    exit;
+    responder(400, ['success' => false, 'error' => 'No se recibió ningún archivo']);
 }
 
 $archivo = $_FILES['foto_perfil'];
 
-// =========================
-// VALIDAR TIPO MIME REAL
-// =========================
-$tiposPermitidos = ['image/jpeg', 'image/png', 'image/webp'];
-$finfo    = finfo_open(FILEINFO_MIME_TYPE);
-$mimeReal = finfo_file($finfo, $archivo['tmp_name']);
-finfo_close($finfo);
-
-if (!in_array($mimeReal, $tiposPermitidos)) {
-    echo json_encode(['success' => false, 'error' => 'Solo se permiten imágenes JPG, PNG o WEBP']);
-    exit;
+if ($archivo['size'] > 2 * 1024 * 1024) {
+    responder(422, ['success' => false, 'error' => 'La imagen no debe superar los 2MB']);
 }
 
-// =========================
-// VALIDAR TAMAÑO (máx 2MB)
-// =========================
-if ($archivo['size'] > 2 * 1024 * 1024) {
-    echo json_encode(['success' => false, 'error' => 'La imagen no debe superar los 2MB']);
-    exit;
+// fileinfo puede no estar instalado; en ese caso se usa getimagesize()
+if (function_exists('finfo_open')) {
+    $finfo    = finfo_open(FILEINFO_MIME_TYPE);
+    $mimeReal = finfo_file($finfo, $archivo['tmp_name']);
+    finfo_close($finfo);
+} else {
+    $info     = @getimagesize($archivo['tmp_name']);
+    $mimeReal = $info ? $info['mime'] : '';
+}
+
+$extensiones = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+if (!isset($extensiones[$mimeReal])) {
+    responder(422, ['success' => false, 'error' => 'Solo se permiten imágenes JPG, PNG o WEBP']);
 }
 
 // =========================
 // RUTAS
+// ⚠ Verifica que '/home/uploads/Perfil/' sea la carpeta que el servidor web
+//   publica como '../uploads/Perfil/'. Si no, la foto se guarda pero no se ve.
 // =========================
 $ruta_carpeta = '/home/uploads/Perfil/';
-$url_base     = '../uploads/Perfil/';  // relativa, igual que cargar_foto.js
+$url_base     = '../uploads/Perfil/';
 
-// Crear carpeta si no existe
-if (!is_dir($ruta_carpeta)) {
-    mkdir($ruta_carpeta, 0755, true);
+if (!is_dir($ruta_carpeta) && !mkdir($ruta_carpeta, 0755, true)) {
+    responder(500, ['success' => false, 'error' => 'No se pudo preparar la carpeta de fotos']);
 }
 
-// =========================
-// NOMBRE: tipo-id.ext (igual que cargar_foto.js lo busca)
-// =========================
-$tipo_usuario = trim($_COOKIE['Id_tipo_usuario']);
-
-$extension = match($mimeReal) {
-    'image/jpeg' => 'jpg',
-    'image/png'  => 'png',
-    'image/webp' => 'webp',
-    default      => 'jpg'
-};
-
-// cargar_foto.js busca: `../uploads/${tipo}-${id}.ext`
-// así que el nombre debe ser exactamente ese
-$nombreArchivo = $tipo_usuario . '-' . $id_usuario . '.' . $extension;
+$base          = $tipo_usuario . '-' . $id_usuario;
+$nombreArchivo = $base . '.' . $extensiones[$mimeReal];
 $rutaCompleta  = $ruta_carpeta . $nombreArchivo;
+$rutaTemporal  = $rutaCompleta . '.subiendo';
 
-// Borrar variantes anteriores de otras extensiones para no dejar huérfanos
-foreach (['jpg', 'png', 'webp'] as $ext) {
-    $anterior = $ruta_carpeta . $tipo_usuario . '-' . $id_usuario . '.' . $ext;
-    if ($anterior !== $rutaCompleta && file_exists($anterior)) {
-        unlink($anterior);
-    }
+if (!move_uploaded_file($archivo['tmp_name'], $rutaTemporal)) {
+    responder(500, ['success' => false, 'error' => 'Error al guardar el archivo en el servidor']);
 }
 
-// =========================
-// MOVER ARCHIVO
-// =========================
-if (!move_uploaded_file($archivo['tmp_name'], $rutaCompleta)) {
-    echo json_encode(['success' => false, 'error' => 'Error al guardar el archivo en el servidor']);
-    exit;
-}
-
-// =========================
-// ACTUALIZAR BASE DE DATOS
-// =========================
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 
     $urlFoto = $url_base . $nombreArchivo;
 
-    $stmt = $pdo->prepare("UPDATE Usuarios SET Profile_picture_path = :ruta WHERE Id_usuario = :id");
-    $stmt->execute([
-        ':ruta' => $urlFoto,
-        ':id'   => $id_usuario
-    ]);
+    $stmt = $pdo->prepare('UPDATE Usuarios SET Profile_picture_path = :ruta WHERE Id_usuario = :id');
+    $stmt->execute([':ruta' => $urlFoto, ':id' => $id_usuario]);
 
-    echo json_encode([
-        'success' => true,
-        'url'     => $urlFoto
-    ]);
-
-} catch (PDOException $e) {
-    if (file_exists($rutaCompleta)) unlink($rutaCompleta);
-    http_response_code(500);
-    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+} catch (Throwable $e) {
+    @unlink($rutaTemporal);
+    responderExcepcion($e, 'guardar_foto.php');
 }
-?>
+
+// La BD ya apunta al nuevo archivo: ahora sí se reemplaza y se limpian las otras extensiones
+rename($rutaTemporal, $rutaCompleta);
+foreach ($extensiones as $ext) {
+    $anterior = $ruta_carpeta . $base . '.' . $ext;
+    if ($anterior !== $rutaCompleta && file_exists($anterior)) {
+        @unlink($anterior);
+    }
+}
+
+responder(200, ['success' => true, 'url' => $urlFoto . '?v=' . time()]);

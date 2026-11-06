@@ -6,8 +6,15 @@ Fecha   : 2026-05-24
 Desc.   : Estructura HTML del módulo
          de perfil de usuario con
          secciones de admin y alumno.
-         Cada tabla tiene sus propios
-         botones Editar/Guardar/Cancelar.
+
+Cambios:
+ - Ya no se carga editar_guardar_act_alum.js por separado (lo importa
+   editar_guardar_perfil.js); así cada botón tiene un solo listener.
+ - Nuevo aviso + botón "Nueva actividad" (su modal lo crea modal_dinamico.js).
+ - Horario e id_empresa empiezan deshabilitados.
+ - El pattern del correo acepta .edu (igual que la validación JS).
+ - ?v=... en CSS y JS: al cambiar un archivo, sube ese número para que el
+   navegador no use la copia vieja en caché (también en los import de los JS).
 ================================
 -->
 <!DOCTYPE html>
@@ -17,7 +24,7 @@ Desc.   : Estructura HTML del módulo
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil gestionable</title>
-    <link rel="stylesheet" href="../css/StyleCaso_3.css">
+    <link rel="stylesheet" href="../css/styleCaso_3.css?v=20261105b">
 </head>
 
 <body>
@@ -40,9 +47,8 @@ Desc.   : Estructura HTML del módulo
         </div>
 
         <div class="table">
-
             <!-- ================= ADMIN ================= -->
-            <form id="perfil_administrador">
+            <form id="perfil_administrador" class="oculto">
                 <label for="nombre_administrador">Nombre</label>
                 <input type="text" id="nombre_administrador" disabled readonly>
                 <label for="apellido_paterno_administrador">Apellido Paterno</label>
@@ -56,189 +62,87 @@ Desc.   : Estructura HTML del módulo
                     pattern="[0-9]{3}-[0-9]{4}-[0-9]{3}" title="Formato: 555-4807-588" disabled>
                 <label for="correo_administrador">Correo</label>
                 <input type="email" id="correo_administrador" placeholder="correo@ejemplo.com"
-                    pattern="^[^\s@]+@[^\s@]+\.(com|mx)$" title="Debe contener @ y terminar en .com o .mx" disabled>
+                    pattern="^[^\s@]+@[^\s@]+\.(com|mx|edu)$" title="Debe contener @ y terminar en .com, .mx o .edu" disabled>
                 <label for="fecha_registro_administrador">Fecha Registro</label>
                 <input type="date" id="fecha_registro_administrador" disabled readonly>
             </form>
-            <!-- Botones Admin -->
-            <div class="form-actions" id="acciones_admin">
-                <button type="button" id="btn_editar_admin" class="btn editar">Editar</button>
-                <button type="button" id="btn_guardar_admin" class="btn guardar" style="display:none">Guardar</button>
-                <button type="button" id="btn_cancelar_admin" class="btn cancelar" style="display:none">Cancelar</button>
-            </div>
 
             <!-- ================= ALUMNO ================= -->
-            <div class="contenedor-alumno">
-
-                <!-- PERFIL ALUMNO -->
-                <div id="tabla_perfil_alumno">
-                    <form id="perfil_alumno">
-                        <h3>Perfil Alumno</h3>
-                        <label for="nombre_alumno">Nombre</label>
-                        <input type="text" id="nombre_alumno" disabled readonly>
-                        <label for="apellido_paterno_alumno">Apellido Paterno</label>
-                        <input type="text" id="apellido_paterno_alumno" disabled readonly>
-                        <label for="apellido_materno_alumno">Apellido Materno</label>
-                        <input type="text" id="apellido_materno_alumno" disabled readonly>
-                        <label for="id_carrera_alumno">Carrera</label>
-                        <input type="text" id="id_carrera_alumno" disabled readonly>
-                        <label for="grupo_alumno">Semestre y Grupo</label>
-                        <input type="text" id="grupo_alumno" maxlength="2" title="Formato válido: 1A, 2B, 3C..." disabled>
-                        <label for="no_expediente_alumno">No. Expediente</label>
-                        <input type="text" id="no_expediente_alumno" disabled readonly>
-                        <label>Horario</label>
-                        <div class="horario-container">
-                            <input type="time" id="horario_entrada" disabled>
-                            <span>-</span>
-                            <input type="time" id="horario_salida" disabled>
-                        </div>
-                        <label for="fecha_registro_alumno">Fecha Registro</label>
-                        <input type="date" id="fecha_registro_alumno" disabled readonly>
-                    </form>
-                    <!-- Botones Perfil Alumno -->
-                    <div class="form-actions" id="acciones_perfil_alumno">
-                        <button type="button" id="btn_editar_perfil" class="btn editar">Editar</button>
-                        <button type="button" id="btn_guardar_perfil" class="btn guardar" style="display:none">Guardar</button>
-                        <button type="button" id="btn_cancelar_perfil" class="btn cancelar" style="display:none">Cancelar</button>
+            <div class="contenedor-alumno oculto">
+                <!-- PERFIL -->
+                <form id="perfil_alumno">
+                    <h3>Perfil Alumno</h3>
+                    <label for="nombre_alumno">Nombre</label>
+                    <input type="text" id="nombre_alumno" disabled readonly>
+                    <label for="apellido_paterno_alumno">Apellido Paterno</label>
+                    <input type="text" id="apellido_paterno_alumno" disabled readonly>
+                    <label for="apellido_materno_alumno">Apellido Materno</label>
+                    <input type="text" id="apellido_materno_alumno" disabled readonly>
+                    <label for="id_carrera_alumno">Carrera</label>
+                    <input type="text" id="id_carrera_alumno" disabled readonly>
+                    <label for="grupo_alumno">Semestre y Grupo</label>
+                    <input type="text" id="grupo_alumno" maxlength="2" title="Formato válido: 1A, 2B, 3C..." disabled>
+                    <label for="horario_entrada">Horario</label>
+                    <div class="horario-container">
+                        <input type="time" id="horario_entrada" disabled>
+                        <span>-</span>
+                        <input type="time" id="horario_salida" disabled aria-label="Horario de salida">
                     </div>
-                </div>
+                    <label for="fecha_registro_alumno">Fecha Registro</label>
+                    <input type="date" id="fecha_registro_alumno" disabled readonly>
+                </form>
 
-                <!-- ACTIVIDADES (Servicio Social / primer actividad) -->
-                <div id="tabla_actividades">
-                    <form id="actividades_alumnos">
-                        <h3>Actividades</h3>
-                        <label for="servicio">Servicio</label>
-                        <input type="text" id="servicio" disabled>
-                        <label for="empresa_texto">Empresa</label>
-                        <input type="text" id="empresa_texto" disabled readonly>
-                        <select id="id_empresa" class="oculto">
-                            <option value="">-- Selecciona una empresa --</option>
-                        </select>
-                        <button type="button" id="btn_crear_empresa" class="btn crear oculto">+ Crear Nueva Empresa</button>
-                        <label for="area">Área</label>
-                        <input type="text" id="area" disabled>
-                        <label for="programa">Programa</label>
-                        <input type="text" id="programa" disabled>
-                        <label for="estado">Estado</label>
-                        <select id="estado" disabled>
-                            <option value="">-- Seleccionar --</option>
-                            <option value="PENDIENTE">Pendiente</option>
-                            <option value="EN_CURSO">En_Curso</option>
-                            <option value="COMPLETADO">Completado</option>
-                        </select>
-                        <label for="periodo_tipo">Periodo Tipo</label>
-                        <input type="text" id="periodo_tipo" disabled readonly>
-                        <label for="periodo_año">Periodo Año</label>
-                        <input type="text" id="periodo_año" disabled>
-                        <label for="fecha_inicio">Fecha Inicio</label>
-                        <input type="date" id="fecha_inicio" disabled>
-                        <label for="fecha_fin">Fecha Fin</label>
-                        <input type="date" id="fecha_fin" disabled>
-                        <label for="fecha_registro">Fecha Registro</label>
-                        <input type="date" id="fecha_registro" disabled readonly>
-                        <label for="fecha_modificacion">Fecha Modificación</label>
-                        <input type="date" id="fecha_modificacion" disabled readonly>
-                    </form>
-                    <!-- Botones Actividades -->
-                    <div class="form-actions" id="acciones_act">
-                        <button type="button" id="btn_editar_act" class="btn editar">Editar</button>
-                        <button type="button" id="btn_guardar_act" class="btn guardar" style="display:none">Guardar</button>
-                        <button type="button" id="btn_cancelar_act" class="btn cancelar" style="display:none">Cancelar</button>
-                    </div>
-                </div>
-
-            </div><!-- fin contenedor-alumno -->
-
-            <!-- ACTIVIDADES 2 (segunda actividad si aplica) -->
-            <div class="contenedor-actividades-2">
-                <form id="actividades_alumnos_2">
+                <!-- ACTIVIDADES -->
+                <form id="actividades_alumnos">
                     <h3>Actividades</h3>
-                    <label for="servicio_2">Servicio</label>
-                    <input type="text" id="servicio_2" disabled>
-                    <label for="empresa_texto_2">Empresa</label>
-                    <input type="text" id="empresa_texto_2" disabled readonly>
-                    <select id="id_empresa_2" class="oculto">
+
+                    <p id="aviso_actividad" class="aviso oculto"></p>
+                    <button type="button" id="btn_nueva_actividad" class="btn crear oculto">+ Nueva Actividad</button>
+
+                    <label for="no_expediente">No. Expediente</label>
+                    <input type="text" id="no_expediente" disabled readonly>
+                    <label for="servicio">Servicio</label>
+                    <input type="text" id="servicio" disabled readonly>
+                    <label for="empresa_texto">Empresa</label>
+                    <input type="text" id="empresa_texto" disabled readonly>
+                    <select id="id_empresa" class="oculto" disabled aria-label="Empresa">
                         <option value="">-- Selecciona una empresa --</option>
                     </select>
-                    <button type="button" id="btn_crear_empresa_2" class="btn crear oculto">+ Crear Nueva Empresa</button>
-                    <label for="area_2">Área</label>
-                    <input type="text" id="area_2" disabled>
-                    <label for="programa_2">Programa</label>
-                    <input type="text" id="programa_2" disabled>
-                    <label for="estado_2">Estado</label>
-                    <select id="estado_2" disabled>
+                    <button type="button" id="btn_crear_empresa" class="btn crear oculto">+ Crear Nueva Empresa</button>
+                    <label for="area">Área</label>
+                    <input type="text" id="area" disabled>
+                    <label for="programa">Programa</label>
+                    <input type="text" id="programa" disabled>
+                    <label for="estado">Estado</label>
+                    <select id="estado" disabled>
                         <option value="">-- Seleccionar --</option>
                         <option value="PENDIENTE">Pendiente</option>
-                        <option value="EN_CURSO">En_Curso</option>
+                        <option value="EN_CURSO">En curso</option>
                         <option value="COMPLETADO">Completado</option>
+                        <option value="CANCELADO" disabled>Cancelado</option>
                     </select>
-                    <label for="periodo_tipo_2">Periodo Tipo</label>
-                    <input type="text" id="periodo_tipo_2" disabled readonly>
-                    <label for="periodo_año_2">Periodo Año</label>
-                    <input type="text" id="periodo_año_2" disabled>
-                    <label for="fecha_inicio_2">Fecha Inicio</label>
-                    <input type="date" id="fecha_inicio_2" disabled>
-                    <label for="fecha_fin_2">Fecha Fin</label>
-                    <input type="date" id="fecha_fin_2" disabled>
-                    <label for="fecha_registro_2">Fecha Registro</label>
-                    <input type="date" id="fecha_registro_2" disabled readonly>
-                    <label for="fecha_modificacion_2">Fecha Modificación</label>
-                    <input type="date" id="fecha_modificacion_2" disabled readonly>
+                    <label for="periodo_tipo">Periodo Tipo</label>
+                    <input type="text" id="periodo_tipo" disabled readonly>
+                    <label for="periodo_año">Periodo Año</label>
+                    <input type="text" id="periodo_año" disabled readonly>
+                    <label for="fecha_inicio">Fecha Inicio</label>
+                    <input type="date" id="fecha_inicio" disabled>
+                    <label for="fecha_fin">Fecha Fin</label>
+                    <input type="date" id="fecha_fin" disabled>
+                    <label for="fecha_registro">Fecha Registro</label>
+                    <input type="date" id="fecha_registro" disabled readonly>
+                    <label for="fecha_modificacion">Fecha Modificación</label>
+                    <input type="date" id="fecha_modificacion" disabled readonly>
                 </form>
-                <!-- Botones Actividades 2 -->
-                <div class="form-actions" id="acciones_act_2">
-                    <button type="button" id="btn_editar_act_2" class="btn editar">Editar</button>
-                    <button type="button" id="btn_guardar_act_2" class="btn guardar" style="display:none">Guardar</button>
-                    <button type="button" id="btn_cancelar_act_2" class="btn cancelar" style="display:none">Cancelar</button>
-                </div>
             </div>
+        </div>
 
-            <!-- ================= PRÁCTICAS PROFESIONALES ================= -->
-            <!-- Se muestra automáticamente cuando el alumno llega a semestre 9 -->
-            <div id="contenedor-practicas" class="oculto">
-                <form id="practicas_profesionales">
-                    <h3>Actividades</h3>
-                    <label for="pp_servicio">Servicio</label>
-                    <input type="text" id="pp_servicio" value="Prácticas Profesionales" disabled>
-                    <label for="pp_empresa_texto">Empresa</label>
-                    <input type="text" id="pp_empresa_texto" disabled readonly>
-                    <select id="pp_id_empresa" class="oculto">
-                        <option value="">-- Selecciona una empresa --</option>
-                    </select>
-                    <button type="button" id="pp_btn_crear_empresa" class="btn crear oculto">+ Crear Nueva Empresa</button>
-                    <label for="pp_area">Área</label>
-                    <input type="text" id="pp_area" disabled>
-                    <label for="pp_programa">Programa</label>
-                    <input type="text" id="pp_programa" disabled>
-                    <label for="pp_estado">Estado</label>
-                    <select id="pp_estado" disabled>
-                        <option value="">-- Seleccionar --</option>
-                        <option value="PENDIENTE">Pendiente</option>
-                        <option value="EN_CURSO">En_Curso</option>
-                        <option value="COMPLETADO">Completado</option>
-                    </select>
-                    <label for="pp_periodo_tipo">Periodo Tipo</label>
-                    <input type="text" id="pp_periodo_tipo" disabled readonly>
-                    <label for="pp_periodo_año">Periodo Año</label>
-                    <input type="text" id="pp_periodo_año" disabled>
-                    <label for="pp_fecha_inicio">Fecha Inicio</label>
-                    <input type="date" id="pp_fecha_inicio" disabled>
-                    <label for="pp_fecha_fin">Fecha Fin</label>
-                    <input type="date" id="pp_fecha_fin" disabled>
-                    <label for="pp_fecha_registro">Fecha Registro</label>
-                    <input type="date" id="pp_fecha_registro" disabled readonly>
-                    <label for="pp_fecha_modificacion">Fecha Modificación</label>
-                    <input type="date" id="pp_fecha_modificacion" disabled readonly>
-                </form>
-                <!-- Botones Prácticas Profesionales -->
-                <div class="form-actions" id="acciones_pp">
-                    <button type="button" id="btn_editar_pp" class="btn editar">Editar</button>
-                    <button type="button" id="btn_guardar_pp" class="btn guardar" style="display:none">Guardar</button>
-                    <button type="button" id="btn_cancelar_pp" class="btn cancelar" style="display:none">Cancelar</button>
-                </div>
-            </div>
-
-        </div><!-- fin .table -->
+        <!-- BOTONES -->
+        <div class="form-actions">
+            <button type="button" class="btn editar">Editar</button>
+            <button type="button" class="btn guardar oculto">Guardar</button>
+            <button type="button" class="btn cancelar oculto">Cancelar</button>
+        </div>
 
         <!-- TOAST -->
         <div id="toast-mensaje" class="toast oculto"></div>
@@ -249,15 +153,15 @@ Desc.   : Estructura HTML del módulo
         <div class="modal-contenido">
             <h2>Nueva Empresa</h2>
             <label for="nueva_empresa_nombre">Nombre</label>
-            <input type="text" id="nueva_empresa_nombre">
+            <input type="text" id="nueva_empresa_nombre" maxlength="100">
             <label for="nueva_empresa_descripcion">Descripción</label>
-            <textarea id="nueva_empresa_descripcion"></textarea>
+            <textarea id="nueva_empresa_descripcion" maxlength="500"></textarea>
             <label for="nueva_empresa_razon_social">Razón Social</label>
-            <input type="text" id="nueva_empresa_razon_social">
+            <input type="text" id="nueva_empresa_razon_social" maxlength="150">
             <label for="nueva_empresa_rfc">RFC</label>
-            <input type="text" id="nueva_empresa_rfc">
+            <input type="text" id="nueva_empresa_rfc" maxlength="13">
             <label for="nueva_empresa_direccion">Dirección</label>
-            <textarea id="nueva_empresa_direccion"></textarea>
+            <textarea id="nueva_empresa_direccion" maxlength="200"></textarea>
             <label for="nueva_empresa_web">Sitio Web</label>
             <input type="url" id="nueva_empresa_web" placeholder="https://ejemplo.com">
             <div class="acciones-modal">
@@ -267,22 +171,12 @@ Desc.   : Estructura HTML del módulo
         </div>
     </div>
 
-    <!-- ======MODAL PRÁCTICAS PROFESIONALES====== -->
-    <div class="modal" id="modal_practicas_profesionales" style="display:none">
-        <div class="modal-contenido">
-            <h2>Prácticas Profesionales</h2>
-            <p>Has llegado al semestre <strong id="semestre_detectado"></strong>. ¿Deseas iniciar el registro de Prácticas Profesionales ahora?</p>
-            <div class="acciones-modal">
-                <button type="button" class="btn cancelar" id="btn_no_practicas">Después</button>
-                <button type="button" class="btn guardar" id="btn_si_practicas">Sí, iniciar</button>
-            </div>
-        </div>
-    </div>
+    <!-- El modal de NUEVA ACTIVIDAD y la confirmación de COMPLETADO
+         se crean con JS (modal_dinamico.js) -->
 
-    <script type="module" src="mostrar_contenido.js"></script>
-    <script type="module" src="editar_guardar_perfil.js"></script>
-    <script type="module" src="editar_guardar_act_alum.js"></script>
-    <script type="module" src="menu.js"></script>
+    <script type="module" src="mostrar_contenido.js?v=20261105b"></script>
+    <script type="module" src="editar_guardar_perfil.js?v=20261105b"></script>
+    <script type="module" src="menu.js?v=20261105b"></script>
     <script type="module" src="../js/redireccion.js"></script>
 </body>
 
