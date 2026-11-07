@@ -44,8 +44,8 @@ try {
 	// Se construye la consulta SQL para obtener el listado de alumnos con sus actividades, aplicando los filtros seleccionados y limitando por la carrera del administrador autenticado
 	$query = "SELECT 
 		Actividades.Servicio,
-		Alumnos.No_expediente,
-		grupo,
+		Actividades_Alumnos.No_expediente,
+		Alumnos.grupo,
 		CONCAT(Alumnos.Nombre,' ', Alumnos.Apellido_P, ' ', Alumnos.Apellido_M ) AS Nombre,
 		Carreras.Nombre as 'Nombre Carrera',
 		Empresas.Nombre as Empresa,
