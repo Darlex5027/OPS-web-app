@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
             btnSubmit.disabled = true;
         }
     });
-    
+
     const mensaje = document.getElementById("mensaje");
 
     const radiosTipo = document.querySelectorAll("input[name='tipo_usuario']");
@@ -57,17 +57,17 @@ document.addEventListener("DOMContentLoaded", function () {
     // Función para aplicar mayúsculas automáticas
     function aplicarMayusculasAlInstante() {
         const camposMayusculas = ['matricula', 'grupo'];
-        
+
         camposMayusculas.forEach(campoId => {
             const campo = document.getElementById(campoId);
             if (campo) {
-                campo.addEventListener('input', function() {
+                campo.addEventListener('input', function () {
                     this.value = this.value.toUpperCase();
                 });
             }
         });
     }
-    
+
     aplicarMayusculasAlInstante();
 
     passwordInput.addEventListener("input", function () {
@@ -78,12 +78,12 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("req-num").style.color = /\d/.test(valor) ? "green" : "red";
         document.getElementById("req-esp").style.color = /[\W_]/.test(valor) ? "green" : "red";
     });
-    
+
     const btnNuevaEmpresa = document.getElementById("btnNuevaEmpresa");
     const btnGuardarEmpresa = document.getElementById("guardarEmpresa");
     const btnCerrarModal = document.getElementById("cerrarModal");
     const inputRFC = document.getElementById("emp_rfc");
-    
+
     if (inputRFC) {
         inputRFC.addEventListener("input", function () {
             this.value = this.value.toUpperCase();
@@ -233,11 +233,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 descripcion: document.getElementById("emp_desc").value.trim()
             };
 
-            if (!nuevaEmpresa.nombre_comercial || !nuevaEmpresa.razon_social || !nuevaEmpresa.rfc) {
-                lanzarToast("Complete los campos obligatorios de la empresa", "error");
+            if (!nuevaEmpresa.nombre_comercial) {
+                lanzarToast("El nombre comercial es obligatorio.", "error");
                 return;
             }
-            if (!regexRFC.test(nuevaEmpresa.rfc)) {
+
+            if (nuevaEmpresa.rfc && !regexRFC.test(nuevaEmpresa.rfc)) {
                 lanzarToast("RFC inválido. Debe tener entre 12 y 13 caracteres.", "error");
                 return;
             }
@@ -324,7 +325,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const horaInicio = document.getElementById("hora_inicio").value;
             const horaFin = document.getElementById("hora_fin").value;
-            
+
             // Horario opcional
             let horario = null;
             if (horaInicio && horaFin) {
@@ -340,7 +341,7 @@ document.addEventListener("DOMContentLoaded", function () {
             datos.telefono = document.getElementById("telefono_alumno").value.trim();
             datos.organizacion = selectOrganizacion.value || null;
             datos.actividad = selectActividad.value;
-            
+
             if (!datos.actividad) {
                 lanzarToast("Debe seleccionar una actividad.", "error");
                 return;

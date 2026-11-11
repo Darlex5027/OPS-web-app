@@ -30,8 +30,11 @@ $web       = trim($data['sitio_web'] ?? '');
 $desc      = trim($data['descripcion'] ?? '');
 
 // 3. Validación de campos obligatorios
-if (!$nombre || !$razon || !$rfc || !$direccion) {
-    echo json_encode(["success" => false, "error" => "Campos obligatorios incompletos (*)"]);
+if (!$nombre) {
+    echo json_encode([
+        "success" => false,
+        "error" => "El nombre comercial es obligatorio."
+    ]);
     exit;
 }
 

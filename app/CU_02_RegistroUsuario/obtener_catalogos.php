@@ -4,52 +4,58 @@
  * Módulo        : CU_02_RegistroUsuario
  * Autor         : Francisco Angel Membrila Alarcón
  * Fecha         : 21/04/2026
+ * Descripción   : Endpoint que devuelve los catálogos necesarios para el registro de usuarios,
+ * como facultades y carreras.
  */
 require_once("../php/db.php");
 header("Content-Type: application/json");
 
 try {
-    // Al incluir db.php, las variables $dsn, $user, $pass y $options ya existen.
-    // Creamos la conexión aquí mismo.
-    $pdo = new PDO($dsn, $user, $pass, $options);
+    if (!isset($pdo)) {
+        $pdo = new PDO($dsn, $user, $pass, $options);
+    }
 
     // 1. Obtener Facultades activas
-    $stmt = $pdo->prepare("
+    $stmtFacultades = $pdo->prepare("
         SELECT Id_facultad, Nombre 
         FROM Facultades 
         WHERE Activo = 1 
         ORDER BY Nombre
     ");
-    $stmt->execute();
-    $facultades = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmtFacultades->execute();
+    $resultado_facultades = $stmtFacultades->fetchAll(PDO::FETCH_ASSOC);
 
     // 2. Obtener Carreras
-    // IMPORTANTE: Verifica que en tu DB la columna sea 'Id_facultad' y no 'Id_Facultad'
-    $stmt = $pdo->prepare("
+    $stmtCarreras = $pdo->prepare("
         SELECT Id_carrera, Nombre, Id_facultad 
         FROM Carreras 
+        WHERE Activo = 1
         ORDER BY Nombre
     ");
-    $stmt->execute();
-    $carreras = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmtCarreras->execute();
+    $resultado_carreras = $stmtCarreras->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
-        "facultades" => $facultades,
-        "carreras" => $carreras
+        "success" => true,
+        "facultades" => $resultado_facultades,
+        "carreras" => $resultado_carreras
     ]);
 
-} catch (PDOException $e) {
-    // Error específico de base de datos (conexión, tablas inexistentes, etc.)
+} catch (PDOException $error_base_datos) {
+    error_log("Error en obtener_catalogos.php: " . $error_base_datos->getMessage());
+    
     http_response_code(500);
     echo json_encode([
-        "error" => "Error de base de datos",
-        "detalle" => $e->getMessage()
+        "success" => false,
+        "error" => "Error al cargar los catálogos. Por favor, recargue la página."
     ]);
-} catch (Exception $e) {
-    // Cualquier otro error
+} catch (Exception $error_general) {
+    error_log("Error general en obtener_catalogos.php: " . $error_general->getMessage());
+    
     http_response_code(500);
     echo json_encode([
-        "error" => "Error general en el servidor",
-        "detalle" => $e->getMessage()
+        "success" => false,
+        "error" => "Error al cargar los catálogos. Por favor, recargue la página."
     ]);
 }
+?>
