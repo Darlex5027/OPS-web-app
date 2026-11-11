@@ -615,32 +615,47 @@ thead th {
 /* ===================================================== */
 /* ===== PERFIL ADMIN - FORMULARIO ÚNICO ===== */
 /* ===================================================== */
+/* Tarjeta igual a las del alumno; campos en dos columnas */
 #perfil_administrador {
-    display: flex;
-    grid-template-columns: center;
-    gap: 10px 16px;
-    align-items: center;
     background-color: #f9f9f9;
     border: 1px solid #e0e0e0;
     border-radius: 10px;
     padding: 16px;
 }
 
+#perfil_administrador h3 {
+    color: #982b2b;
+    font-size: 16px;
+    margin-bottom: 4px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #982b2b;
+}
+
+#perfil_administrador .campos-admin {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0 20px;
+}
+
 #perfil_administrador label {
+    display: block;
     font-size: 13px;
     font-weight: 600;
     color: #555;
-    text-align: right;
+    margin-top: 10px;
+    margin-bottom: 4px;
 }
 
 #perfil_administrador input {
+    display: block;
+    width: 100%;
     padding: 8px 10px;
     border-radius: 8px;
     border: 1px solid #ccc;
     font-size: 13px;
     background-color: #fff;
     color: #333;
-    width: 100%;
+    transition: border 0.2s;
 }
 
 #perfil_administrador input:not([disabled]):not([readonly]) {
@@ -652,6 +667,22 @@ thead th {
     background-color: #f0f0f0;
     color: #888;
     cursor: not-allowed;
+}
+
+/* ===================================================== */
+/* ===== CAMPOS DE SOLO LECTURA (admin y alumno) ===== */
+/* ===================================================== */
+/* Los campos con "readonly" nunca se editan: se muestran como texto */
+.contenedor-alumno form input[readonly],
+#perfil_administrador input[readonly] {
+    border: none;
+    background: transparent;
+    padding: 2px 0 6px;
+    font-size: 14px;
+    color: #2a2a2a;
+    -webkit-text-fill-color: #2a2a2a;
+    opacity: 1;
+    cursor: default;
 }
 
 /* ===================================================== */
@@ -762,7 +793,7 @@ thead th {
     align-items: center;
 }
 
-/* !important: debe ganarle a reglas con id (ej. #perfil_administrador { display: flex }) */
+/* !important: debe ganarle a reglas con id (ej. #perfil_administrador) */
 .oculto {
     display: none !important;
 }
@@ -1079,11 +1110,7 @@ thead th {
         width: 100%;
     }
 
-    #perfil_administrador {
+    #perfil_administrador .campos-admin {
         grid-template-columns: 1fr;
-    }
-
-    #perfil_administrador label {
-        text-align: left;
     }
 }
