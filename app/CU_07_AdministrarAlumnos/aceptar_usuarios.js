@@ -137,9 +137,9 @@ function renderModalExpediente(mensaje, onConfirmar) {
     };
 
     elContenido.appendChild(elParrafo);
+    elContenido.appendChild(elInputExpediente);
     elContenido.appendChild(elBtnCancelar);
     elContenido.appendChild(elBtnEnviar);
-    elContenido.appendChild(elInputExpediente);
     elFondo.appendChild(elContenido);
     document.body.appendChild(elFondo);
 }
