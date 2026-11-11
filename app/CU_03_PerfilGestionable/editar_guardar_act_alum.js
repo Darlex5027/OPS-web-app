@@ -2,552 +2,344 @@
 // Archivo : editar_guardar_act_alum.js
 // Autor   : Viridiana Tonix Zarate
 // Fecha   : 2026-05-24
-// Desc.   : Gestiona la edición y
-//           guardado de actividades
-//           del alumno (empresa,
-//           área, programa, estado, etc).
+// Desc.   : Actividad del alumno: qué se puede editar según su estado,
+//           validación antes de guardar, alta de una nueva actividad
+//           y modal para crear una empresa.
+//
+// Funciones que usa editar_guardar_perfil.js:
+//   habilitarEdicionAlumno()  y  validarAlumno()
+//
+// Contenido:
+//   1. Configuración y estado
+//   2. Reglas de la actividad
+//   3. Modo edición
+//   4. Validaciones
+//   5. Nueva actividad
+//   6. Nueva empresa
+//   7. Inicio (eventos)
 // ================================
-
 import { lanzarToast } from '../js/lanzar_toast.js';
+import { confirmarModal, formularioModal } from './modal_dinamico.js?v=20261106g';
+import {
+    ES_ALUMNO, getEl, valor, setVal, mostrar, habilitar, capitalizar, convertirAMayusculas,
+    errorCampo, terminarConExito, enviarJSON, obtenerCatalogos, agregarEmpresaACatalogo
+} from './mostrar_contenido.js?v=20261106g';
 
-// =========================
-// UTILIDADES
-// =========================
 
-/**
- * Obtiene el valor del campo con el id dado.
- * Si el elemento no existe, devuelve cadena vacía.
- * @param {string} idCampo - ID del elemento HTML
- * @returns {string} Valor del campo o ""
- */
-const obtenerValorCampo = (idCampo) => document.getElementById(idCampo)?.value ?? "";
+// =====================================================
+// 1. CONFIGURACIÓN Y ESTADO
+// =====================================================
+const NIVEL_ESTADO = { PENDIENTE: 1, EN_CURSO: 2, COMPLETADO: 3 };
 
-/**
- * Obtiene la referencia al elemento HTML con el id dado.
- * @param {string} idCampo - ID del elemento HTML
- * @returns {HTMLElement|null} Elemento encontrado o null
- */
-const obtenerElemento = (idCampo) => document.getElementById(idCampo);
-
-/**
- * Habilita o deshabilita una lista de campos por su ID.
- * @param {string[]} listaIds  - Array de IDs de los campos a afectar
- * @param {boolean}  deshabilitar - true = deshabilitar, false = habilitar
- */
-const cambiarEstadoCampos = (listaIds, deshabilitar) =>
-    listaIds.forEach(id => {
-        const el = obtenerElemento(id);
-        if (el) el.disabled = deshabilitar;
-    });
-
-/**
- * Muestra u oculta un elemento añadiendo/quitando la clase CSS "oculto".
- * @param {string}  idElemento - ID del elemento a mostrar/ocultar
- * @param {boolean} mostrar    - true = mostrar, false = ocultar
- */
-const alternarVisibilidad = (idElemento, mostrar) =>
-    obtenerElemento(idElemento)?.classList.toggle("oculto", !mostrar);
-
-// =========================
-// CONSTANTES / CONFIGURACIÓN
-// =========================
-const COMUNES = ["estado", "area", "programa", "fecha_inicio", "fecha_fin", "grupo_alumno", "horario_entrada", "horario_salida"];
-const PENDIENTE = [...COMUNES, "id_empresa"];
-const POR_ESTADO = { EN_CURSO: COMUNES, COMPLETADO: [] };
-
-const CAMPOS_COMPLETADO = [
-    { id: "area",             label: "Área" },
-    { id: "programa",         label: "Programa" },
-    { id: "fecha_inicio",     label: "Fecha de inicio" },
-    { id: "fecha_fin",        label: "Fecha de fin" },
-    { id: "grupo_alumno",     label: "Semestre y Grupo" },
-    { id: "horario_entrada",  label: "Horario de entrada" },
-    { id: "horario_salida",   label: "Horario de salida" },
-    { id: "empresa_texto",    label: "Empresa" }
-];
-
-const regexEmpresa = {
-    nombre:       /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-]{2,100}$/,
-    razonSocial:  /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-&]{2,150}$/,
-    rfc:          /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/,
-    direccion:    /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\.,\-#]{5,200}$/,
-    sitioWeb:     /^https?:\/\/(www\.)?[a-zA-Z0-9\-]+(\.[a-zA-Z]{2,})+([\/\w\-._~:?#[\]@!$&'()*+,;=]*)?$/
+const REGEX = {
+    grupo:       /^[1-9][A-Z]$/,
+    expediente:  /^[A-Z0-9\/-]{1,15}$/,
+    anio:        /^\d{4}$/,
+    nombre:      /^[\p{L}\d\s.,&()'\-]{2,100}$/u,
+    razonSocial: /^[\p{L}\d\s.,&()'\-]{2,150}$/u,
+    rfc:         /^[A-ZÑ&]{3,4}\d{6}[A-Z\d]{3}$/,
+    direccion:   /^[\p{L}\d\s#.,()\-]{5,200}$/u,
+    sitioWeb:    /^(https?:\/\/)?([\w-]+\.)+[a-z]{2,}(\/\S*)?$/i
 };
 
-const cookieTipoUsuario = document.cookie.split("; ")
-    .find(r => r.startsWith("Id_tipo_usuario="))
-    ?.split("=")[1].trim();
-
-// =========================
-// VALIDACIÓN DE ACTIVIDADES
-// Solo exige campos completos si el estado es COMPLETADO
-// =========================
-function validarActividades() {
-    const estado = obtenerValorCampo("estado");
-
-    if (estado !== "COMPLETADO") return true;
-
-    const campos = [
-        { id: "estado",          label: "Estado" },
-        { id: "area",            label: "Área" },
-        { id: "programa",        label: "Programa" },
-        { id: "fecha_inicio",    label: "Fecha de inicio" },
-        { id: "fecha_fin",       label: "Fecha de fin" },
-        { id: "grupo_alumno",    label: "Semestre y Grupo" },
-        { id: "horario_entrada", label: "Horario de entrada" },
-        { id: "horario_salida",  label: "Horario de salida" },
-        { id: "id_empresa",      label: "Empresa" }
-    ];
-
-    const faltantes = campos.filter(c => {
-        const el = obtenerElemento(c.id);
-        return el && !obtenerValorCampo(c.id).trim();
-    });
-
-    if (faltantes.length > 0) {
-        obtenerElemento(faltantes[0].id)?.focus();
-        lanzarToast(`Campos incompletos: ${faltantes.map(c => c.label).join(", ")}`, "error");
-        return false;
-    }
-
-    return true;
-}
-
-// =========================
-// MODAL
-// =========================
-function abrirModal() {
-    obtenerElemento("modal_nueva_empresa").style.display = "flex";
-}
-
-function cerrarModal() {
-    obtenerElemento("modal_nueva_empresa").style.display = "none";
-    ["nueva_empresa_nombre", "nueva_empresa_descripcion", "nueva_empresa_razon_social",
-        "nueva_empresa_rfc", "nueva_empresa_direccion", "nueva_empresa_web"]
-        .forEach(id => { obtenerElemento(id).value = ""; });
-}
-
-// =========================
-// CREAR EMPRESA
-// =========================
-function guardarNuevaEmpresa() {
-    const nombre       = obtenerValorCampo("nueva_empresa_nombre").trim();
-    const descripcion  = obtenerValorCampo("nueva_empresa_descripcion").trim();
-    const razonSocial  = obtenerValorCampo("nueva_empresa_razon_social").trim();
-    const rfc          = obtenerValorCampo("nueva_empresa_rfc").trim().toUpperCase();
-    const direccion    = obtenerValorCampo("nueva_empresa_direccion").trim();
-    const sitioWeb     = obtenerValorCampo("nueva_empresa_web").trim();
-
-    if (!nombre)                                                    return lanzarToast("El nombre es obligatorio", "error");
-    if (!regexEmpresa.nombre.test(nombre))                          return lanzarToast("Nombre inválido", "error");
-    if (!descripcion)                                               return lanzarToast("La descripción es obligatoria", "error");
-    if (razonSocial && !regexEmpresa.razonSocial.test(razonSocial)) return lanzarToast("Razón social inválida", "error");
-    if (rfc         && !regexEmpresa.rfc.test(rfc))                 return lanzarToast("RFC inválido", "error");
-    if (direccion   && !regexEmpresa.direccion.test(direccion))     return lanzarToast("Dirección inválida", "error");
-    if (sitioWeb    && !regexEmpresa.sitioWeb.test(sitioWeb))       return lanzarToast("Sitio web inválido", "error");
-
-    fetch("crear_empresa.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, descripcion, razonSocial, rfc, direccion, sitioWeb })
-    })
-        .then(r => r.json())
-        .then(r => {
-            if (!r.success) return lanzarToast("Error al crear empresa", "error");
-            obtenerElemento("id_empresa").appendChild(new Option(nombre, r.id_empresa, true, true));
-            obtenerElemento("empresa_texto").value = nombre;
-            obtenerElemento("empresa_texto").dataset.idEmpresa = r.id_empresa;
-            lanzarToast("Empresa creada correctamente", "exito");
-            cerrarModal();
-        })
-        .catch(e => console.error(e));
-}
-
-async function cargarEmpresas() {
-    try {
-        const respuesta = await fetch("obtener_empresas.php");
-        
-        if (!respuesta.ok) {
-            throw new Error(`Error HTTP: ${respuesta.status}`);
-        }
-        
-        const data = await respuesta.json();
-        
-        // Verificar si la respuesta es un array (formato actual del PHP)
-        let listaEmpresas;
-        if (Array.isArray(data)) {
-            // Formato actual: array directo
-            listaEmpresas = data;
-        } else if (data.success && Array.isArray(data.data)) {
-            // Formato esperado: {success: true, data: [...]}
-            listaEmpresas = data.data;
-        } else if (data.error) {
-            throw new Error(data.error);
-        } else {
-            throw new Error("Formato de respuesta inválido");
-        }
-        
-        const selectEmpresa = obtenerElemento("id_empresa");
-        if (!selectEmpresa) return;
-        
-        selectEmpresa.innerHTML = '<option value="">-- Selecciona una empresa --</option>';
-        
-        listaEmpresas.forEach(empresa => {
-            const option = new Option(empresa.Nombre, empresa.Id_empresa);
-            selectEmpresa.appendChild(option);
-        });
-        
-        const idActual = obtenerElemento("empresa_texto")?.dataset.idEmpresa;
-        if (idActual && selectEmpresa.querySelector(`option[value="${idActual}"]`)) {
-            selectEmpresa.value = idActual;
-        }
-        
-    } catch (error) {
-        console.error("Error en cargarEmpresas:", error);
-        lanzarToast(error.message || "Error de conexión al cargar empresas", "error");
-        
-        const selectEmpresa = obtenerElemento("id_empresa");
-        if (selectEmpresa) {
-            selectEmpresa.innerHTML = '<option value="">-- Error al cargar empresas --</option>';
-        }
-    }
-}
-
-// =========================
-// VALIDAR COMPLETADO
-// =========================
-function validarCompletado() {
-    const camposVacios = CAMPOS_COMPLETADO.filter(campo => !obtenerValorCampo(campo.id).trim());
-    if (camposVacios.length > 0) {
-        lanzarToast(`Campos incompletos: ${camposVacios.map(c => c.label).join(", ")}`, "error");
-        return false;
-    }
-    return true;
-}
-
-// =========================
-// CAMBIO DE ESTADO
-// =========================
-function manejarCambioEstado(e, obtenerEstadoAnterior, guardarEstadoAnterior) {
-    const nuevoEstado = e.target.value;
-    if (nuevoEstado === "COMPLETADO") {
-        if (!validarCompletado()) {
-            e.target.value = obtenerEstadoAnterior();
-            return;
-        }
-        lanzarToast("Todos los campos están completos.", "exito");
-    }
-    guardarEstadoAnterior(nuevoEstado);
-}
-
-// =========================
-// HABILITAR ACTIVIDADES
-// =========================
-window.habilitarActividades = async (habilitar) => {
-    const estado = obtenerElemento("estado").value || "";
-
-    if (estado === "COMPLETADO") {
-        cambiarEstadoCampos(PENDIENTE, true);
-        alternarVisibilidad("id_empresa",        false);
-        alternarVisibilidad("btn_crear_empresa", false);
-        alternarVisibilidad("empresa_texto",     true);
-        if (habilitar) lanzarToast("Este registro está completado y no puede editarse.", "error");
-        return;
-    }
-
-    cambiarEstadoCampos(PENDIENTE, true);
-    if (habilitar) cambiarEstadoCampos(POR_ESTADO[estado] ?? [], false);
-
-    alternarVisibilidad("id_empresa",        habilitar);
-    alternarVisibilidad("btn_crear_empresa", habilitar && estado === "PENDIENTE");
-    alternarVisibilidad("empresa_texto",     !habilitar);
-
-    if (habilitar && estado === "EN_CURSO") cambiarEstadoCampos(["id_empresa", "btn_crear_empresa"], true);
-    if (habilitar) await cargarEmpresas();
+// Campos que deben estar llenos para marcar COMPLETADO
+const REQUERIDOS_COMPLETADO = {
+    grupo_alumno:    "Semestre y Grupo",
+    horario_entrada: "Horario",
+    area:            "Área",
+    programa:        "Programa",
+    fecha_inicio:    "Fecha de inicio",
+    fecha_fin:       "Fecha de fin"
 };
 
-// =========================
-// GUARDAR ACTIVIDADES
-// =========================
-window.guardarActividades = () => {
-    if (!validarActividades()) return;
-
-    const estado = obtenerValorCampo("estado");
-    if (estado === "COMPLETADO" && !validarCompletado()) return;
-
-    // Validar y formatear grupo SOLO si tiene valor
-    const grupoInput = obtenerValorCampo("grupo_alumno").trim().toUpperCase();
-    const regexGrupo = /^[1-9][A-Z]$/;
-    if (grupoInput && !regexGrupo.test(grupoInput)) {
-        return lanzarToast("El semestre y grupo debe tener el formato: número (1-9) seguido de una letra. Ejemplo: 1A, 2B, 3C", "error");
-    }
-
-    const horarioEntrada = obtenerValorCampo("horario_entrada").trim();
-    const horarioSalida  = obtenerValorCampo("horario_salida").trim();
-
-    if ((horarioEntrada || horarioSalida) && (!horarioEntrada || !horarioSalida)) {
-        return lanzarToast("Debes completar ambos horarios o dejar ambos vacíos", "error");
-    }
-
-    let horarioCompleto = "";
-    if (horarioEntrada && horarioSalida) {
-        if (horarioSalida <= horarioEntrada) {
-            return lanzarToast("La hora de salida debe ser posterior a la de entrada", "error");
-        }
-        horarioCompleto = `${horarioEntrada} - ${horarioSalida}`;
-    }
-
-    const datos = {
-        estado,
-        area:         obtenerValorCampo("area"),
-        programa:     obtenerValorCampo("programa"),
-        fecha_inicio: obtenerValorCampo("fecha_inicio"),
-        fecha_fin:    obtenerValorCampo("fecha_fin"),
-        grupo:        grupoInput,
-        horario:      horarioCompleto
-    };
-
-    if (estado === "PENDIENTE") {
-        const idEmpresa = obtenerValorCampo("id_empresa");
-        if (!idEmpresa) return lanzarToast("Debes seleccionar una empresa.", "error");
-        datos.id_empresa = idEmpresa;
-
-        const sel = obtenerElemento("id_empresa");
-        const txt = obtenerElemento("empresa_texto");
-        txt.value = sel.options[sel.selectedIndex]?.text || "";
-        txt.dataset.idEmpresa = sel.value;
-    }
-
-    fetch("guardar_datos.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(datos)
-    })
-        .then(r => r.json())
-        .then(r => {
-            if (r.success) {
-                lanzarToast("Actividades guardadas correctamente", "exito");
-                setTimeout(() => location.reload(), 1500);
-            } else {
-                lanzarToast(r.error || "Error al guardar", "error");
-            }
-        })
-        .catch(e => {
-            console.error(e);
-            lanzarToast("Error de conexión al guardar", "error");
-        });
+// Campos del modal de empresa → id del input
+const CAMPOS_EMPRESA = {
+    nombre:       "nueva_empresa_nombre",
+    descripcion:  "nueva_empresa_descripcion",
+    razon_social: "nueva_empresa_razon_social",
+    rfc:          "nueva_empresa_rfc",
+    direccion:    "nueva_empresa_direccion",
+    sitio_web:    "nueva_empresa_web"
 };
 
-// =========================
-// EDITAR
-// =========================
-function modoEditar(btnEditar, btnGuardar, btnCancelar) {
-    btnEditar.style.display   = "none";
-    btnGuardar.style.display  = "inline-block";
-    btnCancelar.style.display = "inline-block";
+// Actividad tal como está guardada en la BD
+const actividad = {
+    existe: false,
+    estado: ""
+};
 
-    const inputFoto = obtenerElemento("foto_perfil_input");
-    if (inputFoto) inputFoto.disabled = false;
 
-    if (cookieTipoUsuario === "1" || cookieTipoUsuario === "3") {
-        ["telefono_administrador", "correo_administrador"].forEach(id => {
-            const el = obtenerElemento(id);
-            if (el) { el.disabled = false; el.readOnly = false; }
-        });
-    } else {
-        ["grupo_alumno", "horario_entrada", "horario_salida", "id_empresa",
-            "nueva_empresa", "area", "programa", "estado", "fecha_inicio", "fecha_fin"]
-            .forEach(id => {
-                const el = obtenerElemento(id);
-                if (el) { el.disabled = false; el.readOnly = false; }
-            });
+// =====================================================
+// 2. REGLAS DE LA ACTIVIDAD
+// =====================================================
+function actividadAbierta() {
+    return actividad.existe && (actividad.estado === "PENDIENTE" || actividad.estado === "EN_CURSO");
+}
 
-        const empresaTexto  = obtenerElemento("empresa_texto");
-        const selectEmpresa = obtenerElemento("id_empresa");
-        if (empresaTexto)  empresaTexto.style.display  = "none";
-        if (selectEmpresa) selectEmpresa.style.display = "block";
+/** La empresa solo se elige mientras la actividad está PENDIENTE. */
+function empresaEditable() {
+    return actividad.estado === "PENDIENTE";
+}
 
-        cargarEmpresas();
+/** Se ejecuta cuando mostrar_contenido.js termina de cargar los datos. */
+function aplicarReglasActividad(e) {
+    const datos = e.detail.datos;
+    actividad.existe = Boolean(datos.Tiene_actividad);
+    actividad.estado = datos.Estado || "";
+
+    bloquearEstadosAnteriores();
+    mostrarAvisoActividad();
+    mostrar("btn_nueva_actividad", !actividadAbierta());
+}
+
+/** El estado solo puede avanzar; CANCELADO nunca lo elige el alumno. */
+function bloquearEstadosAnteriores() {
+    const nivelActual = NIVEL_ESTADO[actividad.estado];
+
+    for (const opcion of getEl("estado").options) {
+        opcion.disabled = opcion.value === "CANCELADO" ||
+            (actividad.existe && (!opcion.value || NIVEL_ESTADO[opcion.value] < nivelActual));
     }
 }
 
-// =========================
-// GUARDAR (PERFIL ALUMNO)
-// =========================
-function modoGuardar() {
-    if (!validarActividades()) return;
+function mostrarAvisoActividad() {
+    const aviso = textoAvisoActividad();
+    getEl("aviso_actividad").textContent = aviso;
+    mostrar("aviso_actividad", Boolean(aviso));
+}
 
-    // Validar y formatear grupo SOLO si tiene valor
-    const grupoInput = obtenerValorCampo("grupo_alumno").trim().toUpperCase();
-    const regexGrupo = /^[1-9][A-Z]$/;
-    if (grupoInput && !regexGrupo.test(grupoInput)) {
-        return lanzarToast("El semestre y grupo debe tener el formato: número (1-9) seguido de una letra. Ejemplo: 1A, 2B, 3C", "error");
-    }
+function textoAvisoActividad() {
+    if (!actividad.existe)                 return "Aún no tienes una actividad registrada. Crea una para comenzar.";
+    if (actividad.estado === "CANCELADO")  return "Esta actividad fue CANCELADA. Puedes iniciar una nueva actividad.";
+    if (actividad.estado === "COMPLETADO") return "Esta actividad está COMPLETADA y ya no puede modificarse. Ya puedes iniciar una nueva actividad.";
+    return "";
+}
 
-    const horarioEntrada = obtenerValorCampo("horario_entrada").trim();
-    const horarioSalida  = obtenerValorCampo("horario_salida").trim();
 
-    if ((horarioEntrada || horarioSalida) && (!horarioEntrada || !horarioSalida)) {
-        return lanzarToast("Debes completar ambos horarios", "error");
-    }
+// =====================================================
+// 3. MODO EDICIÓN
+// =====================================================
+/** Los datos personales siempre se editan; la actividad solo si está abierta. */
+export function habilitarEdicionAlumno() {
+    habilitar(["grupo_alumno", "horario_entrada", "horario_salida"]);
+    if (!actividadAbierta()) return;
 
-    if (horarioEntrada && horarioSalida && horarioSalida <= horarioEntrada) {
-        return lanzarToast("La salida debe ser posterior a la entrada", "error");
-    }
+    habilitar(["estado", "area", "programa", "fecha_inicio", "fecha_fin"]);
+    if (empresaEditable()) habilitarSelectorEmpresa();
+}
 
-    const fechaInicio = obtenerElemento("fecha_inicio")?.value;
-    const fechaFin    = obtenerElemento("fecha_fin")?.value;
-    if (fechaInicio && fechaFin && fechaFin <= fechaInicio) {
-        return lanzarToast("La fecha fin debe ser posterior a la fecha inicio", "error");
-    }
+function habilitarSelectorEmpresa() {
+    mostrar("empresa_texto", false);
+    mostrar("id_empresa", true);
+    mostrar("btn_crear_empresa", true);
+    getEl("id_empresa").disabled = false;
+    llenarSelectorEmpresas();
+}
+
+function llenarSelectorEmpresas() {
+    const select = getEl("id_empresa");
+    select.replaceChildren(new Option("-- Selecciona una empresa --", ""));
+    obtenerCatalogos().empresas.forEach(e => select.add(new Option(e.Nombre, e.Id_empresa)));
+    select.value = getEl("empresa_texto").dataset.idEmpresa;
+}
+
+
+// =====================================================
+// 4. VALIDACIONES
+// =====================================================
+/** Devuelve los datos del alumno a guardar, o null si hay error o canceló. */
+export async function validarAlumno() {
+    const datos = validarDatosPersonales();
+    if (!datos || !actividadAbierta()) return datos;
+
+    const datosActividad = await validarActividad();
+    return datosActividad && { ...datos, ...datosActividad };
+}
+
+function validarDatosPersonales() {
+    const grupo   = valor("grupo_alumno").toUpperCase();
+    const entrada = valor("horario_entrada");
+    const salida  = valor("horario_salida");
+
+    if (grupo && !REGEX.grupo.test(grupo))    return errorCampo("El semestre y grupo debe ser un número (1-9) y una letra. Ejemplo: 1A", "grupo_alumno");
+    if (Boolean(entrada) !== Boolean(salida)) return errorCampo("Debes completar ambos horarios o dejar ambos vacíos", "horario_entrada");
+    if (entrada && salida <= entrada)         return errorCampo("La hora de salida debe ser posterior a la de entrada", "horario_salida");
 
     const datos = {};
+    if (grupo)   datos.grupo   = grupo;
+    if (entrada) datos.horario = `${entrada} - ${salida}`;
+    return datos;
+}
 
-    if (grupoInput) datos.grupo = grupoInput;
+async function validarActividad() {
+    const datos = {
+        estado:       valor("estado"),
+        area:         valor("area"),
+        programa:     valor("programa"),
+        fecha_inicio: valor("fecha_inicio"),
+        fecha_fin:    valor("fecha_fin")
+    };
+    const idEmpresa = idEmpresaSeleccionada();
 
-    if (horarioEntrada && horarioSalida) {
-        datos.horario = `${horarioEntrada} - ${horarioSalida}`;
+    if (datos.fecha_inicio && datos.fecha_fin && datos.fecha_fin <= datos.fecha_inicio) {
+        return errorCampo("La fecha fin debe ser posterior a la fecha inicio", "fecha_fin");
     }
 
-    if (obtenerValorCampo("area").trim())     datos.area        = obtenerValorCampo("area").trim();
-    if (obtenerValorCampo("programa").trim()) datos.programa     = obtenerValorCampo("programa").trim();
-    if (obtenerValorCampo("estado"))          datos.estado       = obtenerValorCampo("estado");
-    if (fechaInicio)                          datos.fecha_inicio = fechaInicio;
-    if (fechaFin)                             datos.fecha_fin    = fechaFin;
-
-    const selectEmpresa = obtenerElemento("id_empresa");
-    if (selectEmpresa?.value) datos.id_empresa = selectEmpresa.value;
-
-    fetch("guardar_datos.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(datos)
-    })
-        .then(async r => {
-            const texto = await r.text();
-            try { return JSON.parse(texto); }
-            catch { throw new Error("La respuesta no es JSON válido"); }
-        })
-        .then(resp => {
-            if (resp.success) {
-                lanzarToast("Datos guardados correctamente", "exito");
-                setTimeout(() => location.reload(), 1500);
-            } else {
-                let mensajeUsuario = "Error al guardar los datos";
-                if (resp.error) {
-                    if (resp.error.includes("Grupo") || resp.error.includes("grupo")) {
-                        mensajeUsuario = "Por favor, completa el campo 'Semestre y Grupo'";
-                    } else if (resp.error.includes("Empresa") || resp.error.includes("empresa")) {
-                        mensajeUsuario = "Por favor, selecciona una empresa";
-                    } else if (resp.error.includes("constraint") || resp.error.includes("Integrity")) {
-                        mensajeUsuario = "Hay datos requeridos incompletos. Verifica todos los campos.";
-                    } else {
-                        mensajeUsuario = resp.error;
-                    }
-                }
-                lanzarToast(mensajeUsuario, "error");
-            }
-        })
-        .catch(() => lanzarToast("Error de conexión", "error"));
-}
-
-// =========================
-// BLOQUEO POR ESTADO COMPLETADO
-// =========================
-function isCompletado() {
-    return obtenerValorCampo("estado") === "COMPLETADO";
-}
-
-function bloquearSiCompletado() {
-    if (!isCompletado()) return false;
-
-    cambiarEstadoCampos(PENDIENTE, true);
-    alternarVisibilidad("id_empresa",         false);
-    alternarVisibilidad("modal_nueva_empresa", false);
-    alternarVisibilidad("empresa_texto",       true);
-
-    const btnEditar   = document.querySelector(".btn.editar");
-    const btnGuardar  = document.querySelector(".btn.guardar");
-    const btnCancelar = document.querySelector(".btn.cancelar");
-
-    if (btnEditar)   { btnEditar.style.display   = "none"; btnEditar.disabled   = true; }
-    if (btnGuardar)  { btnGuardar.style.display  = "none"; btnGuardar.disabled  = true; }
-    if (btnCancelar) { btnCancelar.style.display = "none"; btnCancelar.disabled = true; }
-
-    return true;
-}
-
-function intentarEditar(btnEditar, btnGuardar, btnCancelar) {
-    if (isCompletado()) {
-        lanzarToast("Este registro está completado y no puede editarse.", "error");
-        return;
+    if (datos.estado === "COMPLETADO") {
+        const faltan = camposFaltantesParaCompletar(idEmpresa);
+        if (faltan.length) return errorCampo(`Para completar la actividad faltan: ${faltan.join(", ")}`);
+        if (!(await confirmarCompletar())) return null;
     }
-    modoEditar(btnEditar, btnGuardar, btnCancelar);
+
+    if (empresaEditable() && idEmpresa) datos.id_empresa = idEmpresa;
+    return datos;
 }
 
-// =========================
-// FORMATEO AUTOMÁTICO A MAYÚSCULAS
-// =========================
-function inicializarFormateoGrupo() {
-    const grupoEl = obtenerElemento("grupo_alumno");
-    if (!grupoEl) return;
-    grupoEl.addEventListener("input", (e) => {
-        e.target.value = e.target.value.toUpperCase();
+function idEmpresaSeleccionada() {
+    return empresaEditable() ? valor("id_empresa") : getEl("empresa_texto").dataset.idEmpresa;
+}
+
+function camposFaltantesParaCompletar(idEmpresa) {
+    const faltan = Object.keys(REQUERIDOS_COMPLETADO)
+        .filter(id => !valor(id))
+        .map(id => REQUERIDOS_COMPLETADO[id]);
+    if (!idEmpresa) faltan.push("Empresa");
+    return faltan;
+}
+
+function confirmarCompletar() {
+    return confirmarModal(
+        "Al marcar la actividad como COMPLETADA ya no podrás modificarla. ¿Deseas continuar?",
+        { titulo: "Completar actividad", textoConfirmar: "Sí, completar" }
+    );
+}
+
+
+// =====================================================
+// 5. NUEVA ACTIVIDAD
+// =====================================================
+function abrirModalActividad() {
+    formularioModal({
+        titulo:      "Nueva actividad",
+        mensaje:     "Captura los datos para iniciar tu nueva actividad.",
+        textoEnviar: "Crear actividad",
+        campos:      camposModalActividad(obtenerCatalogos()),
+        onEnviar:    crearActividad
     });
 }
 
-// =========================
-// DOMContentLoaded
-// =========================
-document.addEventListener("DOMContentLoaded", () => {
+function camposModalActividad({ servicios, periodos }) {
+    return [
+        { id: "no_expediente", label: "No. Expediente", maxLength: 15, placeholder: "Ej. EXP-2026-001", mayusculas: true },
+        {
+            id: "id_servicio", label: "Servicio", tipo: "select",
+            opciones: [{ valor: "", texto: "-- Selecciona un servicio --" },
+                       ...servicios.map(s => ({ valor: s.Id_servicio, texto: s.Servicio }))]
+        },
+        {
+            id: "periodo_tipo", label: "Periodo", tipo: "select",
+            opciones: [{ valor: "", texto: "-- Selecciona --" },
+                       ...periodos.map(p => ({ valor: p, texto: capitalizar(p) }))]
+        },
+        { id: "periodo_anio", label: "Año", tipo: "number", min: 2000, max: 2155, valor: new Date().getFullYear() }
+    ];
+}
 
-    let estadoAnterior = obtenerValorCampo("estado");
+/** Se llama desde el modal. Devuelve un texto si hay error (el modal lo muestra). */
+async function crearActividad(valores) {
+    valores.no_expediente = valores.no_expediente.toUpperCase();
 
-    const btnEditar   = document.querySelector(".btn.editar");
-    const btnGuardar  = document.querySelector(".btn.guardar");
-    const btnCancelar = document.querySelector(".btn.cancelar");
+    const error = validarNuevaActividad(valores);
+    if (error) return error;
 
-    btnGuardar.style.display  = "none";
-    btnCancelar.style.display = "none";
+    const respuesta = await enviarJSON("crear.php", { accion: "actividad", ...valores });
+    if (!respuesta.success) return respuesta.error || "No se pudo crear la actividad";
 
-    if (!bloquearSiCompletado()) {
-        alternarVisibilidad("id_empresa",        false);
-        alternarVisibilidad("btn_crear_empresa", false);
+    terminarConExito("Nueva actividad creada");
+}
+
+function validarNuevaActividad(v) {
+    if (!REGEX.expediente.test(v.no_expediente)) return "Escribe un No. de expediente válido (máx. 15: letras, números, - o /)";
+    if (!v.id_servicio)                          return "Selecciona un servicio";
+    if (!v.periodo_tipo)                         return "Selecciona el periodo";
+    if (!REGEX.anio.test(v.periodo_anio))        return "Año del periodo inválido";
+    return null;
+}
+
+
+// =====================================================
+// 6. NUEVA EMPRESA
+// =====================================================
+function abrirModalEmpresa() {
+    getEl("modal_nueva_empresa").classList.add("abierto");
+}
+
+function cerrarModalEmpresa() {
+    getEl("modal_nueva_empresa").classList.remove("abierto");
+    Object.values(CAMPOS_EMPRESA).forEach(id => setVal(id, ""));
+}
+
+function cerrarModalEmpresaAlDarClicFuera(e) {
+    if (e.target === getEl("modal_nueva_empresa")) cerrarModalEmpresa();
+}
+
+async function crearEmpresa() {
+    const empresa = leerFormularioEmpresa();
+    const error   = validarEmpresa(empresa);
+    if (error) return lanzarToast(error, "error");
+
+    const btnGuardar = getEl("guardar_nueva_empresa");
+    btnGuardar.disabled = true;
+    const respuesta = await enviarJSON("crear.php", { accion: "empresa", ...empresa });
+    btnGuardar.disabled = false;
+
+    // Creada, o ya existía y está activa: se selecciona en la lista
+    if (respuesta.id_empresa) {
+        seleccionarEmpresa(respuesta.id_empresa, respuesta.nombre);
+        cerrarModalEmpresa();
     }
+    lanzarToast(respuesta.success ? "Empresa creada correctamente" : (respuesta.error || "Error al crear la empresa"),
+                respuesta.success ? "exito" : "error");
+}
 
-    inicializarFormateoGrupo();
+function leerFormularioEmpresa() {
+    const empresa = {};
+    for (const [campo, id] of Object.entries(CAMPOS_EMPRESA)) empresa[campo] = valor(id);
+    empresa.rfc = empresa.rfc.toUpperCase();
+    return empresa;
+}
 
-    btnEditar?.addEventListener("click",   () => intentarEditar(btnEditar, btnGuardar, btnCancelar));
-    btnGuardar?.addEventListener("click",  () => modoGuardar());
-    btnCancelar?.addEventListener("click", () => location.reload());
+function validarEmpresa(e) {
+    if (!REGEX.nombre.test(e.nombre))                               return "Escribe un nombre de empresa válido";
+    if (e.razon_social && !REGEX.razonSocial.test(e.razon_social)) return "Razón social inválida";
+    if (e.rfc          && !REGEX.rfc.test(e.rfc))                  return "RFC inválido. Ejemplo: ABC123456XYZ";
+    if (e.direccion    && !REGEX.direccion.test(e.direccion))      return "Dirección inválida";
+    if (e.sitio_web    && !REGEX.sitioWeb.test(e.sitio_web))       return "Sitio web inválido";
+    return null;
+}
 
-    const btn_crear_empresa     = obtenerElemento("btn_crear_empresa");
-    const cerrar_modal_empresa  = obtenerElemento("cerrar_modal_empresa");
-    const modal_nueva_empresa   = obtenerElemento("modal_nueva_empresa");
-    const guardar_nueva_empresa = obtenerElemento("guardar_nueva_empresa");
+function seleccionarEmpresa(id, nombre) {
+    const select = getEl("id_empresa");
+    if (![...select.options].some(o => o.value === String(id))) select.add(new Option(nombre, id));
+    select.value = String(id);
+    agregarEmpresaACatalogo(id, nombre);
+}
 
-    if (btn_crear_empresa)    btn_crear_empresa.addEventListener("click", abrirModal);
-    if (cerrar_modal_empresa) cerrar_modal_empresa.addEventListener("click", cerrarModal);
-    if (modal_nueva_empresa) {
-        modal_nueva_empresa.addEventListener("click", e => {
-            if (e.target === modal_nueva_empresa) cerrarModal();
-        });
-    }
-    if (guardar_nueva_empresa) guardar_nueva_empresa.addEventListener("click", guardarNuevaEmpresa);
 
-    const estadoEl = obtenerElemento("estado");
-    if (estadoEl) {
-        estadoEl.addEventListener("focus",  () => { estadoAnterior = obtenerValorCampo("estado"); });
-        estadoEl.addEventListener("change", e =>
-            manejarCambioEstado(e, () => estadoAnterior, v => { estadoAnterior = v; })
-        );
-    }
+// =====================================================
+// 7. INICIO (EVENTOS)
+// =====================================================
+function conectarEventos() {
+    getEl("grupo_alumno").addEventListener("input", convertirAMayusculas);
+    getEl("btn_nueva_actividad").addEventListener("click", abrirModalActividad);
 
-    const fechaInicioEl = obtenerElemento("fecha_inicio");
-    if (fechaInicioEl) {
-        fechaInicioEl.addEventListener("change", e => {
-            const fechaFinEl = obtenerElemento("fecha_fin");
-            if (fechaFinEl) fechaFinEl.min = e.target.value;
-        });
-    }
-});
+    getEl("btn_crear_empresa").addEventListener("click", abrirModalEmpresa);
+    getEl("cerrar_modal_empresa").addEventListener("click", cerrarModalEmpresa);
+    getEl("guardar_nueva_empresa").addEventListener("click", crearEmpresa);
+    getEl("modal_nueva_empresa").addEventListener("click", cerrarModalEmpresaAlDarClicFuera);
+}
+
+if (ES_ALUMNO) {
+    document.addEventListener("datosCargados", aplicarReglasActividad);
+    document.addEventListener("DOMContentLoaded", conectarEventos);
+}
