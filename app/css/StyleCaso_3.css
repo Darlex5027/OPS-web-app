@@ -1,0 +1,1098 @@
+/* ===== VARIABLES GLOBALES ===== */
+:root {
+    --rojo: #982b2b;
+    --rojo-dark: #7d1f1f;
+    --gris-bg: #f5f6fa;
+    --gris-claro: #f0f0f0;
+    --radio: 8px;
+}
+
+/* ===== RESET ===== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: var(--gris-bg);
+    color: #2a2a2a;
+    overflow-x: hidden;
+    display: flex;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 250px;
+    background-color: #fff;
+    padding: 30px 20px;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, .08);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    overflow-y: auto;
+}
+
+/* ===== PERFIL SIDEBAR ===== */
+.profile {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--gris-bg);
+}
+
+.profile h3 {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.profile .btn.editar {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #982b2b, #b23a3a);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.profile .btn.editar:hover {
+    background: linear-gradient(135deg, #7d1f1f, #982b2b);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.profile .btn.editar:active {
+    transform: scale(0.95);
+}
+
+/* ===== MENÚ ===== */
+.menu a {
+    text-decoration: none;
+}
+
+.menu button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: var(--radio);
+    background-color: var(--gris-bg);
+    cursor: pointer;
+    text-align: left;
+    font-size: 14px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    transition: 0.3s ease;
+    color: #333;
+}
+
+.menu button:hover {
+    background-color: #9E1B32;
+    color: white;
+}
+
+.menu button.active {
+    background-color: var(--gris-claro);
+    font-weight: 600;
+}
+
+/* ===== MAIN ===== */
+.main {
+    margin-left: 250px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ===== HEADER ===== */
+.header {
+    width: 100%;
+    background: var(--rojo);
+    color: white;
+    height: 120px;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    gap: 20px;
+}
+
+.header h1 {
+    font-weight: 600;
+    font-size: 50px;
+    text-align: center;
+    flex: 1;
+}
+
+.header-spacer {
+    min-width: 100px;
+    flex-shrink: 0;
+}
+
+.header::after {
+    content: '';
+    min-width: 100px;
+    flex-shrink: 0;
+}
+
+.header-logo-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    order: -1;
+}
+
+.header-logo-right img {
+    height: 100px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* ===== BOTÓN CAMBIAR FOTO ===== */
+#btn_cambiar_foto {
+    background: linear-gradient(135deg, #982b2b 0%, #b23a3a 100%);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(152, 43, 43, 0.3);
+    width: 100%;
+    margin-top: 8px;
+}
+
+#btn_cambiar_foto:hover {
+    background: linear-gradient(135deg, #7d1f1f 0%, #982b2b 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(152, 43, 43, 0.4);
+}
+
+#btn_cambiar_foto:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(152, 43, 43, 0.3);
+}
+
+#btn_cambiar_foto:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#btn_cambiar_foto:focus {
+    outline: 2px solid rgba(152, 43, 43, 0.5);
+    outline-offset: 2px;
+}
+
+/* ===== CONTENEDOR PRINCIPAL (.table) ===== */
+.table {
+    width: 95%;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: transparent;
+    padding: 0;
+}
+
+/* ===================================================== */
+/* ===== TARJETA BASE — usada por todas las secciones ===== */
+/* ===================================================== */
+.tarjeta {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+/* ===================================================== */
+/* ===== ADMIN ===== */
+/* ===================================================== */
+#perfil_administrador {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    align-items: flex-start;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    width: 100%;
+    margin-bottom: 0;
+}
+
+#perfil_administrador label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 4px;
+    width: 100%;
+}
+
+#perfil_administrador input {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+    background-color: #fff;
+    color: #333;
+    transition: border 0.2s;
+}
+
+#perfil_administrador input:not([disabled]):not([readonly]) {
+    border-color: #982b2b;
+    background-color: #fff8f8;
+}
+
+#perfil_administrador input:disabled {
+    background-color: #f0f0f0;
+    color: #888;
+    cursor: not-allowed;
+}
+
+/* ===================================================== */
+/* ===== CONTENEDOR ALUMNO (dos columnas) ===== */
+/* ===================================================== */
+.contenedor-alumno {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    width: 100%;
+    margin: 20px 0;
+}
+
+/* Cada tarjeta columna */
+#tabla_perfil_alumno,
+#tabla_actividades {
+    flex: 1;
+    min-width: 280px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===================================================== */
+/* ===== ACTIVIDADES 2 ===== */
+/* ===================================================== */
+.contenedor-actividades-2 {
+    width: 100%;
+    margin: 0 0 20px 0;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+/* ===================================================== */
+/* ===== PRÁCTICAS PROFESIONALES ===== */
+/* ===================================================== */
+#contenedor-practicas {
+    width: 100%;
+    margin: 0 0 20px 0;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+/* ===================================================== */
+/* ===== FORMULARIOS DENTRO DE TARJETAS (compartido) ===== */
+/* ===================================================== */
+#tabla_perfil_alumno form,
+#tabla_actividades form,
+.contenedor-actividades-2 form,
+#contenedor-practicas form {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Títulos h3 */
+#tabla_perfil_alumno form h3,
+#tabla_actividades form h3,
+.contenedor-actividades-2 form h3,
+#contenedor-practicas form h3 {
+    color: #982b2b;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #982b2b;
+}
+
+/* Labels */
+#tabla_perfil_alumno form label,
+#tabla_actividades form label,
+.contenedor-actividades-2 form label,
+#contenedor-practicas form label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-top: 10px;
+    margin-bottom: 4px;
+}
+
+/* Inputs y selects */
+#tabla_perfil_alumno form input,
+#tabla_actividades form input,
+#tabla_actividades form select,
+.contenedor-actividades-2 form input,
+.contenedor-actividades-2 form select,
+#contenedor-practicas form input,
+#contenedor-practicas form select {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+    background-color: #fff;
+    color: #333;
+    transition: border 0.2s;
+}
+
+/* Campo activo (editable) */
+#tabla_perfil_alumno form input:not([disabled]):not([readonly]),
+#tabla_actividades form input:not([disabled]):not([readonly]),
+#tabla_actividades form select:not([disabled]),
+.contenedor-actividades-2 form input:not([disabled]):not([readonly]),
+.contenedor-actividades-2 form select:not([disabled]),
+#contenedor-practicas form input:not([disabled]):not([readonly]),
+#contenedor-practicas form select:not([disabled]) {
+    border-color: #982b2b;
+    background-color: #fff8f8;
+}
+
+/* Campo deshabilitado */
+#tabla_perfil_alumno form input:disabled,
+#tabla_actividades form input:disabled,
+#tabla_actividades form select:disabled,
+.contenedor-actividades-2 form input:disabled,
+.contenedor-actividades-2 form select:disabled,
+#contenedor-practicas form input:disabled,
+#contenedor-practicas form select:disabled {
+    background-color: #f0f0f0;
+    color: #888;
+    cursor: not-allowed;
+}
+
+/* Botón crear empresa dentro de tarjeta */
+#tabla_actividades .btn.crear,
+.contenedor-actividades-2 .btn.crear,
+#contenedor-practicas .btn.crear {
+    margin-top: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #982b2b, #b23a3a);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#tabla_actividades .btn.crear:hover,
+.contenedor-actividades-2 .btn.crear:hover,
+#contenedor-practicas .btn.crear:hover {
+    background: linear-gradient(135deg, #7d1f1f, #982b2b);
+    transform: translateY(-1px);
+}
+
+/* ===================================================== */
+/* ===== HORARIO ===== */
+/* ===================================================== */
+.horario-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.horario-container input {
+    flex: 1;
+}
+
+.horario-container span {
+    font-weight: 600;
+    color: #555;
+}
+
+/* ===================================================== */
+/* ===== FORM ACTIONS (botones Editar/Guardar/Cancelar) ===== */
+/* ===================================================== */
+.form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+}
+
+.form-actions .btn {
+    padding: 10px 24px;
+    border-radius: 25px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    color: white;
+    transition: all 0.25s ease;
+}
+
+.form-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.form-actions .btn:active {
+    transform: scale(0.97);
+}
+
+.form-actions .editar,
+.form-actions .btn.editar {
+    background: linear-gradient(135deg, #982b2b, #b23a3a);
+}
+
+.form-actions .editar:hover,
+.form-actions .btn.editar:hover {
+    background: linear-gradient(135deg, #7d1f1f, #982b2b);
+}
+
+.form-actions .guardar,
+.form-actions .btn.guardar {
+    background: linear-gradient(135deg, #28a745, #218838);
+}
+
+.form-actions .guardar:hover,
+.form-actions .btn.guardar:hover {
+    background: linear-gradient(135deg, #218838, #1a6e2e);
+}
+
+.form-actions .cancelar,
+.form-actions .btn.cancelar {
+    background: linear-gradient(135deg, #bdc3c7, #95a5a6);
+    color: #2c3e50;
+}
+
+.form-actions .cancelar:hover,
+.form-actions .btn.cancelar:hover {
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+    color: #fff;
+}
+
+/* ===================================================== */
+/* ===== TOAST ===== */
+/* ===================================================== */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 9999;
+    transition: opacity 0.4s, transform 0.4s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.toast.exito {
+    background-color: #2ecc71;
+}
+
+.toast.error {
+    background-color: #e74c3c;
+}
+
+.toast.oculto {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+/* ===================================================== */
+/* ===== OCULTO ===== */
+/* ===================================================== */
+.oculto {
+    display: none !important;
+}
+
+/* ===================================================== */
+/* ===== TABLAS HTML (para otras vistas) ===== */
+/* ===================================================== */
+.opciones {
+    width: 95%;
+    max-width: 1200px;
+    background-color: #ffffff;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+table[border="1"] {
+    border: none;
+}
+
+table thead {
+    background: linear-gradient(135deg, #982b2b, #b23a3a);
+    color: white;
+}
+
+th {
+    padding: 14px;
+    font-size: 14px;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+td {
+    padding: 12px;
+    font-size: 14px;
+    color: #444;
+    text-align: center;
+}
+
+th,
+td {
+    border-bottom: 1px solid #eee;
+}
+
+tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+tr:hover {
+    background-color: #f1f3f7;
+    cursor: pointer;
+}
+
+thead tr:hover {
+    background: linear-gradient(135deg, #982b2b, #b23a3a) !important;
+}
+
+thead th {
+    color: white !important;
+}
+
+/* ===================================================== */
+/* ===== BOTONES ACEPTAR / RECHAZAR ===== */
+/* ===================================================== */
+.acciones {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.acciones button {
+    padding: 7px 18px;
+    border: none;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: white;
+    transition: all 0.25s ease;
+}
+
+.btn-aceptar {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.btn-aceptar:hover {
+    background: linear-gradient(135deg, #27ae60, #1e8449);
+}
+
+.btn-rechazar {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.btn-rechazar:hover {
+    background: linear-gradient(135deg, #c0392b, #a93226);
+}
+
+/* ===================================================== */
+/* ===== CONTROLES EN FILA ===== */
+/* ===================================================== */
+.controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto 20px;
+}
+
+.selects-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.buttons-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.selects-group select {
+    width: 200px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    background: #fff;
+    transition: 0.25s;
+}
+
+.selects-group select:focus {
+    border-color: #982b2b;
+    box-shadow: 0 0 5px rgba(152, 43, 43, 0.3);
+}
+
+.buttons-group button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #982b2b, #b23a3a);
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.buttons-group button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#btnGenerarExcel {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+}
+
+#btnGenerarPDF {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+/* ===== MAIN selects y buttons genéricos ===== */
+.main select {
+    width: 200px;
+    padding: 10px 12px;
+    margin: 8px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    background: #fff;
+    transition: 0.25s;
+}
+
+.main select:focus {
+    border-color: #982b2b;
+    box-shadow: 0 0 5px rgba(152, 43, 43, 0.3);
+}
+
+.main button {
+    padding: 10px 16px;
+    margin: 8px;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #982b2b, #b23a3a);
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.main button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* ===================================================== */
+/* ===== MODAL NUEVA EMPRESA ===== */
+/* ===================================================== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-contenido {
+    background: #fff;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    animation: aparecer 0.2s ease;
+}
+
+@keyframes aparecer {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-contenido h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #7b1e1e;
+}
+
+.modal-contenido label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 13px;
+    color: #555;
+}
+
+.modal-contenido input,
+.modal-contenido textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 13px;
+    transition: border 0.2s;
+}
+
+.modal-contenido input:focus,
+.modal-contenido textarea:focus {
+    border-color: #982b2b;
+    outline: none;
+    background-color: #fff8f8;
+}
+
+.modal-contenido textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.acciones-modal {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.acciones-modal .btn.cancelar {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #bdc3c7;
+    color: #2c3e50;
+    transition: 0.3s;
+}
+
+.acciones-modal .btn.cancelar:hover {
+    background: #95a5a6;
+    transform: translateY(-2px);
+}
+
+.acciones-modal .btn.guardar {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+    transition: 0.3s;
+}
+
+.acciones-modal .btn.guardar:hover {
+    background: linear-gradient(135deg, #218838, #1a6e2e);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* ===================================================== */
+/* ===== MODAL CONFIRMACIÓN ===== */
+/* ===================================================== */
+#modal-confirmacion {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 420px;
+    max-width: 90%;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    padding: 30px 25px;
+    z-index: 999;
+    text-align: center;
+    animation: aparecerModal 0.3s ease forwards;
+}
+
+#modal-confirmacion div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+#modal-confirmacion p {
+    font-size: 17px;
+    color: #333;
+    line-height: 1.5;
+}
+
+#modal-confirmacion .botones {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    order: 3;
+    width: 100%;
+}
+
+#modal-confirmacion button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#modal-confirmacion button:first-of-type {
+    background: #bdc3c7;
+    color: #2c3e50;
+}
+
+#modal-confirmacion button:first-of-type:hover {
+    background: #95a5a6;
+}
+
+#modal-confirmacion button:last-of-type {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+}
+
+#modal-confirmacion button:last-of-type:hover {
+    background: linear-gradient(135deg, #c0392b, #a93226);
+}
+
+#modal-confirmacion input,
+#modal-confirmacion textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    outline: none;
+    transition: 0.2s;
+    order: 2;
+}
+
+#modal-confirmacion input:focus,
+#modal-confirmacion textarea:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.4);
+}
+
+@keyframes aparecerModal {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%) scale(0.85);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* ===================================================== */
+/* ===== SEPARADORES entre secciones ===== */
+/* ===================================================== */
+#div-coordinadores {
+    margin-top: 30px;
+}
+
+#div-alumnos {
+    margin-top: 10px;
+}
+
+/* ===================================================== */
+/* ===== RESPONSIVE ===== */
+/* ===================================================== */
+@media (max-width: 900px) {
+    .controls-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .selects-group,
+    .buttons-group {
+        justify-content: center;
+    }
+
+    .selects-group select,
+    .buttons-group button {
+        width: 90%;
+        display: block;
+    }
+
+    .contenedor-alumno,
+    .contenedor-actividades-2,
+    #perfil_administrador,
+    #contenedor-practicas,
+    .controls-row {
+        width: 98%;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .main {
+        margin-left: 0;
+    }
+
+    .header {
+        height: 120px;
+        padding: 20px 40px;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .header-spacer {
+        min-width: 100px;
+        flex-shrink: 0;
+    }
+
+    .header::after {
+        display: none;
+    }
+
+    .header-logo-right {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 100px;
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        order: -1;
+        flex-shrink: 0;
+    }
+
+    .header-logo-right img {
+        height: 80px;
+    }
+
+    .header h1 {
+        font-size: 24px;
+        margin: 0;
+        flex: 1;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    .contenedor-alumno {
+        flex-direction: column;
+    }
+
+    #tabla_perfil_alumno,
+    #tabla_actividades {
+        width: 100%;
+    }
+
+    #perfil_administrador label {
+        text-align: left;
+    }
+}

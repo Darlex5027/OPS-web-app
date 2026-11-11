@@ -615,32 +615,47 @@ thead th {
 /* ===================================================== */
 /* ===== PERFIL ADMIN - FORMULARIO ÚNICO ===== */
 /* ===================================================== */
+/* Tarjeta igual a las del alumno; campos en dos columnas */
 #perfil_administrador {
-    display: flex;
-    grid-template-columns: center;
-    gap: 10px 16px;
-    align-items: center;
     background-color: #f9f9f9;
     border: 1px solid #e0e0e0;
     border-radius: 10px;
     padding: 16px;
 }
 
+#perfil_administrador h3 {
+    color: #982b2b;
+    font-size: 16px;
+    margin-bottom: 4px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #982b2b;
+}
+
+#perfil_administrador .campos-admin {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0 20px;
+}
+
 #perfil_administrador label {
+    display: block;
     font-size: 13px;
     font-weight: 600;
     color: #555;
-    text-align: right;
+    margin-top: 10px;
+    margin-bottom: 4px;
 }
 
 #perfil_administrador input {
+    display: block;
+    width: 100%;
     padding: 8px 10px;
     border-radius: 8px;
     border: 1px solid #ccc;
     font-size: 13px;
     background-color: #fff;
     color: #333;
-    width: 100%;
+    transition: border 0.2s;
 }
 
 #perfil_administrador input:not([disabled]):not([readonly]) {
@@ -652,6 +667,22 @@ thead th {
     background-color: #f0f0f0;
     color: #888;
     cursor: not-allowed;
+}
+
+/* ===================================================== */
+/* ===== CAMPOS DE SOLO LECTURA (admin y alumno) ===== */
+/* ===================================================== */
+/* Los campos con "readonly" nunca se editan: se muestran como texto */
+.contenedor-alumno form input[readonly],
+#perfil_administrador input[readonly] {
+    border: none;
+    background: transparent;
+    padding: 2px 0 6px;
+    font-size: 14px;
+    color: #2a2a2a;
+    -webkit-text-fill-color: #2a2a2a;
+    opacity: 1;
+    cursor: default;
 }
 
 /* ===================================================== */
@@ -762,8 +793,14 @@ thead th {
     align-items: center;
 }
 
+/* !important: debe ganarle a reglas con id (ej. #perfil_administrador) */
 .oculto {
-    display: none;
+    display: none !important;
+}
+
+/* Modal de nueva empresa visible (crear_empresa.js agrega/quita "abierto") */
+.modal.abierto {
+    display: flex;
 }
 
 .acciones-modal .btn.cancelar {
@@ -887,6 +924,89 @@ thead th {
 #modal-confirmacion .botones {
     order: 3;
     width: 100%;
+    flex-direction: row;   /* "#modal-confirmacion div" los ponía en columna */
+}
+
+/* ===================================================== */
+/* ===== MODAL DINÁMICO: FORMULARIO (modal_dinamico.js) ===== */
+/* ===================================================== */
+#modal-confirmacion h2 {
+    color: #7b1e1e;
+    font-size: 22px;
+}
+
+/* Contenedor de todos los campos: ocupa el ancho (no centrado como los div) */
+#modal-confirmacion .modal-campos {
+    width: 100%;
+    max-width: 320px;
+    align-items: stretch;
+    gap: 14px;
+}
+
+/* Etiqueta + campo */
+#modal-confirmacion .modal-campo {
+    align-items: stretch;
+    gap: 6px;
+    text-align: left;
+}
+
+#modal-confirmacion .modal-campo label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+}
+
+/* Listas con el mismo aspecto que los input del modal */
+#modal-confirmacion select {
+    width: 100%;
+    padding: 10px 40px 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    font-family: inherit;
+    color: #333;
+    outline: none;
+    cursor: pointer;
+    transition: 0.2s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23982b2b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 12px center / 16px;
+}
+
+#modal-confirmacion select:hover,
+#modal-confirmacion input:hover {
+    border-color: #982b2b;
+}
+
+#modal-confirmacion select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.4);
+}
+
+/* "-- Selecciona --" en gris hasta elegir algo (JS agrega "sin-valor") */
+#modal-confirmacion select.sin-valor {
+    color: #8a8a8a;
+}
+
+#modal-confirmacion select option {
+    color: #333;
+}
+
+/* Contorno al tener el foco (igual que #btn_cambiar_foto) */
+#modal-confirmacion button:focus-visible {
+    outline: 2px solid rgba(152, 43, 43, 0.5);
+    outline-offset: 2px;
+}
+
+/* Mensaje de error dentro del modal */
+#modal-confirmacion .modal-error {
+    color: #c0392b;
+    font-size: 14px;
+}
+
+#modal-confirmacion .modal-error:empty {
+    display: none;
 }
 
 @keyframes aparecerModal {
@@ -990,11 +1110,7 @@ thead th {
         width: 100%;
     }
 
-    #perfil_administrador {
+    #perfil_administrador .campos-admin {
         grid-template-columns: 1fr;
-    }
-
-    #perfil_administrador label {
-        text-align: left;
     }
 }
