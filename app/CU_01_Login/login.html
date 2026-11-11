@@ -1,7 +1,7 @@
 <!--
   Archivo     : login.html
   Módulo      : CU_01_Login
-  Autor       : Francisco Angel Membrilla Alarcon
+  Autor       : Francisco Angel Membrila Alarcon
   Fecha       : 22/04/2026
   Descripción : Vista del formulario de inicio de sesión. Permite al usuario
                 ingresar su matrícula (4 u 8 dígitos) y contraseña. Envía
@@ -17,6 +17,8 @@
     <title>Login - OPS FCBIyT</title>
 
     <link rel="stylesheet" href="../css/stylesInicio.css">
+    <!-- Font Awesome 6 (íconos gratuitos) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -24,7 +26,7 @@
     <header class="header">
 
         <div class="header-logo-left">
-            <img src="../Imagenes/logo.png" alt="Logo OPS">
+            <img src="../Imagenes/Logo.png" alt="Logo OPS">
         </div>
 
         <div class="header-text">
@@ -48,18 +50,27 @@
 
         <form id="formLogin">
 
-            <input
-                type="text"
-                id="matricula"
-                placeholder="Matrícula (4 u 8 dígitos)"
-                maxlength="8"
-                required>
+            <div class="campo-contrasena">
+                <input
+                    type="text"
+                    id="matricula"
+                    placeholder="Matrícula (4 u 8 dígitos)"
+                    maxlength="8"
+                    required>
+            </div>
 
-            <input
-                type="password"
-                id="contrasena"
-                placeholder="Contraseña"
-                required>
+            <div class="campo-contrasena">
+                <div class="password-wrapper">
+                    <input
+                        type="password"
+                        id="contrasena"
+                        placeholder="Contraseña"
+                        required>
+                    <button type="button" id="togglePassword" class="btn-ver-contrasena">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
+            </div>
 
             <button type="submit">Iniciar sesión</button>
 

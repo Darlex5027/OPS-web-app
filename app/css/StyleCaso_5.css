@@ -893,6 +893,8 @@ textarea.form-control {
         font-size: 0.65rem;
     }
 }
+
+/* Estilos para el modal de confirmación personalizado */
 #modal-confirmacion {
     position: fixed;
     top: 0;

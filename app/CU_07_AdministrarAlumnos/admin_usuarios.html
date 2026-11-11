@@ -16,9 +16,9 @@ este archivo representa la parte visual con la que interactúa el usuario.
     <meta charset="UTF-8"> <!-- Soporte para caracteres especiales como ñ y tildes -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adaptación a móviles -->
     <!-- Título que aparece en la pestaña del navegador -->
-    <title>Administrar alumnos</title>
+    <title>Administrar usuarios</title>
     <!-- Enlace al archivo CSS para estilos -->
-    <link rel="stylesheet" href="../css/prueba.css">
+    <link rel="stylesheet" href="../css/StyleCaso_7.css">
 </head>
 
 <body>
@@ -26,37 +26,10 @@ este archivo representa la parte visual con la que interactúa el usuario.
     <div class="sidebar">
         <!-- Sección del perfil del usuario -->
         <div class="profile">
-            <img src="../Imagenes/prueba.png" alt="perfil">
-            <h3>Mtra. M. Guadalupe</h3>
+            <img id="foto_perfil_preview" src="../Imagenes/prueba.png" alt="perfil">
         </div>
         <!-- Menú de opciones -->
-        <div class="menu">
-            <!-- Cada opción es un enlace con un botón -->
-            <a href="../CU_06_PublicarVacantes/admin_vacantes.html">
-                <button>Publicar vacantes</button>
-            </a>
-            <a href="../CU_07_AdministrarAlumnos/admin_alumnos.html">
-                <button>Administrar alumnos</button>
-            </a>
-            <a href="../CU_08_Reporte_Alumnado/reporte_alumnos.html">
-                <button>Generar reporte de alumnos</button>
-            </a>
-            <a href="reportes_estadisticos.html">
-                <button>Generar reporte estadistico</button>
-            </a>
-            <a href="digitalizar_evaluacones.html">
-                <button>Llenar formularios del prestador</button>
-            </a>
-            <a href="reportes_prestadores.html">
-                <button>Generar reporte del prestador</button>
-            </a>
-            <a href="admin_encuentas.html">
-                <button>Editar formularios</button>
-            </a>
-            <a href="../CU_03_PerfilGestionable/perfil.html">
-                <button>perfil</button>
-            </a>
-        </div>
+        <div class="menu"></div>
     </div>
     <!-- Contenido principal de la página -->
     <div class="main">
@@ -64,7 +37,7 @@ este archivo representa la parte visual con la que interactúa el usuario.
         <div class="header">
             <div></div><!-- Espacio vacío (puede ser para alineación) -->
             <!-- Título de la sección -->
-            <h1>Administrar Alumnos</h1>
+            <h1>Administrar Usuarios</h1>
             <!-- Logo en la parte derecha -->
             <div class="header-logo-right">
                 <img src="../Imagenes/Logo.png" alt="Logo OPS">
@@ -114,11 +87,11 @@ este archivo representa la parte visual con la que interactúa el usuario.
     <!-- Scripts que manejan la lógica de la página -->
     <script src="../js/redireccion.js"></script>
      <!-- Script para aceptar alumnos -->
-    <script type="module" src="aceptar_alumnos.js"></script>
+    <script type="module" src="aceptar_usuarios.js"></script>
     <!-- Script para rechazar alumnos -->
-    <script type="module" src="rechazar_alumnos.js"></script>
+    <script type="module" src="rechazar_usuarios.js"></script>
     <!-- Script para obtener y mostrar alumnos -->
-    <script type="module" src="obtener_alumnos.js"></script>
+    <script type="module" src="admin_usuarios.js"></script>
     <!-- Contenedor para mostrar mensajes tipo "toast" (notificaciones emergentes) -->
     <div id="toast-mensaje" class="toast oculto"></div>
 </body>

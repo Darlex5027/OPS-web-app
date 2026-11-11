@@ -7,7 +7,7 @@ indicando que el alumno fue rechazado. Después muestra un mensaje al usuario y 
 Básicamente, permite eliminar o descartar a los alumnos que no cumplen con los requisitos.
 */
 // Importa la función para recargar la tabla de alumnos
-import { cargarInformacion } from './obtener_alumnos.js';
+import { cargarInformacion } from './admin_usuarios.js';
 import { lanzarToast } from '../js/lanzar_toast.js';
 // Exporta la función rechazarAlumno para usarla en otros archivos
 export { rechazarAlumno };
@@ -32,6 +32,10 @@ function rechazarAlumno(matricula) {
                 })
                 // Procesa la respuesta recibida
                 .then(function (datos) {
+                    if (datos.error) {
+                        lanzarToast(datos.error, "error");
+                        return
+                    }
                     // Si la operación fue exitosa
                     if (datos.success) {
                         // Muestra un mensaje tipo "toast" indicando rechazo
@@ -42,7 +46,7 @@ function rechazarAlumno(matricula) {
                 })
                 // Captura errores en caso de fallo en la petición
                 .catch(function (error) {
-                    console.error("Error", error);
+                    lanzarToast("No se pudo rechazar al alumno", "error");
                 })
         }
     )
@@ -67,6 +71,10 @@ function rechazarCoordinador(matricula) {
                 })
                 // Procesa la respuesta recibida
                 .then(function (datos) {
+                    if (datos.error) {
+                        lanzarToast(datos.error, "error");
+                        return
+                    }
                     // Si la operación fue exitosa
                     if (datos.success) {
                         // Muestra un mensaje tipo "toast" indicando rechazo
@@ -77,7 +85,7 @@ function rechazarCoordinador(matricula) {
                 })
                 // Captura errores en caso de fallo en la petición
                 .catch(function (error) {
-                    console.error("Error", error);
+                    lanzarToast("No se pudo rechazar al coordinador", "error");
                 })
         }
     )
@@ -97,13 +105,13 @@ function renderModalConfirmacion(mensaje, onConfirmar) {
 
     const elBtnCancelar = document.createElement('button');
     elBtnCancelar.textContent = 'Cancelar';
-    elBtnCancelar.addEventListener('click', function() {
+    elBtnCancelar.addEventListener('click', function () {
         elFondo.remove();
     });
 
     const elBtnConfirmar = document.createElement('button');
     elBtnConfirmar.textContent = 'Rechazar';
-    elBtnConfirmar.addEventListener('click', function() {
+    elBtnConfirmar.addEventListener('click', function () {
         elFondo.remove();
         onConfirmar();
     });

@@ -2,7 +2,7 @@
 /**
  * Archivo      : login.php
  * Módulo       : CU_01_Login
- * Autor        : Francisco Angel Membrilla Alarcon
+ * Autor        : Francisco Angel Membrila Alarcon
  * Fecha        : 21/04/2026
  * Descripción  : Endpoint que procesa el inicio de sesión. Valida credenciales
  * contra la base de datos MariaDB, gestiona el bloqueo de 
@@ -154,31 +154,43 @@ $stmt->execute([$datos_usuario['Id_tipo_usuario']]);
 $permisos = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
 /* =========================
-   NUEVO: ID CARRERA
+   ID CARRERA Y CONTEXTO ALUMNO
 ========================= */
 $carrera = null;
+$id_alumno = null; // Variable nueva para capturar la identidad del alumno
 
 if ($datos_usuario['Id_tipo_usuario'] == 2) {
+
+    // Modificamos la query para traer tanto la Carrera como el Id_alumno de la tabla Alumnos
     $stmt = $pdo->prepare("
-        SELECT Id_carrera
+        SELECT Id_carrera, Id_alumno
         FROM Alumnos
         WHERE Id_usuario = ?
     ");
-    $stmt->execute([$datos_usuario['Id_usuario']]);
-    $carrera = $stmt->fetchColumn();
-}
 
-if ($datos_usuario['Id_tipo_usuario'] == 1) {
+    $stmt->execute([$datos_usuario['Id_usuario']]);
+    $alumno_data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($alumno_data) {
+        $carrera = $alumno_data['Id_carrera'];
+        $id_alumno = $alumno_data['Id_alumno']; // <--- Capturamos el Id_alumno real
+    }
+
+} elseif (in_array($datos_usuario['Id_tipo_usuario'], [1, 3])) {
+
     $stmt = $pdo->prepare("
         SELECT Id_carrera
         FROM Administradores
         WHERE Id_usuario = ?
     ");
+
     $stmt->execute([$datos_usuario['Id_usuario']]);
     $carrera = $stmt->fetchColumn();
 }
 
-$datos_usuario['Id_carrera'] = $carrera;
+// Inyectamos ambos valores de forma estructurada en el arreglo del usuario
+$datos_usuario['Id_carrera'] = $carrera ?: null;
+$datos_usuario['Id_alumno'] = $id_alumno ?: null; // <--- Ahora viaja en el JSON de respuesta
 
 /* =========================
    SEGURIDAD

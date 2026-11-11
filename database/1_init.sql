@@ -45,6 +45,7 @@ CREATE TABLE `Actividades` (
 
 CREATE TABLE `Actividades_Alumnos` (
   `Id_alumno_servicio` int(11) NOT NULL,
+  `No_expediente` VARCHAR(15) UNIQUE,
   `Id_alumno` int(11) NOT NULL,
   `Id_servicio` int(11) NOT NULL,
   `Id_empresa` int(11) DEFAULT NULL,
@@ -212,6 +213,11 @@ CREATE TABLE `Encuestas` (
   `Descripcion` text DEFAULT NULL,
   `Id_servicio` int(11) NOT NULL,
   `Activo` tinyint(1) DEFAULT 1,
+  `Contestador` tinyint(1) DEFAULT 0,
+  `Codigo` varchar(50) DEFAULT NULL,
+  `Revision` varchar(50) DEFAULT NULL,
+  `Fecha` varchar(50) DEFAULT NULL,
+  `Version` varchar(50) DEFAULT NULL,
   `Fecha_inicio` date DEFAULT NULL,
   `Fecha_fin` date DEFAULT NULL,
   `Fecha_registro` datetime DEFAULT current_timestamp(),
@@ -695,7 +701,17 @@ CREATE TABLE Periodo_Encuesta (
     UNIQUE KEY unique_periodo_encuesta (Id_encuesta, Periodo_tipo, Periodo_año)
 );
 
+SET GLOBAL event_scheduler = ON;
 
+DROP EVENT IF EXISTS desactivar_encuestas_vencidas;
+CREATE EVENT desactivar_encuestas_vencidas
+ON SCHEDULE EVERY 1 DAY 
+STARTS CONCAT(CURDATE() + INTERVAL 1 DAY, ' 00:00:00')
+DO
+  UPDATE Encuestas 
+  SET Activo = 0 
+  WHERE Fecha_fin < CURDATE() 
+    AND Activo = 1;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

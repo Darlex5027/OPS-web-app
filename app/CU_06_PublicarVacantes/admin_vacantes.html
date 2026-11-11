@@ -1,50 +1,32 @@
+<!--
+ * Archivo     : admin_vacantes.html
+ * Módulo      : Modulo 6 CU_06_PublicarVacantes
+ * Autor       : Daniela Hernandez Hernandez
+ * Fecha       : 20 de abril del 2026
+ * Descripción : Este archivo muestra al usuario los datos requeridos para publicar vacantes
+ */-->
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8"> <!-- Soporte para caracteres especiales como ñ y tildes -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adaptación a móviles -->
-    <title>Administación de Vacantes</title>
-    <link rel="stylesheet" href="../css/prueba.css">
+    <title>Publicar Vacantes</title>
+    <link rel="stylesheet" href="../css/styleCaso_6.css">
 </head>
 
 <body class="pagina-vacantes">
     <div class="sidebar">
         <div class="profile">
-            <img src="../Imagenes/prueba.png" alt="perfil">
-            <h3>Mtra. M. Guadalupe</h3>
+            <img id="foto_perfil_preview" src="../Imagenes/prueba.png" alt="perfil">
         </div>
-        <div class="menu">
-            <a href="../CU_06_PublicarVacantes/admin_vacantes.html">
-                <button>Publicar vacantes</button>
-            </a>
-            <a href="../CU_07_AdministrarAlumnos/admin_alumnos.html">
-                <button>Administrar alumnos</button>
-            </a>
-            <a href="../CU_08_Reporte_Alumnado/reporte_alumnos.html">
-                <button>Generar reporte de alumnos</button>
-            </a>
-            <a href="reportes_estadisticos.html">
-                <button>Generar reporte estadistico</button>
-            </a>
-            <a href="digitalizar_evaluacones.html">
-                <button>Llenar formularios del prestador</button>
-            </a>
-            <a href="reportes_prestadores.html">
-                <button>Generar reporte del prestador</button>
-            </a>
-            <a href="admin_encuentas.html">
-                <button>Editar formularios</button>
-            </a>
-            <a href="../CU_03_PerfilGestionable/perfil.html">
-                <button>perfil</button>
-            </a>
-        </div>
+        <div class="menu"></div>
     </div>
+    
     <div class="main">
         <div class="header">
             <div></div>
-            <h1>Administación de vacantes</h1>
+            <h1>Publicar Vacantes</h1>
             <div class="header-logo-right">
                 <img src="../Imagenes/Logo.png" alt="Logo OPS">
             </div>
@@ -92,7 +74,8 @@
                     <input type="text" id="requisitos" placeholder="requisitos">
 
                     <label id="fecha_Manual"></label>
-                    <label for="expiracion">Fecha de expiracion: </label>
+                    <h1></h1>
+                    <label for="expiracion_manual">Fecha de expiracion: </label>
                     <input type="date" id="expiracion_manual" placeholder="Fecha de expiracion">
                 </div>
 
@@ -119,7 +102,8 @@
                     </div>
 
                     <label id="fecha_flayer"></label>
-                    <label for="expiracion">Fecha de expiracion: </label>
+                    <h1></h1>
+                    <label for="expiracion_flayer">Fecha de expiracion: </label>
                     <input type="date" id="expiracion_flayer" placeholder="Fecha de expiracion">
                 </div>
 
@@ -140,10 +124,11 @@
                     <label>Sitio web: </label>
                     <input type="text" id="web_empresa" placeholder="Sitio web">
                     <button type="button" onclick="handleCancelarRegistro()">Cancelar y elegir existente</button>
+
                 </div>
+                <button type="submit" id="btnEnviar">Enviar</button>
+            </form>
         </div>
-        <button type="submit" id="btnEnviar">Enviar</button>
-        </form>
     </div>
     <div id="toast-mensaje" class="toast oculto"></div>
     </div>

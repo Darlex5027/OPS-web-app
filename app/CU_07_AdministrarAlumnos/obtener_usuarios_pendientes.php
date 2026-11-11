@@ -10,10 +10,17 @@ inactivos, es decir, pendientes de validación. Finalmente, envía estos datos e
 al frontend.*/
 // Incluye el archivo de conexión a la base de datos (contiene $dsn, $user, $pass, etc.)
 require_once '../php/db.php';
+try {
+    // Se establece la conexión a la base de datos con PDO
+    $pdo = new PDO($dsn, $user, $pass, $options);
+} catch (\PDOException $e) {
+    // Si ocurre un error, se envía código HTTP 500 (error del servidor)
+    http_response_code(500);
+    // Devuelve el mensaje de error en formato JSON
+    echo json_encode(['error' => "Error de conexión al servidor: "]);
+}
 
 try {
-    // Se crea una nueva conexión a la base de datos usando PDO
-    $pdo = new PDO($dsn, $user, $pass, $options);
     // Obtiene el id de la carrera desde una cookie del navegador
     $id_carrera = $_COOKIE['Id_carrera'];
     $id_tipo_usuario = $_COOKIE['Id_tipo_usuario'];
@@ -80,5 +87,5 @@ try {
     // Si ocurre un error en la conexión o consulta, se envía código HTTP 500
     http_response_code(500);
     // Se devuelve un mensaje de error en formato JSON
-    echo json_encode(['error' => "Error de conexión: " . $e->getMessage()]);
+    echo json_encode(['error' => "Error al acceder a la base de datos"]);
 }

@@ -12,15 +12,22 @@ cambios en la base de datos.
 // Incluye el archivo de conexión a la base de datos
 require_once '../php/db.php';
 //pasa de Json a variable de php
-$valor = json_decode(file_get_contents("php://input"), true);
+//Se reciben los datos de matricula y el identificador
+$datos_entrada = json_decode(file_get_contents("php://input"), true);
 // Extrae los datos enviados desde JavaScript
-$matricula = $valor['matricula']; // Matrícula del alumno
-$identificador = $valor['identificador']; // Indica si fue "Aceptado" o rechazado
-
+$matricula = $datos_entrada['matricula']; // Matrícula del alumno
+$identificador = $datos_entrada['identificador']; // Indica si fue "Aceptado" o rechazado
 
 try {
     // Se establece la conexión a la base de datos con PDO
     $pdo = new PDO($dsn, $user, $pass, $options);
+} catch (\PDOException $e) {
+    // Si ocurre un error, se envía código HTTP 500 (error del servidor)
+    http_response_code(500);
+    // Devuelve el mensaje de error en formato JSON
+    echo json_encode(['error' => "Error de conexión al servidor: "]);
+}
+try {
     // Dependiendo de la acción recibida:
     if ($identificador === "Aceptado") {
         // Si fue aceptado, se actualiza el campo Activo a 1 (activo)
@@ -38,5 +45,5 @@ try {
     // Si ocurre un error, se envía código HTTP 500 (error del servidor)
     http_response_code(500);
     // Devuelve el mensaje de error en formato JSON
-    echo json_encode(['error' => "Error de conexión: " . $e->getMessage()]);
+    echo json_encode(['error' => "No se pudo realizar la accion " + $identificador]);
 }

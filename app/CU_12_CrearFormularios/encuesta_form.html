@@ -1,0 +1,142 @@
+<!--
+  Archivo     : encuesta_form.html
+  Módulo      : CU_12_CrearFormularios
+  Autor       : Daniela Hernandez Hernandez
+  Fecha       : 05/05/2026
+  Descripción : Formulario para registrar una nueva encuesta con sus datos generales,
+                servicio, periodo y fecha de expiración.
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8"> <!-- Soporte para caracteres especiales como ñ y tildes -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Adaptación a móviles -->
+    <title>Encuestas</title>
+    <!-- Enlace al archivo CSS para estilos -->
+    <link rel="stylesheet" href="../css/StyleCaso12.css">
+</head>
+
+<body>
+    <!-- Barra lateral (menú de navegación) -->
+    <div class="sidebar">
+        <div class="profile">
+            <img id="foto_perfil_preview" src="../Imagenes/prueba.png" alt="perfil">
+        </div>
+        <div class="menu"></div>
+    </div>
+    <!-- Contenido principal de la página -->
+    <div class="main">
+        <!-- Encabezado superior -->
+        <div class="header">
+            <div></div><!-- Espacio vacío (puede ser para alineación) -->
+            <!-- Título de la sección -->
+            <h1>Encuestas</h1>
+            <!-- Logo en la parte derecha -->
+            <div class="header-logo-right">
+                <img src="../Imagenes/Logo.png" alt="Logo OPS">
+            </div>
+        </div>
+        <form>
+            <h2>Datos del Encabezado (No se podran modificar):</h2>
+            <br>
+            <div>
+                <label>Codigo: </label>
+                <input type="text" id="inputCodigo">
+            </div>
+            <br>
+            <div>
+                <label>Revision: </label>
+                <input type="text" id="inputRevision">
+            </div>
+            <br>
+            <div>
+                <label>Fecha: </label>
+                <input type="text" id="inputFecha">
+            </div>
+            <br>
+            <div>
+                <label>Version: </label>
+                <input type="text" id="inputVersion">
+            </div>
+            <br>
+
+            <h2>Datos de la Encuestas: </h2>
+            <br>
+            <div>
+                <label>Nombre</label>
+                <input type="text" id="inputNombre">
+            </div>
+            <br>
+
+            <div>
+                <label>Descripción </label>
+                <input type="text" id="inputDescripcion">
+            </div>
+            <br>
+
+            <div>
+                <div id="elContenedorServicio">
+                    <label>Servicio: </label>
+                    <select id="selectServicio">
+                        <option value="">-- Seleccionar... --</option>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <div>
+                <label>Encuesta Activa: </label>
+                <select id="selectActivo">
+                    <br>
+                    <option value="">-- Seleccionar --</option>
+                    <option value="1">Sí</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+            <br>
+
+            <div>
+                <label>Dirigido a: </label>
+                <select id="selectContestador">
+                    <br>
+                    <option value="">-- Seleccionar --</option>
+                    <option value="1">Docentes como alumnos</option>
+                    <option value="0">Alumnos</option>
+                </select>
+            </div>
+            <br>
+
+            <div>
+                <label>Tipo de periodo</label>
+                <select id="selectPeriodoTipo">
+                    <option value="">-- Seleccionar --</option>
+                    <option value="primavera">Primavera </option>
+                    <option value="otoño">Otoño</option>
+                </select>
+            </div>
+            <br>
+
+            <div>
+                <label>Año</label>
+                <input type="text" id="inputPeriodoAnio" maxlength="4" pattern="[0-9]{4}">
+            </div>
+            <br>
+
+            <div>
+                <label for="inputFechaFin">Fecha de expiracion: </label>
+                <input type="date" id="inputFechaFin" placeholder="Fecha de fin">
+            </div>
+            <br>
+
+            <button type="button" onclick="guardarEncuesta()">Guardar</button>
+            <button type="button" onclick="window.location.href='encuestas_lista.html'">Cancelar</button>
+        </form>
+    </div>
+    <script type="module" src="encuesta_form.js"></script>
+    <!-- Scripts que manejan la lógica de la página -->
+    <script type="module" src="../js/redireccion.js"></script>
+    <!-- Contenedor para mostrar mensajes tipo "toast" (notificaciones emergentes) -->
+    <div id="toast-mensaje" class="toast oculto"></div>
+</body>
+
+</html>
